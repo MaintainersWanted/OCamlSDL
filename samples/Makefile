@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.9 2003/01/05 09:43:24 oliv__a Exp $
+# $Id: Makefile,v 1.10 2003/01/16 16:36:09 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -27,7 +27,7 @@ LIB_DIR = ../src
 MLFLAGS  += -w s -I $(LIB_DIR)
 OMLFLAGS += -w s -I $(LIB_DIR)
 
-SAMPLES = test_cdrom ocamlplayer event_loop \
+SAMPLES = test_cdrom ocamlplayer \
           testalpha testjoystick ocamlsdl_logo checkkeys \
           showfont
 ifdef LABLGLDIR

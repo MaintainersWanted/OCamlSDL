@@ -1,3 +1,11 @@
+Release 0.6.1:
+	* GL-related functions in a new module Sdlgl
+          better LablGL interaction
+        * compiles with the Mingw port of ocaml (see doc/ocamlsdl-mingw.txt)
+        * fixed typos in type and constructor names
+        * fixed Sdlttf.set_font_style and Sdlttf.get_font_style
+        * fixed Sdlvideo.save_BMP
+
 Release 0.6:
 	* Rewrote Sdlvideo and Sdlevent modules. Added several other modules.
 
@@ -8,16 +16,13 @@ Release 0.5:
 	* Applying many patches.
 
 Release 0.5-pre3:
-
 	* Adding documentation directory
 	* new function char_of_key in Sdlevent module
 
 Release 0.5-pre2:
-
 	* Adding install and uninstall target stuff
 
 Release 0.5-pre1: (no released at sourceforge)
-
 	* bigarray support in sdlvideo module
 	* SDL-1.2, SDL_image-1.2.0, SDL_mixer-1.2.0, SDL_ttf-1.2.2 support
 	  but not fully  implemented.

@@ -4,6 +4,7 @@
 
 options for configure:
   --with-installdir=DIR	  specify installation directory
+  --with-lablgldir=DIR    location of Lablgl        [default is +lablGL]
   --disable-sdl-ttf       without freetype support  [default is enabled]
   --disable-sdl-image     without sdl image support [default is enabled]
   --disable-sdl-mixer     without sdl mixer support [default is enabled]
