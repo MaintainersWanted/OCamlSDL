@@ -8,5 +8,5 @@
 #define SDL_TTF_VERSION 206
 #define SDL_IMAGE_VERSION 121
 
-#define HAVE_ALLOCA_H 1
+#undef HAVE_ALLOCA_H
 #define HAVE_ALLOCA 1

@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.12 2004/04/29 11:18:25 oliv__a Exp $
+# $Id: Makefile,v 1.13 2004/05/03 08:49:06 oliv__a Exp $
 
 all doc clean install:
 	$(MAKE) -C src $@
@@ -45,7 +45,7 @@ DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README \
            support/install-sh support/ocaml.m4 support/config.sub support/config.guess \
 	   src/sdl*.ml src/sdl*.mli src/sdl*.c src/sdl*.h \
            src/common.c src/common.h src/mlsdl_main.c \
-           src/config.h.in src/config.h src/config.h.msvc \
+           src/config.h.in src/config.h.msvc \
 	   src/Makefile src/.depend src/.depend_c
 VERSION := 0.6.99
 
