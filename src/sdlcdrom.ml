@@ -17,36 +17,58 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.ml,v 1.5 2002/08/08 15:41:05 xtrm Exp $ *)
+(* $Id: sdlcdrom.ml,v 1.6 2002/08/09 13:40:40 oliv__a Exp $ *)
 
 (* Define a new exception for CD-ROM errors and register 
    it to be callable from C code. *)
 
 exception SDLcdrom_exception of string
-let _ = Callback.register_exception "SDLcdrom_exception" (SDLcdrom_exception "Any string")
+exception Trayempty
+let _ = 
+  Callback.register_exception 
+    "SDLcdrom_exception" (SDLcdrom_exception "") ;
+  Callback.register_exception
+    "SDLcdrom_nocd" Trayempty
 
 (* Types *)
 
 type cdrom_drive
-type cdrom_track
 
 type cdrom_drive_status = 
-    CD_TRAYEMPTY
+  | CD_TRAYEMPTY
   | CD_STOPPED
   | CD_PLAYING
   | CD_PAUSED
-  | CD_ERROR
 
-type cdrom_track_type =
-    TRACK_AUDIO
+type track_type =
+  | TRACK_AUDIO
   | TRACK_DATA
+
+type track = {
+    id     : int ;
+    kind   : track_type ;
+    length : int ;
+    offset : int ;
+  }
+
+type cdrom_info = {
+    num_tracks : int ;
+    curr_track : int ;
+    curr_frame : int ;
+    tracks     : track array ;
+  }
+
 
 (* Native C external functions *)
 
 external get_num_drives : unit -> int = "sdlcdrom_get_num_drives"
-external drive_name : drive:int -> string = "sdlcdrom_drive_name"
+external drive_name : int -> string = "sdlcdrom_drive_name"
+
 external cd_open : int -> cdrom_drive = "sdlcdrom_open"
 external cd_close : cdrom_drive -> unit = "sdlcdrom_close"
+
+external cd_status : cdrom_drive -> cdrom_drive_status = "sdlcdrom_status"
+external cd_info : cdrom_drive -> cdrom_info = "sdlcdrom_info"
 
 external cd_play_tracks : cdrom_drive -> 
       start_track:int -> 
@@ -57,26 +79,17 @@ external cd_pause : cdrom_drive -> unit = "sdlcdrom_pause"
 external cd_resume : cdrom_drive -> unit = "sdlcdrom_resume"
 external cd_stop : cdrom_drive -> unit = "sdlcdrom_stop"
 external cd_eject : cdrom_drive -> unit = "sdlcdrom_eject"
-external cd_status : cdrom_drive -> cdrom_drive_status = "sdlcdrom_status"
-
-external cd_get_num_tracks : cdrom_drive -> int = "sdlcdrom_get_num_tracks"
-external cd_track_num : cdrom_drive -> track:int -> cdrom_track = "sdlcdrom_track_num"
-external track_length : cdrom_track -> int * int = "sdlcdrom_track_length"
-external track_type : cdrom_track -> cdrom_track_type = "sdlcdrom_track_type"
-
-external cd_track_current_time : cdrom_drive -> int * int = "sdlcdrom_cd_track_current_time" 
-external cd_current_track : cdrom_drive -> cdrom_track = "sdlcdrom_cd_current_track" 
-external track_get_number : cdrom_track -> int = "sdlcdrom_track_get_number" 
 
 (* ML functions *)
 
-let cd_play_track cdrom ~track:track =
-  cd_play_tracks cdrom  track 0 1 0
+let cd_play_track cdrom { id = num } =
+  cd_play_tracks cdrom (num - 1) 0 1 0;;
 
-let cd_track_list cdrom =
-  let rec aux cdrom track_num =
-    if track_num < 0
-    then []
-    else (cd_track_num cdrom track_num)::(aux cdrom (track_num - 1))
-  in
-  aux cdrom ((cd_get_num_tracks cdrom) - 1)
+let msf_of_frames f =
+  let s' = f / 75 in
+  let m  = s' / 60 in
+  (m, s' mod 60, f mod 75)
+
+let frames_of_msf (m, s, f) =
+  m * 60 * 75 + s * 75 + f
+

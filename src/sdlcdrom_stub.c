@@ -17,23 +17,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.9 2002/07/13 15:19:56 oliv__a Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.10 2002/08/09 13:40:40 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
+
 #include <stdio.h>
+
 #include <SDL.h>
+
+#include "common.h"
 #include "sdlcdrom_stub.h"
 
-/*
- * Define some error messages (not from SDL)
- */
-
-#define ERRORMSG_BAD_CDROM_INDEX "Invalid CD-ROM drive index"
-#define ERRORMSG_BAD_CDROM_TRACK "Invalid CD-ROM track number"
+#ifdef __GNUC__ /* typechecked macro */
+#define Val_CDROM(p)  ( { SDL_CD *_mlsdl__cd = p; \
+                          abstract_ptr(_mlsdl__cd); } )
+#else
+#define Val_CDROM(p)  abstract_ptr(p);
+#endif
+#define CDROM_val(v)  ((SDL_CD *)(Field(v, 0)))
 
 /*
  * Raise an OCaml exception with a message
@@ -46,6 +51,15 @@ sdlcdrom_raise_exception (char *msg)
   if(! cdrom_exn)
     cdrom_exn = caml_named_value("SDLcdrom_exception");
   raise_with_string(*cdrom_exn, msg);
+}
+
+static void
+sdlcdrom_raise_nocd ()
+{
+  static value *cdrom_exn = NULL;
+  if(! cdrom_exn)
+    cdrom_exn = caml_named_value("SDLcdrom_nocd");
+  raise_constant(*cdrom_exn);
 }
 
 /*
@@ -87,17 +101,11 @@ sdlcdrom_get_num_drives (void)
 value
 sdlcdrom_drive_name (value num_drive)
 {
-  int num_of_drives = Int_val(sdlcdrom_get_num_drives());
-  int num = Int_val(num_drive);
-
-  if (num >= num_of_drives) {
-    sdlcdrom_raise_exception(ERRORMSG_BAD_CDROM_INDEX);
-  }
-  else if (SDL_CDName(num) == NULL) {
+  const char *name = SDL_CDName(Int_val(num_drive));
+  if (name == NULL)
     sdlcdrom_raise_exception(SDL_GetError());
-  }
   
-  return copy_string((char *)SDL_CDName(num)); /* Int_val(num_drive)));; */
+  return copy_string((char *)name);
 }
 
 value
@@ -109,35 +117,38 @@ sdlcdrom_open (value num_drive)
     sdlcdrom_raise_exception(SDL_GetError());
   }
 
-  return (value)cdrom;
+  return Val_CDROM(cdrom);
 }
 
 value
 sdlcdrom_close (value cdrom)
 {
-  SDL_CDClose((SDL_CD *)cdrom);
+  SDL_CDClose(CDROM_val(cdrom));
+  CDROM_val(cdrom) = NULL;
   return Val_unit;
 }
 
 value
 sdlcdrom_play_tracks (value cdrom, value start_track,
-			value start_frame, int ntracks,
-			int nframes)
+		      value start_frame, int ntracks,
+		      int nframes)
 {
-  SDL_CD *cd = (SDL_CD *)cdrom;
+  SDL_CD *cd = CDROM_val(cdrom);
   
   if (CD_INDRIVE(SDL_CDStatus(cd))) {
     SDL_CDPlayTracks(cd, Int_val(start_track), Int_val(start_frame),
 		     Int_val(ntracks), Int_val(nframes));
   }
-
+  else
+    sdlcdrom_raise_nocd();
+  
   return Val_unit;
 }
 
 value
 sdlcdrom_pause (value cdrom)
 {
-  if (SDL_CDPause((SDL_CD *)cdrom) < 0) {
+  if (SDL_CDPause(CDROM_val(cdrom)) < 0) {
     sdlcdrom_raise_exception(SDL_GetError());
   }
 
@@ -147,7 +158,7 @@ sdlcdrom_pause (value cdrom)
 value
 sdlcdrom_resume (value cdrom)
 {
-  if (SDL_CDResume((SDL_CD *)cdrom) < 0) {
+  if (SDL_CDResume(CDROM_val(cdrom)) < 0) {
     sdlcdrom_raise_exception(SDL_GetError());
   }
 
@@ -157,7 +168,7 @@ sdlcdrom_resume (value cdrom)
 value
 sdlcdrom_stop (value cdrom)
 {
-  if (SDL_CDStop((SDL_CD *)cdrom) < 0) {
+  if (SDL_CDStop(CDROM_val(cdrom)) < 0) {
     sdlcdrom_raise_exception(SDL_GetError());
   }
 
@@ -167,7 +178,7 @@ sdlcdrom_stop (value cdrom)
 value
 sdlcdrom_eject (value cdrom)
 {
-  if (SDL_CDEject((SDL_CD *)cdrom) < 0) {
+  if (SDL_CDEject(CDROM_val(cdrom)) < 0) {
     sdlcdrom_raise_exception(SDL_GetError());
   }
 
@@ -177,103 +188,48 @@ sdlcdrom_eject (value cdrom)
 value
 sdlcdrom_status (value cdrom)
 {
-  SDL_CD *cd = (SDL_CD *)cdrom;
-  CDstatus s = SDL_CDStatus(cd);
-
-  /* Convert the C enum to the OCaml type:
-   *
-   * type cdrom_drive_status = 
-   *     CD_TRAYEMPTY   0
-   *   | CD_STOPPED     1
-   *   | CD_PLAYING     2
-   *   | CD_PAUSED      3
-   *   | CD_ERROR       4
-   */
-  return s < 0 ? Val_int(4) : Val_int(s);
-}
-
-value
-sdlcdrom_get_num_tracks (value cdrom)
-{
-  SDL_CD *cd = (SDL_CD *)cdrom;
-
-  if (CD_INDRIVE(SDL_CDStatus(cd))) {
-    return Val_int(cd->numtracks);
+  int v=0;
+  switch (SDL_CDStatus(CDROM_val(cdrom))) {
+  case CD_TRAYEMPTY : v=0; break;
+  case CD_STOPPED   : v=1; break;
+  case CD_PLAYING   : v=2; break;
+  case CD_PAUSED    : v=3; break;
+  case CD_ERROR     : sdlcdrom_raise_exception(SDL_GetError());
   }
-
-  return Val_int(0);
-}
-
-value
-sdlcdrom_track_num (value cdrom, value num)
-{
-  int track_num = Int_val(num);
-  int num_tracks = Int_val(sdlcdrom_get_num_tracks(cdrom));
-  SDL_CD *cd = (SDL_CD *)cdrom;
-  
-  if (track_num >= num_tracks) {
-    sdlcdrom_raise_exception(ERRORMSG_BAD_CDROM_TRACK);
-  }
-  
-  return (value)(cd->track + track_num);
-}
-
-value
-sdlcdrom_track_length (value track)
-{
-  CAMLparam1(track);
-  CAMLlocal1(result);
-  SDL_CDtrack *tr = (SDL_CDtrack *)track;
-  int min, sec, frame;
-  
-  FRAMES_TO_MSF(tr->length, &min, &sec, &frame);
-
-  result = alloc_tuple(2);
-  Store_field(result, 0, Val_int(min));
-  Store_field(result, 1, Val_int(sec));
-
-  CAMLreturn (result);
-}
-
-value
-sdlcdrom_track_type (value track)
-{
-  SDL_CDtrack *tr = (SDL_CDtrack *)track;;
-  return (tr->type == 0) ? Val_int(0) : Val_int(1);
+  return Val_int(v);
 }
 
 value 
-sdlcdrom_cd_current_track (value cdrom)
+sdlcdrom_info(value cdrom)
 {
-    SDL_CD *cd = (SDL_CD *)cdrom;
-
-    return (value) sdlcdrom_track_num(cdrom, Val_int(cd->cur_track));
-} 
-
-
-value 
-sdlcdrom_track_get_number (value track) 
-{
-  SDL_CDtrack *tr = (SDL_CDtrack *)track;
-
-  return Val_int(tr->id) ;
+  SDL_CD *cd = CDROM_val(cdrom);
+  CDstatus status = SDL_CDStatus(cd);
+  switch( SDL_CDStatus(cd) ) {
+  case CD_TRAYEMPTY : sdlcdrom_raise_nocd ();
+  case CD_ERROR     : sdlcdrom_raise_exception(SDL_GetError());
+  } 
+  { 
+    CAMLparam0();
+    CAMLlocal3(v, a, t);
+    int i;
+    a = alloc(cd->numtracks, 0);
+    for(i=0; i<cd->numtracks; i++) {
+      SDL_CDtrack tr = cd->track[i];
+      t = alloc_small(4, 0);
+      Field(t, 0) = Val_int(tr.id) ;
+      if(tr.type == SDL_AUDIO_TRACK)
+	Field(t, 1) = Val_int(0) ;
+      else
+  	Field(t, 1) = Val_int(1) ;
+      Field(t, 2) = Val_int(tr.length);
+      Field(t, 3) = Val_int(tr.offset);
+      Store_field(a, i, t);
+    }
+    v = alloc_small(4, 0);
+    Field(v, 0) = Val_int(cd->numtracks);
+    Field(v, 1) = Val_int(cd->cur_track);
+    Field(v, 2) = Val_int(cd->cur_frame);
+    Field(v, 3) = a;
+    CAMLreturn(v);
+  }
 }
-
-value
-sdlcdrom_cd_track_current_time (value cdrom)
-{
-  CAMLparam1(cdrom);
-  CAMLlocal1(result);
-  SDL_CD *cd = (SDL_CD *)cdrom;
-  SDL_CDtrack *tr = (SDL_CDtrack *) sdlcdrom_cd_current_track(cdrom);
-  int min, sec, frame;
-  
-  FRAMES_TO_MSF(cd->cur_frame, &min, &sec, &frame);
-
-  result = alloc_tuple(2);
-  Store_field(result, 0, Val_int(min));
-  Store_field(result, 1, Val_int(sec));
-
-  CAMLreturn (result);
-}
-
