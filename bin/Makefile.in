@@ -17,17 +17,17 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.1 2001/05/09 17:02:45 xtrm Exp $
+# $Id: Makefile.in,v 1.2 2001/05/15 21:24:24 xtrm Exp $
 
-INST_BIN_DIR=@prefix@/bin
+INSTALL_DIR=$(DESTDIR)@prefix@/bin
 SCRIPT_TOPLEVEL=ocamlsdl
 
 install:
-	mkdir -p $(INST_BIN_DIR)
-	$(INSTALL) -m 755 $(SCRIPT_TOPLEVEL) $(INST_BIN_DIR)
+	mkdir -p $(INSTALL_DIR)
+	$(INSTALL) -m 755 $(SCRIPT_TOPLEVEL) $(INSTALL_DIR)
 
 uninstall:
-	@rm $(INST_BIN_DIR)/$(SCRIPT_TOPLEVEL)
+	@rm $(INSTALL_DIR)/$(SCRIPT_TOPLEVEL)
 
 clean:
 	@rm -f $(SCRIPT_TOPLEVEL)
@@ -36,3 +36,4 @@ distclean: clean
 	@rm -f Makefile $(SCRIPT_TOPLEVEL)
 
 include ../makefile.toplevel
+

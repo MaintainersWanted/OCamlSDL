@@ -3,5 +3,12 @@ For now, all you have to do is to type
    $ ./configure
    $ make
 
-it will build an OCaml toplevel with all necessary library linked
+it will build an OCaml toplevel with all necessary libraries linked
 with the executable.
+
+   $ make install
+
+install the toplevel ocamlsdl in the directory $prefix/bin and all 
+necessary libraries in the directory $prefix/lib/ocaml/sdl.
+
+
