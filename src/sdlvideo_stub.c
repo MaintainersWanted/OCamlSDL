@@ -115,15 +115,6 @@ void sdlvideo_raise_exception (char *msg)
 /*
  * some static conversion functions
  */
-#ifndef HAVE_INLINE
-static inline void SDLColor_of_value(SDL_Color *c, value v)
-{
-  c->r = Int_val(Field(v, 0));
-  c->g = Int_val(Field(v, 1));
-  c->b = Int_val(Field(v, 2));
-}
-#endif
-
 static value value_of_Rect(SDL_Rect r)
 {
   value v = alloc_small(4, 0);
@@ -676,7 +667,7 @@ CAMLprim value ml_SDL_GetClipRect(value s)
 
 
 /* 
- * surface blittinf and conversion
+ * surface blitting and conversion
  */
 
 CAMLprim value ml_SDL_BlitSurface(value src_s, value osrc_r, 
