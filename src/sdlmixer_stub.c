@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.7 2000/11/05 01:36:41 smkl Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.8 2002/04/24 13:24:44 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -25,6 +25,8 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <stdio.h>
+#include <string.h>
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_mixer.h>
 

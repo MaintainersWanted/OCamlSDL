@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.3 2001/05/09 17:02:45 xtrm Exp $
+# $Id: Makefile.in,v 1.4 2002/04/24 13:24:44 xtrm Exp $
 
 
 CLIBS =		@LIBS@ @MATHLIB@
@@ -51,7 +51,7 @@ TOPLEVEL = 	$(LIB_DIR)/toplevel
 RUNTIME = 	$(BIN_DIR)/sdlrun
 LIBRARY = 	$(LIB_DIR)/sdl.cma
 OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
-CLIBRARY = 	$(LIB_DIR)/libstub.a
+CLIBRARY = 	$(LIB_DIR)/libsdlstub.a
 
 all: bin libs instlocal
 
@@ -68,11 +68,11 @@ $(RUNTIME): $(OBJS)
 	$(OBJS) $(MLLIBS) -cclib -lunix -cclib -lthreads
 
 $(LIBRARY): $(CLIBRARY) $(ML_OBJS)
-	$(CAMLC) -linkall -a -o $(LIBRARY) $(ML_OBJS) $(MLLIBS) -cclib -lstub
+	$(CAMLC) -custom -a -o $(LIBRARY) $(ML_OBJS) $(MLLIBS) -cclib -lsdlstub
 
 $(OLIBRARY): $(LIBRARY) $(OPT_OBJS)
-	$(CAMLOPT) -linkall -a -o $(OLIBRARY) $(OPT_OBJS) -cclib -lstub\
-	-ccopt "-lSDL -lSDL_ttf -lSDL_mixer -lpng -lSDL_image" 
+	$(CAMLOPT) -a -o $(OLIBRARY) $(OPT_OBJS) -cclib -lsdlstub\
+	-ccopt "-lSDL -lSDL_ttf -lSDL_mixer -lpng -lSDL_image"
 
 $(CLIBRARY): $(STUB_OBJS)
 	@ar cr $(CLIBRARY) $(STUB_OBJS)

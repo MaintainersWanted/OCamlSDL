@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: stub_shared.c,v 1.1 2000/03/05 15:20:28 fbrunel Exp $ */
+/* $Id: stub_shared.c,v 1.2 2002/04/24 13:24:45 xtrm Exp $ */
 
 #include <stdio.h>
 #include "stub_shared.h"
@@ -28,6 +28,6 @@ finalize_surface (value final_surface)
 #ifdef __DEBUG__
   fprintf(stderr, "Freeing surface: %p\n",
 	  SDL_FINAL_SURFACE(final_surface));
-#endif __DEBUG__  
+#endif /* __DEBUG__   */
 }
 

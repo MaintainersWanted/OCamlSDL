@@ -17,17 +17,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.2 2002/04/18 13:15:10 xtrm Exp $
+# $Id: Makefile.in,v 1.3 2002/04/24 13:24:45 xtrm Exp $
 
 
 CLIBS =		@LIBS@ @MATHLIB@
 MLLIBS =	-cclib "$(CLIBS)"
+include ../makefile.toplevel
 
 BIN_DIR =	../bin
 LIB_DIR =	../lib
 
 ML_LIBS =	-I $(LIB_DIR)
 OML_LIBS =	-I $(LIB_DIR)
+
+ML_FLAGS += -w s
+OMLFLAGS += -w s
 
 ML_OBJS	=	$(MODULES:=.cmo)
 
@@ -40,7 +44,7 @@ OOBJS =		$(STUB_OBJS) $(OPT_OBJS)
 
 LIBRARY = 	$(LIB_DIR)/sdl.cma
 OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
-CLIBRARY = 	$(LIB_DIR)/libstub.a
+CLIBRARY = 	$(LIB_DIR)/libsdlstub.a
 
 TEST_OBJS = test_cdrom.cmx
 EXAMPLE_OBJS = example.cmx
@@ -53,14 +57,13 @@ all: $(SAMPLES)
 
 
 test_cdrom: $(CLIBRARY) $(OLIBRARY) $(TEST_OBJS)
-	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -cclib "-L../lib/ -lstub" -o $@ $^
+	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -I ../lib -o $@ sdl.cmxa $(TEST_OBJS)
 
 example: $(CLIBRARY) $(OLIBRARY) $(EXAMPLE_OBJS)
-	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -cclib "-L../lib/ -lstub" -o $@ $^
-
+	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -I ../lib -o $@ sdl.cmxa $(EXAMPLE_OBJS)
 
 ocamlplayer: $(CLIBRARY) $(OLIBRARY) $(PLAYER_OBJS)
-	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -cclib "-L../lib/ -lstub" -o $@ $^
+	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -I ../lib -o $@ sdl.cmxa $(PLAYER_OBJS)
 
 .SUFFIXES: .c .o .ml .mli .cmo .cmi .cmx
 
@@ -88,5 +91,4 @@ depend:
 .depend: 
 	$(CAMLDEP) *.mli *.ml > .depend
 
-include ../makefile.toplevel
 include .depend
