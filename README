@@ -30,6 +30,18 @@ OCamlSDL needs the following software and libraries to run:
 	 SDL mixer | 1.2 | www.libsdl.org/projects/SDL_mixer/
 	 SDL image | 1.2 | www.libsdl.org/projects/SDL_image/
 
+*Samples
+In the subdirectory samples, you can find some examples:
+
+	 example: open a graphic window, put some sprites. 
+		(SDL, tff, image, timer).
+
+	 test_cdrom: return status of cdrom 
+		(SDL, cdrom)
+
+	 ocamlplayer: providing to play some audiofiles (ogg, xm, s3m, wav)
+	 	(SDL, mixer)
+	 
 *Feedback
 
 Report any bugs or suggestions using the project page on

@@ -1,5 +1,12 @@
 2002-04-04  Luc Mazardo <luc@mazardo.com>
 
+	* samples/ocamlplayer.ml: a music player
+	* samples/Makefile.in: added compilation rules for ocamlplayer
+
+	* README: added some comments
+
+2002-04-04  Luc Mazardo <luc@mazardo.com>
+
 	* src/sdlevent_stub.c, src/sdlevent.ml*: applying Josh Cogliati 
 	patch about aalib and KEY_UNKNOWN
 
