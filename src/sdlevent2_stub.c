@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.4 2002/09/04 16:36:56 oliv__a Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.5 2002/09/09 16:10:39 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -25,7 +25,16 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 
+#ifdef __GNUC__
 #include <error.h>
+#else
+
+static void error(int status, int errnum, const char *format, ...)
+{ 
+      fprintf(stderr,format);
+}
+
+#endif
 
 #include <SDL.h>
 

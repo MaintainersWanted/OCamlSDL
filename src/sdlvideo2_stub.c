@@ -1,5 +1,14 @@
 
+#ifdef __GNUC__
 #include <error.h>
+#else
+
+static void error(int status, int errnum, const char *format, ...)
+{
+   fprintf(stderr,format);
+}
+
+#endif
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
