@@ -2,12 +2,12 @@
 
 (** {1 Mouse state} *)
 
-type mouse_button = 
+type button = 
   | BUTTON_LEFT
   | BUTTON_MIDDLE
   | BUTTON_RIGHT
 
-external get_state : ?relative:bool -> unit -> int * int * mouse_button list
+external get_state : ?relative:bool -> unit -> int * int * button list
     = "mlsdlevent_get_mouse_state"
 (** Retrieve the current state of the mouse : 
    current mouse position and list of pressed buttons 

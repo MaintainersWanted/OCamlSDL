@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent2.mli,v 1.5 2002/09/30 23:32:54 oliv__a Exp $ *)
+(* $Id: sdlevent2.mli,v 1.6 2002/10/21 16:32:17 oliv__a Exp $ *)
 
 (** SDL event handling *)
 
@@ -54,7 +54,7 @@ type switch_state =
 type keyboard_event = {
     ke_which : int ;              (** The keyboard device index *)
     ke_state : switch_state ;     (** PRESSED or RELEASED *)
-    keysym   : Sdlkey.key ;       (** SDL virtual keysym *)
+    keysym   : Sdlkey.t ;         (** SDL virtual keysym *)
     keymod   : Sdlkey.mod_state ; (** current key modifiers *)
     keycode  : char ;             (** translated character *)
   }
@@ -62,7 +62,7 @@ type keyboard_event = {
 (** Mouse motion event record *)
 type mousemotion_event = {
     mme_which  : int ;            (** The mouse device index *)
-    mme_state  : Sdlmouse.mouse_button list ; (** The current button state *)
+    mme_state  : Sdlmouse.button list ; (** The current button state *)
     mme_x    : int ;              (** The X/Y coordinates of the mouse *)
     mme_y    : int ;
     mme_xrel : int ;              (** The relative motion in the X direction *)
@@ -72,7 +72,7 @@ type mousemotion_event = {
 (** Mouse button event record *)
 type mousebutton_event = {
     mbe_which  : int ;            (** The mouse device index *)
-    mbe_button : Sdlmouse.mouse_button ; (** The mouse button index *)
+    mbe_button : Sdlmouse.button ; (** The mouse button index *)
     mbe_state  : switch_state ;   (** PRESSED or RELEASED *)
     mbe_x : int ;                 (** The X/Y coordinates of the mouse at press time *)
     mbe_y : int ;
@@ -235,6 +235,48 @@ external get  : ?mask:event_mask -> int -> event list = "mlsdlevent_get"
 
 external add : event list -> unit = "mlsdlevent_add"
 (** Add events to the back of the event queue. *)
+
+(** {1 Old event-handling interface } *)
+
+(** Callback-based event handling.
+   @deprecated this interface was used in version of ocamlsdl < 0.6
+ *)
+module Old : 
+  sig
+
+  (** {2 Definition of the event callbacks} *)
+
+  (** Keyboard event called with the activated key, its state and the
+   coordinates of the mouse pointer *)
+  type keyboard_event_func =
+    Sdlkey.t -> switch_state -> int -> int -> unit
+
+  (** Mouse button event called with the activated button, its state
+   and the coordinates of the mouse pointer *)
+  type mouse_event_func =
+    Sdlmouse.button -> switch_state -> int -> int -> unit
+
+  (** Mouse motion event called with the coordinates of the mouse
+  pointer *)
+  type mousemotion_event_func = int -> int -> unit
+
+  type idle_event_func = unit -> unit
+
+  type resize_event_func = int -> int -> unit
+
+  (** {2 Functions for setting the current event callbacks} *)
+
+  val set_keyboard_event_func : keyboard_event_func -> unit
+  val set_mouse_event_func : mouse_event_func -> unit
+  val set_mousemotion_event_func : mousemotion_event_func -> unit
+  val set_idle_event_func : idle_event_func -> unit
+  val set_resize_event_func : resize_event_func -> unit
+
+  (** {2 Event loop} *)
+
+  val start_event_loop : unit -> unit
+  val exit_event_loop : unit -> unit
+end
 
 (**/**)
 val link_me : unit

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent2.ml,v 1.4 2002/09/26 15:59:58 oliv__a Exp $ *)
+(* $Id: sdlevent2.ml,v 1.5 2002/10/21 16:32:17 oliv__a Exp $ *)
 
 exception Event_exn of string
 let _ = 
@@ -43,14 +43,14 @@ type switch_state =
 type keyboard_event = {
     ke_which : int ;
     ke_state : switch_state ;
-    keysym   : Sdlkey.key ;
+    keysym   : Sdlkey.t ;
     keymod   : Sdlkey.mod_state ;
     keycode  : char ;
   }
 
 type mousemotion_event = {
     mme_which  : int ;
-    mme_state  : Sdlmouse.mouse_button list ;
+    mme_state  : Sdlmouse.button list ;
     mme_x    : int ;
     mme_y    : int ;
     mme_xrel : int ;
@@ -59,7 +59,7 @@ type mousemotion_event = {
 
 type mousebutton_event = {
     mbe_which  : int ;
-    mbe_button : Sdlmouse.mouse_button ;
+    mbe_button : Sdlmouse.button ;
     mbe_state  : switch_state ;
     mbe_x : int ;
     mbe_y : int ;
@@ -251,3 +251,61 @@ let link_me =
   (* I need Sdlkey so that keysyms lookup tables are 
      initialised and registered *)
   Sdlkey.link_me
+
+module Old = 
+  struct
+
+  type keyboard_event_func =
+      Sdlkey.t -> switch_state -> int -> int -> unit
+  type mouse_event_func =
+      Sdlmouse.button -> switch_state -> int -> int -> unit
+  type mousemotion_event_func = int -> int -> unit
+  type idle_event_func = unit -> unit
+  type resize_event_func = int -> int -> unit
+
+  let keyboard_event_func = ref (fun _ _ _ _ -> ())
+  let mouse_event_func = ref (fun _ _ _ _ -> ())
+  let mousemotion_event_func = ref (fun _ _ -> ())
+  let idle_event_func = ref ignore
+  let resize_event_func = ref (fun _ _ -> ())
+
+  let set_keyboard_event_func f = keyboard_event_func := f
+  let set_mouse_event_func f = mouse_event_func := f
+  let set_mousemotion_event_func f = mousemotion_event_func := f
+  let set_idle_event_func f = idle_event_func := f
+  let set_resize_event_func f = resize_event_func := f
+
+  exception Quit
+
+  let in_loop = ref false
+
+  let exit_event_loop () = if !in_loop then raise Quit
+
+  let start_event_loop () =
+    let do_loop () =
+      match poll () with
+      | Some (KEYDOWN ev | KEYUP ev) ->
+	  let x,y,_ = Sdlmouse.get_state () in
+	  !keyboard_event_func ev.keysym ev.ke_state x y
+      | Some (MOUSEBUTTONDOWN ev | MOUSEBUTTONUP ev) ->
+	  let b = ev.mbe_button in
+	  let x = ev.mbe_x in
+	  let y = ev.mbe_y in
+	  let st = ev.mbe_state in
+	  !mouse_event_func b st x y
+      | Some (MOUSEMOTION ev) ->
+	  let x = ev.mme_x in
+	  let y = ev.mme_y in
+	  !mousemotion_event_func x y
+      | Some (VIDEORESIZE (x,y)) -> !resize_event_func x y
+      | None -> !idle_event_func ()
+      | _ -> () in
+    disable_events all_events_mask ;
+    enable_events 
+      (make_mask 
+	 [ KEYDOWN_EVENT ; KEYUP_EVENT ;
+	   MOUSEMOTION_EVENT ; MOUSEBUTTONUP_EVENT ;
+	   MOUSEBUTTONDOWN_EVENT ; RESIZE_EVENT ; ]) ;
+    try in_loop := true; while true do do_loop () done
+    with Quit -> in_loop := false
+end

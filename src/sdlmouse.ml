@@ -1,11 +1,11 @@
 open Bigarray
 
-type mouse_button = 
+type button = 
   | BUTTON_LEFT
   | BUTTON_MIDDLE
   | BUTTON_RIGHT
 
-external get_state : ?relative:bool -> unit -> int * int * mouse_button list
+external get_state : ?relative:bool -> unit -> int * int * button list
     = "mlsdlevent_get_mouse_state"
 
 external warp : int -> int -> unit

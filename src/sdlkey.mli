@@ -3,7 +3,7 @@
 (** {1 Keysyms } *)
 
 (** Concrete type describing keyboard keys ("keysym") *)
-type key =       
+type t = 
   | KEY_UNKNOWN  
   | KEY_BACKSPACE
   | KEY_TAB      
@@ -237,22 +237,22 @@ type key =
   | KEY_EURO		(** Some european keyboards *)
   | KEY_UNDO	        (** Atari keyboard has Undo *)
 
-val int_of_key  : key -> int
+val int_of_key  : t -> int
 (** get the SDL keysym of the key *)
-val key_of_int  : int -> key
+val key_of_int  : int -> t
 (** get the key corresponding to a SDL keysym
    @raise Invalid_arg if not a valid SDL keysym *)
 
-val char_of_key : key -> char
+val char_of_key : t -> char
 (** Returns a (iso-8859-1) character corresponding to a key
    @raise Invalid_arg if corresponding SDL keysym is > 255 *)
 
 val num_keys : int
-(** number of keys in the Sdlkey.key variant type : should be [232] *)
+(** number of keys in the Sdlkey.t variant type : should be [232] *)
 val max_code : int
 (** highest SDL keysym : should be [322] *)
 
-val name : key -> string
+val name : t -> string
 (** @return a short string describing the key *)
 
 
@@ -284,7 +284,7 @@ external get_key_state : unit -> (int, int8_unsigned_elt, c_layout) Array1.t
    @return an array of keystates, indexed by the SDL keysyms 
    (cf {! Sdlkey.int_of_key}) *)
 
-val is_key_pressed : key -> bool
+val is_key_pressed : t -> bool
 (** Checks wether a key is currently pressed on the keyboard. *)
 
 

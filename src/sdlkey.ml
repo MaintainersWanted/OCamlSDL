@@ -1,4 +1,4 @@
-type key =       
+type t = 
   | KEY_UNKNOWN  
   | KEY_BACKSPACE
   | KEY_TAB      
@@ -275,7 +275,7 @@ let keycode_table =
 let max_code = 
   keycode_table.( num_keys-1 )
 
-let int_of_key (key : key) =
+let int_of_key (key : t) =
   keycode_table.(Obj.magic key)
   
 let char_of_key key =
@@ -298,7 +298,7 @@ let key_of_int n =
   let k = rev_keycode_table.(n) in
   if k < 0
   then invalid_arg "Sdlkey.key_of_int" 
-  else (Obj.magic k : key)
+  else (Obj.magic k : t)
 
 external _name : int -> string 
   = "ml_SDL_GetKeyName"
