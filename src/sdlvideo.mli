@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.21 2002/05/31 09:57:24 oliv__a Exp $ *)
+(* $Id: sdlvideo.mli,v 1.22 2002/07/13 17:06:31 oliv__a Exp $ *)
 
 (* Exception *)
 
@@ -112,7 +112,7 @@ val set_opengl_mode : int -> int -> int -> surface;;
   obsolete must use [set_video_mode]
 *)
 
-val map_rgb : surface -> color -> int
+val map_rgb : surface -> color -> int32
 (*  val map_rgb : surface -> int -> int -> int -> int *)
 (*d Maps an RGB triple to an opaque pixel value for a given pixel format *)
 
