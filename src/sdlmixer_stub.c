@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.2 2000/02/08 00:00:14 fbrunel Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.3 2000/02/21 00:02:58 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -234,7 +234,7 @@ sdlmixer_set_music_finished(value cb)
 value
 sdlmixer_reserve_channels(value num)
 {
-  return Val_unit(Mix_ReserveChannels(Int_val(num)));
+  return Val_int(Mix_ReserveChannels(Int_val(num)));
 }
 
 value
@@ -243,7 +243,7 @@ sdlmixer_group_channel(value chn, value grp)
   int res;
   res = Mix_GroupChannel(Int_val(chn), MAGIC_OF_OPTION(grp));
 
-  if (res == NULL)
+  if (res == -1)
     sdlmixer_raise_exception(Mix_GetError());
   
   return Val_unit;
