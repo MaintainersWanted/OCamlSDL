@@ -1,0 +1,39 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Sdlttf" rel="Chapter" href="Sdlttf.html"><title>Sdlttf</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">SDLttf_exception</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;font<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;open_font&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlttf</span>.font&nbsp;=&nbsp;<span class="string">"sdlttf_open_font"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;close_font&nbsp;:&nbsp;<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"sdlttf_close_font"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;font_height&nbsp;:&nbsp;<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"sdlttf_font_height"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;font_ascent&nbsp;:&nbsp;<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"sdlttf_font_ascent"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;font_descent&nbsp;:&nbsp;<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"sdlttf_font_descent"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;font_metrics&nbsp;:&nbsp;<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int&nbsp;*&nbsp;int&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlttf_font_metrics"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;render_text_shaded&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;f:<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;text:string&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;foreground:<span class="constructor">Sdlvideo</span>.color&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;background:<span class="constructor">Sdlvideo</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlvideo</span>.surface<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlttf_render_text_shaded"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;render_text_blended&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;f:<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;text:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;foreground:<span class="constructor">Sdlvideo</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlvideo</span>.surface<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlttf_render_text_blended"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;render_text_solid&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;f:<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;text:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;foreground:<span class="constructor">Sdlvideo</span>.color&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlvideo</span>.surface<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlttf_render_text_solid"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;render_text&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sdlttf</span>.font&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int&nbsp;*&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int&nbsp;*&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlvideo</span>.surface<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlttf_render_text"</span><br>
+<span class="keyword">end</span></code></body></html>

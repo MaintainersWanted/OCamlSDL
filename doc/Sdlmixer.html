@@ -1,0 +1,438 @@
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Sdlmixer" rel="Chapter" href="Sdlmixer.html"><link title="General API" rel="Section" href="#1GeneralAPI">
+<link title="Samples" rel="Section" href="#1Samples">
+<link title="Channels" rel="Section" href="#1Channels">
+<link title="Groups" rel="Section" href="#1Groups">
+<link title="Music" rel="Section" href="#1Music">
+<title>Sdlmixer</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a href="index.html">Up</a>
+&nbsp;</div>
+<center><h1>Module <a href="type_Sdlmixer.html">Sdlmixer</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> Sdlmixer: <code class="type">sig  end</code></pre><div class="info">
+Simple multi-channel audio mixer<br>
+</div>
+<hr width="100%">
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONSDLmixer_exception"></a>SDLmixer_exception <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+Exception used to report errors<br>
+</div>
+<br>
+<br>
+<a name="1GeneralAPI"></a><table cellpadding=5 cellspacing=5 width="100%">
+<tr class="title1"><td><div align=center>
+<span class="title1">General API</span>
+</div>
+</td>
+</tr>
+</table>
+<br><br>
+<pre><span class="keyword">val</span> <a name="VALversion"></a>version : <code class="type">unit -> Sdl.version</code></pre><div class="info">
+Get the version of the dynamically linked SDL_mixer library<br>
+</div>
+<br><code><span class="keyword">type</span> <a name="TYPEformat"></a>format =<br></code><table border="0" cellpadding="1">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">AUDIO_FORMAT_U8</span></code></td>
+<td align="left" valign="top" ><code>(*</code></td><td align="left" valign="top" ><code>Unsigned 8-bit samples</code></td><td align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">AUDIO_FORMAT_S8</span></code></td>
+<td align="left" valign="top" ><code>(*</code></td><td align="left" valign="top" ><code>Signed 8-bit samples</code></td><td align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">AUDIO_FORMAT_U16LSB</span></code></td>
+<td align="left" valign="top" ><code>(*</code></td><td align="left" valign="top" ><code>Unsigned 16-bit samples</code></td><td align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">AUDIO_FORMAT_S16LSB</span></code></td>
+<td align="left" valign="top" ><code>(*</code></td><td align="left" valign="top" ><code>Signed 16-bit samples</code></td><td align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">AUDIO_FORMAT_U16MSB</span></code></td>
+<td align="left" valign="top" ><code>(*</code></td><td align="left" valign="top" ><code>As above, but big-endian byte order</code></td><td align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">AUDIO_FORMAT_S16MSB</span></code></td>
+<td align="left" valign="top" ><code>(*</code></td><td align="left" valign="top" ><code>As above, but big-endian byte order</code></td><td align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">AUDIO_FORMAT_U16SYS</span></code></td>
+<td align="left" valign="top" ><code>(*</code></td><td align="left" valign="top" ><code>Unsigned, native audio byte ordering</code></td><td align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">AUDIO_FORMAT_S16SYS</span></code></td>
+<td align="left" valign="top" ><code>(*</code></td><td align="left" valign="top" ><code>Signed, native audio byte ordering</code></td><td align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+<div class="info">
+Audio format flags<br>
+</div>
+<br>
+<br><code><span class="keyword">type</span> <a name="TYPEchannels"></a>channels =<br></code><table border="0" cellpadding="1">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MONO</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">STEREO</span></code></td>
+
+</tr></table>
+
+<br>
+<pre><span class="keyword">val</span> <a name="VALopen_audio"></a>open_audio : <code class="type">?freq:int -><br>       ?format:<a href="Sdlmixer.html#TYPEformat">format</a> -><br>       ?chunksize:int -> ?channels:<a href="Sdlmixer.html#TYPEchannels">channels</a> -> unit -> unit</code></pre><div class="info">
+<code class="code">open_audio frequency format chunksize channels ()</code> opens the mixer
+    with a certain audio format.  <ul>
+<li>frequency could be 8000 11025 22050 44100 ; defaults to 22050</li>
+<li>format defaults to AUDIO_FORMAT_S16SYS</li>
+<li>chunksize defaults to 4096</li>
+<li>channels defaults to STEREO</li>
+</ul>
+<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALclose_audio"></a>close_audio : <code class="type">unit -> unit</code></pre><div class="info">
+Close the mixer, halting all playing audio<br>
+</div>
+<br><code><span class="keyword">type</span> <a name="TYPEspecs"></a>specs = {<br></code><table border="0" cellpadding="1">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>frequency&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>format&nbsp;: <code class="type"><a href="Sdlmixer.html#TYPEformat">format</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code>channels&nbsp;: <code class="type"><a href="Sdlmixer.html#TYPEchannels">channels</a></code>;</code></td>
+
+</tr></table>
+}
+
+<br>
+<pre><span class="keyword">val</span> <a name="VALquery_specs"></a>query_specs : <code class="type">unit -> <a href="Sdlmixer.html#TYPEspecs">specs</a></code></pre><div class="info">
+Find out what the actual audio device parameters are.<br>
+<b>Raises</b> <code>SDLmixer_exception</code> if the audio has not been opened<br>
+</div>
+<br>
+<br>
+<a name="1Samples"></a><table cellpadding=5 cellspacing=5 width="100%">
+<tr class="title1"><td><div align=center>
+<span class="title1">Samples</span>
+</div>
+</td>
+</tr>
+</table>
+<br><br>
+<br><code><span class="keyword">type</span> <a name="TYPEchunk"></a>chunk </code>
+<br>
+<pre><span class="keyword">val</span> <a name="VALloadWAV"></a>loadWAV : <code class="type">string -> <a href="Sdlmixer.html#TYPEchunk">chunk</a></code></pre><div class="info">
+Load a wave file<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALload_string"></a>load_string : <code class="type">string -> <a href="Sdlmixer.html#TYPEchunk">chunk</a></code></pre><div class="info">
+Load a wave file of the mixer format from a memory buffer<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALvolume_chunk"></a>volume_chunk : <code class="type"><a href="Sdlmixer.html#TYPEchunk">chunk</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALsetvolume_chunk"></a>setvolume_chunk : <code class="type"><a href="Sdlmixer.html#TYPEchunk">chunk</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALfree_chunk"></a>free_chunk : <code class="type"><a href="Sdlmixer.html#TYPEchunk">chunk</a> -> unit</code></pre><div class="info">
+Free an audio chunk previously loaded<br>
+</div>
+<br>
+<br>
+<a name="1Channels"></a><table cellpadding=5 cellspacing=5 width="100%">
+<tr class="title1"><td><div align=center>
+<span class="title1">Channels</span>
+</div>
+</td>
+</tr>
+</table>
+<br><br>
+<br><code><span class="keyword">type</span> <a name="TYPEchannel"></a>channel = <code class="type">int</code> </code>
+<br>
+<pre><span class="keyword">val</span> <a name="VALall_channels"></a>all_channels : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a></code></pre><div class="info">
+A special value for representing all channels (-1 actually).<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALnum_channels"></a>num_channels : <code class="type">unit -> int</code></pre><div class="info">
+<b>Returns</b> the number of channels currently allocated<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALallocate_channels"></a>allocate_channels : <code class="type">int -> int</code></pre><div class="info">
+Dynamically change the number of channels managed by the mixer.
+    If decreasing the number of channels, the upper channels are
+    stopped.<br>
+<b>Returns</b> the new number of allocated channels<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALplay_channel"></a>play_channel : <code class="type">?channel:<a href="Sdlmixer.html#TYPEchannel">channel</a> -><br>       ?loops:int -> ?ticks:float -> <a href="Sdlmixer.html#TYPEchunk">chunk</a> -> unit</code></pre><div class="info">
+<code class="code">play_channel channel chunck loops ticks</code> Play an audio chunk.<br>
+</div>
+<br><div class="info"><code class="code">channel</code> : channel to play on. If not specified, play on the
+  first free channel.</div>
+<div class="info"><code class="code">loops</code> : number of times to play the chunk. If <code class="code">-1</code>, loop
+  infinitely (~65000 times).</div>
+<div class="info"><code class="code">ticks</code> : if specified, play for at most 'ticks' seconds.</div>
+<pre><span class="keyword">val</span> <a name="VALplay_sound"></a>play_sound : <code class="type"><a href="Sdlmixer.html#TYPEchunk">chunk</a> -> unit</code></pre><div class="info">
+Play an audio chunk. Same as above, without the optional
+  parameters<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALfadein_channel"></a>fadein_channel : <code class="type">?channel:<a href="Sdlmixer.html#TYPEchannel">channel</a> -><br>       ?loops:int -> ?ticks:float -> <a href="Sdlmixer.html#TYPEchunk">chunk</a> -> float -> unit</code></pre><div class="info">
+<code class="code">fadein_channel channel loops ticks chunck ms</code> :
+   same as <code class="code">play_channel</code> but fades in a over <code class="code">ms</code> seconds.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALvolume_channel"></a>volume_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> float</code></pre><div class="info">
+Returns the original volume of a specific channel, chunk or music<br>
+<b>Returns</b> float between 0 and 1.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALsetvolume_channel"></a>setvolume_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> float -> unit</code></pre><div class="info">
+Sets the volume for specified channel or chunk. 
+   Volume is a float between 0 and 1. 
+   If lower than 0, nothing is done.
+   If greater than 1, volume is set to 1<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALpause_channel"></a>pause_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALresume_channel"></a>resume_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALhalt_channel"></a>halt_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALexpire_channel"></a>expire_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> float option -> unit</code></pre><div class="info">
+<code class="code">expire_channel channel ticks</code>
+  Change the expiration delay for a particular channel.
+  The sample will stop playing after the 'ticks' seconds have elapsed,
+  or remove the expiration if 'ticks' is <code class="code">None</code><br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALfadeout_channel"></a>fadeout_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> float -> unit</code></pre><div class="info">
+<code class="code">fadeout_channel channel ticks</code>
+  Halt a channel, fading it out progressively till it's silent
+  The ms parameter indicates the number of seconds the fading
+  will take.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALset_channel_finished"></a>set_channel_finished : <code class="type">(<a href="Sdlmixer.html#TYPEchannel">channel</a> -> unit) -> unit</code></pre><div class="info">
+Add your own callback when a channel has finished playing.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALunset_channel_finished"></a>unset_channel_finished : <code class="type">unit -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALplaying_channel"></a>playing_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALnum_playing_channel"></a>num_playing_channel : <code class="type">unit -> int</code></pre><pre><span class="keyword">val</span> <a name="VALpaused_channel"></a>paused_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALnum_paused_channel"></a>num_paused_channel : <code class="type">unit -> int</code></pre><br><code><span class="keyword">type</span> <a name="TYPEfade_status"></a>fade_status =<br></code><table border="0" cellpadding="1">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">NO_FADING</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FADING_OUT</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">FADING_IN</span></code></td>
+
+</tr></table>
+
+<div class="info">
+The different fading types supported<br>
+</div>
+<br>
+<pre><span class="keyword">val</span> <a name="VALfading_channel"></a>fading_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> <a href="Sdlmixer.html#TYPEfade_status">fade_status</a></code></pre><div class="info">
+Query the fading status of a channel<br>
+</div>
+<br>
+<br>
+<a name="1Groups"></a><table cellpadding=5 cellspacing=5 width="100%">
+<tr class="title1"><td><div align=center>
+<span class="title1">Groups</span>
+</div>
+</td>
+</tr>
+</table>
+<br><br>
+<br><code><span class="keyword">type</span> <a name="TYPEgroup"></a>group = <code class="type">int</code> </code>
+<br>
+<pre><span class="keyword">val</span> <a name="VALdefault_group"></a>default_group : <code class="type"><a href="Sdlmixer.html#TYPEgroup">group</a></code></pre><div class="info">
+The group tag used to represent the group of all the channels.
+   Used to remove a group tag<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALreserve_channels"></a>reserve_channels : <code class="type">int -> int</code></pre><div class="info">
+Reserve the first channels (0 -&gt; n-1) for the application,
+    i.e. don't allocate them dynamically to the next sample if
+    no channel is specified (see <a href="Sdlmixer.html#VALplay_channel"><code class="code">Sdlmixer.play_channel</code></a>).<br>
+<b>Returns</b> the number of reserved channels<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALgroup_channel"></a>group_channel : <code class="type"><a href="Sdlmixer.html#TYPEchannel">channel</a> -> <a href="Sdlmixer.html#TYPEgroup">group</a> -> unit</code></pre><div class="info">
+Attach a group tag to a channel. A group tag can be assigned to several
+   mixer channels, to form groups of channels.  
+   If group is <code class="code">default_group</code>, the tag is removed.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALgroup_channels"></a>group_channels : <code class="type">from_c:<a href="Sdlmixer.html#TYPEchannel">channel</a> -> to_c:<a href="Sdlmixer.html#TYPEchannel">channel</a> -> <a href="Sdlmixer.html#TYPEgroup">group</a> -> unit</code></pre><div class="info">
+Same as above but for a range of channels.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALgroup_count"></a>group_count : <code class="type"><a href="Sdlmixer.html#TYPEgroup">group</a> -> int</code></pre><div class="info">
+Returns the number of channels in a group. 
+   This is also a subtle way to get the total number of channels 
+   when <code class="code">group</code> is <code class="code">default_group</code>.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALgroup_available"></a>group_available : <code class="type"><a href="Sdlmixer.html#TYPEgroup">group</a> -> <a href="Sdlmixer.html#TYPEchannel">channel</a></code></pre><div class="info">
+Finds the first available <code class="code">channel</code> in a <code class="code">group</code> of channels<br>
+<b>Raises</b> <code>Not_found</code> if none are available.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALgroup_oldest"></a>group_oldest : <code class="type"><a href="Sdlmixer.html#TYPEgroup">group</a> -> <a href="Sdlmixer.html#TYPEchannel">channel</a></code></pre><div class="info">
+Finds the "oldest" sample playing in a <code class="code">group</code> of channels<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALgroup_newer"></a>group_newer : <code class="type"><a href="Sdlmixer.html#TYPEgroup">group</a> -> <a href="Sdlmixer.html#TYPEchannel">channel</a></code></pre><div class="info">
+Finds the "most recent" (i.e. last) sample playing in a <code class="code">group</code> of
+   channels<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALfadeout_group"></a>fadeout_group : <code class="type"><a href="Sdlmixer.html#TYPEgroup">group</a> -> float -> unit</code></pre><div class="info">
+<code class="code">fadeout_group group ticks</code>
+  Halt a group of channel, fading it out progressively till it's silent
+  The ms parameter indicates the number of seconds the fading
+  will take.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALhalt_group"></a>halt_group : <code class="type"><a href="Sdlmixer.html#TYPEgroup">group</a> -> unit</code></pre><br>
+<br>
+<a name="1Music"></a><table cellpadding=5 cellspacing=5 width="100%">
+<tr class="title1"><td><div align=center>
+<span class="title1">Music</span>
+</div>
+</td>
+</tr>
+</table>
+<br><br>
+<br><code><span class="keyword">type</span> <a name="TYPEmusic"></a>music </code>
+<br>
+<br><code><span class="keyword">type</span> <a name="TYPEmusic_kind"></a>music_kind =<br></code><table border="0" cellpadding="1">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">NONE</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">CMD</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">WAV</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MOD</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MID</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">OGG</span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span class="constructor">MP3</span></code></td>
+
+</tr></table>
+
+<div class="info">
+The different music types supported<br>
+</div>
+<br>
+<pre><span class="keyword">val</span> <a name="VALload_music"></a>load_music : <code class="type">string -> <a href="Sdlmixer.html#TYPEmusic">music</a></code></pre><div class="info">
+Load a music file (.mod .s3m .it .xm .ogg)<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALfree_music"></a>free_music : <code class="type"><a href="Sdlmixer.html#TYPEmusic">music</a> -> unit</code></pre><div class="info">
+Free music previously loaded<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALplay_music"></a>play_music : <code class="type">?loops:int -> <a href="Sdlmixer.html#TYPEmusic">music</a> -> unit</code></pre><div class="info">
+Play a music chunk.<br>
+</div>
+<br><div class="info"><code class="code">loops</code> : number of times to play through the music</div>
+<pre><span class="keyword">val</span> <a name="VALfadein_music"></a>fadein_music : <code class="type">?loops:int -> <a href="Sdlmixer.html#TYPEmusic">music</a> -> float -> unit</code></pre><div class="info">
+<code class="code">fadein_music chunck loops music ms</code> :
+   fade in music over <code class="code">ms</code> seconds, same semantics as the <code class="code">play_music</code>
+   function<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALvolume_music"></a>volume_music : <code class="type"><a href="Sdlmixer.html#TYPEmusic">music</a> -> float</code></pre><pre><span class="keyword">val</span> <a name="VALsetvolume_music"></a>setvolume_music : <code class="type"><a href="Sdlmixer.html#TYPEmusic">music</a> -> float -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALpause_music"></a>pause_music : <code class="type">unit -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALresume_music"></a>resume_music : <code class="type">unit -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALrewind_music"></a>rewind_music : <code class="type">unit -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALset_music_cmd"></a>set_music_cmd : <code class="type">string -> unit</code></pre><div class="info">
+Stop music and set external music playback command<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALunset_music_cmd"></a>unset_music_cmd : <code class="type">unit -> unit</code></pre><div class="info">
+Turn off using an external command for music, returning to the
+    internal music playing functionality<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALhalt_music"></a>halt_music : <code class="type">unit -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALfadeout_music"></a>fadeout_music : <code class="type">float -> unit</code></pre><div class="info">
+<code class="code">fadeout_music ticks</code>
+  Halt the music, fading it out progressively till it's silent.
+  The ms parameter indicates the number of seconds the fading
+  will take.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALset_music_finished"></a>set_music_finished : <code class="type">(unit -> unit) -> unit</code></pre><div class="info">
+Add your own callback when the music has finished playing.
+    This callback is only called if the music finishes naturally.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALunset_music_finished"></a>unset_music_finished : <code class="type">unit -> unit</code></pre><pre><span class="keyword">val</span> <a name="VALmusic_type"></a>music_type : <code class="type"><a href="Sdlmixer.html#TYPEmusic">music</a> option -> <a href="Sdlmixer.html#TYPEmusic_kind">music_kind</a></code></pre><div class="info">
+Find out the music format of a mixer music, or the currently
+    playing music, if parameter is <code class="code">None</code>.<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALplaying_music"></a>playing_music : <code class="type">unit -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALpaused_music"></a>paused_music : <code class="type">unit -> bool</code></pre><pre><span class="keyword">val</span> <a name="VALfading_music"></a>fading_music : <code class="type">unit -> <a href="Sdlmixer.html#TYPEfade_status">fade_status</a></code></pre><div class="info">
+Query the fading status of a music<br>
+</div>
+</body></html>

@@ -1,0 +1,54 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Sdlcdrom" rel="Chapter" href="Sdlcdrom.html"><title>Sdlcdrom</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">exception</span>&nbsp;<span class="constructor">SDLcdrom_exception</span>&nbsp;<span class="keyword">of</span>&nbsp;string<br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;cdrom_drive<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;cdrom_track<br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;cdrom_drive_status&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">CD_TRAYEMPTY</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">CD_STOPPED</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">CD_PLAYING</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">CD_PAUSED</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">CD_ERROR</span><br>
+&nbsp;&nbsp;<span class="keyword">and</span>&nbsp;cdrom_track_type&nbsp;=&nbsp;<span class="constructor">TRACK_AUDIO</span>&nbsp;<span class="keywordsign">|</span>&nbsp;<span class="constructor">TRACK_DATA</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;get_num_drives&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;=&nbsp;<span class="string">"sdlcdrom_get_num_drives"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;drive_name&nbsp;:&nbsp;drive:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;=&nbsp;<span class="string">"sdlcdrom_drive_name"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_open&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;=&nbsp;<span class="string">"sdlcdrom_open"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_close&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"sdlcdrom_close"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_status&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive_status<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_status"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_pause&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"sdlcdrom_pause"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_resume&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"sdlcdrom_resume"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_stop&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"sdlcdrom_stop"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_eject&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;=&nbsp;<span class="string">"sdlcdrom_eject"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_play_tracks&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;start_track:int&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;start_frame:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;num_tracks:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;num_frames:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_play_tracks"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cd_play_track&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;track:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_get_num_tracks&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_get_num_tracks"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_track_num&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;track:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_track<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_track_num"</span><br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cd_track_list&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_track&nbsp;list<br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;track_length&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_track&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_track_length"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;track_type&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_track&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_track_type<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_track_type"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_track_current_time&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_cd_track_current_time"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;cd_current_track&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_drive&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_track<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_cd_current_track"</span><br>
+&nbsp;&nbsp;<span class="keyword">external</span>&nbsp;track_get_number&nbsp;:&nbsp;<span class="constructor">Sdlcdrom</span>.cdrom_track&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span class="string">"sdlcdrom_track_get_number"</span><br>
+<span class="keyword">end</span></code></body></html>

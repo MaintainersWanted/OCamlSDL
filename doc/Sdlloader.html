@@ -1,0 +1,33 @@
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<link rel="Start" href="index.html">
+<link rel="Up" href="index.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Sdlloader" rel="Chapter" href="Sdlloader.html"><title>Sdlloader</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a href="index.html">Up</a>
+&nbsp;</div>
+<center><h1>Module <a href="type_Sdlloader.html">Sdlloader</a></h1></center>
+<br>
+<pre><span class="keyword">module</span> Sdlloader: <code class="type">sig  end</code></pre><div class="info">
+$Id: Sdlloader.html,v 1.1 2002/08/08 17:21:07 xtrm Exp $<br>
+</div>
+<hr width="100%">
+<pre><span class="keyword">exception</span> <a name="EXCEPTIONSDLloader_exception"></a>SDLloader_exception <span class="keyword">of</span> <code class="type">string</code></pre>
+<pre><span class="keyword">val</span> <a name="VALload_ppm"></a>load_ppm : <code class="type">string -> Sdlvideo.surface</code></pre><div class="info">
+load a ppm picture<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALload_ppm_pixels"></a>load_ppm_pixels : <code class="type">string -> string * int * int</code></pre><pre><span class="keyword">val</span> <a name="VALload_image"></a>load_image : <code class="type">string -> Sdlvideo.surface</code></pre><div class="info">
+load any supported type of image<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALload_png"></a>load_png : <code class="type">string -> Sdlvideo.surface</code></pre><div class="info">
+load a png picture<br>
+</div>
+<pre><span class="keyword">val</span> <a name="VALload_png_with_alpha"></a>load_png_with_alpha : <code class="type">string -> Sdlvideo.surface</code></pre><div class="info">
+load a png picture with alpha<br>
+</div>
+</body></html>
