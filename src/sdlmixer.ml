@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.ml,v 1.2 2000/02/07 23:55:48 fbrunel Exp $ *)
+(* $Id: sdlmixer.ml,v 1.3 2000/02/27 22:51:36 fbrunel Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -25,29 +25,30 @@
 exception SDLmixer_exception of string
 let _ = Callback.register_exception "SDLmixer_exception" (SDLmixer_exception "Any string")
 
-type format =
- | AUDIO_U8
- | AUDIO_S8
- | AUDIO_U16LSB
- | AUDIO_S16LSB
- | AUDIO_U16MSB
- | AUDIO_S16MSB
- | AUDIO_U16
- | AUDIO_S16
+(* Types *)
+
+type audio_format =
+    AUDIO_FORMAT_DEFAULT
+  | AUDIO_FORMAT_U8
+  | AUDIO_FORMAT_S8
+  | AUDIO_FORMAT_U16
+  | AUDIO_FORMAT_S16
 
 type fade_status =
- | NO_FADING
- | FADING_OUT
- | FADING_IN
+    NO_FADING
+  | FADING_OUT
+  | FADING_IN
 
 type chunk
 type music
 type channel = int
 type group = int
 
-external open_audio : int -> format -> int -> int -> unit = "sdlmixer_open_audio";;
+(* Native C external functions *)
+
+external open_audio : int -> audio_format -> int -> int -> unit = "sdlmixer_open_audio";;
 external close_audio : unit -> unit = "sdlmixer_close_audio";;
-external query_specs : unit -> int * format * int = "sdlmixer_query_specs";;
+external query_specs : unit -> int * audio_format * int = "sdlmixer_query_specs";;
 
 (* Loading and freeing sounds *)
 

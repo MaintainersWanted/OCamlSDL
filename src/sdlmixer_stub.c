@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.3 2000/02/21 00:02:58 fbrunel Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.4 2000/02/27 22:52:10 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -80,16 +80,28 @@ sdlmixer_open_audio(value frequency, value format, value channels,
 {
   int c_format = AUDIO_U8;
   int ret;
+  
   switch (Int_val(format))
     {
-    case 0: c_format = AUDIO_U8; break;
-    case 1: c_format = AUDIO_S8; break;
-    case 2: c_format = AUDIO_U16LSB; break;
-    case 3: c_format = AUDIO_S16LSB; break;
-    case 4: c_format = AUDIO_U16MSB; break;
-    case 5: c_format = AUDIO_S16MSB; break;
-    case 6: c_format = AUDIO_U16; break;
-    case 7: c_format = AUDIO_S16; break;
+    case 0:
+      c_format = MIX_DEFAULT_FORMAT;
+      break;
+      
+    case 1:
+      c_format = AUDIO_U8;
+      break;
+      
+    case 2:
+      c_format = AUDIO_S8;
+      break;
+      
+    case 3:
+      c_format = AUDIO_U16;
+      break;
+      
+    case 4:
+      c_format = AUDIO_S16;
+      break;
     }
 
   ret = Mix_OpenAudio(Int_val(frequency), c_format, Int_val(channels),
@@ -125,14 +137,21 @@ sdlmixer_query_specs(void)
     int ml_format = 0;
     switch (Int_val(form))
       {
-      case AUDIO_U8: ml_format = 0; break;
-      case AUDIO_S8: ml_format = 1; break;
-      case AUDIO_U16LSB: ml_format = 2; break;
-      case AUDIO_S16LSB: ml_format = 3; break;
-      case AUDIO_U16MSB: ml_format = 4; break;
-      case AUDIO_S16MSB: ml_format = 5; break;
-	/*	   case AUDIO_U16: ml_format = 6; break;
-		   case AUDIO_S16: ml_format = 7; break; */
+      case AUDIO_U8:
+	ml_format = 1;
+	break;
+	
+      case AUDIO_S8:
+	ml_format = 2;
+	break;
+	
+      case AUDIO_U16:
+	ml_format = 3;
+	break;
+	
+      case AUDIO_S16:
+	ml_format = 4;
+	break;
       }
 
     result = alloc(1, 0);
@@ -150,8 +169,11 @@ value
 sdlmixer_loadWAV(value fname)
 {
   Mix_Chunk *chunk;
-  chunk = Mix_LoadWAV(&Byte(fname,0));
-  if (chunk == NULL) sdlmixer_raise_exception(Mix_GetError());
+  chunk = Mix_LoadWAV(&Byte(fname, 0));
+
+  if (chunk == NULL)
+    sdlmixer_raise_exception(Mix_GetError());
+  
   return (value)chunk;
 }
 
@@ -159,7 +181,7 @@ value
 sdlmixer_loadMUS(value fname)
 {
   Mix_Music *chunk;
-  chunk = Mix_LoadMUS(&Byte(fname,0));
+  chunk = Mix_LoadMUS(&Byte(fname, 0));
 
   if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());
@@ -171,7 +193,7 @@ value
 sdlmixer_load_string(value data)
 {
   Mix_Chunk *chunk;
-  chunk = Mix_QuickLoad_WAV(&Byte(data,0));
+  chunk = Mix_QuickLoad_WAV(&Byte(data, 0));
 
   if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());
