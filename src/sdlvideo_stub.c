@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.4 2000/01/14 00:58:50 fbrunel Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.5 2000/01/17 18:34:02 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -163,13 +163,25 @@ sdlvideo_surface_free (value surface)
 value
 sdlvideo_surface_loadBMP (value path)
 {
+  SDL_PixelFormat format;
+  SDL_Surface *converted; 
   SDL_Surface *surf = SDL_LoadBMP(String_val(path));
 
   if (surf == NULL) {
     sdlvideo_raise_exception(SDL_GetError());
   }
-
-  return ML_SURFACE(surf);
+  memset(&format, 0, sizeof(format)); 
+  format.BytesPerPixel = 3;
+  format.BitsPerPixel = 24;
+  format.Rmask = 0x000000ff;
+  format.Gmask = 0x0000ff00;
+  format.Bmask = 0x00ff0000;
+  converted = SDL_ConvertSurface(surf, &format, SDL_SWSURFACE);
+  if (converted == NULL) {
+    sdlvideo_raise_exception(SDL_GetError());
+  }
+  SDL_FreeSurface(surf);
+  return ML_SURFACE(converted);
 }
 
 value
@@ -310,7 +322,7 @@ sdlvideo_surface_from_rawrgb(value raw, value width, value height)
    w = Int_val(width);
    h = Int_val(height);
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 24,
-			       0x00ff0000, 0x0000ff00, 0x000000ff, 0);
+			       0x0000000ff, 0x0000ff00, 0x00ff0000, 0);
    
    if (surf == NULL)
      sdlvideo_raise_exception(SDL_GetError());
@@ -336,12 +348,12 @@ sdlvideo_surface_from_rawrgba(value raw, value width, value height)
    w = Int_val(width);
    h = Int_val(height);
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32,
-			       0xff000000, 0x00ff0000, 0x0000ff00,
-			       0x000000ff);
-   
+			       0x000000ff, 0x0000ff00, 0x00ff0000,
+			       0xff000000);
+
    if (surf == NULL)
      sdlvideo_raise_exception(SDL_GetError());
-   
+
    dest = surf->pixels;
    src = &Byte(raw, 0);
    
@@ -350,6 +362,56 @@ sdlvideo_surface_from_rawrgba(value raw, value width, value height)
      src += w * 4;
      dest += surf->pitch;
    }
-   
+
    return ML_SURFACE(surf);
 }
+
+value
+sdlvideo_surface_set_pixel(value ml_surf, value x, value y,
+			   value r, value g, value b)
+{
+   char *location;
+   SDL_Surface *surf = SDL_SURFACE(ml_surf);
+
+   if (surf->pixels == NULL)
+     sdlvideo_raise_exception("surface_set_pixel");
+
+   location = surf->pixels +
+              surf->pitch * Int_val(y) +
+              surf->format->BytesPerPixel * Int_val(x);
+   location[0] = Int_val(r);
+   location[1] = Int_val(g);
+   location[2] = Int_val(b);
+
+   return Val_unit;
+}
+
+value
+sdlvideo_surface_get_pixel(value ml_surf, value x, value y)
+{
+   CAMLparam3(ml_surf, x, y);
+   CAMLlocal1(ret);
+   char *location;
+   SDL_Surface *surf = SDL_SURFACE(ml_surf);
+
+   if (surf->pixels == NULL)
+     sdlvideo_raise_exception("surface_get_pixel");
+
+   ret = alloc_tuple(3);
+   location = surf->pixels +
+              surf->pitch * Int_val(y) +
+              surf->format->BytesPerPixel * Int_val(x);
+   Field(ret, 0) = Val_int(location[0]);
+   Field(ret, 1) = Val_int(location[1]);
+   Field(ret, 2) = Val_int(location[2]);
+
+   CAMLreturn(ret);
+}
+
+value
+sdlvideo_surface_set_pixel_bytecode(value * argv, int argn)
+{
+   return sdlvideo_surface_set_pixel(argv[0], argv[1], argv[2], argv[3],
+				     argv[4], argv[5]);
+}
+

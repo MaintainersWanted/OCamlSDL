@@ -1113,14 +1113,11 @@ png_ok=no
 fi
 
 
-if test "$png_ok" = yes; then
-  PNGSTUB=sdlpng_stub.o
-  PNGOBJ=sdlpng.cmo
-  LIBS="$LIBS -lpng -lz"
+if test "$png_ok" = no; then
+        { echo "configure: error: Cannot find libpng." 1>&2; exit 1; }
 fi
 
-
-
+LIBS="$LIBS -lpng -lz"
 
 
 # Finally create all the generated files
@@ -1275,8 +1272,6 @@ s%@OCAMLMKTOP@%$OCAMLMKTOP%g
 s%@OCAMLDEP@%$OCAMLDEP%g
 s%@SDL_CONFIG@%$SDL_CONFIG%g
 s%@MATHLIB@%$MATHLIB%g
-s%@PNGSTUB@%$PNGSTUB%g
-s%@PNGOBJ@%$PNGOBJ%g
 
 CEOF
 EOF

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlpng_stub.c,v 1.2 2000/01/14 00:56:14 fbrunel Exp $ */
+/* $Id: sdlpng_stub.c,v 1.3 2000/01/17 18:34:02 smkl Exp $ */
 
 #include <png.h>
 #include <caml/alloc.h>
@@ -100,7 +100,7 @@ sdlpng_load_png(value file_name)
    
    /* then convert to SDL surface */
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 24,
-			       0x00ff0000, 0x0000ff00, 0x000000ff, 0x0);
+			       0x000000ff, 0x0000ff00, 0x00ff0000, 0x0);
    {
      char *src, *dest;
      int i, j;
@@ -169,7 +169,7 @@ sdlpng_load_png_with_alpha(value file_name)
    png_set_expand(png_ptr);
    png_set_expand(png_ptr);
    png_set_expand(png_ptr);
-   png_set_filler(png_ptr, 0xff, PNG_FILLER_BEFORE);
+   png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
    png_read_update_info(png_ptr, info_ptr);
    /* finally read it */
    row_pointers = malloc(height*sizeof(png_bytep));
@@ -185,8 +185,8 @@ sdlpng_load_png_with_alpha(value file_name)
    
    /* then convert to SDL surface */
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
-			       0xff000000, 0x00ff0000, 0x0000ff00,
-			       0x000000ff);
+			       0x000000ff, 0x0000ff00, 0x00ff0000,
+			       0xff000000);
    {
      void *src, *dest;
      int i, j;
