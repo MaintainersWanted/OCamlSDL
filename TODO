@@ -1,16 +1,19 @@
 For the next release 0.5:
 
 * Complete the documentation english (high)
+
+* Do more samples and tests (medium)
+* Add labels (medium)
+* Write a FAQ (medium) 
+
+* LibSDL1.2 full support
+
+Actually done:
+
 * Clean up the directories by creating more subdirectories (high)
   - doc/
   - samples/
   - tests/
   - src/
 
-* Do more samples and tests (medium)
 * Add a new module for the games (medium)
-* Add labels (medium)
-* Write a FAQ (medium) 
-
-* LibSDL1.2 full support
-
