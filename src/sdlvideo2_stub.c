@@ -45,19 +45,67 @@ static void sdlvideo_raise_exception (char *msg)
   raise_with_string(*video_exn, msg);
 }
 
-static value value_of_palette(SDL_Palette *p)
+value ml_sdl_palette_ncolors(value surf)
 {
-  if(p){
-    value v;
-    long dim = p->ncolors;
-    v = alloc_bigarray(BIGARRAY_CAML_INT | 
-		       BIGARRAY_C_LAYOUT | 
-		       BIGARRAY_EXTERNAL, 1, p->colors, &dim);
-    return Val_some(v);
-  }
-  else
-    return Val_none;
+  SDL_Surface *s = SDL_SURFACE(surf);
+  SDL_Palette *p = s->format->palette;
+  if(! p)
+    invalid_argument("surface not palettized");
+  return Val_int(p->ncolors);
 }
+
+value ml_sdl_palette_get_color(value surf, value n)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  SDL_Palette *p = s->format->palette;
+  SDL_Color c;
+  int c_n = Int_val(n);
+  value v;
+  if(! p)
+    invalid_argument("surface not palettized");
+  if(c_n < 0 || c_n >= p->ncolors)
+    invalid_argument("out of bounds palette access");
+  c = p->colors[c_n];
+  v = alloc_small(3, 0);
+  Field(v, 0) = Val_int(c.r);
+  Field(v, 1) = Val_int(c.g);
+  Field(v, 2) = Val_int(c.b);
+  return v;
+}
+
+static inline void SDLColor_of_value(SDL_Color *c, value v)
+{
+  c->r = Int_val(Field(v, 0));
+  c->g = Int_val(Field(v, 1));
+  c->b = Int_val(Field(v, 2));
+}
+
+value ml_SDL_SetPalette(value surf, value flags, value ofirstcolor, value c_arr)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  SDL_Palette *p = s->format->palette;
+  int firstcolor = Opt_arg(ofirstcolor, Int_val, 0);
+  int c_flags;
+  int n = Wosize_val(c_arr);
+  SDL_Color color[n];
+  int i, status;
+  
+  if(! p)
+    invalid_argument("surface not palettized");
+  if(firstcolor + n > p->ncolors || firstcolor < 0)
+    invalid_argument("out of bounds palette access");
+
+  for(i=0; i< n; i++)
+    SDLColor_of_value(&color[i], Field(c_arr, i));
+  if(flags == Val_none)
+    c_flags = SDL_LOGPAL | SDL_PHYSPAL ;
+  else
+    c_flags = Int_val(Unopt(flags)) +1 ;
+
+  status = SDL_SetPalette(s, c_flags, color, ofirstcolor, n);
+  return Val_bool(status);
+}
+  
 
 static value value_of_PixelFormat(SDL_PixelFormat *fmt)
 {
@@ -66,7 +114,7 @@ static value value_of_PixelFormat(SDL_PixelFormat *fmt)
   if( !fmt)
     abort();
   v = alloc(17, 0);
-  Store_field(v, 0, value_of_palette(fmt->palette));
+  Store_field(v, 0, fmt->palette ? Val_true : Val_false);
   Store_field(v, 1, Val_int(fmt->BitsPerPixel));
   Store_field(v, 2, Val_int(fmt->BytesPerPixel));
   Store_field(v, 3, copy_int32(fmt->Rmask));

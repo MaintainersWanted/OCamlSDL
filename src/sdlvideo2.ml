@@ -21,19 +21,9 @@ let rect ~x ~y ~w ~h =
 let copy_rect r =
   { r with r_x = r.r_x }
 
-type palette = (int, int_elt, c_layout) Array1.t
-
-let ncolors p = Array1.dim p
-let get_color p n = 
-  let c = p.{n} in
-  let r = c land 0x0000FF in
-  let g = c land 0x00FF00 in
-  let b = c land 0xFF0000 in
-  (r, g, b)
-
 type pixel_format
 type pixel_format_info = {
-    palette  : palette option ;
+    palette  : bool ;
     bits_pp  : int ;
     bytes_pp : int ;
     rmask    : int32 ;
@@ -139,6 +129,15 @@ let surface_bpps s =
 
 external use_palette : surface -> bool
     = "ml_sdl_surface_use_palette"
+external palette_ncolors     : surface -> int = "ml_sdl_palette_ncolors"
+external get_palette_color   : surface -> int -> color = "ml_sdl_palette_get_color"
+type palette_flag =
+  | LOGPAL
+  | PHYSPAL
+  | LOGPHYSPAL
+external set_palette : surface -> ?flag:palette_flag -> ?firstcolor:int -> color array -> unit
+    = "ml_SDL_SetPalette"
+
 
 external set_video_mode : w:int -> h:int -> bpp:int -> video_flag list -> surface
     = "ml_SDL_SetVideoMode"
@@ -176,14 +175,20 @@ external _create_RGB_surface_from :
   rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
     = "ml_SDL_CreateRGBSurfaceFrom_bc" "ml_SDL_CreateRGBSurfaceFrom"
 
-let create_RGB_surface_from_32 =
+let create_RGB_surface_from_32  =
   _create_RGB_surface_from ~bpp:32
-let create_RGB_surface_from_24 =
-  _create_RGB_surface_from ~bpp:24
-let create_RGB_surface_from_16 =
-  _create_RGB_surface_from ~bpp:16
-let create_RGB_surface_from_8 =
-  _create_RGB_surface_from ~bpp:8
+let create_RGB_surface_from_24 a ~w ~h ~pitch ~rmask ~gmask ~bmask ~amask =
+  _create_RGB_surface_from a ~w ~h ~pitch ~bpp:24 
+    ~rmask:(Int32.of_int rmask) ~gmask:(Int32.of_int gmask)
+    ~bmask:(Int32.of_int bmask) ~amask:(Int32.of_int amask)
+let create_RGB_surface_from_16  a ~w ~h ~pitch ~rmask ~gmask ~bmask ~amask =
+  _create_RGB_surface_from a ~w ~h ~pitch ~bpp:16
+    ~rmask:(Int32.of_int rmask) ~gmask:(Int32.of_int gmask)
+    ~bmask:(Int32.of_int bmask) ~amask:(Int32.of_int amask)
+let create_RGB_surface_from_8  a ~w ~h ~pitch ~rmask ~gmask ~bmask ~amask =
+  _create_RGB_surface_from a ~w ~h ~pitch ~bpp:8
+    ~rmask:(Int32.of_int rmask) ~gmask:(Int32.of_int gmask)
+    ~bmask:(Int32.of_int bmask) ~amask:(Int32.of_int amask)
 
 external free_surface : surface -> unit
     = "ml_SDL_FreeSurface"

@@ -19,14 +19,9 @@ type rect = {
 val rect : x:int -> y:int -> w:int -> h:int -> rect
 val copy_rect : rect -> rect
 
-type palette = (int, int_elt, c_layout) Array1.t
-
-val ncolors   : palette -> int
-val get_color : palette -> int -> color
-
 type pixel_format
 type pixel_format_info = {
-    palette  : palette option ;
+    palette  : bool ;
     bits_pp  : int ;
     bytes_pp : int ;
     rmask    : int32 ;
@@ -151,6 +146,15 @@ val surface_bpps   : surface -> int
 
 external use_palette : surface -> bool
     = "ml_sdl_surface_use_palette"
+external palette_ncolors     : surface -> int = "ml_sdl_palette_ncolors"
+external get_palette_color   : surface -> int -> color = "ml_sdl_palette_get_color"
+type palette_flag =
+  | LOGPAL
+  | PHYSPAL
+  | LOGPHYSPAL
+external set_palette : surface -> ?flag:palette_flag -> ?firstcolor:int -> color array -> unit
+    = "ml_SDL_SetPalette"
+
 
 external set_video_mode : 
   w:int -> h:int -> bpp:int -> video_flag list -> surface
@@ -190,15 +194,15 @@ val create_RGB_surface_from_32 :
 val create_RGB_surface_from_24 : 
   (int, int8_unsigned_elt, c_layout) Array1.t ->
   w:int -> h:int -> pitch:int ->
-  rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
+  rmask:int -> gmask:int -> bmask:int -> amask:int -> surface
 val create_RGB_surface_from_16 : 
   (int, int16_unsigned_elt, c_layout) Array1.t ->
   w:int -> h:int -> pitch:int ->
-  rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
+  rmask:int -> gmask:int -> bmask:int -> amask:int -> surface
 val create_RGB_surface_from_8 : 
   (int, int8_unsigned_elt, c_layout) Array1.t ->
   w:int -> h:int -> pitch:int ->
-  rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
+  rmask:int -> gmask:int -> bmask:int -> amask:int -> surface
 
 external free_surface : surface -> unit
     = "ml_SDL_FreeSurface"
