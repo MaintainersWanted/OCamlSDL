@@ -17,10 +17,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdltimer.mli,v 1.2 2000/07/19 09:04:52 xtrm Exp $ *)
+(* $Id: sdltimer.mli,v 1.3 2002/08/21 18:40:20 oliv__a Exp $ *)
 
-(* Wait a specified number of milliseconds before returning *)
-val delay : ms:int -> unit;;
+(** Wait a specified number of milliseconds before returning *)
+external delay : int -> unit = "sdltimer_delay" "noalloc"
 
-(* Get the number of milliseconds since the SDL library initialization. *)
-val get_ticks : unit -> int ;;
+(** Get the number of milliseconds since the SDL library initialization. *)
+external get_ticks : unit -> int = "sdltimer_get_ticks" "noalloc"

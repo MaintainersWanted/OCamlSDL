@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdltimer_stub.c,v 1.6 2002/06/20 13:20:44 oliv__a Exp $ */
+/* $Id: sdltimer_stub.c,v 1.7 2002/08/21 18:40:20 oliv__a Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
@@ -48,10 +48,15 @@ sdltimer_stub_kill (void)
  * OCaml/C conversion functions
  */
 
+void enter_blocking_section(void);
+void leave_blocking_section(void);
+
 value
 sdltimer_delay (value ms)
 {
+  enter_blocking_section();
   SDL_Delay(Int_val(ms));
+  leave_blocking_section();
   return Val_unit;
 }
 
@@ -59,4 +64,3 @@ value sdltimer_get_ticks(value u)
 {
   return Val_int(SDL_GetTicks());
 }
- 

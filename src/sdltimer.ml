@@ -17,10 +17,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdltimer.ml,v 1.3 2002/03/26 16:41:08 xtrm Exp $ *)
+(* $Id: sdltimer.ml,v 1.4 2002/08/21 18:40:20 oliv__a Exp $ *)
 
 (* Native C external functions *)
 
-external delay : ms:int -> unit = "sdltimer_delay";;
+external delay : int -> unit = "sdltimer_delay" "noalloc"
 
-external get_ticks : unit -> int = "sdltimer_get_ticks";;
+external get_ticks : unit -> int = "sdltimer_get_ticks" "noalloc"
