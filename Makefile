@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.17 2004/07/26 09:43:57 oliv__a Exp $
+# $Id: Makefile,v 1.18 2004/07/27 20:06:56 oliv__a Exp $
 
 all doc clean install:
 	$(MAKE) -C src $@
@@ -44,7 +44,7 @@ DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README NEWS \
            src/config.h.in src/config.h.msvc \
 	   src/Makefile src/.depend src/.depend_c \
            doc/OCamlMakefile doc/Makefile ocamlsdl.texi ocamlsdl.info ocamlsdl-mingw.txt \
-           doc/html
+           doc/html xpm_to_ml
 VERSION := 0.7.1
 
 # hackish targets to build tarballs

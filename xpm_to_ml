@@ -1,0 +1,21 @@
+#! /bin/awk -f
+
+# This small program reads an XPM file and converts it in a .ml file
+# that can be used with Sdlloader.read_XPM_from_array
+
+/^static/ { 
+  match ($0, /(\w+)\[\]/, arr); 
+  print "let " arr[1] " = [|"
+}
+
+/ *};/ { FINISH=1 }
+
+/^ *\"/ {
+  sub (/(,|\};) *$/, " ;");
+  print "  " $0
+}
+
+FINISH {
+  print "|]" ;
+  FINISH=0
+}
