@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.8 2002/05/30 13:42:50 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.9 2002/05/30 15:52:13 xtrm Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
@@ -65,38 +65,18 @@ static void sdl_internal_quit (void)
   conversion between OCAMLSDL flags and C SDL flags
 
 */
-  
-#define TIMER_tag 0
-#define AUDIO_tag 1
-#define VIDEO_tag 2
-#define CDROM_tag 3
-#define JOYSTICK_tag 4
-#define NOPARACHUTE_tag 5       
-#define EVENTTHREAD_tag 6
-#define EVERYTHING_tag 7
+#include "sdlinit_flag.h"
+#include "sdlinit_flag.c"
 
 static int init_flag_val(value flag_list)
 {
-  int i, flag = 0;
-  struct vals v;
+  int flag = 0;
+  value l = flag_list;
 
-  block2vals(flag_list, &v);
-
-  for(i=0;i<v.size;i++)
-    {
-      switch (v.values[i])
-      {
-      case TIMER_tag       : flag |= SDL_INIT_TIMER       ; break;
-      case AUDIO_tag       : flag |= SDL_INIT_AUDIO       ; break;
-      case VIDEO_tag       : flag |= SDL_INIT_VIDEO       ; break;
-      case CDROM_tag       : flag |= SDL_INIT_CDROM       ; break;
-      case JOYSTICK_tag    : flag |= SDL_INIT_JOYSTICK    ; break;
-      case NOPARACHUTE_tag : flag |= SDL_INIT_NOPARACHUTE ; break;
-      case EVENTTHREAD_tag : flag |= SDL_INIT_EVENTTHREAD ; break;
-      case EVERYTHING_tag  : flag |= SDL_INIT_EVERYTHING  ; break;
-      }
-    }
-  freevals(&v);
+  while (is_not_nil(l)){
+    flag |= Init_flag_val(hd(l)); 
+    l = tl(l);
+  }
   return flag;
 }
 

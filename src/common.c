@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.c,v 1.2 2002/05/27 22:06:25 xtrm Exp $ */
+/* $Id: common.c,v 1.3 2002/05/30 15:52:13 xtrm Exp $ */
 
 
 #include <caml/mlvalues.h>
@@ -38,7 +38,7 @@
 
 
 #define NIL_tag 0
-#define CONS_tag 1
+#define CONS_tag 0
 
 value nil(void)
 {
@@ -55,67 +55,43 @@ value cons(value x,value l)
   CAMLreturn (m);
 }
 
-/*
-  block 2 vals conversion
-
-  Guillaume Cottenceau <guillaume.cottenceau at free.fr>
-  Inspired by http://caml.inria.fr/oreilly-book/html/book-ora115.html
-*/
-
-void recurse_block(value v, struct vals * values) 
+int is_nil(value l)
 {
-  long i;
-  
-  if (Is_long(v)) 
-    {
-      values->values[values->size] = Long_val(v);
-      values->size++;
+  return Is_long(l);
+}
 
-      if (values->size >= values->maxsize) 
-	{
-	  long * nv = malloc(sizeof(long) * values->maxsize);
+int is_not_nil(value l)
+{
+  return Is_block(l);
+}
 
-	  values->maxsize *= 2;
-	  memcpy(nv, values->values, (values->size-1) * sizeof(long));
-	  free(values->values);
-	  values->values = nv;
-	}
-      return;
+value hd(value l)
+{
+  return Field(l,0);
+}
+
+value tl(value l)
+{
+  return Field(l,1);
+}
+
+value ml_lookup_from_c (lookup_info *table, int data)
+{
+    int i;
+    for (i = table[0].data; i > 0; i--)
+	if (table[i].data == data) return table[i].key;
+    invalid_argument ("ml_lookup_from_c");
+}
+    
+int ml_lookup_to_c (lookup_info *table, value key)
+{
+    int first = 1, last = table[0].data, current;
+
+    while (first < last) {
+	current = (first+last)/2;
+	if (table[current].key >= key) last = current;
+	else first = current + 1;
     }
-  switch (Tag_val(v))
-    {
-    case Closure_tag : 
-    case String_tag : 
-    case Double_tag: 
-    case Double_array_tag : 
-    case Abstract_tag :
-      break;
-	
-    default:  
-      if (Tag_val(v)>=No_scan_tag) 
-	{ 
-	  printf("unknown tag"); 
-	  break; 
-	};
-      
-      for (i=0;i<Wosize_val(v);i++)
-	recurse_block(Field(v,i), values);
-    }
-  return;
+    if (table[first].key == key) return table[first].data;
+    invalid_argument ("ml_lookup_to_c");
 }
-
-
-void block2vals(value v, struct vals * values)
-{
-  values->size = 0;
-  values->maxsize = 10;
-  values->values = malloc(sizeof(long) * values->maxsize);
-  
-  recurse_block(v, values);
-}
-
-void freevals(struct vals * values)
-{
-  free(values->values);
-}
-

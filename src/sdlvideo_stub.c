@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.27 2002/05/27 22:10:56 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.28 2002/05/30 15:52:13 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -159,51 +159,20 @@ sdlvideo_set_display_mode (value width, value height, value bpp)
 }
 
 /* video flags */
-
-#define SWSURFACE_tag 0     /* Surface is in system memory */
-#define HWSURFACE_tag 1     /* Surface is in video memory */
-#define SRCCOLORKEY_tag 2   /* Blit uses a source color key */
-#define SRCALPHA_tag 3      /* Blit uses source alpha blending */
-#define ASYNCBLIT_tag 4     /* Enables the use of asynchronous to the display surface */
-#define ANYFORMAT_tag 5     /* Allow any video pixel format */
-#define HWPALETTE_tag 6     /* Give SDL exclusive palette access */
-#define DOUBLEBUF_tag 7     /* Set up double-buffered video mode */
-#define FULLSCREEN_tag 8    /* Surface is a full screen display */
-#define OPENGL_tag 9        /* OpenGL rendering */
-#define OPENGLBLIT_tag 10   /* */
-#define RESIZABLE_tag 11    /* Create a resizable window */
-#define NOFRAME_tag 12      /* Frame without titlebar */
-
+#include "sdlvideo_flag.h"
+#include "sdlvideo_flag.c"
 
 int 
 video_flag_val(value flag_list)
 {
-  int i, flag = 0;
-  struct vals v;
+  int flag = 0;
+  value l = flag_list;
 
-  block2vals(flag_list, &v);
-
-  for(i=0;i<v.size;i++)
+  while (is_not_nil(l))
     {
-      switch (v.values[i])
-	{
-	case SWSURFACE_tag   : flag |= SDL_SWSURFACE   ; break;
-	case HWSURFACE_tag   : flag |= SDL_HWSURFACE   ; break;
-	case SRCCOLORKEY_tag : flag |= SDL_SRCCOLORKEY ; break;
-	case SRCALPHA_tag    : flag |= SDL_SRCALPHA    ; break;
-
-	case ASYNCBLIT_tag   : flag |= SDL_ASYNCBLIT   ; break;
-	case ANYFORMAT_tag   : flag |= SDL_ANYFORMAT   ; break;
-	case HWPALETTE_tag   : flag |= SDL_HWPALETTE   ; break;
-	case DOUBLEBUF_tag   : flag |= SDL_DOUBLEBUF   ; break;
-	case FULLSCREEN_tag  : flag |= SDL_FULLSCREEN  ; break;
-	case OPENGL_tag      : flag |= SDL_OPENGL      ; break;
-	case OPENGLBLIT_tag  : flag |= SDL_OPENGLBLIT  ; break;
-	case RESIZABLE_tag   : flag |= SDL_RESIZABLE   ; break;
-	case NOFRAME_tag    : flag |= SDL_NOFRAME      ; break;
-	}
+      flag |= Video_flag_val(hd(l));
+      l = tl(l);
     }
-  freevals(&v);
   return flag;
 }
 
@@ -211,20 +180,11 @@ value
 val_video_flag(int flags)
 {
   value l = nil();
-  if (flags & SDL_SWSURFACE)   l = cons(Val_int(SWSURFACE_tag),l);
-  if (flags & SDL_HWSURFACE)   l = cons(Val_int(HWSURFACE_tag),l);
-  if (flags & SDL_SRCCOLORKEY) l = cons(Val_int(SRCCOLORKEY_tag),l);
-  if (flags & SDL_SRCALPHA)    l = cons(Val_int(SRCALPHA_tag),l);
-
-  if (flags & SDL_ASYNCBLIT)   l = cons(Val_int(ASYNCBLIT_tag),l);
-  if (flags & SDL_ANYFORMAT)   l = cons(Val_int(ANYFORMAT_tag),l);
-  if (flags & SDL_HWPALETTE)   l = cons(Val_int(HWPALETTE_tag),l);
-  if (flags & SDL_DOUBLEBUF)   l = cons(Val_int(DOUBLEBUF_tag),l);
-  if (flags & SDL_FULLSCREEN)  l = cons(Val_int(FULLSCREEN_tag),l);
-  if (flags & SDL_OPENGL)      l = cons(Val_int(OPENGL_tag),l);
-  if (flags & SDL_OPENGLBLIT)  l = cons(Val_int(OPENGLBLIT_tag),l);
-  if (flags & SDL_RESIZABLE)   l = cons(Val_int(RESIZABLE_tag),l);
-  if (flags & SDL_NOFRAME)     l = cons(Val_int(SDL_NOFRAME),l);
+  lookup_info *table = ml_table_video_flag;
+  int i;
+  for (i = table[0].data; i > 0; i--)
+    if (flags & table[i].data) 
+      l = cons(table[i].key, l);
   return l;
 }
 
@@ -268,6 +228,14 @@ sdlvideo_create_rgb_surface(value flags, value width, value height,
     sdlvideo_raise_exception(SDL_GetError());
 
   return (value) s;
+}
+
+value
+sdlvideo_create_rgb_surface_bc(value *argv, int argc)
+{
+  return sdlvideo_create_rgb_surface(argv[0], argv[1], argv[2],
+				     argv[3], argv[4], argv[5],
+				     argv[6], argv[7]);
 }
 
 value
