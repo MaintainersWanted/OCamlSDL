@@ -110,3 +110,11 @@ CAMLprim value mlsdl_rw_from_mem(value buff)
   pdata->max = string_length(buff);
   return abstract_ptr(rwops);
 }
+
+CAMLprim value mlsdl_rwops_close(value rw)
+{
+  SDL_RWops *rwops = SDLRWops_val(rw);
+  if(RWOPS_DATA(rwops))
+    rwops->close(rwops);
+  return Val_unit;
+}
