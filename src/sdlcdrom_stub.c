@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.1 2000/01/02 01:32:28 fbrunel Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.2 2000/01/12 00:50:30 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -42,6 +42,26 @@ static void
 sdlcdrom_raise_exception (char *msg)
 {
   raise_with_string(*caml_named_value("SDLcdrom_exception"), msg);
+}
+
+/*
+ * Stub initialization
+ */
+
+void
+sdlcdrom_stub_init (void)
+{
+  return;
+}
+
+/*
+ * Stub shut down
+ */
+
+void
+sdlcdrom_stub_kill (void)
+{
+  return;
 }
 
 /*
