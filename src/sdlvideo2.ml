@@ -267,3 +267,26 @@ let pixel_data_24 s =
 
 let pixel_data_32 s =
   (_pixel_data s 4 : (int32, int32_elt, c_layout) Array1.t)
+
+external gl_swap_buffers : unit -> unit
+    = "ml_SDL_GL_SwapBuffers"
+
+type gl_attr =
+  | GL_RED_SIZE of int
+  | GL_GREEN_SIZE of int
+  | GL_BLUE_SIZE of int
+  | GL_ALPHA_SIZE of int
+  | GL_BUFFER_SIZE of int
+  | GL_DOUBLEBUFFER of bool
+  | GL_DEPTH_SIZE of int
+  | GL_STENCIL_SIZE of int
+  | GL_ACCUM_RED_SIZE of int
+  | GL_ACCUM_GREEN_SIZE of int
+  | GL_ACCUM_BLUE_SIZE of int
+  | GL_ACCUM_ALPHA_SIZ of int
+
+external gl_set_attr : gl_attr list -> unit
+    = "ml_SDL_GL_SetAttribute"
+
+external gl_get_attr : unit -> gl_attr list
+    = "ml_SDL_GL_GetAttribute"
