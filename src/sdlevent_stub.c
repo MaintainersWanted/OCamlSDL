@@ -17,8 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.7 2000/01/31 20:09:06 smkl Exp $ */
+/* $Id: sdlevent_stub.c,v 1.8 2000/02/27 22:50:34 fbrunel Exp $ */
 
+#include <assert.h>
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
@@ -33,6 +34,7 @@
  */
 
 #define MAX_FUNC_ARGS 4
+#define MAX_KEY_SYMS 229
 
 /*
  * Local variables
@@ -49,6 +51,295 @@ static value idle_event_func;
 
 /* This array is used for passing arguments to OCaml callbacks */
 static value func_args[MAX_FUNC_ARGS];
+
+/* This array map the ML key values to the SDL ones */
+static SDLKey sdl_key_syms[MAX_KEY_SYMS] = {
+  SDLK_BACKSPACE,
+  SDLK_TAB,
+  SDLK_CLEAR,
+  SDLK_RETURN,
+  SDLK_PAUSE,
+  SDLK_ESCAPE,
+  SDLK_SPACE,
+  SDLK_EXCLAIM,
+  SDLK_QUOTEDBL,
+  SDLK_HASH,
+  SDLK_DOLLAR,
+  SDLK_AMPERSAND,
+  SDLK_QUOTE,
+  SDLK_LEFTPAREN,
+  SDLK_RIGHTPAREN,
+  SDLK_ASTERISK,
+  SDLK_PLUS,
+  SDLK_COMMA,
+  SDLK_MINUS,
+  SDLK_PERIOD,
+  SDLK_SLASH,
+  SDLK_0,
+  SDLK_1,
+  SDLK_2,
+  SDLK_3,
+  SDLK_4,
+  SDLK_5,
+  SDLK_6,
+  SDLK_7,
+  SDLK_8,
+  SDLK_9,
+  SDLK_COLON,
+  SDLK_SEMICOLON,
+  SDLK_LESS,
+  SDLK_EQUALS,
+  SDLK_GREATER,
+  SDLK_QUESTION,
+  SDLK_AT,
+  /* 
+     Skip uppercase letters
+  */
+  SDLK_LEFTBRACKET,
+  SDLK_BACKSLASH,
+  SDLK_RIGHTBRACKET,
+  SDLK_CARET,
+  SDLK_UNDERSCORE,
+  SDLK_BACKQUOTE,
+  SDLK_a,
+  SDLK_b,
+  SDLK_c,
+  SDLK_d,
+  SDLK_e,
+  SDLK_f,
+  SDLK_g,
+  SDLK_h,
+  SDLK_i,
+  SDLK_j,
+  SDLK_k,
+  SDLK_l,
+  SDLK_m,
+  SDLK_n,
+  SDLK_o,
+  SDLK_p,
+  SDLK_q,
+  SDLK_r,
+  SDLK_s,
+  SDLK_t,
+  SDLK_u,
+  SDLK_v,
+  SDLK_w,
+  SDLK_x,
+  SDLK_y,
+  SDLK_z,
+  SDLK_DELETE,
+  /* End of ASCII mapped keysyms */
+
+  /* International keyboard syms */
+  SDLK_WORLD_0,		/* 0xA0 */
+  SDLK_WORLD_1,
+  SDLK_WORLD_2,
+  SDLK_WORLD_3,
+  SDLK_WORLD_4,
+  SDLK_WORLD_5,
+  SDLK_WORLD_6,
+  SDLK_WORLD_7,
+  SDLK_WORLD_8,
+  SDLK_WORLD_9,
+  SDLK_WORLD_10,
+  SDLK_WORLD_11,
+  SDLK_WORLD_12,
+  SDLK_WORLD_13,
+  SDLK_WORLD_14,
+  SDLK_WORLD_15,
+  SDLK_WORLD_16,
+  SDLK_WORLD_17,
+  SDLK_WORLD_18,
+  SDLK_WORLD_19,
+  SDLK_WORLD_20,
+  SDLK_WORLD_21,
+  SDLK_WORLD_22,
+  SDLK_WORLD_23,
+  SDLK_WORLD_24,
+  SDLK_WORLD_25,
+  SDLK_WORLD_26,
+  SDLK_WORLD_27,
+  SDLK_WORLD_28,
+  SDLK_WORLD_29,
+  SDLK_WORLD_30,
+  SDLK_WORLD_31,
+  SDLK_WORLD_32,
+  SDLK_WORLD_33,
+  SDLK_WORLD_34,
+  SDLK_WORLD_35,
+  SDLK_WORLD_36,
+  SDLK_WORLD_37,
+  SDLK_WORLD_38,
+  SDLK_WORLD_39,
+  SDLK_WORLD_40,
+  SDLK_WORLD_41,
+  SDLK_WORLD_42,
+  SDLK_WORLD_43,
+  SDLK_WORLD_44,
+  SDLK_WORLD_45,
+  SDLK_WORLD_46,
+  SDLK_WORLD_47,
+  SDLK_WORLD_48,
+  SDLK_WORLD_49,
+  SDLK_WORLD_50,
+  SDLK_WORLD_51,
+  SDLK_WORLD_52,
+  SDLK_WORLD_53,
+  SDLK_WORLD_54,
+  SDLK_WORLD_55,
+  SDLK_WORLD_56,
+  SDLK_WORLD_57,
+  SDLK_WORLD_58,
+  SDLK_WORLD_59,
+  SDLK_WORLD_60,
+  SDLK_WORLD_61,
+  SDLK_WORLD_62,
+  SDLK_WORLD_63,
+  SDLK_WORLD_64,
+  SDLK_WORLD_65,
+  SDLK_WORLD_66,
+  SDLK_WORLD_67,
+  SDLK_WORLD_68,
+  SDLK_WORLD_69,
+  SDLK_WORLD_70,
+  SDLK_WORLD_71,
+  SDLK_WORLD_72,
+  SDLK_WORLD_73,
+  SDLK_WORLD_74,
+  SDLK_WORLD_75,
+  SDLK_WORLD_76,
+  SDLK_WORLD_77,
+  SDLK_WORLD_78,
+  SDLK_WORLD_79,
+  SDLK_WORLD_80,
+  SDLK_WORLD_81,
+  SDLK_WORLD_82,
+  SDLK_WORLD_83,
+  SDLK_WORLD_84,
+  SDLK_WORLD_85,
+  SDLK_WORLD_86,
+  SDLK_WORLD_87,
+  SDLK_WORLD_88,
+  SDLK_WORLD_89,
+  SDLK_WORLD_90,
+  SDLK_WORLD_91,
+  SDLK_WORLD_92,
+  SDLK_WORLD_93,
+  SDLK_WORLD_94,
+  SDLK_WORLD_95,		/* 0xFF */
+
+  /* Numeric keypad */
+  SDLK_KP0,
+  SDLK_KP1,
+  SDLK_KP2,
+  SDLK_KP3,
+  SDLK_KP4,
+  SDLK_KP5,
+  SDLK_KP6,
+  SDLK_KP7,
+  SDLK_KP8,
+  SDLK_KP9,
+  SDLK_KP_PERIOD,
+  SDLK_KP_DIVIDE,
+  SDLK_KP_MULTIPLY,
+  SDLK_KP_MINUS,
+  SDLK_KP_PLUS,
+  SDLK_KP_ENTER,
+  SDLK_KP_EQUALS,
+
+  /* Arrows + Home/End pad */
+  SDLK_UP,
+  SDLK_DOWN,
+  SDLK_RIGHT,
+  SDLK_LEFT,
+  SDLK_INSERT,
+  SDLK_HOME,
+  SDLK_END,
+  SDLK_PAGEUP,
+  SDLK_PAGEDOWN,
+
+  /* Function keys */
+  SDLK_F1,
+  SDLK_F2,
+  SDLK_F3,
+  SDLK_F4,
+  SDLK_F5,
+  SDLK_F6,
+  SDLK_F7,
+  SDLK_F8,
+  SDLK_F9,
+  SDLK_F10,
+  SDLK_F11,
+  SDLK_F12,
+  SDLK_F13,
+  SDLK_F14,
+  SDLK_F15,
+
+  /* Key state modifier keys */
+  SDLK_NUMLOCK,
+  SDLK_CAPSLOCK,
+  SDLK_SCROLLOCK,
+  SDLK_RSHIFT,
+  SDLK_LSHIFT,
+  SDLK_RCTRL,
+  SDLK_LCTRL,
+  SDLK_RALT,
+  SDLK_LALT,
+  SDLK_RMETA,
+  SDLK_LMETA,
+  SDLK_LSUPER,		/* Left "Windows" key */
+  SDLK_RSUPER,		/* Right "Windows" key */
+  SDLK_MODE,		/* "Alt Gr" key */
+
+  /* Miscellaneous function keys */
+  SDLK_HELP,
+  SDLK_PRINT,
+  SDLK_SYSREQ,
+  SDLK_BREAK,
+  SDLK_MENU,
+  SDLK_POWER,		/* Power Macintosh power key */
+  SDLK_EURO		/* Some european keyboards */
+};
+
+/*
+ * Find the ML key index by the SDL key symbol
+ */
+
+static int
+find_key_index (SDLKey key)
+{
+  int a = 0;
+  int b = MAX_KEY_SYMS;
+  int c;
+  int prev_c = -1;
+
+  /* Do a dichotomical search to find the key symbol in the array. It
+     is better than a simple search, but a hashtable would be
+     faster. Maybe the next time! ;-) */
+  
+  while (1) {
+    c = (a + b) / 2;
+
+    if (prev_c == c) {
+      /* FATAL: SHOULD NOT HAPPEN! The key symbol is UNKNOWN! */
+      assert(0);
+    }
+    prev_c = c;
+
+    if (key == sdl_key_syms[c]) {
+      return c;
+    }
+    else if (key > sdl_key_syms[c]) {
+      a = c;
+    }
+    else {
+      b = c;
+    }
+  }
+
+  /* Never reached! */
+  return -1;
+}
 
 /*
  * Local functions for converting SDL events to OCamlSDL events callbacks
@@ -67,7 +358,7 @@ treat_keyboard_event (SDL_KeyboardEvent *event)
     SDL_GetMouseState(&mouse_x, &mouse_y);
 
     /* Fill the arguments array */
-    func_args[0] = Val_int(event->keysym.sym);
+    func_args[0] = Val_int(find_key_index(event->keysym.sym));
     func_args[1] = (event->state == SDL_PRESSED) ? Val_int(0) : Val_int(1);
     func_args[2] = Val_int(mouse_x);
     func_args[3] = Val_int(mouse_y);
@@ -210,14 +501,14 @@ sdlevent_set_idle_event_func (value func)
 value
 sdlevent_is_key_pressed (value key)
 {
-  int *keystate = SDL_GetKeyState(NULL);
-  return Val_bool(keystate[Int_val(key)]);
+  unsigned char *keystate = SDL_GetKeyState(NULL);
+  return Val_bool(keystate[sdl_key_syms[Int_val(key)]]);
 }
 
 value
 sdlevent_is_button_pressed (value button)
 {
-  int button = SDL_GetMouseState(NULL, NULL);
+  int buttonstate = SDL_GetMouseState(NULL, NULL);
   return Val_bool(SDL_BUTTON(Int_val(button) + 1));
 }
 
