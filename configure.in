@@ -1,7 +1,10 @@
+dnl ******
 dnl OCamlSdl autoconf input
+dnl ******
+dnl
+dnl $Id: configure.in,v 1.10 2000/06/09 07:27:00 xtrm Exp $
 
-
-dnl begin
+dnl  begin configure.in 
 AC_INIT(sdl.ml)
 
 AC_CONFIG_AUX_DIR(./support)
@@ -9,15 +12,10 @@ AC_CONFIG_AUX_DIR(./support)
 # need support/missing
 # need support/mkinstalldirs
 
-dnl Check for programs
-
+dnl  Check for programs 
 AC_PROG_CC
 
-dnl Check for compiler environment
-
-AC_C_CONST
-
-# Check for OCaml programs
+#  Check for OCaml programs 
 AC_PATH_PROG(OCAMLC,ocamlc,no)
 if test "$OCAMLC" = no ; then
 	AC_MSG_ERROR(Cannot find ocamlc.)
@@ -40,8 +38,9 @@ AC_SUBST(OCAMLOPT)
 AC_SUBST(OCAMLMKTOP)
 AC_SUBST(OCAMLDEP)
 
-dnl Check for SDL
+dnl  Check for libraries  
 
+dnl  Check for SDL libraries 
 AC_PATH_PROG(SDL_CONFIG,sdl-config,no)
 if test "$SDL_CONFIG" = no ; then
         AC_MSG_ERROR(Cannot find sdl-config.)
@@ -53,14 +52,12 @@ fi
 LIBS="$LIBS $SDL_LIBS"
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 
-dnl Check for libraries
-
-dnl Figure out which math library to use
+dnl  Figure out which math library to use 
 case "$target" in
-    *-*-mingw32*)
+    *mingw32*)
         MATHLIB=""
         ;;
-    *-*-beos*)
+    *beos*)
         MATHLIB=""
         ;;
     *)
@@ -69,65 +66,104 @@ case "$target" in
 esac
 AC_SUBST(MATHLIB)
 
-dnl Check for header files
+dnl  cmdline options 
+# works but must fix the Makefile for compiling the good modules
+# AC_ARG_ENABLE(sdl_ttf,
+# 	      [  --disable-sdl-ttf       without freetype support[default is no]], ,
+# 	      sdl_ttf=yes)
+# AC_ARG_ENABLE(sdl_img,
+# 	      [  --disable-sdl-image     without sdl image support[default is no]], ,
+# 	      sdl_img=yes)
+# AC_ARG_ENABLE(sdl_mixer,
+# 	      [  --disable-sdl-mixer     without sdl mixer support[default is no]], ,
+# 	      sdl_mixer=yes)
+sdl_ttf=yes
+sdl_img=yes
+sdl_mixer=yes
 
-dnl -*- png devel support.. -*- 
-AC_CHECK_HEADERS(png.h, have_png="true", have_png="false")
+dnl  Check for header files 
 
-dnl -*- freetype devel support.. -*-
-AC_CHECK_HEADERS(freetype.h, have_freetype="true", have_freetype="false")
-if test "$have_freetype" = "false"; then
-  AC_CHECK_HEADERS(freetype/freetype.h, have_freetype2="true", 
-                    have_freetype2="false")
+dnl  png devel support..  
+if test x"$sdl_img" = x"yes"
+then 
+  AC_CHECK_HEADERS(png.h, have_png="true", have_png="false")
 fi
 
-dnl Check for typedefs
-dnl Check for structures
-dnl Check for compiler characteristics
-dnl Check for library functions
-
-dnl -*- png stuff -*-
-if test "$have_png" = "true" ; then
-  AC_CHECK_LIB(png, png_read_image, png_ok=yes, png_ok=no, -lz -lm)
-  if test "$png_ok" = no; then
-  	AC_MSG_ERROR(Cannot find libpng.)
+dnl  freetype devel support.. 
+if test x"$sdl_ttf" = x"yes"
+then 
+  AC_CHECK_HEADERS(freetype.h, have_freetype="true", have_freetype="false")
+  if test "$have_freetype" = "false"; 
+  then
+    AC_CHECK_HEADERS(freetype/freetype.h, have_freetype2="true", 
+                     have_freetype2="false")
   fi
-  LIBS="$LIBS -lpng -lz"
-else
-  echo "WARNING: You don't have png developpement support installed."
-fi
+fi 
+dnl  Check for typedefs 
+dnl  Check for structures 
+dnl  Check for compiler characteristics 
+dnl  Check for library functions 
 
-dnl -*- Freetype stuff -*- 
-if test "$have_freetype" = "true" || test "$have_freetype2" = "true" ; then
-  AC_CHECK_LIB(SDL_ttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
-  if test "$ttf_ok" = no; then
-    AC_MSG_ERROR(Cannot find SDL ttf.)
+dnl  png stuff 
+if test x"$sdl_img" = x"yes"
+then 
+  if test "$have_png" = "true" ; 
+  then
+    AC_CHECK_LIB(png, png_read_image, png_ok=yes, png_ok=no, -lz -lm)
+    if test "$png_ok" = no; 
+    then
+      AC_MSG_ERROR(Cannot find libpng.)
+    fi
+    LIBS="$LIBS -lpng -lz"
+    else
+    echo "WARNING: You don't have png developpement support installed."
   fi
-  LIBS="$LIBS -lSDL_ttf"
-else
-  echo "WARNING: You don't have FreeType installed."
-  echo "you need FreeType.  Get the latest stable version at: "
-  echo "http://www.freetype.org/download.htm"
 fi
 
-dnl -*- sdl Image stuff -*-
-AC_CHECK_LIB(SDL_image, IMG_Load_RW, image_ok=yes, image_ok=no)
-if test "$image_ok" = no; then
-        AC_MSG_ERROR(Cannot find SDL image library.)
+dnl  Freetype stuff and sdl ttf stuff  
+if test x"$sdl_ttf" = x"yes";
+then 
+  if test "$have_freetype" = "true" || 
+     test "$have_freetype2" = "true"; 
+  then
+    AC_CHECK_LIB(SDL_ttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
+    if test "$ttf_ok" = no;
+    then
+      AC_MSG_ERROR(Cannot find SDL ttf.)
+    fi
+    LIBS="$LIBS -lSDL_ttf"
+  else
+    echo "WARNING: You don't have FreeType installed."
+    echo "you need FreeType.  Get the latest stable version at: "
+    echo "http://www.freetype.org/download.htm"
+  fi
 fi
-LIBS="$LIBS -lSDL_image"
 
-
-
-AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, mixer_ok=yes, mixer_ok=no)
-if test "$mixer_ok" = no; then
-        AC_MSG_ERROR(Cannot find SDL mixer library.)
+dnl  sdl Image stuff 
+if test x"$sdl_img" = x"yes"
+then 
+  AC_CHECK_LIB(SDL_image, IMG_Load_RW, image_ok=yes, image_ok=no)
+  if test "$image_ok" = no; 
+  then
+    AC_MSG_ERROR(Cannot find SDL image library.)
+  fi
+  LIBS="$LIBS -lSDL_image"
 fi
-LIBS="$LIBS -lSDL_mixer"
 
-dnl Check for system services
+dnl  sdl Mixer stuff 
+if test x"$sdl_mixer" = x"yes"
+then 
+  AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, mixer_ok=yes, mixer_ok=no)
+  if test "$mixer_ok" = no; 
+  then
+    AC_MSG_ERROR(Cannot find SDL mixer library.)
+  fi
+  LIBS="$LIBS -lSDL_mixer"
+fi
 
-# Finally create all the generated files
+dnl  Check for system services 
+
+#  Finally create all the generated files 
 AC_OUTPUT(Makefile)
 
 
