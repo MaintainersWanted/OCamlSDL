@@ -1,5 +1,9 @@
 2000-05-30  Luc Mazardo  <l.mazardo@free.fr>
 
+	* ADD (fonts/Arial.ttf): a truetype font for example.ml
+
+	* ADD (BUGS): makefile can't rebuild correctly example 
+
 	* ADD (Makefile.in): add the target test
 
 	* CHANGES (example.ml): add Sdlttf and Sdltimer stuff.
