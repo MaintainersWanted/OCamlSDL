@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.11 2002/11/21 11:01:16 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.12 2003/02/24 22:55:10 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -32,6 +32,7 @@
 
 #include "common.h"
 #include "sdlvideo_stub.h"
+#include "sdlrwops_stub.h"
 
 static void
 sdlloader_raise_exception (char *msg)
@@ -55,6 +56,14 @@ CAMLprim value ml_IMG_Load(value file)
   return ML_SURFACE(s);
 }
 
+CAMLprim value ml_IMG_Load_RW(value o_autoclose, value rwops)
+{
+  int autoclose = Opt_arg(o_autoclose, Bool_val, SDL_TRUE);
+  SDL_Surface *s = IMG_Load_RW(SDLRWops_val(rwops), autoclose);
+  if(! s)
+    sdlloader_raise_exception(IMG_GetError());
+  return ML_SURFACE(s);
+}
 
 CAMLprim value ml_IMG_ReadXPMFromArray(value string_arr)
 {

@@ -216,6 +216,10 @@ external unlock : surface -> unit
 
 external load_BMP : string -> surface
     = "ml_SDL_LoadBMP"
+external load_BMP_RW : ?autoclose:bool -> Sdl.rwops_in -> surface
+    = "ml_SDL_LoadBMP_RW"
+val load_BMP_from_mem buff =
+  load_BMP_RW (Sdl.rwops_from_mem buff)
 external save_BMP : surface -> string -> unit
     = "ml_SDL_SaveBMP"
 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.ml,v 1.7 2003/02/13 21:40:11 oliv__a Exp $ *)
+(* $Id: sdl.ml,v 1.8 2003/02/24 22:55:09 oliv__a Exp $ *)
 
 (* Define a new exception for Sdl initialization errors and register 
    it to be callable from C code. *)
@@ -65,3 +65,15 @@ let string_of_version v =
 let getenv = Sys.getenv
 external putenv : string -> string -> unit = "sdl_putenv"
 
+(**/**)
+
+type rwops_in
+external _rwops_from_mem      : string -> rwops_in = "mlsdl_rw_from_mem"
+external _rwops_in_finalise  : rwops_in -> unit = "mlsdl_rwops_finalise"
+
+let rwops_from_mem buff =
+  let rw = _rwops_from_mem buff in
+  Gc.finalise _rwops_in_finalise rw ;
+  rw
+
+external rwops_in_close  : rwops_in -> unit = "mlsdl_rwops_close"

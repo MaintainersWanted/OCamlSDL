@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.30 2002/11/21 11:01:17 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.31 2003/02/24 22:55:11 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -30,6 +30,8 @@
 
 #include <SDL.h>
 #include <SDL_mixer.h>
+
+#include "sdlrwops_stub.h"
 
 #include "config.h"
 #include "common.h"
@@ -173,6 +175,15 @@ sdlmixer_loadWAV(value fname)
     sdlmixer_raise_exception(Mix_GetError());
 
   return ML_CHUNK(chunk);
+}
+
+CAMLprim value sdlmixer_loadWAV_RW(value o_autoclose, value rwops)
+{
+  int autoclose = Opt_arg(o_autoclose, Bool_val, SDL_TRUE);
+  Mix_Chunk *c = Mix_LoadWAV_RW(SDLRWops_val(rwops), autoclose);
+  if(! c)
+    sdlmixer_raise_exception(Mix_GetError());
+  return ML_CHUNK(c);
 }
 
 CAMLprim value

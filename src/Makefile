@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.22 2003/01/05 11:23:53 oliv__a Exp $
+# $Id: Makefile,v 1.23 2003/02/24 22:55:08 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -28,7 +28,7 @@ MODULES = 	sdl sdlcdrom sdltimer sdljoystick \
 	        sdlkey sdlmouse sdlevent sdlvideo sdlwm \
                 $(if $(LABLGLDIR),sdlgl)
 
-STUB_SRCS = 	$(MODULES:%=%_stub.c) common.c
+STUB_SRCS = 	$(MODULES:%=%_stub.c) common.c sdlrwops_stub.c
 STUB_OBJS =	$(STUB_SRCS:.c=$(OBJSUFFIX))
 
 ML_SRCS =       $(MODULES:%=%.ml)

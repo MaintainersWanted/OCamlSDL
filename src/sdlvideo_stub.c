@@ -14,6 +14,7 @@
 #include "config.h"
 #include "common.h"
 #include "sdlvideo_stub.h"
+#include "sdlrwops_stub.h"
 
 #ifndef HAVE_INLINE
 extern SDL_Surface *SDL_SURFACE(value v)
@@ -586,6 +587,14 @@ CAMLprim value ml_SDL_SaveBMP(value surf, value fname)
   return Val_unit;
 }
 
+CAMLprim value ml_SDL_LoadBMP_RW(value o_autoclose, value src)
+{
+  int autoclose = Opt_arg(o_autoclose, Bool_val, SDL_TRUE);
+  SDL_Surface *s = SDL_LoadBMP_RW(SDLRWops_val(src), autoclose);
+  if(! s)
+    sdlvideo_raise_exception(SDL_GetError());
+  return ML_SURFACE(s);
+}
 
 /*
  * colorkey / alpha / cliprect

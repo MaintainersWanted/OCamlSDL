@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.13 2003/01/05 11:23:53 oliv__a Exp $ *)
+(* $Id: sdlmixer.mli,v 1.14 2003/02/24 22:55:10 oliv__a Exp $ *)
 
 (** Simple multi-channel audio mixer *)
 
@@ -73,6 +73,8 @@ type chunk
 
 external loadWAV : string -> chunk = "sdlmixer_loadWAV"
 (** Load a wave file *)
+
+val loadWAV_from_mem : string -> chunk
 
 external load_string : string -> chunk = "sdlmixer_load_string"
 (** Load a wave file of the mixer format from a memory buffer *)

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.16 2003/02/13 21:40:12 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.17 2003/02/24 22:55:10 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -144,7 +144,7 @@ CAMLprim value sdl_putenv(value name, value val)
 {
   mlsize_t namelen = string_length(name);
   mlsize_t vallen = string_length(val);
-  char * s = (char *) stat_alloc(namelen + 1 + vallen + 1);
+  char * s = stat_alloc(namelen + 1 + vallen + 1);
 
   memmove (s, String_val(name), namelen);
   if(vallen > 0) {

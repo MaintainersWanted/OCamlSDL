@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.9 2003/02/13 21:40:11 oliv__a Exp $ *)
+(* $Id: sdl.mli,v 1.10 2003/02/24 22:55:09 oliv__a Exp $ *)
 
 (** This module contains functions for initializing/quitting the library *)
 
@@ -76,3 +76,8 @@ val string_of_version : version -> string
 
 val getenv : string -> string
 val putenv : string -> string -> unit
+
+(**/**)
+type rwops_in
+val rwops_from_mem : string -> rwops_in
+external rwops_in_close  : rwops_in -> unit = "mlsdl_rwops_close"

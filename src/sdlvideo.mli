@@ -19,7 +19,7 @@
 
 (** Module for video manipulations *)
 
-(* $Id: sdlvideo.mli,v 1.32 2003/02/24 21:22:46 oliv__a Exp $ *)
+(* $Id: sdlvideo.mli,v 1.33 2003/02/24 22:55:12 oliv__a Exp $ *)
 
 open Bigarray
 
@@ -395,6 +395,9 @@ external put_pixel_color : surface -> x:int -> y:int -> color -> unit
 external load_BMP : string -> surface
     = "ml_SDL_LoadBMP"
 (** Loads a surface from a named Windows BMP file.*)
+
+val load_BMP_from_mem : string -> surface
+(** Loads a BMP image from a memory buffer. *)
 
 external save_BMP : surface -> string -> unit
     = "ml_SDL_SaveBMP"

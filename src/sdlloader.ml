@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlloader.ml,v 1.6 2002/11/06 23:05:34 oliv__a Exp $ *)
+(* $Id: sdlloader.ml,v 1.7 2003/02/24 22:55:10 oliv__a Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -28,6 +28,11 @@ let _ = Callback.register_exception
 
 external load_image : string -> Sdlvideo.surface 
     = "ml_IMG_Load"
+
+external load_image_RW : ?autoclose:bool -> Sdl.rwops_in -> Sdlvideo.surface 
+    = "ml_IMG_Load_RW"
+val load_image_from_mem buff =
+  load_image_RW (Sdl.rwops_from_mem buff)
 
 external read_XPM_from_array : string array -> Sdlvideo.surface
     = "ml_IMG_ReadXPMFromArray"
