@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.8 2002/08/09 08:33:18 oliv__a Exp $
+# $Id: Makefile,v 1.9 2002/08/10 13:53:58 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -52,7 +52,7 @@ doc : ../doc/index.html
 ../doc/index.html : $(MLI)
 	$(CAMLDOC) -d ../doc -html -v -t ocamlsdl $^
 else
-doc : $(error "you need ocamldoc to generate the documentation")
+doc : ; $(error "you need ocamldoc to generate the documentation")
 endif
 
 $(TOPLEVEL): $(LIBRARY) $(CLIBRARY)

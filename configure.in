@@ -2,7 +2,7 @@ dnl ******
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.20 2002/08/08 16:43:05 xtrm Exp $
+dnl $Id: configure.in,v 1.21 2002/08/10 13:53:58 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -48,7 +48,6 @@ fi
 AC_PATH_PROG(OCAMLDOC,ocamldoc)
 if test -z "$OCAMLDOC" ; then
 	AC_MSG_WARN(Cannot find ocamldoc.)
-	OCAMLDOC=true
 fi
 
 
