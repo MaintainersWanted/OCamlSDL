@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.8 2002/08/05 10:43:54 oliv__a Exp $ *)
+(* $Id: sdlmixer.mli,v 1.9 2002/08/08 12:35:53 oliv__a Exp $ *)
 
 (** Simple multi-channel audio mixer *)
 
@@ -69,6 +69,7 @@ external query_specs : unit -> specs = "sdlmixer_query_specs"
  *)
 
 (** {1 Samples} *)
+
 type chunk
 
 external loadWAV : string -> chunk = "sdlmixer_loadWAV"
@@ -84,6 +85,7 @@ external free_chunk : chunk -> unit = "sdlmixer_free_chunk"
 (** Free an audio chunk previously loaded *)
 
 (** {1 Channels} *)
+
 type channel = int
 
 val all_channels  : channel
@@ -170,6 +172,7 @@ external fading_channel : channel -> fade_status = "sdlmixer_fading_channel"
 
 
 (** {1 Groups} *)
+
 type group = int
 
 val default_group : group
