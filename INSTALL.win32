@@ -1,0 +1,42 @@
+
+Building OCamlSDL with MSVC
+===========================
+
+- edit makefile.config.msvc, particularly the PARTS and SDL_LIBS
+variables if you do not want to build all extra libraries.
+You may have to specify include directories for SDL headers in the
+CPPFLAGS variable with the /I option
+
+- copy src/config.h.msvc to src/config.h and edit it if necessary
+
+- edit makefile.platform, use "Win32" for PLATFORM and "msvc" for
+  OCAML_C_BACKEND 
+
+Also, depending on the MS compiler you're using, you may need to do
+this (reported by Andrei de A. Formiga on the mailing list):
+,----
+| ocamlopt apparently calls `lib' to generate sdl.cmxa, so I created a
+| lib.bat (accessible from PATH) containing the single line:
+| 
+| link /lib %1 %2 %3 %4 %5 %6 %7 %8 %9 
+`----
+
+Then run (GNU) make.
+
+
+Building OCamlSDL with Mingw
+============================
+
+If you have the MSYS or Cygwin build environment, ./configure should
+work. 
+
+If you're using the ocaml binaries from INRIA with a Cygwin build
+environment, you may have to add `-mno-cygwin' to CFLAGS in
+makefile.platform.
+
+
+Building OCamlSDL with full Cygwin
+==================================
+
+It's considered an Unix platform. ./configure, make, make install
+should work.

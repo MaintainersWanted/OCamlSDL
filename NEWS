@@ -1,3 +1,8 @@
+Release 0.7.0:
+	* findlib support
+	* bugfixes
+	* build system improvments, hopefully builds on Windows
+
 Release 0.6.3:
 	* bug fix for SDLRWops
 	* sync with SDL 1.2.5
@@ -22,7 +27,6 @@ Release 0.6:
 Release 0.5:
 	* Ocamlplayer has been added, it plays audio file (ogg,xm, s3m, wav) 
 	  on the commande line.
-
 	* Applying many patches.
 
 Release 0.5-pre3:

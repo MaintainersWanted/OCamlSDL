@@ -1,6 +1,7 @@
 OCamlSDL - An interface between OCaml and SDL
 
-*Overview
+Overview
+========
 
 The goal of OCamlSDL is to provide access the multimedia hardware
 in the ML programming language with the help of the SDL library.
@@ -8,68 +9,62 @@ The Simple DirectMedia Layer is a generic API that provides low
 level access to audio, keyboard, mouse, and display framebuffer across
 multiple platforms. 
 
-This ML interface might be used to prototype multimedia applications. 
+OCamlSDL is hosted on SourceForge.net: 
+	http://ocamlsdl.sourceforge.net/
+	http://www.sourceforge.net/projects/ocamlsdl/
 
-*Web Resources
 
-OCamlSDL is hosted at SourceForge.net: 
+Requirements
+============
 
-		   http://ocamlsdl.sourceforge.net/
+OCamlSDL needs the following software and libraries:
+	OCaml		http://www.ocaml.org/  (3.07, 3.06 may work)
+	SDL		http://www.libsdl.org/ (1.2.x)
 
-Visit the project's page for additional informations: 
+and optionally:
+	SDL_ttf		http://www.libsdl.org/projects/SDL_ttf/   (2.x)
+	SDL_mixer	http://www.libsdl.org/projects/SDL_mixer/ (1.2.x)
+	SDL_image	http://www.libsdl.org/projects/SDL_image/ (1.2.x)
+	LablGL		http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
+	findlib		http://www.ocaml-programming.de/packages/
 
-	     http://www.sourceforge.net/projects/ocamlsdl
 
-*Requirements
+Using
+=====
 
-OCamlSDL needs the following software and libraries to run:
+See the INSTALL file for information on how to compile and install the library.
 
-	 OCaml     |3.04 | http://www.ocaml.org/
-	 SDL       | 1.2 | http://www.libsdl.org/
+The library use the Bigarray module to interface with C so programs
+using OCamlSDL must also be linked with bigarray, e.g.:
+	ocamlc -o my_prog -I /path/to/ocamlsdl bigarray.cma sdl.cma my_prog.ml
 
-	 SDL ttf   | 1.0 or 2.0 | http://www.libsdl.org/projects/SDL_ttf/
-	 SDL mixer | 1.2 | http://www.libsdl.org/projects/SDL_mixer/
-	 SDL image | 1.2 | http://www.libsdl.org/projects/SDL_image/
-	 LablGL    | 0.98 | http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
+If OCamlSDL was installed using findlib, the package manager will take
+care of that:
+	ocamlfind ocamlc -o my_prog -package sdl -linkpkg my_prog.ml
 
-*Documentation
 
-You can browse ocaml documentation at :
+Documentation
+=============
+
+You can browse the ocaml API documentation at:
 	http://ocamlsdl.sourceforge.net/docs/index.html
 
-*Samples
-In the subdirectory samples, you can find some examples:
+You can find SDL documentation on the SDL website:
+	http://www.libsdl.org/
+	http://sdldoc.csn.ul.ie/
 
-	 test_cdrom: return status of cdrom 
-		(SDL, cdrom)
 
-	 ocamlplayer: play some audiofiles (ogg, xm, s3m, wav)
-	 	(SDL, mixer)
-	
-	 test_joystick: test your joystick
-		(SDL, event, joystick)
+Feedback
+========
 
-	 test_alpha: alpha blits test
-	 	(SDL, event, video, mouse)
-*Feedback
-
-Report any bugs or suggestions using the project page on
-SourceForge.net.
-
-*Mailing Lists
-
+Bugs can be reported on the SourceForge project page or on the mailing lists.
+There are two mailing lists:
 	ocamlsdl-user@lists.sourceforge.net 
-is the user mailing-list. Here you could discuss about OCamlSDL problems 
-and uses.
-
 	ocamlsdl-devel@lists.sourceforge.net 
-is the developer mailing-list. This list is reserved for discussion about 
-the development of OCamlSDL.
 
-Here is the location:
+Subscription information and archives are available here:
 	http://lists.sourceforge.net/lists/listinfo/ocamlsdl-user
-
 	http://lists.sourceforge.net/lists/listinfo/ocamlsdl-devel
 
---
-Thank you for using OCamlSDL!
+-- 
+   The OCamlSDL developers

@@ -11,11 +11,15 @@ INSTALL_DATA = 	@INSTALL_DATA@
 
 PARTS = 	@PARTS@
 
+PLATFORM =      @PLATFORM@
+
+CC =            @CC@
 CPPFLAGS =	@CPPFLAGS@
 CFLAGS =	@CFLAGS@ 
 RANLIB =        @RANLIB@
 OBJEXT =        @OBJEXT@
 A =		a
+SYSLIB =        -l$(1)
 
 OCAMLC = 	@OCAMLC@
 OCAMLOPT =	@OCAMLOPT@
@@ -25,3 +29,20 @@ OCAMLDOC = 	@OCAMLDOC@
 OCAMLFIND =	@OCAMLFIND@
 
 SDL_LIBS = @SDL_LIBS@
+SYSLIB   = -l$(1)
+
+ifndef OCAMLMKLIB
+# 1 -> name
+# 2 -> clib name
+# 3 -> object files
+# 4 -> C libs & ld flags
+MKCMA  = $(OCAMLC) -a -o $(1).cma -cclib -l$(2) -custom $(3) $(addprefix -cclib ,$(filter -l%,$(4))) $(addprefix -ccopt ,$(filter-out -l%,$(4)))
+MKCMXA = $(OCAMLOPT) -a -o $(1).cmxa -cclib -l$(2) $(3) $(addprefix -cclib ,$(filter -l%,$(4))) $(addprefix -ccopt ,$(filter-out -l%,$(4)))
+MKCLIB  = ar cr lib$(2).$(A) $(3) ; $(RANLIB) lib$(2).$(A)
+
+else
+
+MKCMA  = $(OCAMLMKLIB) -v -o $(1) -oc $(2) $(3) $(4)
+MKCMXA = $(OCAMLMKLIB) -v -o $(1) -oc $(2) $(3) $(4)
+MKCLIB = $(OCAMLMKLIB) -v -o $(1) -oc $(2) $(3) $(4)
+endif

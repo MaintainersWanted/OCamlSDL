@@ -1,6 +1,6 @@
 
 include ../makefile.platform
-include ../$(MAKEFILE_CONFIG)
+include ../makefile.config.$(OCAML_C_BACKEND)
 include ../makefile.rules
 
 OMLFLAGS = -unsafe
@@ -31,25 +31,25 @@ libsdlstub.$(A) dllsdlstub.so : $(call STUB_OBJS,sdl)
 	$(call MKCLIB,sdl,sdlstub,$^,$(SDL_LIBS))
 
 sdlloader.cma : $(call ML_OBJS,loader)
-	$(call MKCMA,sdlloader,sdlloaderstub,$^,-lSDL_image)
+	$(call MKCMA,sdlloader,sdlloaderstub,$^,$(call SYSLIB,SDL_image))
 sdlloader.cmxa : $(call ML_OPT_OBJS,loader)
-	$(call MKCMXA,sdlloader,sdlloaderstub,$^,-lSDL_image)
+	$(call MKCMXA,sdlloader,sdlloaderstub,$^,$(call SYSLIB,SDL_image))
 libsdlloaderstub.$(A) dllsdlloaderstub.so : $(call STUB_OBJS,loader)
-	$(call MKCLIB,sdlloader,sdlloaderstub,$^,-lSDL_image)
+	$(call MKCLIB,sdlloader,sdlloaderstub,$^,$(call SYSLIB,SDL_image))
 
 sdlmixer.cma : $(call ML_OBJS,mixer)
-	$(call MKCMA,sdlmixer,sdlmixerstub,$^,-lSDL_mixer)
+	$(call MKCMA,sdlmixer,sdlmixerstub,$^,$(call SYSLIB,SDL_mixer))
 sdlmixer.cmxa : $(call ML_OPT_OBJS,mixer)
-	$(call MKCMXA,sdlmixer,sdlmixerstub,$^,-lSDL_mixer)
+	$(call MKCMXA,sdlmixer,sdlmixerstub,$^,$(call SYSLIB,SDL_mixer))
 libsdlmixerstub.$(A) dllsdlmixerstub.so : $(call STUB_OBJS,mixer)
-	$(call MKCLIB,sdlmixer,sdlmixerstub,$^,-lSDL_mixer)
+	$(call MKCLIB,sdlmixer,sdlmixerstub,$^,$(call SYSLIB,SDL_mixer))
 
 sdlttf.cma : $(call ML_OBJS,ttf)
-	$(call MKCMA,sdlttf,sdlttfstub,$^,-lSDL_ttf)
+	$(call MKCMA,sdlttf,sdlttfstub,$^,$(call SYSLIB,SDL_ttf))
 sdlttf.cmxa : $(call ML_OPT_OBJS,ttf)
-	$(call MKCMXA,sdlttf,sdlttfstub,$^,-lSDL_ttf)
+	$(call MKCMXA,sdlttf,sdlttfstub,$^,$(call SYSLIB,SDL_ttf))
 libsdlttfstub.$(A) dllsdlttfstub.so : $(call STUB_OBJS,ttf)
-	$(call MKCLIB,sdlttf,sdlttfstub,$^,-lSDL_ttf)
+	$(call MKCLIB,sdlttf,sdlttfstub,$^,$(call SYSLIB,SDL_ttf))
 
 
 LABLGLINC = $(if $(LABLGLDIR),-I $(LABLGLDIR))

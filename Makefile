@@ -17,38 +17,35 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.13 2004/05/03 08:49:06 oliv__a Exp $
+# $Id: Makefile,v 1.14 2004/07/26 00:41:21 oliv__a Exp $
 
 all doc clean install:
 	$(MAKE) -C src $@
 .PHONY: all doc clean install
 
--include makefile.platform
-makefile.platform : configure.ml
-	@echo "checking platform ..."
-	ocaml $< > $@
-
--include makefile.config.$(OCAML_C_BACKEND)
+include makefile.platform
+include makefile.config.$(OCAML_C_BACKEND)
 
 ifneq ($(PLATFORM),Win32)
 makefile.config.gcc : makefile.config.gcc.in configure
-	$(error "please run ./configure")
+	$(error "please run ./configure or edit makefile.platform")
 configure : configure.in
 	aclocal -I support
 	autoconf
 endif
 
-DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README \
-           Makefile META configure.ml \
+DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README NEWS \
+           Makefile META \
            configure.in aclocal.m4 configure \
-           makefile.config.gcc.in makefile.config.msvc makefile.rules \
+           makefile.config.gcc.in makefile.config.msvc makefile.rules makefile.platform \
            support/install-sh support/ocaml.m4 support/config.sub support/config.guess \
 	   src/sdl*.ml src/sdl*.mli src/sdl*.c src/sdl*.h \
            src/common.c src/common.h src/mlsdl_main.c \
            src/config.h.in src/config.h.msvc \
 	   src/Makefile src/.depend src/.depend_c
-VERSION := 0.6.99
+VERSION := 0.7.0
 
+# hackish targets to build tarballs
 dist : dist-zip dist-tgz
 dist-zip : ../ocamlsdl-$(VERSION).zip
 dist-tgz : ../ocamlsdl-$(VERSION).tar.gz

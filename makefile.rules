@@ -18,22 +18,3 @@ STUB_OBJS = $(patsubst %.c,%.$(OBJEXT),$(call STUB_SRCS,$(1)))
 ML_SRCS     = $(patsubst %,%.ml,$($(1)_MODULES))
 ML_OBJS     = $(patsubst %.ml,%.cmo,$(call ML_SRCS,$(1)))
 ML_OPT_OBJS = $(patsubst %.ml,%.cmx,$(call ML_SRCS,$(1)))
-
-ifndef OCAMLMKLIB
-# 1 -> name
-# 2 -> clib name
-# 3 -> object files
-# 4 -> C libs & ld flags
-MKCMA  = $(OCAMLC) -a -o $(1).cma -cclib -l$(2) -custom $(3) $(addprefix -cclib ,$(filter -l%,$(4))) $(addprefix -ccopt ,$(filter-out -l%,$(4)))
-MKCMXA = $(OCAMLOPT) -a -o $(1).cmxa -cclib -l$(2) $(3) $(addprefix -cclib ,$(filter -l%,$(4))) $(addprefix -ccopt ,$(filter-out -l%,$(4)))
-ifeq ($(OCAML_C_BACKEND),msvc)
-MKCLIB = lib /out:lib$(2).$(A) $(3)
-else
-MKCLIB  = ar cr lib$(2).$(A) $(3) ; $(RANLIB) lib$(2).$(A)
-endif
-
-else
-MKCMA  = $(OCAMLMKLIB) -v -o $(1) -oc $(2) $(3) $(4)
-MKCMXA = $(OCAMLMKLIB) -v -o $(1) -oc $(2) $(3) $(4)
-MKCLIB = $(OCAMLMKLIB) -v -o $(1) -oc $(2) $(3) $(4)
-endif

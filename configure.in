@@ -2,7 +2,7 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.35 2004/04/29 11:18:25 oliv__a Exp $
+dnl $Id: configure.in,v 1.36 2004/07/26 00:41:21 oliv__a Exp $
 
 dnl begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -13,6 +13,12 @@ AC_CONFIG_HEADER(src/config.h)
 # Check for OCaml programs 
 AC_PROG_OCAML()
 AC_PROG_FINDLIB()
+
+# OCaml platform
+AC_MSG_CHECKING(platform)
+echo "print_endline Sys.os_type ;;" > conftest.ml
+PLATFORM=$(ocaml conftest.ml)
+AC_MSG_RESULT($PLATFORM)
 
 # Check for programs
 if test -z "$CFLAGS" ; then
@@ -96,6 +102,9 @@ if test "$sdl_mixer" = yes ; then
 fi
 
 AC_OUTPUT(makefile.config.gcc)
+
+AC_MSG_NOTICE([updating makefile.platform])
+sed -i -e "s/^PLATFORM.*/PLATFORM = $PLATFORM/" makefile.platform
 
 # Output the configuration summary
 echo

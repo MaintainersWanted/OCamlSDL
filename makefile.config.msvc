@@ -9,6 +9,7 @@ CFLAGS   = /O
 RANLIB   =
 OBJEXT   = obj
 A        = lib
+SYSLIB   = $(1).lib
 
 OCAMLC     = ocamlc
 OCAMLOPT   = ocamlopt
@@ -18,4 +19,14 @@ OCAMLMKLIB =
 OCAMLDOC   = ocamldoc
 OCAMLFIND  =
 
-SDL_LIBS = -lSDL -lSDL_ttf -lSDL_image -lSDL_mixer
+SDL_LIBS = SDL.lib SDLmain.lib
+
+SYSLIB = $(1).lib
+
+# 1 -> name
+# 2 -> clib name
+# 3 -> object files
+# 4 -> C libs & ld flags
+MKCMA  = $(OCAMLC)   -a -o $(1).cma -cclib $(2).lib -custom $(3) $(addprefix -cclib ,$(4))
+MKCMXA = $(OCAMLOPT) -a -o $(1).cma -cclib $(2).lib         $(3) $(addprefix -cclib ,$(4))
+MKCLIB = lib /out:lib$(2).$(A) $(3)
