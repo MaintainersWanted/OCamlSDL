@@ -14,21 +14,25 @@
 
 ML_0(SDL_GL_SwapBuffers, Unit)
 
-static const SDL_GLattr GL_attr_map[13] = {
+static const SDL_GLattr GL_attr_map[] = {
   SDL_GL_RED_SIZE, SDL_GL_GREEN_SIZE,
   SDL_GL_BLUE_SIZE, SDL_GL_ALPHA_SIZE,
   SDL_GL_BUFFER_SIZE, SDL_GL_DOUBLEBUFFER,
   SDL_GL_DEPTH_SIZE, SDL_GL_STENCIL_SIZE,
   SDL_GL_ACCUM_RED_SIZE, SDL_GL_ACCUM_GREEN_SIZE,
   SDL_GL_ACCUM_BLUE_SIZE, SDL_GL_ACCUM_ALPHA_SIZE, 
-  SDL_GL_STEREO };
+#if SDL_MINOR_VERSION == 2 && SDL_PATCHLEVEL >= 5
+  SDL_GL_STEREO,
+#endif
+};
 
 CAMLprim value ml_SDL_GL_SetAttribute(value attrl)
 {
   while( is_not_nil(attrl) ){
     value attr = hd(attrl);
-    SDL_GL_SetAttribute( GL_attr_map[ Tag_val(attr) ], 
-			 Int_val(Field(attr, 0)) );
+    if(Tag_val(attr) < SDL_TABLESIZE(GL_attr_map))
+      SDL_GL_SetAttribute( GL_attr_map[ Tag_val(attr) ], 
+			   Int_val(Field(attr, 0)) );
     attrl = tl(attrl);
   }
   return Val_unit;
@@ -40,7 +44,7 @@ CAMLprim value ml_SDL_GL_GetAttribute(value unit)
   CAMLlocal2(v, a);
   int i, val;
   v = Val_emptylist;
-  for(i=12; i>=0; i--){
+  for(i=SDL_TABLESIZE(GL_attr_map)-1; i>=0; i--){
     if( SDL_GL_GetAttribute( GL_attr_map[i], &val) < 0)
       CAMLreturn( ( sdlvideo_raise_exception(SDL_GetError()) ,
 		   Val_unit ) ) ;
