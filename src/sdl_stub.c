@@ -17,12 +17,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.1 2000/01/02 01:32:25 fbrunel Exp $ */
+/* $Id: sdl_stub.c,v 1.2 2000/01/12 00:49:24 fbrunel Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
 #include <SDL.h>
+#include "sdlcdrom_stub.h"
+#include "sdlevent_stub.h"
+#include "sdltimer_stub.h"
+#include "sdlvideo_stub.h"
+
+/*
+ * Local functions
+ */
+
+/* Shut down the SDL with all stubs */
+static void sdl_internal_quit (void)
+{
+  /* Shut down SDL */
+  SDL_Quit();
+
+  /* Shut down all stubs */
+  sdlcdrom_stub_kill();
+  sdlevent_stub_kill();
+  sdltimer_stub_kill();
+  sdlvideo_stub_kill();
+}
 
 /*
  * OCaml/C conversion functions
@@ -31,10 +52,17 @@
 value
 sdl_init (void)
 {
+  /* SDL initialization */
   if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_CDROM | SDL_INIT_TIMER) != 0) {
     raise_with_string(*caml_named_value("SDL_init_exception"), SDL_GetError());
   }
-    
+
+  /* Initialize all stubs */
+  sdlcdrom_stub_init();
+  sdlevent_stub_init();
+  sdltimer_stub_init();
+  sdlvideo_stub_init();
+  
   return Val_unit;
 }
 
@@ -42,7 +70,7 @@ value
 sdl_init_with_auto_clean (void)
 {
   sdl_init();
-  atexit(SDL_Quit);
+  atexit(sdl_internal_quit);
   
   return Val_unit;
 }
@@ -50,7 +78,6 @@ sdl_init_with_auto_clean (void)
 value
 sdl_quit (void)
 {
-  SDL_Quit();
-  
+  sdl_internal_quit();
   return Val_unit;
 }
