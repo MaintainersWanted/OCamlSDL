@@ -1,4 +1,4 @@
-(* $Id: example.ml,v 1.11 2002/05/30 16:38:36 xtrm Exp $ *)
+(* $Id: example.ml,v 1.12 2002/08/25 12:50:47 oliv__a Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
@@ -50,11 +50,10 @@ let place_max_icons max delay =
   done;;
 
 let display_text f s bg fg =
-  let s_text = Sdlttf.render_text f s
-	       (rgb_vector_of_color bg) 
-	       (rgb_vector_of_color fg)
+  let s_text = Sdlttf.render_text_shaded f s
+	       ~bg ~fg
   in
-    random_placement s_text screen ;;
+  random_placement s_text screen ;;
 
 let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
 

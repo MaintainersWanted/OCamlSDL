@@ -28,8 +28,7 @@ let display_surface surf x y =
   
 
 let display_text font string fg x y =
-  let s_text = (Sdlttf.render_text_solid ~f:font ~text:string
-		 ~foreground:fg)
+  let s_text = Sdlttf.render_text_solid font string ~fg
   in display_surface s_text x y;;
 
 
