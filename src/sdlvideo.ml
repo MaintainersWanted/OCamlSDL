@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.18 2002/04/29 19:24:27 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.19 2002/05/27 22:14:48 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -58,13 +58,11 @@ type video_info = {
 
 type pixel_data = (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
-type common_video_flag =
+type video_flag =
   | SWSURFACE   (* Surface is in system memory *)
   | HWSURFACE   (* Surface is in video memory *)
   | SRCCOLORKEY (* Blit uses a source color key *)
   | SRCALPHA    (* Blit uses source alpha blending *)
-
-type ext_video_flag =
   | ASYNCBLIT   (* Enables the use of asynchronous to the display surface *)
   | ANYFORMAT   (* Allow any video pixel format *)
   | HWPALETTE   (* Give SDL exclusive palette access *)
@@ -74,10 +72,6 @@ type ext_video_flag =
   | OPENGLBLIT  (* *)
   | RESIZABLE   (* Create a resizable window *)
   | NOFRAME     (* Frame without titlebar *)
-
-type video_flag = 
-  | C of common_video_flag 
-  | E of ext_video_flag
 
 (* Native C external functions *)
 
