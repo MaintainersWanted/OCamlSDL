@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.4 2002/06/20 13:20:44 oliv__a Exp $
+# $Id: Makefile,v 1.5 2002/07/13 14:20:01 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -44,7 +44,7 @@ CLIBRARY = 	libsdlstub.a
 all: libs bin
 
 bin:  $(TOPLEVEL)
-libs: $(LIBRARY) $(OLIBRARY) $(CLIBRARY) 
+libs:: $(LIBRARY) $(CLIBRARY) 
 
 $(TOPLEVEL): $(LIBRARY) $(CLIBRARY)
 	$(CAMLTOP) -custom -I . -o $@ bigarray.cma $(LIBRARY)
@@ -52,9 +52,16 @@ $(TOPLEVEL): $(LIBRARY) $(CLIBRARY)
 install:: all
 	$(INSTALL) -d $(INSTALL_DIR)
 	$(INSTALL) $(TOPLEVEL) $(INSTALL_DIR)
-	$(INSTALL_DATA) $(LIBRARY) $(OLIBRARY) sdl.a $(CLIBRARY) $(CMI) $(INSTALL_DIR)
-	$(INSTALL_DATA) $(OPT_OBJS) $(INSTALL_DIR)
+	$(INSTALL_DATA) $(LIBRARY) $(CLIBRARY) $(CMI) $(INSTALL_DIR)
 	$(INSTALL_DATA) $(MLI) $(INSTALL_DIR)
+
+ifdef CAMLOPT
+libs :: $(OLIBRARY)
+
+install :: 
+	$(INSTALL_DATA) $(OLIBRARY) sdl.a $(INSTALL_DIR)
+	$(INSTALL_DATA) $(OPT_OBJS) $(INSTALL_DIR)
+endif
 
 ifdef CAMLMKLIB
 # Use ocamlmklib: requires ocaml >= 3.04
@@ -70,7 +77,6 @@ $(CLIBRARY): $(STUB_OBJS)
 	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(LIBS) $^
 
 install:: dllsdlstub.so
-	$(INSTALL) $^ $(INSTALL_DIR)
 	-$(INSTALL) -d $(DESTDIR)$(CAMLLIBDIR)/shlibs
 	-ln -s $(OCAMLSDLDIR)/$< $(DESTDIR)$(CAMLLIBDIR)/shlibs
 
