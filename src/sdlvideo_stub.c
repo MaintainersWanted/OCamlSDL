@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.11 2000/05/05 09:45:56 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.12 2000/06/13 12:26:41 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -321,7 +321,35 @@ sdlvideo_wm_available (void)
 }
 
 value
-sdlvideo_surface_set_colorkey(value surface, value key)
+sdlvideo_wm_set_caption (value title, value icon)
+{
+  SDL_WM_SetCaption(String_val(title), String_val(icon));
+  return Val_unit;
+}
+/* TODO:
+ *  value
+ *  sdlvideo_wm_get_caption (value title, value icon)
+ *  {
+ *    return Val_unit;
+ *  } */
+value
+sdlvideo_wm_iconify_window (void)
+{
+  SDL_WM_IconifyWindow();
+  return Val_unit;
+}
+
+/* TO FIX:
+ *  value
+ *  sdlvideo_wm_toggle_fullscreen (value surface)
+ *  {
+ *    SDL_Surface *s = SDL_SURFACE(surface);
+ *  
+ *    return Val_int(SDL_WM_ToggleFullScreen(s));
+ *  } */
+
+value
+sdlvideo_surface_set_colorkey (value surface, value key)
 {
    int res;
    

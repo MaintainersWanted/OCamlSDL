@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.8 2000/03/05 15:21:52 fbrunel Exp $ *)
+(* $Id: sdlvideo.mli,v 1.9 2000/06/13 12:26:41 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -92,6 +92,12 @@ val rgb_vector_of_color : color -> (int * int * int);;
 (* Window manager interaction *)
 
 val wm_available : unit -> bool;;
+val wm_set_caption : string -> string -> unit ;;
+val wm_iconify_window : unit -> unit ;;
+(* TO FIX: val wm_toggle_fullscreen : surface -> int ;; *)
+(* TO DO: val wm_get_caption : string -> string -> unit ;; *)
+(* TO DO: val wm_set_icon : surface -> int ;; *)
+
 
 (* DO NOT USE. EXPERIMENTAL *)
 

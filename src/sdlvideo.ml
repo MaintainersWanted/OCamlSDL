@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.9 2000/03/05 15:21:52 fbrunel Exp $ *)
+(* $Id: sdlvideo.ml,v 1.10 2000/06/13 12:26:41 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -74,6 +74,12 @@ external surface_blit : surface -> rect -> surface -> rect -> unit = "sdlvideo_s
 external surface_set_alpha : surface -> float -> surface = "sdlvideo_surface_set_alpha";;
 
 external wm_available : unit -> bool = "sdlvideo_wm_available";;
+external wm_set_caption : string -> string -> unit = "sdlvideo_wm_set_caption" ;;
+external wm_iconify_window : unit -> unit = "sdlvideo_wm_iconify_window";;
+
+(* TO FIX: external wm_toggle_fullscreen : surface -> int = "sdlvideo_wm_toggle_fullscreen";; *)
+(* TO DO: external wm_get_caption : string -> string -> unit = "sdlvideo_wm_get_caption" ;; *)
+(* TO DO: extern wm_set_icon : surface -> int = "sdlvideo_wm_set_icon";; *)
 
 external surface_set_colorkey : surface -> color option -> unit = "sdlvideo_surface_set_colorkey";;
 external surface_display_format : surface -> surface = "sdlvideo_surface_display_format";;

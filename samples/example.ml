@@ -1,4 +1,4 @@
-(* $Id: example.ml,v 1.4 2000/06/09 08:29:25 xtrm Exp $ *)
+(* $Id: example.ml,v 1.5 2000/06/13 12:26:41 xtrm Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
@@ -6,6 +6,9 @@ open Sdlvideo;;
 init_with_auto_clean();;
 
 let screen = set_display_mode 640 480 16;;
+let s = "OCamlSDL" ;;
+wm_set_caption s s;;
+
 let clouds = surface_loadBMP "images/clouds.bmp";;
 let icon = surface_loadBMP "images/icon.bmp";;
 let logo = Sdlloader.load_image "images/ocamlsdl.png";; 
@@ -69,7 +72,7 @@ let f = Sdlttf.open_font "fonts/Arial.ttf" 20;;
  flip (screen_clear white);;
  screen_fill logo ;;
  flip screen;;
- display_text f "Made with OCamlSDL" black white;;
+ display_text f ("Made with "^s)  black white;;
  Sdltimer.delay 5000 ;;
  
  Sdlttf.close_font f ;;
