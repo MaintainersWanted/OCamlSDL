@@ -17,32 +17,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdltimer_stub.c,v 1.7 2002/08/21 18:40:20 oliv__a Exp $ */
+/* $Id: sdltimer_stub.c,v 1.8 2002/09/24 22:34:54 oliv__a Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
 #include <SDL.h>
-
-/*
- * Stub initialization
- */
-
-void
-sdltimer_stub_init (void)
-{
-  return;
-}
-
-/*
- * Stub shut down
- */
-
-void
-sdltimer_stub_kill (void)
-{
-  return;
-}
 
 /*
  * OCaml/C conversion functions

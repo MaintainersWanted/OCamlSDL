@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.toplevel.in,v 1.11 2002/09/10 11:21:07 oliv__a Exp $
+# $Id: makefile.toplevel.in,v 1.12 2002/09/24 22:34:54 oliv__a Exp $
 
 PREFIX =        @prefix@
 CAMLLIBDIR =    @OCAMLLIBDIR@
@@ -43,9 +43,9 @@ CAMLDOC = 	@OCAMLDOC@
 MLFLAGS  =
 OMLFLAGS =	-unsafe -inline 10
 
-LIBS      =	@LIBS@
+LIBS      =	$(filter -l% -L%,@LIBS@)
 CLIBS     =	$(addprefix -cclib ,$(filter -l%,$(LIBS)))
-MLLDFLAGS =	$(addprefix -ccopt ,$(filter-out -l%,$(LIBS)))
+MLLDFLAGS =	$(addprefix -ccopt ,$(filter -L%,$(LIBS)))
 
 DESTDIR =
 
@@ -60,6 +60,17 @@ DESTDIR =
 
 %.o : %.c
 	$(CAMLC) -c -ccopt "$(CPPFLAGS) $(CFLAGS)" $<
+
+ifndef OCAMLMKLIB
+%.cma :
+	$(CAMLC) -o $@  -a -custom $(CLIBS) $(MLLDFLAGS) $^
+
+%.cmxa :
+	$(CAMLOPT) -o $@  -a $(CLIBS) $(MLLDFLAGS) $^
+
+%.a :
+	ar crus $@ $^
+endif
 
 CLIBRARY =      libsdlstub.a
 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.18 2002/08/30 22:20:28 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.19 2002/09/24 22:34:54 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -29,7 +29,16 @@
 #include <SDL_ttf.h>
 
 #include "sdlvideo_stub.h"
-#include "sdlttf_stub.h"
+
+/*
+ * Convertion Macros
+ */
+#ifdef __GNUC__ /* typechecked macro */
+#define ML_FONT(f)  ( { TTF_Font *_mlsdl__f=f; abstract_ptr(_mlsdl__f); } )
+#else
+#define ML_FONT(f)  abstract_ptr(f);
+#endif
+#define SDL_FONT(f) ((TTF_Font *)Field((f), 0))
 
 /*
  * Raise an OCaml exception with a message
@@ -45,27 +54,29 @@ sdlttf_raise_exception (char *msg)
 }
 
 /*
- * Stub initialization
+ * SDL_ttf initialization
  */
 
-void
-sdlttf_stub_init(void)
+value
+sdlttf_init(value unit)
 {
    int error;
    error = TTF_Init();
    if (error) {
       sdlttf_raise_exception(TTF_GetError());
    }
+   return Val_unit;
 }
 
 /*
- * Stub shutdown
+ * SDL_ttf shutdown
  */
 
-void
-sdlttf_stub_kill(void)
+value
+sdlttf_kill(value unit)
 {
    TTF_Quit();
+   return Val_unit;
 }
 
 /*

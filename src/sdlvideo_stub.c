@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.36 2002/09/10 12:01:21 oliv__a Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.37 2002/09/24 22:34:54 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -94,26 +94,6 @@ sdlvideo_raise_exception (char *msg)
   if(! video_exn)
     video_exn = caml_named_value("SDLvideo_exception");
   raise_with_string(*video_exn, msg);
-}
-
-/*
- * Stub initialization
- */
-
-void
-sdlvideo_stub_init (void)
-{
-  return;
-}
-
-/*
- * Stub shut down
- */
-
-void
-sdlvideo_stub_kill (void)
-{
-  return;
 }
 
 /*

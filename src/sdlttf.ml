@@ -17,17 +17,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.9 2002/08/09 15:39:22 oliv__a Exp $ *)
+(* $Id: sdlttf.ml,v 1.10 2002/09/24 22:34:54 oliv__a Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
 
 exception SDLttf_exception of string
-let _ = Callback.register_exception "SDLttf_exception" (SDLttf_exception "Any string")
+let _ = Callback.register_exception "SDLttf_exception" (SDLttf_exception "")
 
 (* Types *)
 
 type font
+
+external init : unit -> unit = "sdlttf_init"
+external quit : unit -> unit = "sdlttf_kill"
 
 (* Native C external functions *)
 

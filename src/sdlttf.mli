@@ -17,19 +17,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.11 2002/08/29 09:32:25 oliv__a Exp $ *)
+(* $Id: sdlttf.mli,v 1.12 2002/09/24 22:34:54 oliv__a Exp $ *)
 
 (** This module provides TTF (TrueType Font) support *)
 
 (** Exception for reporting errors *)
 exception SDLttf_exception of string
 
+(** Initialise SDL_tff and freetype *)
+val init : unit -> unit
+
+(** Quits the system *)
+external quit : unit -> unit = "sdlttf_kill"
+
 (** {1 General operations on font datatype} *)
 
 type font
 (** abstract font datatype *)
 
-val open_font : string -> ?index:int -> int -> font
+external open_font : string -> ?index:int -> int -> font = "sdlttf_open_font"
 (** open a font file and create a font of the specified point size 
    @return font datatype 
 *)

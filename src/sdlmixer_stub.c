@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.25 2002/09/10 12:01:20 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.26 2002/09/24 22:34:54 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -34,7 +34,6 @@
 
 #include "config.h"
 #include "common.h"
-#include "sdlmixer_stub.h"
 
 /*
  * memory management (custom blocks)
@@ -123,24 +122,6 @@ sdlmixer_raise_exception (char *msg)
     }
   }
   raise_with_string(*mixer_exn, msg);
-}
-
-/*
- * Stub initialization
- */
-
-void
-sdlmixer_stub_init()
-{
-}
-
-/*
- * Stub shutdown
- */
-
-void
-sdlmixer_stub_kill()
-{
 }
 
 /*

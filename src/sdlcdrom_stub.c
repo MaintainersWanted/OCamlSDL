@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.11 2002/08/23 07:15:20 xtrm Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.12 2002/09/24 22:34:54 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -30,7 +30,6 @@
 #include <SDL.h>
 
 #include "common.h"
-#include "sdlcdrom_stub.h"
 
 #ifdef __GNUC__ /* typechecked macro */
 #define Val_CDROM(p)  ( { SDL_CD *_mlsdl__cd = p; \
@@ -60,26 +59,6 @@ sdlcdrom_raise_nocd ()
   if(! cdrom_exn)
     cdrom_exn = caml_named_value("SDLcdrom_nocd");
   raise_constant(*cdrom_exn);
-}
-
-/*
- * Stub initialization
- */
-
-void
-sdlcdrom_stub_init (void)
-{
-  return;
-}
-
-/*
- * Stub shut down
- */
-
-void
-sdlcdrom_stub_kill (void)
-{
-  return;
 }
 
 /*

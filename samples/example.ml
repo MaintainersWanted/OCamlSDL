@@ -1,9 +1,10 @@
-(* $Id: example.ml,v 1.12 2002/08/25 12:50:47 oliv__a Exp $ *)
+(* $Id: example.ml,v 1.13 2002/09/24 22:34:54 oliv__a Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
 
 init [`EVERYTHING];; (* init_with_auto_clean();; *)
+Sdlttf.init ();;
 
 let screen = set_video_mode 640 480 16 [`HWSURFACE];;
 let s = "OCamlSDL" ;;
@@ -49,21 +50,19 @@ let place_max_icons max delay =
     Sdltimer.delay delay; 
   done;;
 
-let display_text f s bg fg =
-  let s_text = Sdlttf.render_text_shaded f s
-	       ~bg ~fg
-  in
+let display_text f s fg =
+  let s_text = Sdlttf.render_text_blended f s ~fg in
   random_placement s_text screen ;;
 
 let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
 
 
  fill_with white;;
- display_text f "Wait 2 seconds..." black white ;;
+ display_text f "Wait 2 seconds..." black ;;
  Sdltimer.delay 2000 ;;
  
  fill_with black;;
- display_text f "Going in the sky in 2 seconds and let's the pacmen" white black;;
+ display_text f "Going in the sky in 2 seconds and let's the pacmen" white ;;
  Sdltimer.delay 2000 ;;
  
  screen_fill clouds;;
@@ -75,7 +74,7 @@ let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
  fill_with white;;
  screen_fill logo ;;
  flip screen;;
- display_text f ("Made with "^s)  black white;;
+ display_text f ("Made with "^s)  black ;;
  Sdltimer.delay 5000 ;;
  
  Sdlttf.close_font f ;;

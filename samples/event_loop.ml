@@ -3,6 +3,7 @@ open Sdlvideo;;
 open Sdlevent;;
 
 init [`EVERYTHING];;
+Sdlttf.init ();;
 
 let screen = set_video_mode 640 480 16 [`HWSURFACE] ;; (*;`FULLSCREEN];;*)
 let s = "Pathetic Sketch" ;;

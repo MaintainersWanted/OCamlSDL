@@ -2,7 +2,7 @@ dnl ****** -*- m4 -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.24 2002/09/10 11:54:06 oliv__a Exp $
+dnl $Id: configure.in,v 1.25 2002/09/24 22:34:54 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -110,12 +110,10 @@ then
       then
         AC_MSG_ERROR(Cannot find SDL_tff library.)
       else
-        LIBS="$LIBS -lSDL_ttf"
         PARTS="ttf"
         AC_DEFINE(TTF_RELEASE, 1)
       fi
     else
-      LIBS="$LIBS -lSDL_ttf"
       PARTS="ttf"
       AC_DEFINE(TTF_RELEASE, 2)	
     fi
@@ -137,7 +135,6 @@ then
     then 
       AC_MSG_ERROR(Cannot find SDL_image library.)
     else
-      LIBS="$LIBS -lSDL_image"
       PARTS="$PARTS loader"
     fi
   else
@@ -158,7 +155,6 @@ then
     then 
       AC_MSG_ERROR(Cannot find SDL_mixer library.)
     else
-      LIBS="$LIBS -lSDL_mixer"
       PARTS="$PARTS mixer"
     fi
   fi

@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.6 2002/09/02 17:58:20 oliv__a Exp $
+# $Id: Makefile,v 1.7 2002/09/24 22:34:54 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -33,11 +33,17 @@ SAMPLES = test_cdrom example ocamlplayer event_loop \
 all: $(addsuffix .test,$(SAMPLES))
 opt: $(addsuffix .opt,$(SAMPLES))
 
+event_loop.test event_loop.opt : EXTRA = ttf
+example.test example.opt : EXTRA = ttf loader
+ocamlplayer.test ocamlplayer.opt : EXTRA = mixer
+ocamlsdl_logo.test ocamlsdl_logo.opt : EXTRA = loader
+ocamlsdl_logo2.test ocamlsdl_logo2.opt : EXTRA = loader
+
 %.test : %.cmo
-	$(CAMLC) -o $@ -I $(LIB_DIR) -dllpath $(LIB_DIR) bigarray.cma sdl.cma $<
+	$(CAMLC) -o $@ -I $(LIB_DIR) -dllpath $(LIB_DIR) bigarray.cma sdl.cma $(EXTRA:%=sdl%.cma) $<
 
 %.opt : %.cmx
-	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
+	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $(EXTRA:%=sdl%.cmxa) $<
 
 distclean: clean
 	rm -f .depend *~
