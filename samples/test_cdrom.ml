@@ -3,7 +3,7 @@ open Sdl ;;
 open Sdlcdrom ;;
 
 (* init the SDL library *)
-init_with_auto_clean();;
+init [CDROM];; (*  init_with_auto_clean();; *)
 
 (* Get the number of cdrom drives *)
 let numbers_of_drives = get_num_drives ();;

@@ -1,9 +1,9 @@
-(* $Id: example.ml,v 1.6 2001/04/07 14:36:34 xtrm Exp $ *)
+(* $Id: example.ml,v 1.7 2001/04/24 19:42:57 xtrm Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
 
-init_with_auto_clean();;
+init [EVERYTHING];; (* init_with_auto_clean();; *)
 
 let screen = set_display_mode 640 480 16;;
 let s = "OCamlSDL" ;;
@@ -76,5 +76,7 @@ let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
  Sdltimer.delay 5000 ;;
  
  Sdlttf.close_font f ;;
+
+ quit();;
 
 
