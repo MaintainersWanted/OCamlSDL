@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.6 2000/01/20 17:50:34 smkl Exp $
+# $Id: Makefile.in,v 1.7 2000/01/20 18:05:46 smkl Exp $
 
 CC = 		@CC@ 
 CFLAGS =	@CFLAGS@ -Wall #-O3 -pipe -pedantic -m486 
@@ -27,7 +27,7 @@ CAMLTOP =	@OCAMLMKTOP@
 CAMLDEP =	@OCAMLDEP@
 MLFLAGS =
 
-CLIBS =		@LIBS@ @MATHLIB@ -lSDLttf -lttf -lSDL_image 
+CLIBS =		@LIBS@ @MATHLIB@
 MLLIBS =	-cclib "$(CLIBS)" 
 LIBDIR =
 

@@ -76,12 +76,22 @@ dnl Check for compiler characteristics
 dnl Check for library functions
 
 AC_CHECK_LIB(png, png_read_image, png_ok=yes, png_ok=no, -lz -lm)
-
 if test "$png_ok" = no; then
         AC_MSG_ERROR(Cannot find libpng.)
 fi
-
 LIBS="$LIBS -lpng -lz"
+
+AC_CHECK_LIB(SDL_image, IMG_Load_RW, image_ok=yes, image_ok=no)
+if test "$image_ok" = no; then
+        AC_MSG_ERROR(Cannot find SDL image library.)
+fi
+LIBS="$LIBS -lSDL_image"
+
+AC_CHECK_LIB(SDLttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
+if test "$ttf_ok" = no; then
+        AC_MSG_ERROR(Cannot find SDL TTF library.)
+fi
+LIBS="$LIBS -lSDLttf"
 
 dnl Check for system services
 

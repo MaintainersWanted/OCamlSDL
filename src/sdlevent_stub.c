@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.5 2000/01/20 17:50:34 smkl Exp $ */
+/* $Id: sdlevent_stub.c,v 1.6 2000/01/20 18:05:46 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -144,8 +144,11 @@ sdlevent_stub_init (void)
 
   /* Ignore unhandled events */
   SDL_EventState(SDL_ACTIVEEVENT, SDL_IGNORE);
+#if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION == 1
+  SDL_EventState(SDL_JOYAXISMOTION, SDL_IGNORE);
+#else
   SDL_EventState(SDL_JOYMOTION, SDL_IGNORE);
-/*  SDL_EventState(SDL_JOYAXISMOTION, SDL_IGNORE); */
+#endif
   SDL_EventState(SDL_JOYBUTTONUP, SDL_IGNORE);
   SDL_EventState(SDL_JOYBUTTONDOWN, SDL_IGNORE);
   SDL_EventState(SDL_QUIT, SDL_IGNORE);

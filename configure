@@ -1112,12 +1112,102 @@ else
 png_ok=no
 fi
 
-
 if test "$png_ok" = no; then
         { echo "configure: error: Cannot find libpng." 1>&2; exit 1; }
 fi
-
 LIBS="$LIBS -lpng -lz"
+
+echo $ac_n "checking for IMG_Load_RW in -lSDL_image""... $ac_c" 1>&6
+echo "configure:1122: checking for IMG_Load_RW in -lSDL_image" >&5
+ac_lib_var=`echo SDL_image'_'IMG_Load_RW | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lSDL_image  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 1130 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char IMG_Load_RW();
+
+int main() {
+IMG_Load_RW()
+; return 0; }
+EOF
+if { (eval echo configure:1141: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  image_ok=yes
+else
+  echo "$ac_t""no" 1>&6
+image_ok=no
+fi
+
+if test "$image_ok" = no; then
+        { echo "configure: error: Cannot find SDL image library." 1>&2; exit 1; }
+fi
+LIBS="$LIBS -lSDL_image"
+
+echo $ac_n "checking for TTF_Init in -lSDLttf""... $ac_c" 1>&6
+echo "configure:1168: checking for TTF_Init in -lSDLttf" >&5
+ac_lib_var=`echo SDLttf'_'TTF_Init | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lSDLttf  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 1176 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char TTF_Init();
+
+int main() {
+TTF_Init()
+; return 0; }
+EOF
+if { (eval echo configure:1187: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ttf_ok=yes
+else
+  echo "$ac_t""no" 1>&6
+ttf_ok=no
+fi
+
+if test "$ttf_ok" = no; then
+        { echo "configure: error: Cannot find SDL TTF library." 1>&2; exit 1; }
+fi
+LIBS="$LIBS -lSDLttf"
 
 
 # Finally create all the generated files
