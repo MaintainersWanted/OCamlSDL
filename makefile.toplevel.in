@@ -18,10 +18,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.toplevel.in,v 1.18 2004/01/31 09:15:50 smkl Exp $
+# $Id: makefile.toplevel.in,v 1.19 2004/02/04 12:00:22 oliv__a Exp $
 
 PREFIX =        @prefix@
-CAMLLIBDIR =    @OCAMLLIB@
+OCAMLLIBDIR =   @OCAMLLIB@
 OCAMLSDLDIR =   @OCAMLSDLDIR@
 BINDIR =        $(PREFIX)/bin
 LABLGLDIR =     @LABLGLDIR@
@@ -29,59 +29,23 @@ LABLGLDIR =     @LABLGLDIR@
 INSTALL = 	@INSTALL@
 INSTALL_DATA = 	@INSTALL_DATA@
 
-PARTS = @PARTS@
+PARTS = 	@PARTS@
 
 CC =            @CC@
-CPPFLAGS =	@CPPFLAGS@ @DEFS@
+CPPFLAGS =	@CPPFLAGS@
 CFLAGS =	@CFLAGS@ 
-CAMLC =		@OCAMLC@
-CAMLOPT =	@OCAMLOPT@
-CAMLTOP =	@OCAMLMKTOP@
-CAMLDEP =	@OCAMLDEP@
-CAMLMKLIB =     @OCAMLMKLIB@
-CAMLDOC = 	@OCAMLDOC@
+RANLIB =        @RANLIB@
+OBJEXT =        @OBJEXT@
+A =		a
 
-MLFLAGS  =
-OMLFLAGS =	-unsafe
+OCAMLC = 	@OCAMLC@
+OCAMLOPT =	@OCAMLOPT@
+OCAMLDEP =	@OCAMLDEP@
+OCAMLMKLIB =    @OCAMLMKLIB@
+OCAMLDOC = 	@OCAMLDOC@
 
 CYGWIN   = @CYGWIN@
 
-LIBS      =	$(patsubst -lSDLmain,-lmlsdl_main,@LIBS@)
-CLIBS     =	$(addprefix -cclib ,$(filter -l%,$(LIBS)))
-MLLDFLAGS =	$(addprefix -ccopt ,$(filter-out -l%,$(LIBS)))
+SDL_LIBS = @SDL_LIBS@
 
 DESTDIR =
-
-%.cmo : %.ml
-	$(CAMLC) -c $(MLFLAGS) $<
-
-%.cmx : %.ml
-	$(CAMLOPT) -c $(OMLFLAGS) $<
-
-%.cmi : %.mli
-	$(CAMLC) -c $(MLFLAGS) $<
-
-%.o : %.c
-	$(CAMLC) -c -ccopt "$(CPPFLAGS) $(CFLAGS)" $<
-
-ifndef OCAMLMKLIB
-%.cma :
-	$(CAMLC) -o $@  -a -custom $(CLIBS) $(MLLDFLAGS) $^
-
-%.cmxa :
-	$(CAMLOPT) -o $@  -a $(CLIBS) $(MLLDFLAGS) $^
-
-%.a :
-	ar crus $@ $^
-endif
-
-CLIBRARY =      libsdlstub.a
-
-CMAKELIB = ar cruvs 
-OBJSUFFIX = .o
-LIBSUFFIX = .a
-
-SDLLIB = $(LIBS)
-SDLTTFLIB = -lSDL_ttf
-SDLLOADERLIB = -lSDL_image
-SDLMIXERLIB = -lSDL_mixer

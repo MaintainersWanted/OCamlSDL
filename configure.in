@@ -2,9 +2,9 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.32 2003/11/16 14:26:38 oliv__a Exp $
+dnl $Id: configure.in,v 1.33 2004/02/04 12:00:22 oliv__a Exp $
 
-dnl  begin configure.in 
+dnl begin configure.in 
 AC_INIT(src/sdl.ml)
 
 AC_CONFIG_AUX_DIR(./support)
@@ -13,11 +13,12 @@ AC_CONFIG_HEADER(src/config.h)
 # Check for OCaml programs 
 AC_PROG_OCAML()
 
-dnl -*- Check for programs -*-
+# Check for programs
 if test -z "$CFLAGS" ; then
    CFLAGS="-g -O"
 fi
 AC_PROG_CC
+AC_PROG_RANLIB
 AC_FUNC_ALLOCA
 AC_C_INLINE
 if test "$ac_cv_c_inline" != no ; then
@@ -33,136 +34,81 @@ case $host in
 esac
 AC_SUBST(CYGWIN)
 
-dnl -*- Checking for lablGL -*-
+# Checking for lablGL
 AC_ARG_WITH(lablgldir,[  --with-lablgldir=DIR	  specify location of lablgl],LABLGLDIR="$withval")
-AC_MSG_CHECKING(lablGL directory)
-TMPF=conftest.ml
-cat > $TMPF << EOF
-open Gl
-EOF
-_LABLGLDIR=$LABLGLDIR
-unset LABLGLDIR
-for dir in $_LABLGLDIR +lablGL ; do
-  if $OCAMLC -c -I $dir $TMPF >& /dev/null ; then
-    LABLGLDIR="$dir" 
-    break
-  fi
-done
-rm -f $TMPF
-if test -n $LABLGLDIR ; then 
-  AC_MSG_RESULT($LABLGLDIR)
-else
-  AC_MSG_RESULT(not found)
-fi
-AC_SUBST(LABLGLDIR)
+AC_CHECK_OCAML_MODULE(lablGL,LABLGLDIR,Gl,+lablGL)
 
-dnl -*- where to install the library ? -*-
-AC_ARG_WITH(installdir,[  --with-installdir=DIR	  specify installation directory [defaults to +sdl]],OCAMLSDLDIR="$withval")
-if test -z "$OCAMLSDLDIR" ; then
-  OCAMLSDLDIR='$(CAMLLIBDIR)/sdl'
-fi
+# Where to install the library ?
+AC_ARG_WITH(installdir,[  --with-installdir=DIR	  specify installation directory [defaults to +sdl]],OCAMLSDLDIR="$withval", OCAMLSDLDIR="$OCAMLLIB/sdl")
 AC_SUBST(OCAMLSDLDIR)
 
-dnl -*- Check for libraries -*-
+# Check for libraries
 
-dnl  Check for SDL libraries 
+# Check for SDL libraries 
 SDL_VERSION=1.2.0
-AM_PATH_SDL($SDL_VERSION,
-            :,
+AM_PATH_SDL($SDL_VERSION, :,
     AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
-LIBS="$LIBS $SDL_LIBS"
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 
-dnl  cmdline options 
+# cmdline options 
 AC_ARG_ENABLE(sdl_ttf,
- 	      [  --disable-sdl-ttf       without freetype support  [default is enabled]], sdl_ttf=$enableval, sdl_ttf=yes)
+ 	      [  --disable-sdl-ttf       without freetype support  [default is enabled]],
+	      sdl_ttf=$enableval, sdl_ttf=yes)
 AC_ARG_ENABLE(sdl_image,
- 	      [  --disable-sdl-image     without sdl image support [default is enabled]], sdl_image=$enableval, sdl_image=yes)
+ 	      [  --disable-sdl-image     without sdl image support [default is enabled]],
+	      sdl_image=$enableval, sdl_image=yes)
 AC_ARG_ENABLE(sdl_mixer,
- 	      [  --disable-sdl-mixer     without sdl mixer support [default is enabled]], sdl_mixer=$enableval, sdl_mixer=yes)
+ 	      [  --disable-sdl-mixer     without sdl mixer support [default is enabled]],
+	      sdl_mixer=$enableval, sdl_mixer=yes)
 AC_SUBST(PARTS)
 
-dnl -*- Checking for lib SDL_ttf -*-
-if test x"$sdl_ttf" = x"yes"
-then
-  AC_CHECK_HEADERS(SDL_ttf.h, have_sdl_ttf=true, have_sdl_ttf=false)
-  if test "$have_sdl_ttf" = true ;
-  then 
-    AC_CHECK_LIB(SDL_ttf, TTF_OpenFontIndex, ttf2_ok=yes, ttf2_ok=no)
-    if test "$ttf2_ok" = no;
-    then
-      AC_MSG_WARN(There is a new release of SDL_ttf, why not try it?)
-      AC_CHECK_LIB(SDL_ttf, TTF_OpenFont, ttf_ok=yes, ttf_ok=no)
-      if test "$ttf_ok" = no;
-      then
-        AC_MSG_ERROR(Cannot find SDL_tff library.)
-      else
-        PARTS="ttf"
-        AC_DEFINE(TTF_RELEASE, 1)
-      fi
-    else
-      PARTS="ttf"
-      AC_DEFINE(TTF_RELEASE, 2)	
-    fi
-  else
-    sdl_ttf=no
+# Checking for lib SDL_ttf
+if test "$sdl_ttf" = yes ; then
+  AC_CHECK_HEADERS(SDL_ttf.h, : , sdl_ttf=no)
+  if test "$sdl_ttf" = yes ; then 
+    AC_CHECK_LIB(SDL_ttf, TTF_OpenFontRW, AC_DEFINE(SDL_TTF_VERSION,206),[
+      AC_CHECK_LIB(SDL_ttf, TTF_OpenFontIndex, AC_DEFINE(SDL_TTF_VERSION,204),[
+        AC_CHECK_LIB(SDL_ttf, TTF_OpenFont, AC_DEFINE(SDL_TTF_VERSION,200),
+        AC_MSG_ERROR(Cannot find SDL_tff library.))
+      ])
+    ])
+    PARTS="$PARTS ttf"
   fi
 fi
 
-dnl -*- Checking for lib SDL_image -*-
-if test x"$sdl_image" = x"yes"
-then
-  AC_CHECK_HEADERS(SDL_image.h, 
-                   have_sdl_image="true",
-		   have_sdl_image="false")
-
-  if test "$have_sdl_image" = true;
-  then
-    AC_CHECK_LIB(SDL_image, IMG_ReadXPMFromArray, image_ok=yes, image_ok=no)
-    if test "$image_ok" = no; 
-    then 
-      AC_CHECK_LIB(SDL_image, IMG_Load_RW, imageold_ok=yes, imageold_ok=no)
-      if test "$imageold_ok" = no; 
-      then 
-        AC_MSG_ERROR(Cannot find SDL_image library.)
-      else
-        PARTS="$PARTS loader"
-	AC_DEFINE(IMAGE_RELEASE, 1)
-      fi
-    else
-        PARTS="$PARTS loader"
-	AC_DEFINE(IMAGE_RELEASE, 2)
-    fi
-  else
-    sdl_image=no
+# Checking for lib SDL_image
+if test "$sdl_image" = yes ; then
+  AC_CHECK_HEADERS(SDL_image.h, : , sdl_image=no)
+  if test "$sdl_image" = yes ; then 
+    AC_CHECK_LIB(SDL_image, IMG_ReadXPMFromArray, AC_DEFINE(SDL_IMAGE_VERSION,121),[
+      AC_CHECK_LIB(SDL_image, IMG_Load_RW, AC_DEFINE(SDL_IMAGE_VERSION,120),
+        AC_MSG_ERROR(Cannot find SDL_image library.))	
+    ])
+    PARTS="$PARTS loader"
   fi
 fi
 
-dnl -*- Checking for lib SDL_mixer -*-
-if test x"$sdl_mixer" = x"yes"
-then 
-  AC_CHECK_HEADERS(SDL_mixer.h, 
-	           have_sdl_mixer="true", 
-		   have_sdl_mixer="false")
-
-  if test "$have_sdl_mixer" = true;
-  then
-    AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, mixer_ok=yes, mixer_ok=no)
-    if test "$mixer_ok" = no; 
-    then 
-      AC_MSG_ERROR(Cannot find SDL_mixer library.)
-    else
-      PARTS="$PARTS mixer"
-    fi
+# Checking for lib SDL_mixer
+if test "$sdl_mixer" = yes ; then
+  AC_CHECK_HEADERS(SDL_mixer.h, : , sdl_mixer=no)
+  if test "$sdl_mixer" = yes ; then 
+    AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, :,
+      AC_MSG_ERROR(Cannot find SDL_mixer library.))
+    PARTS="$PARTS mixer"
   fi
 fi
 
-#  Finally create all the generated files 
 AC_OUTPUT(makefile.toplevel)
 
-dnl Output the configuration summary
+# Output the configuration summary
+echo
+echo "Configure summary:"
+if test -n "$LABLGLDIR" ; then lablgl_support=yes ; else lablgl_support=no ; fi
+echo "  lablGL	" $lablgl_support
+echo "  SDL_image	" $sdl_image
+echo "  SDL_mixer	" $sdl_mixer
+echo "  SDL_tff	" $sdl_ttf
 echo
 echo "Configure finished, type 'make' to build."
-

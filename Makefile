@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.10 2002/11/06 23:02:07 oliv__a Exp $
+# $Id: Makefile,v 1.11 2004/02/04 12:00:22 oliv__a Exp $
 
 all:
 	$(MAKE) -C src
@@ -40,9 +40,6 @@ distclean:
 install:
 	$(MAKE) -C src install
 
-uninstall:
-	$(MAKE) -C src uninstall
-
 makefile.toplevel : configure ; $(error "please run ./configure")
 configure : configure.in
 	aclocal -I support
@@ -50,4 +47,4 @@ configure : configure.in
 
 -include makefile.toplevel
 
-.PHONY: all test clean distclean install uninstall
+.PHONY: all test clean distclean install

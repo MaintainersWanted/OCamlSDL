@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.12 2003/11/25 12:38:21 oliv__a Exp $ */
+/* $Id: common.h,v 1.13 2004/02/04 12:00:22 oliv__a Exp $ */
 
 #ifndef _COMMON_H_
 #define _COMMON_H_
@@ -67,7 +67,7 @@ extern value abstract_ptr(void *);
    Optional arguments
 */
 #define Val_none Val_unit
-extern value Val_some(value v) ;
+extern value Val_some(value v);
 #define Unopt(v) Field((v), 0)
 #define Opt_arg(v, conv, def) (Is_block(v) ? conv(Field((v),0)) : (def))
 
@@ -83,6 +83,9 @@ CAMLprim value ml_##cname (value arg1) { return conv (cname (conv1 (arg1))); }
 CAMLprim value mlname (value arg1) { return conv (cname (conv1 (arg1))); }
 #define ML_2(cname, conv1, conv2, conv) \
 CAMLprim value ml_##cname (value arg1, value arg2) { return conv (cname (conv1 (arg1), conv2 (arg2))); }
+
+#define Unsupported(cname) \
+CAMLprim value ml_##cname() { failwith("not implemented"); return Val_unit; }
 
 /*
  * MT stuff

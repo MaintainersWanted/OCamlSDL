@@ -1,197 +1,102 @@
-#
-# OCamlSDL - An ML interface to the SDL library
-# Copyright (C) 1999  Frederic Brunel
-#
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License as published by the Free Software Foundation; either
-# version 2 of the License, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILTY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# License along with this library; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-
-# $Id: Makefile,v 1.24 2004/01/31 09:15:50 smkl Exp $
-
 
 include ../makefile.toplevel
+include ../makefile.rules
 
 INSTALL_DIR = $(DESTDIR)$(OCAMLSDLDIR)
 
-MODULES = 	sdl sdlcdrom sdltimer sdljoystick \
-	        sdlkey sdlmouse sdlevent sdlvideo sdlwm \
-                $(if $(LABLGLDIR),sdlgl)
+OMLFLAGS = -unsafe
+MLFLAGS  = -g
 
-STUB_SRCS = 	$(MODULES:%=%_stub.c) common.c sdlrwops_stub.c
-STUB_OBJS =	$(STUB_SRCS:.c=$(OBJSUFFIX))
+sdl_MODULES = sdl sdlcdrom sdltimer sdljoystick \
+	      sdlkey sdlmouse sdlevent sdlvideo sdlwm \
+              $(if $(LABLGLDIR),sdlgl)
+sdl_C_SRC    = common.c sdlrwops_stub.c
 
-ML_SRCS =       $(MODULES:%=%.ml)
+loader_MODULES = sdlloader
+mixer_MODULES  = sdlmixer
+ttf_MODULES    = sdlttf
 
-ML_OBJS	=	$(ML_SRCS:.ml=.cmo)
-OPT_OBJS=	$(ML_SRCS:.ml=.cmx)
+TARGETS  = sdl.cma $(patsubst %,sdl%.cma,$(PARTS))
+TARGETS += libsdlstub.$(A) $(patsubst %,libsdl%stub.$(A),$(PARTS))
+ifdef OCAMLOPT
+TARGETS += sdl.cmxa $(patsubst %,sdl%.cmxa,$(PARTS))
+endif
 
-MLI	=	$(ML_SRCS:.ml=.mli) $(PARTS:%=sdl%.mli)
-CMI	=	$(MLI:.mli=.cmi)
+all : $(TARGETS)
 
-TOPLEVEL = 	toplevel
-LIBRARY = 	sdl.cma
-OLIBRARY = 	sdl.cmxa sdl$(LIBSUFFIX)
+sdl.cma : $(call ML_OBJS,sdl)
+	$(call MKCMA,sdl,sdlstub,$^,$(SDL_LIBS))
+sdl.cmxa : $(call ML_OPT_OBJS,sdl)
+	$(call MKCMXA,sdl,sdlstub,$^,$(SDL_LIBS))
+libsdlstub.$(A) dllsdlstub.so : $(call STUB_OBJS,sdl)
+	$(call MKCLIB,sdl,sdlstub,$^,$(SDL_LIBS))
 
-all:: libs 
+sdlloader.cma : $(call ML_OBJS,loader)
+	$(call MKCMA,sdlloader,sdlloaderstub,$^,-lSDL_image)
+sdlloader.cmxa : $(call ML_OPT_OBJS,loader)
+	$(call MKCMXA,sdlloader,sdlloaderstub,$^,-lSDL_image)
+libsdlloaderstub.$(A) dllsdlloaderstub.so : $(call STUB_OBJS,loader)
+	$(call MKCLIB,sdlloader,sdlloaderstub,$^,-lSDL_image)
 
-ifdef CYGWIN
-libs:: libmlsdl_main.a
-libmlsdl_main.a : mlsdl_main.o
-else
-all:: bin
-endif	
+sdlmixer.cma : $(call ML_OBJS,mixer)
+	$(call MKCMA,sdlmixer,sdlmixerstub,$^,-lSDL_mixer)
+sdlmixer.cmxa : $(call ML_OPT_OBJS,mixer)
+	$(call MKCMXA,sdlmixer,sdlmixerstub,$^,-lSDL_mixer)
+libsdlmixerstub.$(A) dllsdlmixerstub.so : $(call STUB_OBJS,mixer)
+	$(call MKCLIB,sdlmixer,sdlmixerstub,$^,-lSDL_mixer)
 
-bin:  $(TOPLEVEL)
-libs:: $(LIBRARY) $(CLIBRARY) $(PARTS:%=sdl%.cma) $(PARTS:%=libsdl%stub$(LIBSUFFIX))
+sdlttf.cma : $(call ML_OBJS,ttf)
+	$(call MKCMA,sdlttf,sdlttfstub,$^,-lSDL_ttf)
+sdlttf.cmxa : $(call ML_OPT_OBJS,ttf)
+	$(call MKCMXA,sdlttf,sdlttfstub,$^,-lSDL_ttf)
+libsdlttfstub.$(A) dllsdlttfstub.so : $(call STUB_OBJS,ttf)
+	$(call MKCLIB,sdlttf,sdlttfstub,$^,-lSDL_ttf)
 
-ifdef CAMLDOC
+
 LABLGLINC = $(if $(LABLGLDIR),-I $(LABLGLDIR))
+sdlgl.cm% :  MLINC=$(LABLGLINC)
+
+
+INSTALL_TARGETS = install-byte $(if $(OCAMLOPT),install-opt) $(if $(OCAMLMKLIB),install-dll)
+install : $(INSTALL_TARGETS)
+install-byte:
+	$(INSTALL) -d $(INSTALL_DIR)
+	$(INSTALL_DATA) *.cma lib*.$(A) *.cmi *.mli $(INSTALL_DIR)
+install-opt:
+	$(INSTALL_DATA) *.cmxa sdl*.$(A) *.cmx $(INSTALL_DIR)
+install-dll:
+	$(INSTALL) -d $(DESTDIR)$(OCAMLLIBDIR)/stublibs
+	$(INSTALL) dll*.so $(DESTDIR)$(OCAMLLIBDIR)/stublibs
+
+MLI = $(foreach part,sdl $(PARTS),$(patsubst %.ml,%.mli,$(call ML_SRCS,$(part))))
+CMI = $(patsubst %.mli,%.cmi,$(MLI))
+
+ifdef OCAMLDOC
 doc : ../doc/html/index.html ../doc/ocamlsdl.texi
 ../doc/html/index.html : $(CMI)
 	mkdir -p ../doc/html
-	$(CAMLDOC) -d ../doc/html -html -v -t ocamlsdl $(LABLGLINC) $(MLI)
+	$(OCAMLDOC) -d ../doc/html -html -v -t ocamlsdl $(LABLGLINC) $(MLI)
 ../doc/ocamlsdl.texi : $(CMI)
-	$(CAMLDOC) -d ../doc -texi -v -o $@ -t ocamlsdl $(LABLGLINC) $(MLI)
+	mkdir -p ../doc
+	$(OCAMLDOC) -d ../doc -texi -v -o $@ -t ocamlsdl $(LABLGLINC) $(MLI)
 else
 doc : ; $(error "you need ocamldoc to generate the documentation")
 endif
 
-$(TOPLEVEL): $(LIBRARY) $(CLIBRARY) $(PARTS:%=sdl%.cma)
-	$(CAMLTOP) -custom -I . -o $@ bigarray.cma $(LIBRARY) $(PARTS:%=sdl%.cma)
-
-install:: all
-	$(INSTALL) -d $(INSTALL_DIR)
-	test -f $(TOPLEVEL) && $(INSTALL) $(TOPLEVEL) $(INSTALL_DIR) || :
-	$(INSTALL_DATA) *.cma lib*$(LIBSUFFIX) *.cmi *.mli $(INSTALL_DIR)
-
-ifdef CAMLOPT
-libs :: $(OLIBRARY) $(PARTS:%=sdl%.cmxa)
-
-install :: 
-	$(INSTALL_DATA) *.cmxa sdl*$(LIBSUFFIX) *.cmx $(INSTALL_DIR)
-endif
-
-sdlgl.cmo : MLFLAGS+=  -I $(LABLGLDIR)
-sdlgl.cmi : MLFLAGS+=  -I $(LABLGLDIR)
-sdlgl.cmx : OMLFLAGS+= -I $(LABLGLDIR)
-
-ifdef CAMLMKLIB
-# Use ocamlmklib: requires ocaml >= 3.04
-CLIBRARY += dllsdlstub.so
-
-$(LIBRARY): $(ML_OBJS)
-	$(CAMLMKLIB) -o sdl -oc sdlstub $(LIBS) $^
-
-sdlmixer.cma : sdlmixer.cmo
-	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) $(SDLMIXERLIB) $^
-
-libsdlmixerstub.a dllsdlmixerstub.so : sdlmixer_stub.o 
-	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) $(SDLMIXERLIB) $^
-
-sdlttf.cma : sdlttf.cmo
-	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) $(SDLTTFLIB) $^
-
-libsdlttfstub.a dllsdlttfstub.so : sdlttf_stub.o
-	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) $(SDLTTFLIB) $^
-
-sdlloader.cma : sdlloader.cmo 
-	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) $(SDLLOADERLIB) $^
-
-libsdlloaderstub.a dllsdlloaderstub.so : sdlloader_stub.o 
-	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) $(SDLLOADERLIB) $^
-
-$(OLIBRARY): $(OPT_OBJS)
-	$(CAMLMKLIB) -o sdl -oc sdlstub $(LIBS) $^
-
-sdlmixer.cmxa : sdlmixer.cmx
-	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) $(SDLMIXERLIB) $^
-
-sdlttf.cmxa : sdlttf.cmx
-	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) $(SDLTTFLIB) $^
-
-sdlloader.cmxa : sdlloader.cmx 
-	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) $(SDLLOADERLIB) $^
-
-$(CLIBRARY): $(STUB_OBJS)
-	$(CAMLMKLIB) -o sdl -oc sdlstub $(LIBS) $^
-
-install:: 
-	-$(INSTALL) -d $(DESTDIR)$(CAMLLIBDIR)/stublibs
-	-$(INSTALL) *.so $(DESTDIR)$(CAMLLIBDIR)/stublibs
-
-
-else
-# does not use ocamlmklib
-$(LIBRARY): $(ML_OBJS)
-	$(OCAMLC) -a -o $(LIBRARY) $(ML_OBJS) -cclib -lsdlstub -cclib $(SDLLIB)
-
-$(OLIBRARY): $(OPT_OBJS)
-	$(OCAMLC) -a -o $(OLIBRARY) $(OPT_OBJS) -cclib -lsdlstub -cclib $(SDLLIB)
-
-$(CLIBRARY): $(STUB_OBJS)
-	$(CMAKELIB)$(CLIBRARY) $(STUB_OBJS)
-
-libsdlmixerstub$(LIBSUFFIX): sdlmixer_stub$(OBJSUFFIX)
-	$(CMAKELIB)libsdlmixerstub$(LIBSUFFIX) sdlmixer_stub$(OBJSUFFIX)
-
-libsdlloaderstub.$(LIBSUFFIX): sdlloader_stub.$(OBJSUFFIX)
-	$(CMAKELIB)libsdlloaderstub$(LIBSUFFIX) sdlloader_stub$(OBJSUFFIX)
-
-libsdlttfstub.$(LIBSUFFIX): sdlttf_stub.$(OBJSUFFIX)
-	$(CMAKELIB)libsdlttfstub$(LIBSUFFIX) sdlttf_stub$(OBJSUFFIX)
-
-sdlmixer.cma  : sdlmixer.cmo
-	$(OCAMLC) -a -o sdlmixer.cma sdlmixer.cmo -cclib -lsdlmixerstub -cclib $(SDLMIXERLIB)
-
-sdlmixer.cmxa  : sdlmixer.cmx
-	$(OCAMLOPT) -a -o sdlmixer.cmxa sdlmixer.cmx -cclib -lsdlmixerstub -cclib $(SDLMIXERLIB)
-
-sdlloader.cma  : sdlloader.cmo
-	$(OCAMLC) -a -o sdlloader.cma sdlloader.cmo -cclib -lsdlloaderstub -cclib $(SDLLOADERLIB)
-
-sdlloader.cmxa  : sdlloader.cmx
-	$(OCAMLOPT) -a -o sdlloader.cmxa sdlloader.cmx -cclib -lsdlloaderstub -cclib $(SDLLOADERLIB)
-
-sdlttf.cma  : sdlttf.cmo
-	$(OCAMLC) -a -o sdlttf.cma sdlttf.cmo -cclib -lsdlttfstub -cclib $(SDLTTFLIB)
-
-sdlttf.cmxa  : sdlttf.cmx
-	$(OCAMLOPT) -a -o sdlttf.cmxa sdlttf.cmx -cclib -lsdlttfstub -cclib $(SDLTTFLIB)
-
-endif
-
-uninstall:	
-	-rm -Rf $(INSTALL_DIR)
-	-rm -f $(CAMLLIBDIR)/stublibs/dllsdl*.so
-
-distclean: clean
-	rm -f config.h .depend .depend.c *~
-
 clean:
-	rm -f *.cm* *.[oa] *.so *.do $(TOPLEVEL)
+	rm -f *.cm* *.$(OBJEXT) *.$(A) *.so *.do
 
 depend: .depend .depend.c
 
 .depend: $(wildcard *.ml *.mli)
 	@echo "making deps..."
-	@$(CAMLDEP) $^ > $@
+	@$(OCAMLDEP) $^ > $@
 
-.depend.c : $(STUB_SRCS)
+.depend.c : $(wildcard *_stub.c)
 	@echo "making C deps..."
-	@$(CC) $(CPPFLAGS) -I $(CAMLLIBDIR) -MM $^ > $@
+	@$(CC) -MM $^ > $@
 
-.PHONY: all bin doc libs clean distclean depend install uninstall
+.PHONY: all doc clean depend install install-byte install-opt install-dll
 
 -include .depend
 -include .depend.c

@@ -17,21 +17,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.10 2003/01/16 16:36:09 oliv__a Exp $
+# $Id: Makefile,v 1.11 2004/02/04 12:00:22 oliv__a Exp $
 
 
 include ../makefile.toplevel
+include ../makefile.rules
 
 LIB_DIR = ../src
 
-MLFLAGS  += -w s -I $(LIB_DIR)
-OMLFLAGS += -w s -I $(LIB_DIR)
+MLINC += -I $(LIB_DIR)
+MLFLAGS  += -w s
+OMLFLAGS += -w s
 
 SAMPLES = test_cdrom ocamlplayer \
           testalpha testjoystick ocamlsdl_logo checkkeys \
           showfont
 ifdef LABLGLDIR
-SAMPLES +=  sdlgears
+SAMPLES += sdlgears
 endif
 
 all: $(addsuffix .test,$(SAMPLES))
@@ -43,29 +45,30 @@ ocamlplayer.test ocamlplayer.opt : EXTRA = mixer
 ocamlsdl_logo.test ocamlsdl_logo.opt : EXTRA = loader
 ocamlsdl_logo2.test ocamlsdl_logo2.opt : EXTRA = loader
 showfont.test showfont.opt : EXTRA = ttf
+sdlgears.test sdlgears.opt : MLINC+=-I $(LABLGLDIR)
 
 sdlgears.test : sdlgears.ml
-	$(CAMLC) -o $@ -I $(LIB_DIR) -I $(LABLGLDIR) -dllpath $(LIB_DIR) bigarray.cma lablgl.cma sdl.cma $<
+	$(OCAMLC) -o $@ $(MLINC) -dllpath $(LIB_DIR) bigarray.cma lablgl.cma sdl.cma $<
 
 sdlgears.opt : sdlgears.ml
-	$(CAMLOPT) -o $@ -I $(LIB_DIR) -I $(LABLGLDIR) bigarray.cmxa lablgl.cmxa sdl.cmxa $<
+	$(OCAMLOPT) -o $@ $(MLINC) bigarray.cmxa lablgl.cmxa sdl.cmxa $<
 
 %.test : %.cmo
-	$(CAMLC) -o $@ -I $(LIB_DIR) -dllpath $(LIB_DIR) bigarray.cma sdl.cma $(EXTRA:%=sdl%.cma) $<
+	$(OCAMLC) -o $@ $(MLINC) -dllpath $(LIB_DIR) bigarray.cma sdl.cma $(EXTRA:%=sdl%.cma) $<
 
 %.opt : %.cmx
-	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $(EXTRA:%=sdl%.cmxa) $<
+	$(OCAMLOPT) -o $@ $(MLINC) bigarray.cmxa sdl.cmxa $(EXTRA:%=sdl%.cmxa) $<
 
 distclean: clean
 	rm -f .depend *~
 
 clean:
-	rm -f *.cm* *.[oa] *.so *.opt *.test
+	rm -f *.cm* *.o *.a *.so *.opt *.test
 
 depend: .depend
 
 .depend: $(SAMPLES:%=%.ml)
-	@$(CAMLDEP) -I $(LIB_DIR) $^ > $@
+	@$(OCAMLDEP) $(MLINC) $^ > $@
 
 .PHONY: all opt clean distclean depend
 

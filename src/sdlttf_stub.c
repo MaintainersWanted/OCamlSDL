@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.25 2003/11/16 14:40:29 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.26 2004/02/04 12:00:22 oliv__a Exp $ */
 
 #include <SDL_ttf.h>
 
@@ -113,7 +113,7 @@ sdlttf_open_font(value file, value index, value ptsize)
   int c_index = Opt_arg(index, Int_val, 0);
   TTF_Font *font=NULL;
 
-#if (TTF_RELEASE == 2)
+#if (TTF_RELEASE >= 204)
   font = TTF_OpenFontIndex(String_val(file), Int_val(ptsize), c_index);
 #else  /* try to keep compatibility with SDL_ttf v1 */
   font = TTF_OpenFont(String_val(file), Int_val(ptsize));
@@ -177,17 +177,17 @@ sdlttf_font_descent(value font)
 }
 
 ML_1(TTF_FontLineSkip, SDL_FONT, Val_int)
-#if (TTF_RELEASE == 2)
+#if (SDL_TTF_VERSION >= 204)
 ML_1(TTF_FontFaces, SDL_FONT, Val_int)
 ML_1(TTF_FontFaceIsFixedWidth, SDL_FONT, Val_bool)
 ML_1(TTF_FontFaceFamilyName, SDL_FONT, copy_string)
 ML_1(TTF_FontFaceStyleName, SDL_FONT, copy_string)
 #else
-CAMLprim value ml_TTF_FontFaces(value arg1) { failwith("not implemented"); return Val_unit;}
-CAMLprim value ml_TTF_FontFaceIsFixedWidth(value arg1) { failwith("not implemented"); return Val_unit;}
-CAMLprim value ml_TTF_FontFaceFamilyName(value arg1) { failwith("not implemented"); return Val_unit;}
-CAMLprim value ml_TTF_FontFaceStyleName(value arg1) { failwith("not implemented"); return Val_unit;}
-#endif
+Unsupported (TTF_FontFaces)
+Unsupported (TTF_FontFaceIsFixedWidth)
+Unsupported (TTF_FontFaceFamilyName)
+Unsupported (TTF_FontFaceStyleName)
+#endif /* SDL_TTF_VERSION */
 
 CAMLprim value
 sdlttf_size_text(value font, value text)

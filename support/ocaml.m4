@@ -73,9 +73,8 @@ AC_CHECK_PROG(OCAMLDOC,ocamldoc,ocamldoc, AC_MSG_WARN(Cannot find ocamldoc.))
 
 # get the C compiler used by ocamlc
 if test -z "$CC" ; then
-  touch ac_ocaml_tmp.c
-  CC=$(ocamlc -verbose -c ac_ocaml_tmp.c 2>&1 | sed ['s/^+ \([^ ]*\) .*$/\1/'])
-  rm -f ac_ocaml_tmp.c ac_ocaml_tmp.o
+  touch conftest.c
+  CC=$($OCAMLC -verbose conftest.c 2>&1 | awk '/^+/ {print $[]2 ; exit}')
   echo OCaml uses $CC to compile C files
 fi
 
@@ -123,9 +122,13 @@ AC_CHECK_PROG(CAMLP4,camlp4,camlp4)
 if test "$CAMLP4"; then
 	TMPVERSION=`$CAMLP4 -v 2>&1| sed -n -e 's|.*version *\(.*\)$|\1|p'`
 	if test "$TMPVERSION" != "$OCAMLVERSION" ; then
-	    AC_MSG_RESULT(versions differs from ocamlc)
+	    AC_MSG_WARN(versions differs from ocamlc)
+ 	else
+	    AC_CHECK_PROG(CAMLP4O,camlp4o,camlp4o)
 	fi
 fi
+AC_SUBST(CAMLP4)
+AC_SUBST(CAMLP4O)
 ])
 dnl
 dnl
@@ -178,3 +181,31 @@ if test -z "$INSTALLDIR" ; then
 fi
 AC_SUBST(INSTALLDIR)
 ])
+dnl
+dnl
+dnl
+dnl AC_CHECK_OCAML_MODULE looks for a module in a given path
+dnl 1 -> name (for printing)
+dnl 2 -> env var name
+dnl 3 -> module to check
+dnl 4 -> default dirs
+AC_DEFUN(AC_CHECK_OCAML_MODULE,
+[dnl
+AC_MSG_CHECKING($1 directory)
+cat > conftest.ml <<EOF
+open $3
+EOF
+unset found
+for $2 in $$2 $4 ; do
+  if $OCAMLC -c -I "$$2" conftest.ml > /dev/null 2>&1 ; then
+    found=yes
+    break
+  fi
+done
+if test -n "$found" ; then
+  AC_MSG_RESULT($$2)
+else
+  AC_MSG_RESULT(not found)
+  unset $2
+fi
+AC_SUBST($2)])

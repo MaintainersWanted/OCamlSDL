@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.14 2003/11/16 14:40:28 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.15 2004/02/04 12:00:22 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -61,9 +61,9 @@ CAMLprim value ml_IMG_Load_RW(value o_autoclose, value rwops)
   return ML_SURFACE(s);
 }
 
+#if (SDL_IMAGE_VERSION >= 121)
 CAMLprim value ml_IMG_ReadXPMFromArray(value string_arr)
 {
-#if (IMAGE_RELEASE == 2)
   int len = Wosize_val(string_arr);
   LOCALARRAY(char *, xpm, len+1);
   SDL_Surface *s;
@@ -73,8 +73,7 @@ CAMLprim value ml_IMG_ReadXPMFromArray(value string_arr)
   if(! s)
     sdlloader_raise_exception(IMG_GetError());
   return ML_SURFACE(s);
-#else
-  sdlloader_raise_exception("not supported");
-  return Val_unit;
-#endif
 }
+#else
+Unsupported (IMG_ReadXPMFromArray)
+#endif
