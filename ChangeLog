@@ -1,3 +1,26 @@
+2000-01-14  Frederic Brunel  <brunel@mail.dotcom.fr>
+
+	* sdlevent_stub.c: Added the implementation of the async. functions
+
+	* sdlevent.mli, sdlevent.ml: Added asynchronous functions for getting input
+	devices state
+
+	* sdlcdrom_stub.c (sdlcdrom_track_length): Replaced alloc() by alloc_tuple()
+
+2000-01-13  Frederic Brunel  <brunel@mail.dotcom.fr>
+
+	* sdlvideo_stub.c: Added the implementation of the new external
+	functions in sdlvideo.ml (smkl)
+
+	* sdlvideo.ml: Added external functions surface_set_colorkey,
+	surface_display_format, surface_from_rawrgb, surface_from_rawrgba 
+	(smkl)
+
+	* sdlvideo.mli: Added a pixel type and a function for making a
+	surface from pixels (smkl)
+	
+	* NEW (sdlpng, sdlppm): Added some picture loaders (smkl)
+
 2000-01-11  Frederic Brunel  <brunel@mail.dotcom.fr>
 
 	* NEW: Added a BUGS file for reporting bugs.
