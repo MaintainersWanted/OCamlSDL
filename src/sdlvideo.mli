@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.19 2002/05/27 22:14:48 xtrm Exp $ *)
+(* $Id: sdlvideo.mli,v 1.20 2002/05/30 16:13:38 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -57,20 +57,21 @@ type video_info = {
 type pixel_data =
   (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
-type video_flag = 
-  | SWSURFACE   (* Surface is in system memory *)
-  | HWSURFACE   (* Surface is in video memory *)
-  | SRCCOLORKEY (* Blit uses a source color key *)
-  | SRCALPHA    (* Blit uses source alpha blending *)
-  | ASYNCBLIT   (* Enables the use of asynchronous to the display surface *)
-  | ANYFORMAT   (* Allow any video pixel format *)
-  | HWPALETTE   (* Give SDL exclusive palette access *)
-  | DOUBLEBUF   (* Set up double-buffered video mode *)
-  | FULLSCREEN  (* Surface is a full screen display *)
-  | OPENGL      (* OpenGL rendering *)
-  | OPENGLBLIT  (* *)
-  | RESIZABLE   (* Create a resizable window *)
-  | NOFRAME     (* Frame without titlebar *)
+type video_flag = [
+  | `SWSURFACE   (* Surface is in system memory *)
+  | `HWSURFACE   (* Surface is in video memory *)
+  | `SRCCOLORKEY (* Blit uses a source color key *)
+  | `SRCALPHA    (* Blit uses source alpha blending *)
+  | `ASYNCBLIT   (* Enables the use of asynchronous to the display surface *)
+  | `ANYFORMAT   (* Allow any video pixel format *)
+  | `HWPALETTE   (* Give SDL exclusive palette access *)
+  | `DOUBLEBUF   (* Set up double-buffered video mode *)
+  | `FULLSCREEN  (* Surface is a full screen display *)
+  | `OPENGL      (* OpenGL rendering *)
+  | `OPENGLBLIT  (* *)
+  | `RESIZABLE   (* Create a resizable window *)
+  | `NOFRAME     (* Frame without titlebar *)
+] 
 
 (*1 Operations on display *)
 
@@ -95,8 +96,16 @@ val set_video_mode : int -> int -> int -> video_flag list -> surface
   Set up a video mode with the specified width, height and bits-per-pixel. 
 *)
     
-(*  val create_rgb_surface : common_video_flag list -> int -> int -> int -> int -> int -> int -> int  *)
-	 (* [create_rgb_surface flags width height bpp rmask gmask bmask amask] *)
+type common_video_flag = [
+  | `SWSURFACE
+  | `HWSURFACE
+  | `SRCCOLORKEY
+  | `SRCALPHA ] 
+external create_rgb_surface : common_video_flag list -> 
+  width:int -> height:int -> bpp:int -> 
+    rmask:int -> gmask:int -> bmask:int -> amask:int -> unit
+	= "sdlvideo_create_rgb_surface_bc" "sdlvideo_create_rgb_surface_bc"
+(* [create_rgb_surface flags width height bpp rmask gmask bmask amask] *)
 
 val set_opengl_mode : int -> int -> int -> surface;; 
 (*d

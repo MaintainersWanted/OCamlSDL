@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.ml,v 1.3 2001/04/24 19:39:28 xtrm Exp $ *)
+(* $Id: sdl.ml,v 1.4 2002/05/30 16:13:38 xtrm Exp $ *)
 
 (* Define a new exception for Sdl initialization errors and register 
    it to be callable from C code. *)
@@ -29,15 +29,16 @@ let _ = Callback.register_exception "SDL_init_exception" (SDL_init_exception "An
 
 (* Initialization. *)
 
-type init_flag =
-  | TIMER
-  | AUDIO
-  | VIDEO
-  | CDROM
-  | JOYSTICK
-  | NOPARACHUTE   (* Don't catch fatal signals *)
-  | EVENTTHREAD   (* Not supported on all OS's *)
-  | EVERYTHING
+type init_flag = [
+  | `TIMER
+  | `AUDIO
+  | `VIDEO
+  | `CDROM
+  | `JOYSTICK
+  | `NOPARACHUTE   (* Don't catch fatal signals *)
+  | `EVENTTHREAD   (* Not supported on all OS's *)
+  | `EVERYTHING
+  ] 
 
 external init : init_flag list -> unit = "sdl_init";;
 external init_with_auto_clean : init_flag list -> unit = "sdl_init_with_auto_clean";;

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.19 2002/05/27 22:14:48 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.20 2002/05/30 16:13:38 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -58,30 +58,39 @@ type video_info = {
 
 type pixel_data = (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
-type video_flag =
-  | SWSURFACE   (* Surface is in system memory *)
-  | HWSURFACE   (* Surface is in video memory *)
-  | SRCCOLORKEY (* Blit uses a source color key *)
-  | SRCALPHA    (* Blit uses source alpha blending *)
-  | ASYNCBLIT   (* Enables the use of asynchronous to the display surface *)
-  | ANYFORMAT   (* Allow any video pixel format *)
-  | HWPALETTE   (* Give SDL exclusive palette access *)
-  | DOUBLEBUF   (* Set up double-buffered video mode *)
-  | FULLSCREEN  (* Surface is a full screen display *)
-  | OPENGL      (* OpenGL rendering *)
-  | OPENGLBLIT  (* *)
-  | RESIZABLE   (* Create a resizable window *)
-  | NOFRAME     (* Frame without titlebar *)
-
+type video_flag = [
+  | `SWSURFACE   (* Surface is in system memory *)
+  | `HWSURFACE   (* Surface is in video memory *)
+  | `SRCCOLORKEY (* Blit uses a source color key *)
+  | `SRCALPHA    (* Blit uses source alpha blending *)
+  | `ASYNCBLIT   (* Enables the use of asynchronous to the display surface *)
+  | `ANYFORMAT   (* Allow any video pixel format *)
+  | `HWPALETTE   (* Give SDL exclusive palette access *)
+  | `DOUBLEBUF   (* Set up double-buffered video mode *)
+  | `FULLSCREEN  (* Surface is a full screen display *)
+  | `OPENGL      (* OpenGL rendering *)
+  | `OPENGLBLIT  (* *)
+  | `RESIZABLE   (* Create a resizable window *)
+  | `NOFRAME     (* Frame without titlebar *)
+] 
 (* Native C external functions *)
 
 external get_video_info : unit -> video_info = "sdlvideo_get_video_info";;
 external get_display_surface : unit -> surface = "sdlvideo_get_display_surface";;
-external set_display_mode : int -> int -> int -> surface = "sdlvideo_set_display_mode";;
+external set_display_mode : height:int -> width:int -> bpp:int -> surface = "sdlvideo_set_display_mode";;
 
 external video_mode_ok : int -> int -> int -> video_flag list -> bool = "sdlvideo_video_mode_ok"
 external set_video_mode : int -> int -> int -> video_flag list -> surface = "sdlvideo_set_video_mode"
-(* external create_rgb_surface : common_video_flag list -> int -> int -> int -> int -> int -> int -> int = "sdlvideo_create_rgb_surface" *)
+
+type common_video_flag = [
+  | `SWSURFACE
+  | `HWSURFACE
+  | `SRCCOLORKEY
+  | `SRCALPHA ] 
+external create_rgb_surface : common_video_flag list -> 
+  width:int -> height:int -> bpp:int -> 
+    rmask:int -> gmask:int -> bmask:int -> amask:int -> unit
+	= "sdlvideo_create_rgb_surface_bc" "sdlvideo_create_rgb_surface_bc"
 
 external set_opengl_mode : int -> int -> int -> surface = "sdlvideo_set_opengl_mode";;
 external map_rgb : surface -> color -> int = "sdlvideo_map_rgb";;
