@@ -1,0 +1,519 @@
+<HTML>
+  <HEAD>
+
+  <META http-equiv="Content-Type" content="text/html">
+  <META name="GENERATOR" content="cdk_doc">
+  <TITLE> Module   Sdlevent  </TITLE>
+  </HEAD>
+  <BODY TEXT=black BGCOLOR=white>
+  <TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%">
+  <TR><TD BGCOLOR="#60ff60"><DIV ALIGN=center><TABLE>
+  <TR><TD><B><FONT SIZE=5> Module <TT> Sdlevent <TT> </FONT></B></TD>
+  </TR></TABLE></DIV></TD>
+  </TR></TABLE>
+<P>
+<BLOCKQUOTE>
+Exception 
+</BLOCKQUOTE>
+
+<PRE>
+exception SDLevent_exception of string
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Types 
+</BLOCKQUOTE>
+
+<P>
+<BLOCKQUOTE>
+These key symbols exactly match the enum declaration of the SDL library 
+</BLOCKQUOTE>
+
+<PRE>
+type key = 
+    KEY_BACKSPACE
+  | KEY_TAB
+  | KEY_CLEAR
+  | KEY_RETURN
+  | KEY_PAUSE
+  | KEY_ESCAPE
+  | KEY_SPACE
+  | KEY_EXCLAIM
+  | KEY_QUOTEDBL
+  | KEY_HASH
+  | KEY_DOLLAR
+  | KEY_AMPERSAND
+  | KEY_QUOTE
+  | KEY_LEFTPAREN
+  | KEY_RIGHTPAREN
+  | KEY_ASTERISK
+  | KEY_PLUS
+  | KEY_COMMA
+  | KEY_MINUS
+  | KEY_PERIOD
+  | KEY_SLASH
+  | KEY_0
+  | KEY_1
+  | KEY_2
+  | KEY_3
+  | KEY_4
+  | KEY_5
+  | KEY_6
+  | KEY_7
+  | KEY_8
+  | KEY_9
+  | KEY_COLON
+  | KEY_SEMICOLON
+  | KEY_LESS
+  | KEY_EQUALS
+  | KEY_GREATER
+  | KEY_QUESTION
+  | KEY_AT
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+Skip uppercase letters
+
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_LEFTBRACKET
+  | KEY_BACKSLASH
+  | KEY_RIGHTBRACKET
+  | KEY_CARET
+  | KEY_UNDERSCORE
+  | KEY_BACKQUOTE
+  | KEY_a
+  | KEY_b
+  | KEY_c
+  | KEY_d
+  | KEY_e
+  | KEY_f
+  | KEY_g
+  | KEY_h
+  | KEY_i
+  | KEY_j
+  | KEY_k
+  | KEY_l
+  | KEY_m
+  | KEY_n
+  | KEY_o
+  | KEY_p
+  | KEY_q
+  | KEY_r
+  | KEY_s
+  | KEY_t
+  | KEY_u
+  | KEY_v
+  | KEY_w
+  | KEY_x
+  | KEY_y
+  | KEY_z
+  | KEY_DELETE
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+End of ASCII mapped keysyms 
+</BLOCKQUOTE>
+
+<P>
+<BLOCKQUOTE>
+International keyboard syms 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_WORLD_0
+  | KEY_WORLD_1
+  | KEY_WORLD_2
+  | KEY_WORLD_3
+  | KEY_WORLD_4
+  | KEY_WORLD_5
+  | KEY_WORLD_6
+  | KEY_WORLD_7
+  | KEY_WORLD_8
+  | KEY_WORLD_9
+  | KEY_WORLD_10
+  | KEY_WORLD_11
+  | KEY_WORLD_12
+  | KEY_WORLD_13
+  | KEY_WORLD_14
+  | KEY_WORLD_15
+  | KEY_WORLD_16
+  | KEY_WORLD_17
+  | KEY_WORLD_18
+  | KEY_WORLD_19
+  | KEY_WORLD_20
+  | KEY_WORLD_21
+  | KEY_WORLD_22
+  | KEY_WORLD_23
+  | KEY_WORLD_24
+  | KEY_WORLD_25
+  | KEY_WORLD_26
+  | KEY_WORLD_27
+  | KEY_WORLD_28
+  | KEY_WORLD_29
+  | KEY_WORLD_30
+  | KEY_WORLD_31
+  | KEY_WORLD_32
+  | KEY_WORLD_33
+  | KEY_WORLD_34
+  | KEY_WORLD_35
+  | KEY_WORLD_36
+  | KEY_WORLD_37
+  | KEY_WORLD_38
+  | KEY_WORLD_39
+  | KEY_WORLD_40
+  | KEY_WORLD_41
+  | KEY_WORLD_42
+  | KEY_WORLD_43
+  | KEY_WORLD_44
+  | KEY_WORLD_45
+  | KEY_WORLD_46
+  | KEY_WORLD_47
+  | KEY_WORLD_48
+  | KEY_WORLD_49
+  | KEY_WORLD_50
+  | KEY_WORLD_51
+  | KEY_WORLD_52
+  | KEY_WORLD_53
+  | KEY_WORLD_54
+  | KEY_WORLD_55
+  | KEY_WORLD_56
+  | KEY_WORLD_57
+  | KEY_WORLD_58
+  | KEY_WORLD_59
+  | KEY_WORLD_60
+  | KEY_WORLD_61
+  | KEY_WORLD_62
+  | KEY_WORLD_63
+  | KEY_WORLD_64
+  | KEY_WORLD_65
+  | KEY_WORLD_66
+  | KEY_WORLD_67
+  | KEY_WORLD_68
+  | KEY_WORLD_69
+  | KEY_WORLD_70
+  | KEY_WORLD_71
+  | KEY_WORLD_72
+  | KEY_WORLD_73
+  | KEY_WORLD_74
+  | KEY_WORLD_75
+  | KEY_WORLD_76
+  | KEY_WORLD_77
+  | KEY_WORLD_78
+  | KEY_WORLD_79
+  | KEY_WORLD_80
+  | KEY_WORLD_81
+  | KEY_WORLD_82
+  | KEY_WORLD_83
+  | KEY_WORLD_84
+  | KEY_WORLD_85
+  | KEY_WORLD_86
+  | KEY_WORLD_87
+  | KEY_WORLD_88
+  | KEY_WORLD_89
+  | KEY_WORLD_90
+  | KEY_WORLD_91
+  | KEY_WORLD_92
+  | KEY_WORLD_93
+  | KEY_WORLD_94
+  | KEY_WORLD_95
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Numeric keypad 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_KP0
+  | KEY_KP1
+  | KEY_KP2
+  | KEY_KP3
+  | KEY_KP4
+  | KEY_KP5
+  | KEY_KP6
+  | KEY_KP7
+  | KEY_KP8
+  | KEY_KP9
+  | KEY_KP_PERIOD
+  | KEY_KP_DIVIDE
+  | KEY_KP_MULTIPLY
+  | KEY_KP_MINUS
+  | KEY_KP_PLUS
+  | KEY_KP_ENTER
+  | KEY_KP_EQUALS
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Arrows + Home/End pad 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_UP
+  | KEY_DOWN
+  | KEY_RIGHT
+  | KEY_LEFT
+  | KEY_INSERT
+  | KEY_HOME
+  | KEY_END
+  | KEY_PAGEUP
+  | KEY_PAGEDOWN
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Function keys 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_F1
+  | KEY_F2
+  | KEY_F3
+  | KEY_F4
+  | KEY_F5
+  | KEY_F6
+  | KEY_F7
+  | KEY_F8
+  | KEY_F9
+  | KEY_F10
+  | KEY_F11
+  | KEY_F12
+  | KEY_F13
+  | KEY_F14
+  | KEY_F15
+      
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Key state modifier keys 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_NUMLOCK
+  | KEY_CAPSLOCK
+  | KEY_SCROLLOCK
+  | KEY_RSHIFT
+  | KEY_LSHIFT
+  | KEY_RCTRL
+  | KEY_LCTRL
+  | KEY_RALT
+  | KEY_LALT
+  | KEY_RMETA
+  | KEY_LMETA
+  | KEY_LSUPER
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Left "Windows" key 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_RSUPER
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Right "Windows" key 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_MODE
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+"Alt Gr" key 
+</BLOCKQUOTE>
+
+<P>
+<BLOCKQUOTE>
+Miscellaneous function keys 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_HELP
+  | KEY_PRINT
+  | KEY_SYSREQ
+  | KEY_BREAK
+  | KEY_MENU
+  | KEY_POWER
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Power Macintosh power key 
+</BLOCKQUOTE>
+
+<PRE>
+  | KEY_EURO
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Some european keyboards 
+</BLOCKQUOTE>
+
+<PRE>
+type key_state = 
+    PRESSED
+  | RELEASED
+
+
+</PRE>
+
+<PRE>
+type button =
+    BUTTON_LEFT
+  | BUTTON_MIDDLE
+  | BUTTON_RIGHT
+
+
+</PRE>
+
+<PRE>
+type button_state =
+    PRESSED 
+  | RELEASED
+
+
+</PRE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Definition of the event callbacks </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<P>
+<BLOCKQUOTE>
+Keyboard event called with the activated key, its state and the 
+coordinates of the mouse pointer 
+</BLOCKQUOTE>
+
+<PRE>
+type keyboard_event_func = key -> key_state -> int -> int -> unit
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Mouse button event called with the activated button, its state and 
+the coordinates of the mouse pointer 
+</BLOCKQUOTE>
+
+<PRE>
+type mouse_event_func = button -> button_state -> int -> int -> unit
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Mouse motion event called with the coordinates of the mouse pointer 
+</BLOCKQUOTE>
+
+<PRE>
+type mousemotion_event_func = int -> int -> unit
+
+
+</PRE>
+
+<PRE>
+type idle_event_func = unit -> unit
+
+
+</PRE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Functions for setting the current event callbacks </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<PRE>
+val set_keyboard_event_func : keyboard_event_func -> unit
+
+</PRE>
+
+<PRE>
+val set_mouse_event_func : mouse_event_func -> unit
+
+</PRE>
+
+<PRE>
+val set_mousemotion_event_func : mousemotion_event_func -> unit
+
+</PRE>
+
+<PRE>
+val set_idle_event_func : idle_event_func -> unit
+
+
+</PRE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Asynchronous functions for getting status of input devices </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<PRE>
+val is_key_pressed : key -> bool
+
+</PRE>
+
+<PRE>
+val is_button_pressed : button -> bool
+
+</PRE>
+
+<PRE>
+val get_mouse_position : unit -> int * int
+
+
+</PRE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Misc </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<P>
+<BLOCKQUOTE>
+Set the new position of the mouse cursor and generate a mouse motion
+event 
+</BLOCKQUOTE>
+
+<PRE>
+val set_mouse_position : int -> int -> unit
+
+
+</PRE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Event loop </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<PRE>
+val start_event_loop : unit -> unit
+
+</PRE>
+
+<PRE>val exit_event_loop : unit -> unit
+</PRE>
+
+</BODY>
+</HTML>

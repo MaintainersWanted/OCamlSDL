@@ -1,0 +1,596 @@
+<HTML>
+  <HEAD>
+
+  <META http-equiv="Content-Type" content="text/html">
+  <META name="GENERATOR" content="cdk_doc">
+  <TITLE> Module   Sdlvideo  </TITLE>
+  </HEAD>
+  <BODY TEXT=black BGCOLOR=white>
+  <TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%">
+  <TR><TD BGCOLOR="#60ff60"><DIV ALIGN=center><TABLE>
+  <TR><TD><B><FONT SIZE=5> Module <TT> Sdlvideo <TT> </FONT></B></TD>
+  </TR></TABLE></DIV></TD>
+  </TR></TABLE>
+<P>
+<BLOCKQUOTE>
+Exception 
+</BLOCKQUOTE>
+
+<PRE>
+exception SDLvideo_exception of string
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Types 
+</BLOCKQUOTE>
+
+<PRE>
+type rect = 
+    RectMax
+  | Rect of int * int * int * int
+
+
+</PRE>
+
+<PRE>
+type color = 
+    IntColor of int * int * int
+  | FloatColor of float * float * float
+
+
+</PRE>
+
+<PRE>
+type pixels =
+    Pixels of string * int * int
+  | APixels of string * int * int
+  | RGBPixels of color array array
+  | Buffer of int * int
+
+
+</PRE>
+
+<PRE>
+type surface
+
+
+</PRE>
+
+<PRE>
+type video_info = {
+    hw_available : bool;
+</PRE>
+<DIV ALIGN=right>Hardware surfaces? </DIV>
+
+<PRE>
+ : bool;
+</PRE>
+<DIV ALIGN=right>Window manager present? </DIV>
+
+<PRE>
+ : bool;
+</PRE>
+<DIV ALIGN=right>Accelerated blits HW -&gt; HW </DIV>
+
+<P><CODE>
+ : bool;</CODE>
+<DIV ALIGN=right>Accelerated blits with color key </DIV>
+
+<PRE>
+ : bool;
+</PRE>
+<DIV ALIGN=right>Accelerated blits with alpha </DIV>
+
+<PRE>
+ : bool;
+</PRE>
+<DIV ALIGN=right>Accelerated blits SW -&gt; HW </DIV>
+
+<P><CODE>
+ : bool;</CODE>
+<DIV ALIGN=right>Accelerated blits with color key </DIV>
+
+<PRE>
+ : bool;
+</PRE>
+<DIV ALIGN=right>Accelerated blits with alpha </DIV>
+
+<PRE>
+ : bool;
+</PRE>
+<DIV ALIGN=right>Accelerated color fill </DIV>
+
+<PRE>
+ : int;
+</PRE>
+<DIV ALIGN=right>Total amount of video memory (Ko) </DIV>
+
+<PRE>
+  } 
+
+
+</PRE>
+
+<PRE>
+type pixel_data =
+  (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
+
+
+</PRE>
+
+<PRE>
+type common_video_flag =
+  | SWSURFACE
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Surface is in system memory 
+</BLOCKQUOTE>
+
+<PRE>
+  | HWSURFACE
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Surface is in video memory 
+</BLOCKQUOTE>
+
+<PRE>
+  | SRCCOLORKEY
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Blit uses a source color key 
+</BLOCKQUOTE>
+
+<PRE>
+  | SRCALPHA
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Blit uses source alpha blending 
+</BLOCKQUOTE>
+
+<PRE>
+type ext_video_flag =
+  | ASYNCBLIT
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Enables the use of asynchronous to the display surface 
+</BLOCKQUOTE>
+
+<PRE>
+  | ANYFORMAT
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Allow any video pixel format 
+</BLOCKQUOTE>
+
+<PRE>
+  | HWPALETTE
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Give SDL exclusive palette access 
+</BLOCKQUOTE>
+
+<PRE>
+  | DOUBLEBUF
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Set up double-buffered video mode 
+</BLOCKQUOTE>
+
+<PRE>
+  | FULLSCREEN
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Surface is a full screen display 
+</BLOCKQUOTE>
+
+<PRE>
+  | OPENGL
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+OpenGL rendering 
+</BLOCKQUOTE>
+
+<PRE>
+  | OPENGLBLIT
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+</BLOCKQUOTE>
+
+<PRE>
+  | RESIZABLE
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Create a resizable window 
+</BLOCKQUOTE>
+
+<PRE>
+  | NOFRAME
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Frame without titlebar 
+</BLOCKQUOTE>
+
+<PRE>
+type video_flag = 
+  | C of common_video_flag 
+  | E of ext_video_flag
+
+
+</PRE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Operations on display </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<PRE>
+val get_video_info : unit -> video_info;;
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+returns information about the video hardware 
+</BLOCKQUOTE>
+
+<PRE>
+val get_display_surface : unit -> surface;;
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+returns the current display surface 
+
+</BLOCKQUOTE>
+
+<PRE>
+val set_display_mode : int -> int -> int -> surface;; 
+
+
+</PRE>
+
+<PRE>
+val video_mode_ok : int -> int -> int -> video_flag list -> bool
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+<CODE>video_mode_ok width height bpp flags</CODE> 
+
+</BLOCKQUOTE>
+
+<PRE>
+val set_video_mode : int -> int -> int -> video_flag list -> surface
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+<CODE>set_video_mode width height bpp flags</CODE> 
+Set up a video mode with the specified width, height and bits-per-pixel. 
+
+</BLOCKQUOTE>
+
+<P>
+<BLOCKQUOTE>
+val create_rgb_surface : common_video_flag list -&gt; int -&gt; int -&gt; int -&gt; int -&gt; int -&gt; int -&gt; int  
+</BLOCKQUOTE>
+
+<P>
+<BLOCKQUOTE>
+<CODE>create_rgb_surface flags width height bpp rmask gmask bmask amask</CODE> 
+</BLOCKQUOTE>
+
+<PRE>
+val set_opengl_mode : int -> int -> int -> surface;; 
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+obsolete must use <CODE>set_video_mode</CODE>
+
+</BLOCKQUOTE>
+
+<PRE>
+val flip : surface -> unit;;
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+Swaps screen buffers.
+<P>On hardware that supports double-buffering (<CODE>DOUBLEBUF</CODE>), this function 
+sets up a flip and returns. The hardware will wait for vertical retrace, 
+and then swap video buffers before the next video surface blit or lock 
+will return. 
+<P>On hardware that doesn't support double-buffering, this is equivalent to 
+calling <CODE>update_rect get_display_surface() RectMax</CODE>  
+
+</BLOCKQUOTE>
+
+<PRE>
+val update_rect : surface -> rect -> unit;;
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+Makes sure the given area is updated on the given screen.
+
+</BLOCKQUOTE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Operations on surfaces </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<PRE>
+val surface_free : surface -> unit;;
+
+</PRE>
+
+<PRE>
+val surface_loadBMP : string -> surface;;
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+Loads a surface from a named Windows BMP file.
+<P>Returns the new <CODE>surface</CODE>, or raise <CODE>SDLvideo_exception</CODE> 
+if there was an error
+
+</BLOCKQUOTE>
+
+<PRE>
+val surface_saveBMP : surface -> string -> unit;;
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+
+Saves tthe <CODE>surface</CODE> as a Windows BMP file named file.
+
+</BLOCKQUOTE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Accessors </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<PRE>
+val surface_width : surface -> int;;
+
+</PRE>
+
+<PRE>
+val surface_height : surface -> int;;
+
+</PRE>
+
+<PRE>
+val surface_rect : surface -> rect;;
+      
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+Grabbed in ocamlsdl-0.3 made by Jean-Christophe FILLIATRE 
+</BLOCKQUOTE>
+
+<PRE>
+val surface_bpp : surface -> int
+
+</PRE>
+
+<PRE>
+val surface_rmask : surface -> int
+
+</PRE>
+
+<PRE>
+val surface_gmask : surface -> int
+
+</PRE>
+
+<PRE>
+val surface_bmask : surface -> int
+
+</PRE>
+
+<PRE>
+val surface_amask : surface -> int
+
+
+</PRE>
+
+<PRE>
+val surface_fill_rect : surface -> rect -> color -> surface;;
+
+</PRE>
+
+<PRE>
+val surface_blit : surface -> rect -> surface -> rect -> unit;;
+
+</PRE>
+
+<PRE>
+val surface_set_alpha : surface -> float -> surface;;
+
+</PRE>
+
+<PRE>
+val surface_set_colorkey : surface -> color option -> unit;;
+
+</PRE>
+
+<PRE>
+val surface_display_format : surface -> surface;;
+
+
+</PRE>
+
+<PRE>
+val surface_from_pixels : pixels -> surface;;
+
+</PRE>
+
+<PRE>
+val surface_set_pixel : surface -> int -> int -> color -> unit;;
+
+</PRE>
+
+<PRE>
+val surface_get_pixel : surface -> int -> int -> color;;
+
+
+</PRE>
+
+<PRE>
+val unsafe_blit_buffer : surface -> string -> int -> unit;;
+
+
+</PRE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Operations on colors </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<PRE>
+val color_of_int : (int * int * int) -> color;;
+
+</PRE>
+
+<PRE>
+val color_of_float : (float * float * float) -> color;;
+
+</PRE>
+
+<PRE>
+val rgb_vector_of_color : color -> (int * int * int);;
+
+
+</PRE>
+<TABLE CELLPADDING=0 CELLSPACING=0 WIDTH="100%%">
+<TR><TD BGCOLOR="#70ff70"><DIV ALIGN=center><TABLE>
+<TR><TD><B><FONT SIZE=2> Window manager interaction </FONT></B></TD>
+</TR></TABLE></DIV></TD>
+</TR></TABLE>
+<PRE>
+val wm_available : unit -> bool;;
+
+</PRE>
+
+<PRE>
+val wm_set_caption : string -> string -> unit;;
+
+</PRE>
+
+<PRE>
+val wm_iconify_window : unit -> unit;;
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+TO FIX: val wm_toggle_fullscreen : surface -&gt; int ;; 
+</BLOCKQUOTE>
+
+<P>
+<BLOCKQUOTE>
+TO DO: val wm_get_caption : string -&gt; string -&gt; unit ;; 
+</BLOCKQUOTE>
+
+<P>
+<BLOCKQUOTE>
+TO DO: val wm_set_icon : surface -&gt; int ;; 
+</BLOCKQUOTE>
+
+<PRE>
+val show_cursor : bool -> unit;;
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+UNTESTED 
+</BLOCKQUOTE>
+
+<PRE>
+val must_lock : surface -> bool;;
+
+</PRE>
+
+<PRE>
+val lock_surface : surface -> unit;;
+
+</PRE>
+
+<PRE>
+val unlock_surface : surface -> unit;; 
+
+</PRE>
+
+<PRE>
+val surface_pixel_data : surface -> pixel_data;;
+
+</PRE>
+
+<PRE>
+val gl_swap_buffers : unit -> unit;;
+
+
+</PRE>
+
+<P>
+<BLOCKQUOTE>
+DO NOT USE. EXPERIMENTAL 
+</BLOCKQUOTE>
+
+<PRE>val surface_final : unit -> surface;;
+
+
+</PRE>
+
+</BODY>
+</HTML>
