@@ -1,0 +1,51 @@
+
+HOWTO use ocamlsdl with the Mingw port of OCaml
+
+
+1. Get Cygwin/Mingw. Get the development packages, namely gcc and gcc-mingw.
+   I couldn't get gcc 3.2 to work so I used the package gcc-2.
+   
+2. Get OCaml 3.06 from INRIA and build it. Instructions are in the file README.win32.
+   Follow the instructions for "Mingw port" (smthg like that). The "make opt.opt" step
+   kept crashing my Windows so I skipped it. 
+   Install ocaml somewhere.
+   
+3. Get SDL, compile and install. There are some additional instructions here :
+   http://www.libsdl.org/extras/win32/gcc.html like where to get nasm.exe.
+   
+4. Now get and unpack ocamlsdl-0.6.1
+
+5. Make sure the ocaml compilers are in your PATH (try ocamlc -v).
+   Make sure sdl-config is in your PATH.
+   Make sure the SDL.dll is in your PATH.
+   Run ./configure -- it should work ; if not, check what's wrong in config.log .
+   make -- builds the libraries (no toplevel).
+   cd samples && make testalpha.test testalpha.opt  -- try to run them, they should work.
+
+   
+What it does:
+
+ The file mlsdl_main.c is a near copy of SDL_main.c. It defines a WinMain entry point
+ that overrides the usual entry point of the caml program. It does a few initialisation
+ stuff and then calls "caml_main" to start the caml program (whereas the SDL_main.c supplied
+ by SDL calls a regular C "main" entry point). This mlsdl_main.c file is compiled as a 
+ liblsdl_main.a library and -lmlsdl_main is added to the link options of sdl.cma 
+ (in replacement of -lSDL_main).
+ 
+   
+   
+   
+Some various gotchas:
+  - this produces windowed apps, not console apps, so they will not pop up a console 
+    when starting. OTOH, there's no standard or error output. In particular, 
+    uncaught exceptions do not produce an error message.
+    
+  - ocaml compilers do not like cygwin-style paths. You can use the cygpath tool to convert them.
+    Instead of :
+       -I ~/ocamlsdl-0.6/src
+    try :
+       -I $(cygpath -w ~/ocamlsdl-0.6/src)
+
+
+-- 
+	Olivier Andrieu <oliv__a@users.sourceforge.net>
