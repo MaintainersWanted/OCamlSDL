@@ -83,7 +83,7 @@ extern value Val_SDLSurface(SDL_Surface *surf, int freeable, value barr)
 /*
  * Error handling
  */
-static void sdlvideo_raise_exception (char *msg)
+void sdlvideo_raise_exception (char *msg)
 {
   static value *video_exn = NULL;
   if(! video_exn) {
@@ -742,49 +742,6 @@ CAMLprim value ml_bigarray_pixels(value s, value mlBpp)
 }
 
 
-
-/*
- * GL interaction functions
- */
-
-ML_0(SDL_GL_SwapBuffers, Unit)
-
-static const SDL_GLattr GL_attr_map[12] = {
-  SDL_GL_RED_SIZE, SDL_GL_GREEN_SIZE,
-  SDL_GL_BLUE_SIZE, SDL_GL_ALPHA_SIZE,
-  SDL_GL_BUFFER_SIZE, SDL_GL_DOUBLEBUFFER,
-  SDL_GL_DEPTH_SIZE, SDL_GL_STENCIL_SIZE,
-  SDL_GL_ACCUM_RED_SIZE, SDL_GL_ACCUM_GREEN_SIZE,
-  SDL_GL_ACCUM_BLUE_SIZE, SDL_GL_ACCUM_ALPHA_SIZE, };
-
-CAMLprim value ml_SDL_GL_SetAttribute(value attrl)
-{
-  while( is_not_nil(attrl) ){
-    value attr = hd(attrl);
-    SDL_GL_SetAttribute( GL_attr_map[ Tag_val(attr) ], 
-			 Int_val(Field(attr, 0)) );
-    attrl = tl(attrl);
-  }
-  return Val_unit;
-}
-
-CAMLprim value ml_SDL_GL_GetAttribute(value unit)
-{
-  CAMLparam0();
-  CAMLlocal2(v, a);
-  int i, val;
-  v = nil();
-  for(i=11; i>=0; i--){
-    if( SDL_GL_GetAttribute( GL_attr_map[i], &val) < 0)
-      CAMLreturn( ( sdlvideo_raise_exception(SDL_GetError()) ,
-		   Val_unit ) ) ;
-    a = alloc_small(1, i);
-    Field(a, 0) = Val_int(val);
-    v = cons(a, v);
-  }
-  CAMLreturn(v);
-}
-
 /*
  * get/put_pixel functions
  * stolen from http://sdldoc.csn.ul.ie/guidevideo.php
@@ -798,11 +755,19 @@ Uint32 getpixel(SDL_Surface *surface, int x, int y)
     switch(bpp) {
     case 1: return *p;
     case 2: return *(Uint16 *)p;
-    case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
-            return p[0] << 16 | p[1] << 8 | p[2];
-        else
-            return p[0] | p[1] << 8 | p[2] << 16;
+    case 3: {
+      unsigned int shift;
+      Uint32 color=0;
+      shift = surface->format->Rshift;
+      color = *(p+shift/8)<<shift;
+      shift = surface->format->Gshift;
+      color|= *(p+shift/8)<<shift;
+      shift = surface->format->Bshift;
+      color|= *(p+shift/8)<<shift;
+      shift = surface->format->Ashift;
+      color|= *(p+shift/8)<<shift;
+      return color;
+    }
     case 4: return *(Uint32 *)p;
     default: 
       return 0;       /* shouldn't happen, but avoids warnings */
@@ -820,16 +785,11 @@ void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
     case 2: *(Uint16 *)p = pixel;
       break;
     case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-            p[0] = (pixel >> 16) & 0xff;
-            p[1] = (pixel >> 8) & 0xff;
-            p[2] = pixel & 0xff;
-        } else {
-            p[0] = pixel & 0xff;
-            p[1] = (pixel >> 8) & 0xff;
-            p[2] = (pixel >> 16) & 0xff;
-        }
-        break;
+      *(p+surface->format->Rshift/8) = pixel>>surface->format->Rshift;
+      *(p+surface->format->Gshift/8) = pixel>>surface->format->Gshift;
+      *(p+surface->format->Bshift/8) = pixel>>surface->format->Bshift;
+      *(p+surface->format->Ashift/8) = pixel>>surface->format->Ashift;
+      break;
     case 4: *(Uint32 *)p = pixel;
       break;
     }
