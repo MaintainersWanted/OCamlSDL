@@ -17,6 +17,7 @@ type attr =
   | ACCUM_GREEN_SIZE of int
   | ACCUM_BLUE_SIZE of int
   | ACCUM_ALPHA_SIZE of int
+  | STEREO of int
 
 external set_attr : attr list -> unit
     = "ml_SDL_GL_SetAttribute"
