@@ -17,34 +17,35 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.2 2000/02/27 22:51:56 fbrunel Exp $ *)
+(* $Id: sdlmixer.mli,v 1.3 2000/03/05 17:01:35 smkl Exp $ *)
 
-(* Exception *)
+(* Define a new exception for loader errors and register 
+   it to be callable from C code. *)
 
 exception SDLmixer_exception of string
 
-(* Types *)
-
-type audio_format =
-    AUDIO_FORMAT_DEFAULT
-  | AUDIO_FORMAT_U8
-  | AUDIO_FORMAT_S8
-  | AUDIO_FORMAT_U16
-  | AUDIO_FORMAT_S16
+type format =
+ | AUDIO_FORMAT_DEFAULT
+ | AUDIO_FORMAT_U8
+ | AUDIO_FORMAT_S8
+ | AUDIO_FORMAT_U16
+ | AUDIO_FORMAT_S16
 
 type fade_status =
-    NO_FADING
-  | FADING_OUT
-  | FADING_IN
+ | NO_FADING
+ | FADING_OUT
+ | FADING_IN
+
+type channels = STEREO | MONO
 
 type chunk
 type music
 type channel = int
 type group = int
-      
-val open_audio : int -> audio_format -> int -> int -> unit
+
+val open_audio : int -> format -> channels -> unit
 val close_audio : unit -> unit
-val query_specs : unit -> int * audio_format * int
+val query_specs : unit -> int * format * int
 
 (* Loading and freeing sounds *)
 
@@ -72,26 +73,31 @@ val group_newer : group -> channel
 
 (* Playing *)
 
-val play_channel : channel option -> chunk -> int option -> int option -> channel
+val play_sound : chunk -> unit
+val play_channel : channel option -> chunk -> int option -> float option -> channel
 val play_music : music -> int option -> channel
-val fadein_channel : channel option -> chunk -> int option -> int option -> int option -> channel
-val fadein_music : music -> int option -> int option -> channel
+val fadein_channel : channel option -> chunk -> int option -> float option -> float option -> channel
+val fadein_music : music -> int option -> float option -> channel
 
 (* Volume control *)
 
-val volume_channel : channel option -> int option -> int
-val volume_chunk : chunk -> int option -> int
-val volume_music : music -> int option -> int
+val volume_channel : channel option -> float
+val volume_chunk : chunk -> float
+val volume_music : music -> float
+
+val setvolume_channel : channel option -> float -> unit
+val setvolume_chunk : chunk -> float -> unit
+val setvolume_music : music -> float -> unit
 
 (* Stopping playing *)
 
 val halt_channel : channel -> unit
 val halt_group : group -> unit
 val halt_music : unit -> unit
-val expire_channel : channel -> int option -> unit
-val fadeout_channel : channel -> int -> unit
-val fadeout_group : group -> int -> unit
-val fadeout_music : int -> unit
+val expire_channel : channel -> float option -> unit
+val fadeout_channel : channel -> float -> unit
+val fadeout_group : group -> float -> unit
+val fadeout_music : float -> unit
 val fading_music : unit -> fade_status
 val fading_channel : channel -> fade_status
 

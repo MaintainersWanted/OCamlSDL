@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.4 2000/02/27 22:52:10 fbrunel Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.5 2000/03/05 17:01:35 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -75,12 +75,12 @@ sdlmixer_stub_kill()
  */
 
 value
-sdlmixer_open_audio(value frequency, value format, value channels,
-		    value chunksize)
+sdlmixer_open_audio(value frequency, value format, value channels)
 {
   int c_format = AUDIO_U8;
   int ret;
-  
+  int mstr = 1;
+
   switch (Int_val(format))
     {
     case 0:
@@ -104,12 +104,13 @@ sdlmixer_open_audio(value frequency, value format, value channels,
       break;
     }
 
-  ret = Mix_OpenAudio(Int_val(frequency), c_format, Int_val(channels),
-		      Int_val(chunksize));
+  if (Int_val (channels) == 1) mstr = 2;
+
+  ret = Mix_OpenAudio(Int_val(frequency), c_format, mstr, 4096);
 
   if (ret == -1)
     sdlmixer_raise_exception(Mix_GetError());
-  
+
   return Val_unit;
 }
 
@@ -169,11 +170,8 @@ value
 sdlmixer_loadWAV(value fname)
 {
   Mix_Chunk *chunk;
-  chunk = Mix_LoadWAV(&Byte(fname, 0));
-
-  if (chunk == NULL)
-    sdlmixer_raise_exception(Mix_GetError());
-  
+  chunk = Mix_LoadWAV(&Byte(fname,0));
+  if (chunk == NULL) sdlmixer_raise_exception(Mix_GetError());
   return (value)chunk;
 }
 
@@ -181,7 +179,7 @@ value
 sdlmixer_loadMUS(value fname)
 {
   Mix_Music *chunk;
-  chunk = Mix_LoadMUS(&Byte(fname, 0));
+  chunk = Mix_LoadMUS(&Byte(fname,0));
 
   if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());
@@ -193,7 +191,7 @@ value
 sdlmixer_load_string(value data)
 {
   Mix_Chunk *chunk;
-  chunk = Mix_QuickLoad_WAV(&Byte(data, 0));
+  chunk = Mix_QuickLoad_WAV(&Byte(data,0));
 
   if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());
@@ -298,8 +296,11 @@ sdlmixer_group_newer(value grp)
 value
 sdlmixer_play_channel_timed(value chn, value sound, value loops, value tme)
 {
+  int t;
+  if (Int_val(tme) == 0) t = -1;
+  else t = (int)(1000.0 * Double_val(Field(tme,0)));
   return Val_int(Mix_PlayChannelTimed(MAGIC_OF_OPTION(chn), (Mix_Chunk *)sound,
-				      MAGIC_OF_OPTION(loops), MAGIC_OF_OPTION(tme)));
+				      MAGIC_OF_OPTION(loops), t));
 }
 
 value
@@ -311,35 +312,63 @@ sdlmixer_play_music(value music, value loops)
 value
 sdlmixer_fadein_music(value music, value loops, value tme)
 {
-  return Val_int(Mix_FadeInMusic((Mix_Music *)music, MAGIC_OF_OPTION(loops),
-				 MAGIC_OF_OPTION(tme)));
+  int t;
+  if (Int_val(tme) == 0) t = -1;
+  else t = (int)(1000.0 * Double_val(Field(tme,0)));
+  return Val_int(Mix_FadeInMusic((Mix_Music *)music,
+				 MAGIC_OF_OPTION(loops),t));
 }
 
 value
-sdlmixer_fadein_channel(value chn, value chunk, value loops, value tme,
+sdlmixer_fadein_channel(value chn, value chunk, value loops, value tme1,
 			value tme2)
 {
+  int t1, t2;
+  if (Int_val(tme1) == 0) t1 = -1;
+  else t1 = (int)(1000.0 * Double_val(Field(tme1,0)));
+  if (Int_val(tme2) == 0) t2 = -1;
+  else t2 = (int)(1000.0 * Double_val(Field(tme2,0)));
   return Val_int(Mix_FadeInChannelTimed(MAGIC_OF_OPTION(chn), (Mix_Chunk *)chunk,
-					MAGIC_OF_OPTION(loops), MAGIC_OF_OPTION(tme),
-					MAGIC_OF_OPTION(tme2)));
+					MAGIC_OF_OPTION(loops), t1, t2));
 }
 
 value
-sdlmixer_volume_channel(value chn, value vol)
+sdlmixer_volume_channel(value chn)
 {
-  return Val_int(Mix_Volume(MAGIC_OF_OPTION(chn), MAGIC_OF_OPTION(vol)));
+  return copy_double(Mix_Volume(MAGIC_OF_OPTION(chn), -1) / 128.0);
 }
 
 value
-sdlmixer_volume_chunk(value chunk, value vol)
+sdlmixer_volume_chunk(value chunk)
 {
-  return Val_int(Mix_VolumeChunk((Mix_Chunk *)chunk, MAGIC_OF_OPTION(vol)));
+  return copy_double(Mix_VolumeChunk((Mix_Chunk *)chunk, -1) / 128.0);
 }
 
 value
-sdlmixer_volume_music(value vol)
+sdlmixer_volume_music(value unit)
 {
-  return Val_int(Mix_VolumeMusic(MAGIC_OF_OPTION(vol)));
+  return copy_double(Mix_VolumeMusic(-1) / 128.0);
+}
+
+value
+sdlmixer_setvolume_channel(value chn, value vol)
+{
+  Mix_Volume(MAGIC_OF_OPTION(chn), (int)(Double_val(vol)*128.0));
+  return Val_unit;
+}
+
+value
+sdlmixer_setvolume_chunk(value chunk, value vol)
+{
+  Mix_VolumeChunk((Mix_Chunk *)chunk, (int)(Double_val(vol)*128.0));
+  return Val_unit;
+}
+
+value
+sdlmixer_setvolume_music(value vol)
+{
+  Mix_VolumeMusic((int)(Double_val(vol)*128.0));
+  return Val_unit;
 }
 
 value
@@ -366,28 +395,31 @@ sdlmixer_halt_music(void)
 value
 sdlmixer_expire_channel(value chn, value tme)
 {
-  Mix_ExpireChannel(Int_val(chn), MAGIC_OF_OPTION(tme));
+  int t;
+  if (Int_val(tme) == 0) t = -1;
+  else t = (int)(1000.0 * Double_val(Field(tme,0)));
+  Mix_ExpireChannel(Int_val(chn), t);
   return Val_unit;
 }
 
 value
 sdlmixer_fadeout_channel(value chn, value ms)
 {
-  Mix_FadeOutChannel(Int_val(chn), Int_val(ms));
+  Mix_FadeOutChannel(Int_val(chn), 1000.0 * Double_val(ms));
   return Val_unit;
 }
 
 value
 sdlmixer_fadeout_group(value grp, value ms)
 {
-  Mix_FadeOutGroup(Int_val(grp), Int_val(ms));
+  Mix_FadeOutGroup(Int_val(grp), 1000.0 * Double_val(ms));
   return Val_unit;
 }
 
 value
 sdlmixer_fadeout_music(value ms)
 {
-  Mix_FadeOutMusic(Int_val(ms));
+  Mix_FadeOutMusic(1000.0 * Double_val(ms));
   return Val_unit;
 }
 

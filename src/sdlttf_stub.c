@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.3 2000/02/08 00:02:09 fbrunel Exp $ */
+/* $Id: sdlttf_stub.c,v 1.4 2000/03/05 17:01:35 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <freetype.h>
 #include <SDL.h>
-#include "SDL_ttf.h"
+#include <SDL_ttf.h>
 
 /*
  * Raise an OCaml exception with a message
@@ -108,6 +108,17 @@ sdlttf_render_text(value font, value text, value fg, value bg)
    }
    return (value)surf;
 }
+
+/* this code directly taken from sdl_ttf library, otherwise it is impossible
+ to implement fast text using sdlttf */
+/* The structure used to hold internal font information */
+struct _TTF_Font {
+   TT_Face face;
+   TT_Instance inst;
+   TT_Glyph glyph;
+   TT_CharMap map;
+   TT_Raster_Map scratch;
+};
 
 value
 sdlttf_font_metrics(value fnt, value chr)

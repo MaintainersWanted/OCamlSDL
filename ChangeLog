@@ -1,3 +1,10 @@
+2000-03-06  Sami Mäkelä  <sajuma@utu.fi>
+
+	* sdlmixer*: Made the interface nicer.
+
+	* sdlttf_stub.c: SDL_ttf interface seems to have changed, made a hack
+	to make it work.
+
 2000-03-05  Frederic Brunel  <brunel@mail.dotcom.fr>
 
 	* NEW (stub_shared): Contains convertion macros and finalization
