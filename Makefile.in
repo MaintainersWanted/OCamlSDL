@@ -1,0 +1,73 @@
+#
+# OCamlSDL - An ML interface to the SDL library
+# Copyright (C) 1999  Frederic Brunel
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+# $Id: Makefile.in,v 1.1 2000/01/06 22:55:05 fbrunel Exp $
+
+CC = 		@CC@ 
+CFLAGS =	@CFLAGS@ #-Wall -O3 -pipe -pedantic -m486 
+CAMLC =		@OCAMLC@
+CAMLOPT =	@OCAMLOPT@
+CAMLTOP =	@OCAMLMKTOP@
+CAMLDEP =	@OCAMLDEP@
+MLFLAGS =
+
+CLIBS =		@LIBS@ @MATHLIB@ 
+MLLIBS =	-cclib "$(CLIBS)" 
+LIBDIR =
+
+C_OBJS = 	sdl_stub.o sdlcdrom_stub.o sdltimer_stub.o \
+		sdlvideo_stub.o 
+ML_OBJS	=	sdl.cmo sdlcdrom.cmo sdltimer.cmo \
+		sdlvideo.cmo 
+
+OBJS =		$(C_OBJS) $(ML_OBJS)
+
+TOPLEVEL = 	toplevel
+
+all: $(TOPLEVEL)
+
+$(TOPLEVEL): $(OBJS)
+	$(CAMLTOP) -custom -o $@ $(OBJS) $(MLLIBS)
+
+.SUFFIXES:
+.SUFFIXES: .c .o .ml .mli .cmo .cmi
+
+%.cmo : %.ml
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.cmi : %.mli
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.o : %.c
+	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
+
+distclean:
+	rm -f $(TOPLEVEL) *.o *~ *.cm[iox] .depend
+	rm -f config.status config.cache config.log Makefile
+
+clean:
+	rm -f *.o *~ *.cm[iox] .depend
+
+depend:
+	$(CAMLDEP) *.mli *.ml > .depend
+
+.depend: 
+	$(CAMLDEP) *.mli *.ml > .depend
+
+include .depend
