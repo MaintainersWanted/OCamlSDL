@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.1 2002/06/04 23:09:01 oliv__a Exp $
+# $Id: Makefile,v 1.2 2002/06/04 23:17:09 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -71,6 +71,7 @@ $(CLIBRARY): $(STUB_OBJS)
 
 install:: dllsdlstub.so
 	$(INSTALL) $^ $(INSTALL_DIR)
+	-$(INSTALL) -d $(DESTDIR)$(CAMLLIBDIR)/shlibs
 	-ln -s $(OCAMLSDLDIR)/$< $(DESTDIR)$(CAMLLIBDIR)/shlibs
 
 else
