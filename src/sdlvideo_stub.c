@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.12 2000/06/13 12:26:41 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.13 2000/07/06 13:51:13 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -508,6 +508,27 @@ sdlvideo_blit_raw_buffer(value screen, value buffer, value size)
    SDL_UnlockSurface(scr);
    return Val_unit;
 }
+
+/* UNSTESTED */
+value
+sdlvideo_must_lock(value s)
+{
+   int b = SDL_MUSTLOCK(((SDL_Surface*) s));
+   return Val_bool(b);
+}
+
+value sdlvideo_lock_surface(value s)
+{
+   if (SDL_LockSurface((SDL_Surface*) s) < 0) sdlvideo_raise_exception(SDL_GetError());
+   	return Val_unit;
+}
+
+value sdlvideo_unlock_surface(value s)
+{
+  SDL_UnlockSurface((SDL_Surface*) s);
+  return Val_unit;
+}
+
 
 /* EXPERIMENTAL */
 
