@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.5 2001/04/24 19:39:28 xtrm Exp $ */
+/* $Id: sdl_stub.c,v 1.6 2002/05/27 22:10:56 xtrm Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
@@ -73,23 +73,26 @@ static void sdl_internal_quit (void)
 
 static int init_flag_val(value flag_list)
 {
-  int flag = 0;
-  value l = flag_list;
-  while (is_not_nil(l))
+  int i, flag = 0;
+  struct vals v;
+
+  block2vals(flag_list, &v);
+
+  for(i=0;i<v.size;i++)
     {
-      switch (Int_val(hd(l)))
-	{
-	case TIMER_tag       : flag |= SDL_INIT_TIMER       ; break;
-	case AUDIO_tag       : flag |= SDL_INIT_AUDIO       ; break;
-	case VIDEO_tag       : flag |= SDL_INIT_VIDEO       ; break;
-	case CDROM_tag       : flag |= SDL_INIT_CDROM       ; break;
-	case JOYSTICK_tag    : flag |= SDL_INIT_JOYSTICK    ; break;
-	case NOPARACHUTE_tag : flag |= SDL_INIT_NOPARACHUTE ; break;
-	case EVENTTHREAD_tag : flag |= SDL_INIT_EVENTTHREAD ; break;
-	case EVERYTHING_tag  : flag |= SDL_INIT_EVERYTHING  ; break;
-	}
-      l = tl(l);
+      switch (v.values[i])
+      {
+      case TIMER_tag       : flag |= SDL_INIT_TIMER       ; break;
+      case AUDIO_tag       : flag |= SDL_INIT_AUDIO       ; break;
+      case VIDEO_tag       : flag |= SDL_INIT_VIDEO       ; break;
+      case CDROM_tag       : flag |= SDL_INIT_CDROM       ; break;
+      case JOYSTICK_tag    : flag |= SDL_INIT_JOYSTICK    ; break;
+      case NOPARACHUTE_tag : flag |= SDL_INIT_NOPARACHUTE ; break;
+      case EVENTTHREAD_tag : flag |= SDL_INIT_EVENTTHREAD ; break;
+      case EVERYTHING_tag  : flag |= SDL_INIT_EVERYTHING  ; break;
+      }
     }
+  freevals(&v);
   return flag;
 }
 

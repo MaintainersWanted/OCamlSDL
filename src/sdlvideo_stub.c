@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.26 2002/04/30 16:06:01 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.27 2002/05/27 22:10:56 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -158,37 +158,34 @@ sdlvideo_set_display_mode (value width, value height, value bpp)
   return ML_SURFACE(surf);
 }
 
-/* modified the ocamlsdl-0.3/sdl_stub.c made by JFF */
-
 /* video flags */
 
-/*  common_video_flag  */
-#define SWSURFACE_tag 1     /* Surface is in system memory */
-#define HWSURFACE_tag 3     /* Surface is in video memory */
-#define SRCCOLORKEY_tag 5   /* Blit uses a source color key */
-#define SRCALPHA_tag 7      /* Blit uses source alpha blending */
+#define SWSURFACE_tag 0     /* Surface is in system memory */
+#define HWSURFACE_tag 1     /* Surface is in video memory */
+#define SRCCOLORKEY_tag 2   /* Blit uses a source color key */
+#define SRCALPHA_tag 3      /* Blit uses source alpha blending */
+#define ASYNCBLIT_tag 4     /* Enables the use of asynchronous to the display surface */
+#define ANYFORMAT_tag 5     /* Allow any video pixel format */
+#define HWPALETTE_tag 6     /* Give SDL exclusive palette access */
+#define DOUBLEBUF_tag 7     /* Set up double-buffered video mode */
+#define FULLSCREEN_tag 8    /* Surface is a full screen display */
+#define OPENGL_tag 9        /* OpenGL rendering */
+#define OPENGLBLIT_tag 10   /* */
+#define RESIZABLE_tag 11    /* Create a resizable window */
+#define NOFRAME_tag 12      /* Frame without titlebar */
 
-/*  ext_video_flag  */
-#define ASYNCBLIT_tag 1001     /* Enables the use of asynchronous to the display surface */
-#define ANYFORMAT_tag 1003     /* Allow any video pixel format */
-#define HWPALETTE_tag 1005     /* Give SDL exclusive palette access */
-#define DOUBLEBUF_tag 1007     /* Set up double-buffered video mode */
-#define FULLSCREEN_tag 1009    /* Surface is a full screen display */
-#define OPENGL_tag 1011        /* OpenGL rendering */
-#define OPENGLBLIT_tag 1013   /* */
-#define RESIZABLE_tag 1015    /* Create a resizable window */
-#define NOFRAME_tag 1017      /* Frame without titlebar */
 
 int 
 video_flag_val(value flag_list)
 {
-  int flag = 0;
-  value l = flag_list;
+  int i, flag = 0;
+  struct vals v;
 
-  while (is_not_nil(l))
+  block2vals(flag_list, &v);
+
+  for(i=0;i<v.size;i++)
     {
-      int tg = 1000 * Tag_val(hd(l)) + Field(hd(l), 0);
-      switch (tg)
+      switch (v.values[i])
 	{
 	case SWSURFACE_tag   : flag |= SDL_SWSURFACE   ; break;
 	case HWSURFACE_tag   : flag |= SDL_HWSURFACE   ; break;
@@ -205,8 +202,8 @@ video_flag_val(value flag_list)
 	case RESIZABLE_tag   : flag |= SDL_RESIZABLE   ; break;
 	case NOFRAME_tag    : flag |= SDL_NOFRAME      ; break;
 	}
-      l = tl(l);
     }
+  freevals(&v);
   return flag;
 }
 
