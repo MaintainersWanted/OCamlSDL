@@ -1,10 +1,7 @@
 For now, all you have to do is to type
 
+   $ ./configure
    $ make
 
 it will build an OCaml toplevel with all necessary library linked
 with the executable.
-
-It might be usefull to configure the paths to the SDL and OCaml 
-includes files in the makefile.
-
