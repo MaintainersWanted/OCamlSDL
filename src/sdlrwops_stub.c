@@ -56,7 +56,7 @@ static int mlsdl_mem_read(SDL_RWops *context, void *ptr, int size, int maxnum)
   if (pdata->off + (num*size) > pdata->max)
     num = (pdata->max - pdata->off)/size;
   
-  memcpy(ptr, pdata->base+pdata->off, num*size);
+  memcpy(ptr, ((char *)pdata->base) + pdata->off, num*size);
   pdata->off += num*size;
   return num;
 }
