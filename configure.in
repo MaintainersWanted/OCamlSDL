@@ -2,7 +2,7 @@ dnl ******
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.19 2002/07/24 19:06:40 xtrm Exp $
+dnl $Id: configure.in,v 1.20 2002/08/08 16:43:05 xtrm Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -48,8 +48,9 @@ fi
 AC_PATH_PROG(OCAMLDOC,ocamldoc)
 if test -z "$OCAMLDOC" ; then
 	AC_MSG_WARN(Cannot find ocamldoc.)
+	OCAMLDOC=true
 fi
-OCAMLDOC=true
+
 
 dnl -*- where to install the library ? -*-
 AC_ARG_WITH(installdir,[  --with-installdir=DIR	  specify installation directory [defaults to +sdl]],OCAMLSDLDIR="$withval")
@@ -178,3 +179,8 @@ dnl  Check for system services
 
 #  Finally create all the generated files 
 AC_OUTPUT(makefile.toplevel)
+
+dnl Output the configuration summary
+echo
+echo "Configure finished, type 'make' to build."
+
