@@ -17,13 +17,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.7 2002/06/24 08:51:52 oliv__a Exp $
+# $Id: Makefile,v 1.8 2002/08/08 16:32:14 xtrm Exp $
 
 all:
 	$(MAKE) -C src
 
 test: all
 	$(MAKE) -C samples
+
+doc: all
+	$(MAKE) -C src doc
 
 clean:
 	$(MAKE) -C src clean

@@ -9,7 +9,7 @@
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# MERCHANTABILTY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
 #
 # You should have received a copy of the GNU Lesser General Public
@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.6 2002/08/08 12:34:35 oliv__a Exp $
+# $Id: Makefile,v 1.7 2002/08/08 16:32:14 xtrm Exp $
 
 
 include ../makefile.toplevel
@@ -35,16 +35,26 @@ ML_OBJS	=	$(ML_SRCS:.ml=.cmo)
 OPT_OBJS=	$(ML_SRCS:.ml=.cmx)
 MLI	=	$(ML_SRCS:.ml=.mli)
 CMI	=	$(ML_SRCS:.ml=.cmi)
+HTML	=	$(ML_SRCS:.ml=.html)
 
 TOPLEVEL = 	toplevel
 LIBRARY = 	sdl.cma
 OLIBRARY = 	sdl.cmxa
 CLIBRARY = 	libsdlstub.a 
 
+
+CAMLDOCFLAGS=-I . -d ../doc 
+
+
 all: libs bin
 
 bin:  $(TOPLEVEL)
 libs:: $(LIBRARY) $(CLIBRARY) 
+
+doc: all $(HTML)
+
+%.html : %.mli
+	$(CAMLDOC) $(CAMLDOCFLAGS) -html $< 
 
 $(TOPLEVEL): $(LIBRARY) $(CLIBRARY)
 	$(CAMLTOP) -custom -I . -o $@ bigarray.cma $(LIBRARY)
@@ -78,7 +88,7 @@ $(CLIBRARY): $(STUB_OBJS)
 
 install:: dllsdlstub.so
 	-$(INSTALL) -d $(DESTDIR)$(CAMLLIBDIR)/shlibs
-	-ln -s $(OCAMLSDLDIR)/$< $(DESTDIR)$(CAMLLIBDIR)/shlibs
+	-ln -sf $(OCAMLSDLDIR)/$< $(DESTDIR)$(CAMLLIBDIR)/shlibs
 
 else
 $(LIBRARY): $(ML_OBJS)
