@@ -1,11 +1,11 @@
-(* $Id: example.ml,v 1.7 2001/04/24 19:42:57 xtrm Exp $ *)
+(* $Id: example.ml,v 1.8 2001/06/11 17:16:40 xtrm Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
 
 init [EVERYTHING];; (* init_with_auto_clean();; *)
 
-let screen = set_display_mode 640 480 16;;
+let screen = set_video_mode 640 480 16 [C(HWSURFACE);E(FULLSCREEN)];;
 let s = "OCamlSDL" ;;
 wm_set_caption s s;;
 
@@ -17,10 +17,13 @@ let black = color_of_int(0,0,0) ;;
 let white = color_of_int(255,255,255) ;;
 
 let screen_fill img = 
-  surface_blit img (surface_rect screen) screen (surface_rect screen);;
+  let screen = get_display_surface()
+  in
+    surface_blit img (surface_rect screen) screen (surface_rect screen);
+    flip screen;;
 
-let screen_clear bg = 
-  surface_fill_rect screen (surface_rect screen) bg;;
+let fill_with bg = 
+  flip (surface_fill_rect screen (surface_rect screen) bg);;
 
 let random_placement src dst =
   let h = surface_height src
@@ -55,11 +58,11 @@ let display_text f s bg fg =
 let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
 
 
- flip (screen_clear white);;
+ fill_with white;;
  display_text f "Wait 2 seconds..." black white ;;
  Sdltimer.delay 2000 ;;
  
- flip (screen_clear black);;
+ fill_with black;;
  display_text f "Going in the sky in 2 seconds and let's the pacmen" white black;;
  Sdltimer.delay 2000 ;;
  
@@ -69,7 +72,7 @@ let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
  place_max_icons 100 1;;
  Sdltimer.delay 2000 ;;
  
- flip (screen_clear white);;
+ fill_with white;;
  screen_fill logo ;;
  flip screen;;
  display_text f ("Made with "^s)  black white;;
