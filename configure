@@ -1000,7 +1000,7 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-if test "$OCAMLC" = no ; then
+if test "$OCAMLDEP" = no ; then
 	{ echo "configure: error: Cannot find ocamldep." 1>&2; exit 1; }
 fi
 

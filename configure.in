@@ -31,7 +31,7 @@ if test "$OCAMLMKTOP" = no ; then
 	AC_MSG_ERROR(Cannot find ocamlmktop.)
 fi
 AC_PATH_PROG(OCAMLDEP,ocamldep,no)
-if test "$OCAMLC" = no ; then
+if test "$OCAMLDEP" = no ; then
 	AC_MSG_ERROR(Cannot find ocamldep.)
 fi
 
