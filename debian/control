@@ -1,0 +1,12 @@
+Source: ocamlsdl
+Section: libs
+Priority: optional
+Maintainer: Luc Mazardo <luc@mazardo.com>
+Standards-Version: 3.0.1
+
+Package: ocamlsdl
+Architecture: any
+Depends: ocaml (>= 3.00), libsdl1.2, libsdl-ttf1.2, libsdl-mixer1.2, libsdl-image1.2, libsdl1.2-dev, libsdl-ttf1.2-dev, libsdl-mixer1.2-dev, libsdl-image1.2-dev
+Description: OCaml bindings for SDL.
+ OCamlSDL is an OCaml interface to the SDL (Simple Media Layer) Library.
+ It might be used to write multimedia applications in Objective Caml.

@@ -1,0 +1,22 @@
+Document: ocamlsdl
+Title: Debian ocamlsdl Manual
+Author: <insert document author here>
+Abstract: This manual describes what ocamlsdl is
+ and how it can be used to
+ manage online manuals on Debian systems.
+Section: unknown
+
+Format: debiandoc-sgml
+Files: /usr/doc/ocamlsdl/ocamlsdl.sgml.gz
+
+Format: postscript
+Files: /usr/doc/ocamlsdl/ocamlsdl.ps.gz
+
+Format: text
+Files: /usr/doc/ocamlsdl/ocamlsdl.text.gz
+
+Format: HTML
+Index: /usr/doc/ocamlsdl/html/index.html
+Files: /usr/doc/ocamlsdl/html/*.html
+
+  
