@@ -1,4 +1,4 @@
-(* $Id: example.ml,v 1.1 2000/01/06 23:00:42 fbrunel Exp $ *)
+(* $Id: example.ml,v 1.2 2000/01/12 00:48:36 fbrunel Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
@@ -27,6 +27,7 @@ let random_placement src dst =
 						
 let place_max_icons max = 
   for i = 0 to max do
+    surface_set_alpha icon (Random.float 1.0);
     random_placement icon screen;
     flip screen;
   done;;
