@@ -6,6 +6,9 @@
 	* src/sdlvideo_stub.c: apply patch from guillaume cottenceau 
 	  for {set,get}_pixel()
 
+	* src/sdl{cdrom,timer}.ml: apply patch from josh cogliati 
+	  for labels use
+
 
 2002-03-26  Frederic Brunel  <brunel@mail.dotcom.fr>
 
