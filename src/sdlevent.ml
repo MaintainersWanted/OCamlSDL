@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.ml,v 1.5 2001/10/23 09:26:43 xtrm Exp $ *)
+(* $Id: sdlevent.ml,v 1.6 2002/04/04 16:48:14 xtrm Exp $ *)
 
 (* Define a new exception for event errors and register 
    it to be callable from C code. *)
@@ -29,6 +29,7 @@ let _ = Callback.register_exception "SDLevent_exception" (SDLevent_exception "An
 
 (* These key symbols exactly match the enum declaration of the SDL library *)
 type key = 
+  | KEY_UNKNOWN
   | KEY_BACKSPACE
   | KEY_TAB
   | KEY_CLEAR

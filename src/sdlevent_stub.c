@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.10 2001/04/23 18:26:56 xtrm Exp $ */
+/* $Id: sdlevent_stub.c,v 1.11 2002/04/04 16:48:14 xtrm Exp $ */
 
 #include <assert.h>
 #include <caml/alloc.h>
@@ -34,7 +34,7 @@
  */
 
 #define MAX_FUNC_ARGS 4
-#define MAX_KEY_SYMS 229
+#define MAX_KEY_SYMS 230
 
 /*
  * Local variables
@@ -54,6 +54,7 @@ static value func_args[MAX_FUNC_ARGS];
 
 /* This array map the ML key values to the SDL ones */
 static SDLKey sdl_key_syms[MAX_KEY_SYMS] = {
+  SDLK_UNKNOWN,
   SDLK_BACKSPACE,
   SDLK_TAB,
   SDLK_CLEAR,
@@ -320,12 +321,6 @@ find_key_index (SDLKey key)
   while (1) {
     c = (a + b) / 2;
 
-    if (prev_c == c) {
-      /* FATAL: SHOULD NOT HAPPEN! The key symbol is UNKNOWN! */
-      assert(0);
-    }
-    prev_c = c;
-
     if (key == sdl_key_syms[c]) {
       return c;
     }
@@ -335,6 +330,14 @@ find_key_index (SDLKey key)
     else {
       b = c;
     }
+
+    if (prev_c == c) {
+      /* FATAL: SHOULD NOT HAPPEN! The key symbol is UNKNOWN! */
+      assert(0);
+    }
+    prev_c = c;
+
+
   }
 
   /* Never reached! */
