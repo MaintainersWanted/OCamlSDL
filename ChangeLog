@@ -1,3 +1,418 @@
+2003-03-11 22:57  oliv__a
+
+	* src/sdlvideo_stub.c (1.44): put SDLColor_of_value in the .c file 
+
+2003-02-25 00:06  oliv__a
+
+	* src/: sdlloader.ml (1.8), sdlrwops_stub.c (1.2), sdlvideo.ml
+	(1.33): SDL_RWops fix 
+
+2003-02-24 oliv__a
+
+	* src/: Makefile (1.23), sdl.ml (1.8), sdl.mli (1.10), sdl_stub.c
+	(1.17), sdlloader.ml (1.7), sdlloader.mli (1.6), sdlloader_stub.c
+	(1.12), sdlmixer.ml (1.12), sdlmixer.mli (1.14), sdlmixer_stub.c
+	(1.31), sdlrwops_stub.c (1.1), sdlrwops_stub.h (1.1), sdlvideo.ml
+	(1.32), sdlvideo.mli (1.33), sdlvideo_stub.c (1.43): ADD: SDL_RWops 
+	
+	* src/: sdlvideo_stub.c (1.42), sdlvideo.ml (1.31), sdlvideo.mli
+	(1.32): CHANGE: {get,put}_pixel functions 
+
+2003-02-13 oliv__a
+
+	* src/: sdl.ml (1.7), sdl.mli (1.9), sdl_stub.c (1.16): ADD:
+	environment variables 
+
+	* configure.in (1.31), support/ocaml.m4 (1.4): ocaml.m4 update 
+
+	* samples/example.ml (1.15): update 
+
+2003-02-10 18:47  oliv__a
+
+	* src/: sdlvideo_stub.c (1.41), sdlvideo_stub.h (1.9): ADD: C side
+	finalizer for libsvg bindings 
+
+2003-01-24 09:49  xtrm
+
+	* support/: config.sub (1.2), config.guess (1.2): CHANGE: update
+	files from debian package autotools-dev (20021130.1) 
+
+2003-01-21 20:12  oliv__a
+
+	* src/sdlvideo.mli (1.31): FIX: blit_surface documentation 
+
+2003-01-16 17:36  oliv__a
+
+	* HISTORY (1.6), INSTALL (1.6), samples/Makefile (1.10): tag 0.6.1
+	release 
+
+2003-01-05 oliv__a
+
+	* src/: Makefile (1.22), sdl.mli (1.8), sdlcdrom.mli (1.11),
+	sdlevent.mli (1.13), sdlgl.mli (1.3), sdljoystick.mli (1.3),
+	sdlkey.mli (1.6), sdlmixer.mli (1.13), sdlmouse.mli (1.4),
+	sdlttf.mli (1.15), sdlvideo.mli (1.30): documentation fixes 
+
+	* makefile.toplevel.in (1.17), samples/Makefile (1.9),
+	samples/sdlgears.ml (1.1), samples/showfont.ml (1.1): ADD: new
+	examples 
+
+	* src/: sdlgl.ml (1.2), sdlgl.mli (1.2), sdlgl_stub.c (1.3): FIX:
+	typo 
+
+2003-01-04 02:37  oliv__a
+
+	* src/: sdlevent.ml (1.10), sdlevent.mli (1.12): FIX: typo in type
+	name 
+
+2003-01-03 21:16  oliv__a
+
+	* src/: sdlttf.ml (1.12), sdlttf.mli (1.14), sdlttf_stub.c (1.23): 
+	FIX: get/set_font_style argument 
+
+2002-12-12 oliv__a
+
+	* src/sdlgl_stub.c (1.2): forgot some defines 
+
+	* src/Makefile (1.21), src/sdlgl.ml (1.1), src/sdlgl.mli (1.1),
+	src/sdlgl_stub.c (1.1), src/sdlvideo.ml (1.30), src/sdlvideo.mli
+	(1.29), src/sdlvideo_stub.h (1.8), configure.in (1.30),
+	makefile.toplevel.in (1.16): moved GL functions in a module 
+
+	* src/mlsdl_main.c (1.2): silence compiler 
+
+	* src/sdlvideo_stub.c (1.40): moved GL functions in a module;
+	endian-independent conversion for get/set_pixel 
+
+2002-11-28 oliv__a
+
+	* src/Makefile (1.20): Mingw fixes ...  
+
+	* support/ocaml.m4 (1.3): small fix 
+
+2002-11-21 12:01  oliv__a
+
+	* src/: sdl_stub.c (1.15), sdlcdrom_stub.c (1.13), sdlevent_stub.c
+	(1.17), sdljoystick_stub.c (1.3), sdlkey_stub.c (1.5),
+	sdlloader_stub.c (1.11), sdlmixer_stub.c (1.30), sdlmouse_stub.c
+	(1.3), sdltimer_stub.c (1.10), sdlttf_stub.c (1.22),
+	sdlvideo_stub.c (1.39), common.h (1.10), sdlvideo_stub.h (1.7),
+	sdlwm_stub.c (1.5): added CAMLprim declarations 
+
+2002-11-15 oliv__a
+
+	* doc/ocamlsdl-mingw.txt (1.1): CHANGE: mingw builds 
+
+	* configure.in (1.29), makefile.toplevel.in (1.15), src/Makefile
+	(1.19), src/mlsdl_main.c (1.1): CHANGE: mingw builds 
+
+2002-11-11 18:06  oliv__a
+
+	* src/sdlmixer_stub.c (1.29): FIX: convert_fading_status 
+
+2002-11-07 oliv__a
+
+	* src/: sdlvideo.ml (1.29), sdlvideo.mli (1.28): FIX: bug in
+	save_BMP 
+
+	* support/ocaml.m4 (1.2): FIX: builds where ocamlopt is missing 
+
+	* HISTORY (1.5): SYNC with release 0.6 (approximately) 
+
+	* src/: Makefile (1.18), sdl_stub.c (1.14), sdlevent.ml (1.9),
+	sdlevent.mli (1.11), sdlevent2.ml (1.6), sdlevent2.mli (1.7),
+	sdlevent2_stub.c (1.13), sdlevent_stub.c (1.16), sdlevent_stub.h
+	(1.3), sdlloader.ml (1.6), sdlloader.mli (1.5), sdlloader2.ml
+	(1.2), sdlloader2.mli (1.2), sdlloader2_stub.c (1.5),
+	sdlloader_stub.c (1.10), sdlttf_stub.c (1.21), sdlvideo.ml (1.28),
+	sdlvideo.mli (1.27), sdlvideo2.ml (1.9), sdlvideo2.mli (1.11),
+	sdlvideo2_stub.c (1.15), sdlvideo2_stub.h (1.5), sdlvideo_stub.c
+	(1.38), sdlvideo_stub.h (1.6), sdlwm.ml (1.2), sdlwm.mli (1.2),
+	sdlwm_stub.c (1.4): SYNC with release 0.6 (approximately) 
+
+	* INSTALL (1.5), Makefile (1.10), README (1.7), autogen.sh (1.5),
+	support/ocaml.m4 (1.1), samples/Makefile (1.8),
+	samples/checkkeys.ml (1.4), samples/event_loop.ml (1.4),
+	samples/ocamlsdl_logo.ml (1.2), samples/ocamlsdl_logo2.ml (1.4),
+	samples/testalpha.ml (1.4), samples/testjoystick.ml (1.3): SYNC
+	with release 0.6 (approximately) 
+
+2002-11-05 oliv__a
+
+	* src/: sdlkey.mli (1.5), sdltimer.mli (1.4): FIX: documentation
+	fixes 
+
+	* makefile.toplevel.in (1.14), src/Makefile (1.17): changes for
+	cygwin build 
+
+	* autogen.sh (1.4): FIX 
+
+2002-10-24 02:38  oliv__a
+
+	* src/: sdlvideo2.ml (1.8), sdlvideo2.mli (1.10), sdlvideo2_stub.c
+	(1.14): ADD: get/put_pixel for Sdlvideo2 
+
+2002-10-21 18:32  oliv__a
+
+	* src/: sdlevent2.ml (1.5), sdlevent2.mli (1.6), sdlkey.ml (1.4),
+	sdlkey.mli (1.4), sdlmouse.ml (1.3), sdlmouse.mli (1.3): renamed
+	some types, added event handling through callbacks 
+
+2002-10-12 17:17  oliv__a
+
+	* src/: common.h (1.9), sdlevent2_stub.c (1.12), sdltimer_stub.c
+	(1.9): protect locking sections 
+
+2002-10-07 xtrm
+
+	* autogen.sh (1.3): CHANGE: add /usr/local/share/aclocal in
+	autogen.sh REMOVE: ac/sdl.m4 
+
+	* configure.in (1.28): ADD: ocaml.m4 support 
+
+2002-10-06 oliv__a
+
+	* src/sdlmixer_stub.c (1.28): changed default chunksize to 1024 
+
+	* src/: sdlmouse.ml (1.2), sdlmouse.mli (1.2): added labels to
+	convert_to_cursor 
+
+2002-10-04 oliv__a
+
+	* src/: sdlevent2_stub.c (1.11), sdlloader2_stub.c (1.4): use
+	stat_alloc/stat_free instead of malloc/free 
+
+	* AUTHORS (1.3): FIX: 
+
+	* src/sdlvideo2.mli (1.9): documentation 
+
+	* configure.in (1.27): removed unnecessary (?) stuff 
+
+	* src/sdlloader2_stub.c (1.3): fix compiler warning 
+
+2002-10-03 17:48  xtrm
+
+	* makefile.toplevel.in (1.13): CHANGE: use ocaml.m4 exported value 
+
+2002-10-02 xtrm
+
+	* autogen.sh (1.2): CHANGE: add local directory for aclocal 
+
+	* Makefile (1.9): FIX: Makefile use autogen.sh 
+
+	* autogen.sh (1.1): initial revision 
+
+	* configure.in (1.26): ADD: stuff about sdl.m4 ADD: compatibility
+	with old SDL_Image 
+
+	* src/: config.h.in (1.2), sdlloader2_stub.c (1.2): ADD:
+	compatibility with old SDL_image 
+
+	* src/: sdlvideo2.ml (1.7), sdlvideo2.mli (1.8): ADD: ocamldoc ADD:
+	predefined colors 
+
+2002-10-01 oliv__a
+
+	* src/.cvsignore (1.2): added config.h 
+
+	* src/sdlevent2.mli (1.5): ocamldoc comments 
+
+2002-09-30 oliv__a
+
+	* src/: sdlttf.ml (1.11), sdlttf.mli (1.13), sdlttf_stub.c (1.20): 
+	added finalized fonts 
+
+	* samples/example.ml (1.14): sync with Sdlttf (finalized fonts) 
+
+	* samples/testjoystick.ml (1.2): sync with Sdlevent2 
+
+	* samples/ocamlplayer.ml (1.10): removed finalized audio chunks and
+	music : not safe 
+
+	* src/: sdlmixer.ml (1.11), sdlmixer.mli (1.12), sdlmixer_stub.c
+	(1.27): removed finalized audio chunks and music : not safe 
+
+2002-09-26 oliv__a
+
+	* src/: sdlevent2.ml (1.4), sdlevent2.mli (1.4), sdlevent2_stub.c
+	(1.10): some more event control functions 
+
+	* src/sdlevent2_stub.c (1.9): bugfixing the bugfix 
+
+	* samples/checkkeys.ml (1.3), src/sdlevent2_stub.c (1.8): bugfix in
+	events 
+
+2002-09-25 oliv__a
+
+	* src/sdl_stub.c (1.13): forgot one commit 
+
+	* build-stamp (1.2), configure.in (1.25), makefile.toplevel.in
+	(1.12), samples/Makefile (1.7), samples/event_loop.ml (1.3),
+	samples/example.ml (1.13), src/Makefile (1.16), src/sdlcdrom_stub.c
+	(1.12), src/sdlcdrom_stub.h (1.2), src/sdlmixer_stub.c (1.26),
+	src/sdlmixer_stub.h (1.4), src/sdltimer_stub.c (1.8),
+	src/sdltimer_stub.h (1.2), src/sdlttf.ml (1.10), src/sdlttf.mli
+	(1.12), src/sdlttf_stub.c (1.19), src/sdlttf_stub.h (1.3),
+	src/sdlvideo_stub.c (1.37): CHANGE: split library building 
+
+2002-09-12 18:53  oliv__a
+
+	* src/: sdlloader2.ml (1.1), sdlloader2.mli (1.1),
+	sdlloader2_stub.c (1.1): ADD: sdlloader2 
+
+2002-09-10 oliv__a
+
+	* src/: config.h.in (1.1), sdlevent2_stub.c (1.7), sdlloader_stub.c
+	(1.9), sdlmixer_stub.c (1.25), sdlvideo_stub.c (1.36),
+	sdlvideo2_stub.c (1.13), sdlvideo_stub.h (1.5), sdlvideo2_stub.h
+	(1.4), sdlwm_stub.c (1.3): use __GNUC__ instead of __STDC_VERSION__
+	and use autoconf inline support 
+
+	* samples/ocamlplayer.ml (1.9): finalized chunks 
+
+	* configure.in (1.24): forgot to define HAVE_INLINE 
+
+	* configure.in (1.23), makefile.toplevel.in (1.11): check inline
+	for c compiler and removed libpng check 
+
+2002-09-09 smkl
+
+	* makefile.vcc (1.8): ...  
+
+	* src/Makefile (1.15): Testing changing link order 
+
+	* makefile.toplevel.in (1.10), makefile.vcc (1.7), src/Makefile
+	(1.14): ...  
+
+	* makefile.vcc (1.6): ...  
+
+	* makefile.toplevel.in (1.9), makefile.vcc (1.5), src/Makefile
+	(1.13): Changed makefiles to support vc++ librarian 
+
+	* src/sdlmixer_stub.c (1.24): ... hopefully this is last needed fix 
+
+	* src/: sdlvideo2_stub.c (1.12), sdlmixer_stub.c (1.23): ...  
+
+	* src/: sdlvideo2_stub.h (1.3), sdlmixer_stub.c (1.22),
+	sdlvideo2_stub.c (1.11): More of the same....  
+
+	* src/: sdlvideo2_stub.c (1.10), sdlwm_stub.c (1.2): More C99
+	stuff.  
+
+	* src/sdlvideo2_stub.c (1.9): Add include for stdio.h 
+
+	* src/sdlevent2_stub.c (1.6): Added a check for C99 compability 
+
+	* src/: sdlevent2_stub.c (1.5), sdlvideo2_stub.c (1.8): Added
+	wrappers for error.h stuff.  
+
+	* src/: sdlloader.ml (1.5), sdlloader_stub.c (1.8): Removed PNG
+	loaders.  
+
+	* src/sdlvideo_stub.c (1.35): ...  
+
+	* makefile.vcc (1.4): ...  
+
+	* makefile.vcc (1.2), makefile.vcc (1.3): ...  
+
+	* makefile.vcc (1.1): adding a makefile for testing with vc++ 
+
+2002-09-09 11:51  oliv__a
+
+	* src/sdlvideo2_stub.c (1.7): FIX: buggy surface finalizer 
+
+2002-09-07 oliv__a
+
+	* src/: sdlmixer.ml (1.10), sdlmixer.mli (1.11), sdlmixer_stub.c
+	(1.21), sdlmixer_stub.h (1.3): CHANGE: finalized chunks; bugfix in
+	query_specs 
+
+	* src/sdlvideo2.ml (1.6), src/sdlvideo2.mli (1.7),
+	src/sdlvideo2_stub.c (1.6), src/sdlvideo2_stub.h (1.2),
+	samples/testalpha.ml (1.3): CHANGE: finalized surfaces; remove
+	pixel_format astract type 
+
+	* samples/ocamlsdl_logo2.ml (1.3): added Sdlwm 
+
+2002-09-06 01:45  oliv__a
+
+	* .cvsignore (1.2), samples/.cvsignore (1.1), src/.cvsignore (1.1): 
+	cvsignores 
+
+2002-09-04 oliv__a
+
+	* src/: Makefile (1.12), sdlvideo2.mli (1.6), sdlwm.ml (1.1),
+	sdlwm.mli (1.1), sdlwm_stub.c (1.1): ADD: Sdlwm for window manager
+	interaction 
+
+	* src/: sdlevent2.ml (1.3), sdlevent2.mli (1.3), sdlevent2_stub.c
+	(1.4), sdlkey.ml (1.3), sdlkey.mli (1.3), sdlkey_stub.c (1.4): ADD:
+	character translation for keyboard events 
+
+	* samples/: checkkeys.ml (1.2), ocamlsdl_logo2.ml (1.2): sync with
+	API 
+
+2002-09-02 oliv__a
+
+	* samples/: Makefile (1.6), checkkeys.ml (1.1): ADD: checkkeys.ml 
+
+	* src/: sdlvideo2.ml (1.5), sdlvideo2.mli (1.5), sdlvideo2_stub.c
+	(1.5): ADD: GL stuff 
+
+2002-09-02 15:09  smkl
+
+	* src/: sdlevent.ml (1.8), sdlevent.mli (1.10), sdlevent_stub.c
+	(1.15), sdlvideo.ml (1.27), sdlvideo.mli (1.26), sdlvideo_stub.c
+	(1.34): Added handler for getting resize events. Added pitch
+	function, needed when using bigarrays.  
+
+2002-08-31 00:20  oliv__a
+
+	* src/: sdlttf_stub.c (1.18), sdlvideo_stub.h (1.4): FIX:
+	SDL_COLOR_FROM_VALUE 
+
+2002-08-29 oliv__a
+
+	* doc/Makefile (1.4): use LIBS var 
+
+	* src/: sdlvideo2.ml (1.4), sdlvideo2.mli (1.4), sdlvideo2_stub.c
+	(1.4): ADD: create_RGB_surface_format + various API fixes 
+
+	* src/sdlttf.mli (1.11): ocamldoc fixes 
+
+2002-08-28 17:28  xtrm
+
+	* doc/: Makefile (1.3), OCamlMakefile (1.1), foobar.ml (1.1): ADD:
+	initial release dummy sample file, makefile and OCamlMakefile 
+
+2002-08-28 oliv__a
+
+	* samples/ocamlsdl_logo2.ml (1.1): ADD: ocamlsdl_logo for Sdlvideo2 
+
+	* samples/Makefile (1.5): ADD: -dllpath option for linking 
+
+	* src/: sdlvideo2.ml (1.3), sdlvideo2.mli (1.3): ADD:
+	get_video_surface 
+
+2002-08-28 xtrm
+
+	* src/: sdlvideo.ml (1.26), sdlvideo.mli (1.25): FIX:
+	create_rgb_surface return surface instead of unit 
+
+	* samples/Makefile (1.4): CHANGE: add ocamlsdl_logo in SAMPLES var 
+
+	* samples/ocamlsdl_logo.ml (1.1): ADD: initial release 
+
+2002-08-28 11:14  oliv__a
+
+	* src/: sdlvideo2.ml (1.2), sdlvideo2.mli (1.2), sdlvideo2_stub.c
+	(1.3): CHANGE: palette stuff 
+
+2002-08-27 11:53  oliv__a
+
+	* src/: sdlevent2.ml (1.2), sdlevent2.mli (1.2), sdlevent2_stub.c
+	(1.3): CHANGE: type of VIDEORESIZE events, forgot get_app_state 
+
 2002-08-26 Luc Mazardo <luc@mazardo.com>
 
         * CHANGE (src/sdlcdrom_stub.c) removing warning by handled all in

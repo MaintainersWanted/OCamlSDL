@@ -1,3 +1,9 @@
+Release 0.6.2:
+	* interfaced SDLRWops for reading images and sounds from
+	  memory buffers.
+	* added SDL.putenv and SDL.getenv
+	* some internal C-side changes
+
 Release 0.6.1:
 	* GL-related functions in a new module Sdlgl
           better LablGL interaction
