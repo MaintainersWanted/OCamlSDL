@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.19 2002/08/14 14:07:43 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.20 2002/08/24 21:01:38 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -44,10 +44,11 @@ static void
 sdlmixer_raise_exception (char *msg)
 {
   static value *mixer_exn = NULL;
-  if(! mixer_exn)
+  if(! mixer_exn){
     mixer_exn = caml_named_value("SDLmixer_exception");
-  if(! mixer_exn)
-    error(-1, 0, "exception not registered.");
+    if(! mixer_exn)
+      error(-1, 0, "exception not registered.");
+  }
   raise_with_string(*mixer_exn, msg);
 }
 

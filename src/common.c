@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.c,v 1.7 2002/08/21 18:09:42 oliv__a Exp $ */
+/* $Id: common.c,v 1.8 2002/08/24 21:01:37 oliv__a Exp $ */
 
 
 #include <caml/mlvalues.h>
@@ -96,7 +96,7 @@ value Val_some(value v)
 {
   CAMLparam1(v);
   CAMLlocal1(r);
-  r = alloc_small(r, 0);
+  r = alloc_small(1, 0);
   Field(r, 0) = v;
   CAMLreturn(r);
 }
