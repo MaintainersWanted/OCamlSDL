@@ -1,0 +1,11 @@
+Release 0.5-pre1:
+
+	* bigarray support in sdlvideo module
+	* SDL-1.2, SDL_image-1.2.0, SDL_mixer-1.2.0, SDL_ttf-1.2.2 support
+	  but not fully  implemented.
+	* major changes in the internal structure of directories
+	* some bugfixes 
+	* works with ocaml-3.01
+
+Release 0.4:
+The initial was arbitrary numbered 0.4.
