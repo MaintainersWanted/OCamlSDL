@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.8 2003/01/05 11:23:53 oliv__a Exp $ *)
+(* $Id: sdl.mli,v 1.9 2003/02/13 21:40:11 oliv__a Exp $ *)
 
 (** This module contains functions for initializing/quitting the library *)
 
@@ -71,3 +71,8 @@ external version : unit -> version = "sdl_version"
 (** version of the SDL library *)
 
 val string_of_version : version -> string
+
+(** {3 Environment variables *)
+
+val getenv : string -> string
+val putenv : string -> string -> unit

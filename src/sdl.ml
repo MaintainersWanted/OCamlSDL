@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.ml,v 1.6 2002/08/08 12:32:32 oliv__a Exp $ *)
+(* $Id: sdl.ml,v 1.7 2003/02/13 21:40:11 oliv__a Exp $ *)
 
 (* Define a new exception for Sdl initialization errors and register 
    it to be callable from C code. *)
@@ -61,3 +61,7 @@ let string_of_version v =
   String.concat "." 
     (List.map string_of_int 
        [ v.major; v.minor; v.patch ])
+
+let getenv = Sys.getenv
+external putenv : string -> string -> unit = "sdl_putenv"
+

@@ -17,10 +17,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.15 2002/11/21 11:01:14 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.16 2003/02/13 21:40:12 oliv__a Exp $ */
+
+#include <string.h>
 
 #include <caml/callback.h>
 #include <caml/alloc.h>
+#include <caml/memory.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
 
@@ -133,4 +136,24 @@ sdl_version (value unit)
   Field(r, 1) = Val_int(v->minor);
   Field(r, 2) = Val_int(v->patch);
   return r;
+}
+
+/* a shameless cut-and-paste from putenv.c in the caml Unix module
+   sources ... */
+CAMLprim value sdl_putenv(value name, value val)
+{
+  mlsize_t namelen = string_length(name);
+  mlsize_t vallen = string_length(val);
+  char * s = (char *) stat_alloc(namelen + 1 + vallen + 1);
+
+  memmove (s, String_val(name), namelen);
+  if(vallen > 0) {
+    s[namelen] = '=';
+    memmove (s + namelen + 1, String_val(val), vallen);
+    s[namelen + 1 + vallen] = 0;
+  }
+  else
+    s[namelen] = 0;
+  if (putenv(s) == -1) raise_out_of_memory();
+  return Val_unit;
 }
