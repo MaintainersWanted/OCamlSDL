@@ -1,4 +1,10 @@
 
+2001-01-03  Sami Mäkelä  <sajuma@utu.fi>
+
+	* ADD (sdlvideo*): Added some experimental support for opengl
+
+	* ADD (games/*): Added some examples ... still need commenting
+
 2000-11-05  Sami Mäkelä  <sajuma@utu.fi>
 
 	* FIX (sdlstub*): Fixed some bugs with playing and query_specs

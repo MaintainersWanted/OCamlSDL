@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.13 2000/09/04 17:52:12 smkl Exp $ *)
+(* $Id: sdlvideo.ml,v 1.14 2001/01/03 13:20:01 smkl Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -63,6 +63,7 @@ type pixel_data = (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.
 external get_video_info : unit -> video_info = "sdlvideo_get_video_info";;
 external get_display_surface : unit -> surface = "sdlvideo_get_display_surface";;
 external set_display_mode : int -> int -> int -> surface = "sdlvideo_set_display_mode";;
+external set_opengl_mode : int -> int -> int -> surface = "sdlvideo_set_opengl_mode";;
 external flip : surface -> unit = "sdlvideo_flip";;
 external update_rect : surface -> rect -> unit = "sdlvideo_update_rect";;
 
@@ -101,6 +102,7 @@ external must_lock : surface -> bool = "sdlvideo_must_lock";;
 external lock_surface : surface -> unit = "sdlvideo_lock_surface";;
 external unlock_surface  : surface -> unit = "sdlvideo_unlock_surface";;
 external surface_pixel_data : surface -> pixel_data = "sdlvideo_surface_pixel_data";;
+external gl_swap_buffers : unit -> unit = "sdlvideo_gl_swap_buffers";;
 
 external surface_final : unit -> surface = "sdlvideo_surface_final";;
 

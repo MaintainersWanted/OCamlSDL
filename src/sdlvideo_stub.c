@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.15 2000/09/04 17:52:12 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.16 2001/01/03 13:20:01 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -154,7 +154,30 @@ sdlvideo_set_display_mode (value width, value height, value bpp)
 			  Int_val(height),
 			  Int_val(bpp),
 			  SDL_HWSURFACE | SDL_DOUBLEBUF);
-  
+
+  if (surf == NULL) {
+    sdlvideo_raise_exception(SDL_GetError());
+  }
+
+  return ML_SURFACE(surf);
+}
+
+value
+sdlvideo_set_opengl_mode (value width, value height, value bpp)
+{
+  SDL_Surface *surf;
+  int depth = Int_val(bpp);
+
+  /* Modes not implemented */
+  if (depth != 0 && depth < 15) {
+    sdlvideo_raise_exception("Bit depth not implemented!");
+  }
+
+  surf = SDL_SetVideoMode(Int_val(width),
+			  Int_val(height),
+			  Int_val(bpp),
+			  SDL_OPENGL);
+
   if (surf == NULL) {
     sdlvideo_raise_exception(SDL_GetError());
   }
@@ -548,6 +571,13 @@ sdlvideo_surface_pixel_data(value surface)
    dims[0] = surf->h * surf->pitch;
    return alloc_bigarray(BIGARRAY_UINT8 | BIGARRAY_C_LAYOUT,
 			 1, surf->pixels, dims);
+}
+
+value
+sdlvideo_gl_swap_buffers(value unit)
+{
+   SDL_GL_SwapBuffers();
+   return Val_unit;
 }
 
 /* EXPERIMENTAL */

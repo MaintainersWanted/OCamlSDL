@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.12 2000/09/04 17:52:12 smkl Exp $ *)
+(* $Id: sdlvideo.mli,v 1.13 2001/01/03 13:20:01 smkl Exp $ *)
 
 (* Exception *)
 
@@ -62,6 +62,7 @@ type pixel_data =
 val get_video_info : unit -> video_info;;
 val get_display_surface : unit -> surface;;
 val set_display_mode : int -> int -> int -> surface;; 
+val set_opengl_mode : int -> int -> int -> surface;; 
 
 val flip : surface -> unit;;
 val update_rect : surface -> rect -> unit;;
@@ -108,6 +109,7 @@ val must_lock : surface -> bool;;
 val lock_surface : surface -> unit;;
 val unlock_surface : surface -> unit;; 
 val surface_pixel_data : surface -> pixel_data;;
+val gl_swap_buffers : unit -> unit;;
 
 (* DO NOT USE. EXPERIMENTAL *)
 
