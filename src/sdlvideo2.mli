@@ -19,15 +19,13 @@
 
 (** Module for video manipulations *)
 
-(* $Id: sdlvideo2.mli,v 1.8 2002/10/01 22:58:47 xtrm Exp $ *)
+(* $Id: sdlvideo2.mli,v 1.9 2002/10/04 00:07:17 oliv__a Exp $ *)
 
 open Bigarray
 
-(** SDL video functions *)
-
 exception Video_exn of string
 
-(* Types *)
+(** {1 Rectangles} *)
 
 type rect = {
     mutable r_x : int ;
@@ -38,12 +36,17 @@ type rect = {
   (** rectangular area (x, y, w, h) *)
 
 val rect : x:int -> y:int -> w:int -> h:int -> rect
+
 val copy_rect : rect -> rect
+(** @return a copy of the rectangle *)
+
+
+(** {1 Video mode informations} *)
 
 type pixel_format_info = {
     palette  : bool ;
-    bits_pp  : int ; (** bits per pixel *)
-    bytes_pp : int ; (** bytes per pixel *)
+    bits_pp  : int ;   (** bits per pixel *)
+    bytes_pp : int ;   (** bytes per pixel *)
     rmask    : int32 ; (** red mask value *)
     gmask    : int32 ; (** green mask value *)
     bmask    : int32 ; (** blue mask value *)
@@ -59,7 +62,7 @@ type pixel_format_info = {
     colorkey : int32 ; 	(** RGB color key information *)
     alpha    : int ; 	(** Alpha value information (per-surface alpha) *)
   } 
-(** pixel format *)
+(** Structure describing how color are encoded as pixels *)
 
 type video_info = {
     hw_available : bool;	(** Hardware surfaces? *)
@@ -73,7 +76,8 @@ type video_info = {
     blit_fill : bool;		(** Accelerated color fill *)
     video_mem : int;		(** Total amount of video memory (Ko) *)
   } 
-(** video info *)
+(** Information on either the 'best' available mode (if called before
+   [set_video_mode]) or the current video mode. *)
 
 external get_video_info : unit -> video_info
     = "ml_SDL_GetVideoInfo"
@@ -128,10 +132,9 @@ type video_flag = [
 ] 
 
 type modes =
-  | NOMODE
-  | ANY
+  | NOMODE   (** no dimensions available for the requested format *)
+  | ANY      (** any dimension okay *)
   | DIM of (int * int) list
-(** screen dimensions *)
 
 external list_modes : ?bpp:int -> video_flag list -> modes
     = "ml_SDL_ListModes"
@@ -141,36 +144,36 @@ external list_modes : ?bpp:int -> video_flag list -> modes
 
 external video_mode_ok : w:int -> h:int -> bpp:int -> video_flag list -> int
     = "ml_SDL_VideoModeOK"
-(** @return 0 if the requested mode is not supported or returns the bits-per-pixel 
-  of the closest available mode with the given width and height. 
-  If this bits-per-pixel is different from the one used when setting 
-  the video mode, set_video_mode will succeed,
-  but will emulate the requested bits-per-pixel with a shadow surface. *)
+(** Check to see if a particular video mode is supported.  
+   @return 0 if the requested mode is not supported or returns the
+   bits-per-pixel of the closest available mode with the given width
+   and height.  If this bits-per-pixel is different from the one used
+   when setting the video mode, set_video_mode will succeed, but will
+   emulate the requested bits-per-pixel with a shadow surface. *)
+
+
+(** {1 Surfaces} *)
+
+type surface 
+(** Graphical surface datatype *)
 
 type surface_flags = [
   | video_flag
-  | `HWACCEL (** Blit uses hardware acceleration *)
+  | `HWACCEL     (** Blit uses hardware acceleration *)
   | `SRCCOLORKEY (** Blit uses a source color key *)
-  | `RLEACCEL (** Surface is RLE encoded *)
-  | `SRCALPHA (** Blit uses source alpha blending *)
-  | `PREALLOC (** Surface uses preallocated memory *)
+  | `RLEACCEL    (** Surface is RLE encoded *)
+  | `SRCALPHA    (** Blit uses source alpha blending *)
+  | `PREALLOC    (** Surface uses preallocated memory *)
 ]
  
-type surface 
-(** video surface *)
-
 type surface_info = {
     flags     : surface_flags list ;
-    w         : int ; (** width *)
-    h         : int ; (** height *)
-    pitch     : int ; (** pitch *)
-    clip_rect : rect ; (** clipping information *)
-    refcount  : int ; (** Reference count -- used when freeing surface *)
+    w         : int ;   (** width *)
+    h         : int ;   (** height *)
+    pitch     : int ;   (** pitch *)
+    clip_rect : rect ;  (** clipping information *)
+    refcount  : int ;   (** reference count *)
   }
-
-
-(** {1 Common accessors} *)
-
 
 external surface_info : surface -> surface_info
     = "ml_sdl_surface_info"
@@ -181,7 +184,7 @@ external surface_format : surface -> pixel_format_info
 (** @return pixel format information for the given [surface] *)
 
 val surface_dims   : surface -> int * int * int
-(** @return dimension of the given [surface] *)
+(** @return width, height and pitch of the given [surface] *)
 
 val surface_flags  : surface -> surface_flags list
 (** @return flag list for the given [surface] *)
@@ -190,47 +193,7 @@ val surface_bpp    : surface -> int
 (** @return bits-per-pixel for the given [surface] *)
 
 
-(** {1 Color stuff} *)
-
-type color = int * int * int
-(** color type rgb style *)
-
-val black : color (** predefined black color *)
-val white : color (** predefined white color *)
-
-val red : color (** predefined red color *)
-val green : color (** predefined green color *)
-val blue : color (** predefined blue color *)
-
-val yellow : color (** predefined yellow color *)
-val cyan : color (** predefined cyan color *)
-val magenta : color (** predefined magenta color *)
-
-
-(** {1 Palette stuff} *)
-
-
-external use_palette : surface -> bool
-    = "ml_sdl_surface_use_palette"
-external palette_ncolors     : surface -> int = "ml_sdl_palette_ncolors"
-external get_palette_color   : surface -> int -> color = "ml_sdl_palette_get_color"
-
-type palette_flag =
-  | LOGPAL (** set logical palette, which controls how blits are mapped
-	     to/from the surface *)
-  | PHYSPAL (** set physical palette, which controls how pixels 
-	      look on the screen *)
-  | LOGPHYSPAL
-
-external set_palette : surface -> ?flag:palette_flag -> ?firstcolor:int -> color array -> unit
-    = "ml_SDL_SetPalette"
-(** Sets a portion of the colormap for a given 8-bit [surface]. *)
-
-
-
 (** {1 Video modes-related functions} *)
-
-
 
 external get_video_surface : unit -> surface
     = "ml_SDL_GetVideoSurface"
@@ -239,30 +202,40 @@ external get_video_surface : unit -> surface
 external set_video_mode : 
   w:int -> h:int -> ?bpp:int -> video_flag list -> surface
     = "ml_SDL_SetVideoMode"
-(** Set up a video mode with the specified [width], [heigh]t and [bits-per-pixel]. 
- @return the current display [surface] *)
+(** Set up a video mode with the specified [width], [height] and
+   [bits-per-pixel].  
+   @param bpp if omited, it is treated as the current display bits per
+   pixel
+   @return the current display [surface] *)
 
 external update_rect : ?rect:rect -> surface -> unit
     = "ml_SDL_UpdateRect"
-(** Makes sure the given area is updated on the given screen
-  with no rect parameter, this will update the entire screen *)
+(** @param rect makes sure the given area is updated on the given
+   screen. The rectangle must be confined within the screen boundaries
+   (no clipping is done). Updates the entire screen if omitted *)
 
 external update_rects : rect list -> surface -> unit
     = "ml_SDL_UpdateRects"
-(** Makes sure the given area is updated on the given screen. *)
+(** Makes sure the given list of rectangles is updated on the given
+   screen. The rectangles must all be confined within the screen
+   boundaries (no clipping is done).
+   This function should not be called while screen is locked.*)
 
 external flip : surface -> unit
     = "ml_SDL_Flip"
 (**  Swaps screen buffers.
   
-  On hardware that supports double-buffering ([DOUBLEBUF]), this function 
+  On hardware that supports double-buffering ([`DOUBLEBUF]), this function 
   sets up a flip and returns. The hardware will wait for vertical retrace, 
   and then swap video buffers before the next video surface blit or lock 
   will return. 
   
   On hardware that doesn't support double-buffering, this is equivalent to 
-  calling [update_rect get_display_surface()]  
+  calling [update_rect]  
 *)
+
+
+(** {1 Color manipulation} *)
 
 external set_gamma : r:float -> g:float -> b:float -> unit
     = "ml_SDL_SetGamma"
@@ -270,6 +243,51 @@ external set_gamma : r:float -> g:float -> b:float -> unit
   The gamma values range (approximately) between 0.1 and 10.0 
   If this function isn't supported directly by the hardware, it will
   be emulated using gamma ramps, if available.*)
+
+type color = int * int * int
+(** Format independent color description [(r,g,b)] are 8 bits unsigned
+   integers *)
+
+val black   : color
+val white   : color
+val red     : color 
+val green   : color
+val blue    : color
+val yellow  : color
+val cyan    : color
+val magenta : color
+
+(** {2 Palettes} *)
+
+external use_palette : surface -> bool
+    = "ml_sdl_surface_use_palette"
+(** @return [true] if surface use indexed colors *)
+
+external palette_ncolors     : surface -> int 
+   = "ml_sdl_palette_ncolors"
+(** Number of colors in the surface's palette *)
+
+external get_palette_color   : surface -> int -> color
+   = "ml_sdl_palette_get_color"
+(** Retrieve a color by its index in a surface's palette *)
+
+type palette_flag =
+  | LOGPAL (** set logical palette, which controls how blits are mapped
+	     to/from the surface *)
+  | PHYSPAL (** set physical palette, which controls how pixels 
+	      look on the screen *)
+  | LOGPHYSPAL
+
+external set_palette : surface -> 
+  ?flag:palette_flag -> ?firstcolor:int -> color array -> unit
+    = "ml_SDL_SetPalette"
+(** Sets a portion of the palette for a given 8-bit [surface].
+   @param flag defaults to LOGPHYSPAL
+   @param firstcolor where to blit the color array given as argument
+   (defaults to 0)
+*)
+
+(** {2 Conversions} *)
 
 external map_RGB : surface -> ?alpha:int -> color -> int32
     = "ml_SDL_MapRGB"
@@ -290,16 +308,15 @@ external get_RGBA : surface -> int32 -> color * int
 
 (** {1 Creating RGB surface} *)
 
-
 external create_RGB_surface : 
   [ `SWSURFACE | `HWSURFACE | `ASYNCBLIT | `SRCCOLORKEY | `SRCALPHA ] list ->
   w:int -> h:int -> bpp:int -> 
   rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
     = "ml_SDL_CreateRGBSurface_bc" "ml_SDL_CreateRGBSurface"
-(** create RGB surface 
+(** Creates a RGB surface.
   If the depth is 4 or 8 bits, an empty palette is allocated 
   for the surface. If the depth is greater than 8 bits, the pixel format is 
-  set using the flags '[RGB]mask'.
+  set using the given masks.
 
   @return the new surface *)
 
@@ -307,6 +324,8 @@ external create_RGB_surface_format : surface ->
   [ `SWSURFACE | `HWSURFACE | `ASYNCBLIT | `SRCCOLORKEY | `SRCALPHA ] list ->
   w:int -> h:int -> surface
     = "ml_SDL_CreateRGBSurface_format"
+(** Creates a RGB surface with the same pixel format as the first
+   parameter. *)
 
 val create_RGB_surface_from_32 : 
   (int32, int32_elt, c_layout) Array1.t ->
@@ -332,26 +351,38 @@ val create_RGB_surface_from_8 :
 
 external must_lock : surface -> bool
     = "ml_SDL_MustLock" "noalloc"
-(** @return boolean if the surface could be lock *)
+(** @return [true] if the surface should be locked before accessing
+   its pixels *)
+
 external lock : surface -> unit
     = "ml_SDL_LockSurface"
-(** sets up a surface for directly accessing the pixels. *)
+(** Sets up a surface for directly accessing the pixels. *)
 
 external unlock : surface -> unit
     = "ml_SDL_UnlockSurface" "noalloc"
-(** release the current [surface] *)
+(** Releases the lock on the given [surface] *)
+
+
+(** {1 Accessing surface pixels} *)
+
+val pixel_data : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
+
+val pixel_data_8 : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
+
+val pixel_data_16 : surface -> (int, int16_unsigned_elt, c_layout) Array1.t
+
+val pixel_data_24 : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
+
+val pixel_data_32 : surface -> (int32, int32_elt, c_layout) Array1.t
 
 
 
-(** {1 BMP features} *)
+(** {1 Reading/writing in BMP files} *)
 
 
 external load_BMP : string -> surface
     = "ml_SDL_LoadBMP"
-(** Loads a surface from a named Windows BMP file.
-  
-  Returns the new [surface], or raise [SDLvideo_exception] 
-  if there was an error *)
+(** Loads a surface from a named Windows BMP file.*)
 
 external save_BMP : string -> surface -> unit
     = "ml_SDL_SaveBMP"
@@ -360,9 +391,9 @@ external save_BMP : string -> surface -> unit
 
 (** {1 Colorkey and alpha stuff} *)
 
-
 external unset_color_key : surface -> unit
     = "ml_SDL_unset_color_key"
+
 external set_color_key : surface -> ?rle:bool -> int32 -> unit
     = "ml_SDL_SetColorKey"
 (** Sets the color key (transparent pixel) in a blittable [surface]. *)
@@ -370,13 +401,14 @@ external set_color_key : surface -> ?rle:bool -> int32 -> unit
 external get_color_key : surface -> int32
     = "ml_SDL_get_color_key"
 (** @return the color key of the given [surface] *)
+
 external unset_alpha : surface -> unit
     = "ml_SDL_unset_alpha"
 
 external set_alpha : surface -> ?rle:bool -> int -> unit
     = "ml_SDL_SetAlpha"
 (** sets the alpha value for the entire [surface], as opposed to
-  using the alpha component of each pixel. *)
+   using the alpha component of each pixel. *)
 
 external get_alpha : surface -> int
     = "ml_SDL_get_alpha"
@@ -399,12 +431,27 @@ external get_clip_rect : surface -> rect
     = "ml_SDL_GetClipRect"
 (** @return the clipping rectangle for the destination [surface] in a blit. *)
 
+(** {1 Blitting} *)
+
 external blit_surface : 
   src:surface -> ?src_rect:rect -> 
   dst:surface -> ?dst_rect:rect -> unit -> unit
   = "ml_SDL_BlitSurface"
-(**  performs a fast blit from the source [surface] 
-  to the destination [surface]. *)
+(** Performs a fast blit from the source [surface] 
+   to the destination [surface]. 
+
+   @param src_rect the width and height determine the size of the
+   copied rectangle. If omitted, the entire surface is copied.
+
+   @param dst_rect only the position is used (the width and height are
+   ignored). If omitted, the detination position (upper left corner)
+   is (0, 0).
+
+   The final blit rectangle is saved in [dst_rect] after all clipping
+   is performed ([src_rect] is not modified).
+
+   The blit function should not be called on a locked surface.
+*)
 
 external fill_rect : ?rect:rect -> surface -> int32 -> unit
     = "ml_SDL_FillRect"
@@ -413,22 +460,9 @@ external fill_rect : ?rect:rect -> surface -> int32 -> unit
 external display_format : ?alpha:bool -> surface -> surface
     = "ml_SDL_DisplayFormat"
 (** This function takes a surface and copies it to a new surface of the
-  pixel format and colors of the video framebuffer, suitable for fast
-  blitting onto the display surface. *)
-
-
-(** {1 Array manipulation} *)
-
-
-val pixel_data : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
-
-val pixel_data_8 : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
-
-val pixel_data_16 : surface -> (int, int16_unsigned_elt, c_layout) Array1.t
-
-val pixel_data_24 : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
-
-val pixel_data_32 : surface -> (int32, int32_elt, c_layout) Array1.t
+   pixel format and colors of the video framebuffer, suitable for fast
+   blitting onto the display surface. 
+   @param alpha if [true], include an alpha channel in the new surface *)
 
 
 (** {1 OpenGL support functions } *)
