@@ -19,7 +19,7 @@
 
 (** Module for video manipulations *)
 
-(* $Id: sdlvideo.mli,v 1.30 2003/01/05 11:23:53 oliv__a Exp $ *)
+(* $Id: sdlvideo.mli,v 1.31 2003/01/21 19:12:52 oliv__a Exp $ *)
 
 open Bigarray
 
@@ -456,8 +456,8 @@ external blit_surface :
    ignored). If omitted, the detination position (upper left corner)
    is (0, 0).
 
-   The final blit rectangle is saved in [dst_rect] after all clipping
-   is performed ([src_rect] is not modified).
+   The final blit rectangles are saved in [src_rect] and [dst_rect]
+   after all clipping is performed.
 
    The blit function should not be called on a locked surface.
 *)
