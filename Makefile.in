@@ -17,10 +17,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.9 2000/02/27 22:49:09 fbrunel Exp $
+# $Id: Makefile.in,v 1.10 2000/03/05 15:26:13 fbrunel Exp $
 
 CC = 		@CC@ 
-CFLAGS =	@CFLAGS@ -Wall # -g -pg #-O3 -pipe -pedantic -m486 
+CFLAGS =	@CFLAGS@ -Wall -D__DEBUG__ # -g -pg #-O3 -pipe -pedantic -m486 
 CAMLC =		@OCAMLC@
 CAMLOPT =	@OCAMLOPT@
 CAMLTOP =	@OCAMLMKTOP@
@@ -34,8 +34,9 @@ MLLIBS =	-cclib "$(CLIBS)"
 BIN_DIR =	bin
 LIB_DIR =	lib
 
-C_OBJS = 	sdl_stub.o sdlcdrom_stub.o sdltimer_stub.o sdlvideo_stub.o\
-		sdlevent_stub.o sdlloader_stub.o sdlttf_stub.o sdlmixer_stub.o
+C_OBJS = 	sdl_stub.o sdlcdrom_stub.o sdltimer_stub.o sdlvideo_stub.o \
+		sdlevent_stub.o sdlloader_stub.o sdlttf_stub.o sdlmixer_stub.o \
+		stub_shared.o
 
 ML_OBJS	=	sdl.cmo sdlcdrom.cmo sdltimer.cmo \
 		sdlvideo.cmo sdlevent.cmo sdlloader.cmo sdlttf.cmo sdlmixer.cmo
@@ -90,15 +91,13 @@ $(CLIBRARY): $(C_OBJS)
 	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
 
 distclean:
-	rm -f $(TOPLEVEL) $(RUNTIME) *.o *~ *.cm[iox] .depend
+	rm -f *.o *~ *.cm[iox] .depend
 	rm -f config.status config.cache config.log Makefile
 	rm -f $(BIN_DIR)/*
 	rm -f $(LIB_DIR)/*a
 
 clean:
 	rm -f *.o *~ *.cm[iox] .depend
-	rm -f $(BIN_DIR)/*
-	rm -f $(LIB_DIR)/*a
 
 depend:
 	$(CAMLDEP) *.mli *.ml > .depend
