@@ -5,8 +5,6 @@ exception Video_exn of string
 let _ = 
   Callback.register_exception "SDLvideo2_exception" (Video_exn "")
 
-type color = int * int * int 
-  (** (r, g, b) *)
       
 type rect = {
     mutable r_x : int ;
@@ -87,17 +85,17 @@ external list_modes : ?bpp:int -> video_flag list -> modes
 
 external video_mode_ok : w:int -> h:int -> bpp:int -> video_flag list -> int
     = "ml_SDL_VideoModeOK"
-
+(** Check to see if a particular video mode is supported. *)
 
 type surface_flags = [
   | video_flag
   | `HWACCEL
-  | `SRCCOLORKEY
+  | `SRCCOLORKEY (** Blit uses a source color key *)
   | `RLEACCEL
-  | `SRCALPHA
+  | `SRCALPHA (** Blit uses source alpha blending *)
   | `PREALLOC ] 
 
-type surface
+type surface 
 type surface_info = {
     flags     : surface_flags list ;
     w         : int ;
@@ -123,6 +121,21 @@ let surface_flags s =
 
 let surface_bpp s = 
   (surface_format s).bits_pp
+
+type color = int * int * int 
+  (** (r, g, b) *)
+
+let black:color = (0, 0, 0)
+let white:color = (255, 255, 255)      
+
+let red:color = (255, 0, 0)
+let green:color = (0, 255, 0)
+let blue:color = (0, 0, 255)
+
+let yellow:color = (255, 255, 0)
+let cyan:color = (0, 255, 255)
+let magenta:color = (255, 0, 255)
+
 
 external use_palette : surface -> bool
     = "ml_sdl_surface_use_palette"
