@@ -37,7 +37,7 @@ else
 fi
 # checking for ocamlc.opt
 AC_CHECK_PROG(OCAMLCDOTOPT,ocamlc.opt,ocamlc.opt)
-if test -z "$OCAMLCDOTOPT"; then
+if test "$OCAMLCDOTOPT"; then
 	TMPVERSION=`$OCAMLCDOTOPT -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
 	if test "$TMPVERSION" != "$OCAMLVERSION" ; then
 	    AC_MSG_RESULT(versions differs from ocamlc; ocamlc.opt discarded.)
