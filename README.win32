@@ -1,0 +1,3 @@
+
+Copy makefile.vcc to makefile.toplevel. Rename your SDL.dll to libSDL.dll.
+Run GNU make normally. 
