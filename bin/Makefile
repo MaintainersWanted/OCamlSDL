@@ -17,23 +17,26 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.2 2001/05/15 21:24:24 xtrm Exp $
-
-INSTALL_DIR=$(DESTDIR)@prefix@/bin
-SCRIPT_TOPLEVEL=ocamlsdl
-
-install:
-	mkdir -p $(INSTALL_DIR)
-	$(INSTALL) -m 755 $(SCRIPT_TOPLEVEL) $(INSTALL_DIR)
-
-uninstall:
-	@rm $(INSTALL_DIR)/$(SCRIPT_TOPLEVEL)
-
-clean:
-	@rm -f $(SCRIPT_TOPLEVEL)
-
-distclean: clean
-	@rm -f Makefile $(SCRIPT_TOPLEVEL)
+# $Id: Makefile,v 1.1 2002/06/04 23:10:36 oliv__a Exp $
 
 include ../makefile.toplevel
 
+INSTALL_DIR=$(DESTDIR)$(BINDIR)
+SCRIPT_TOPLEVEL=ocamlsdl
+
+$(SCRIPT_TOPLEVEL) : $(SCRIPT_TOPLEVEL).in
+	sed -e "s\\@OCAMLSDLDIR@\\$(OCAMLSDLDIR)\\" < $< > $@
+
+install: $(SCRIPT_TOPLEVEL)
+	$(INSTALL) -d $(INSTALL_DIR)
+	$(INSTALL) $(SCRIPT_TOPLEVEL) $(INSTALL_DIR)
+
+uninstall:
+	rm $(INSTALL_DIR)/$(SCRIPT_TOPLEVEL)
+
+clean:
+	rm -f $(SCRIPT_TOPLEVEL)
+
+distclean: clean
+
+.PHONY: install uninstall clean distclean

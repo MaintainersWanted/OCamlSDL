@@ -1,14 +1,29 @@
-For now, all you have to do is to type
 
-   $ ./configure
-   $ make
+  $ ./configure
+  $ make
 
-it will build an OCaml toplevel with all necessary libraries linked
+options for configure:
+  --with-installdir=DIR	  specify installation directory
+  --disable-sdl-ttf       without freetype support  [default is enabled]
+  --disable-sdl-image     without sdl image support [default is enabled]
+  --disable-sdl-mixer     without sdl mixer support [default is enabled]
+
+It will build an OCaml toplevel with all necessary libraries linked
 with the executable.
 
    $ make install
 
-install the toplevel ocamlsdl in the directory $prefix/bin and all 
-necessary libraries in the directory $prefix/lib/ocaml/sdl.
+installs libraries and static toplevel in OCAMLSDLDIR (defaults to
+CAMLLIBDIR/sdl), and a script ocamlsdl calling the toplevel in
+PREFIX/usr/bin. 
+For packagers, there's a DESTDIR makefile variable.
 
+If you use OCaml >= 3.04, the static toplevel is not really necessary
+since you can load ocamlsdl in the standard toplevel :
 
+ $ ocaml
+         Objective Caml version 3.04
+
+ # #load "bigarray.cma" ;;
+ # #load "sdl.cma" ;;
+ #

@@ -17,27 +17,31 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.4 2001/05/15 21:24:24 xtrm Exp $
+# $Id: Makefile,v 1.3 2002/06/04 23:10:36 oliv__a Exp $
 
-INSTALL_DIR=$(DESTDIR)@prefix@/lib/ocaml/sdl
+all:
+	$(MAKE) -C src
 
-install:
-	mkdir -p $(INSTALL_DIR)
-	@INSTALL_DATA@ *.mli *.cm[ia] *.cmx[a] *.a $(INSTALL_DIR)
-	@INSTALL@ -m 755 toplevel $(INSTALL_DIR)
-
-uninstall:
-	@rm $(INSTALL_DIR)/*.mli 
-	@rm $(INSTALL_DIR)/*.cm[ia] 
-	@rm $(INSTALL_DIR)/*.cmx[a] 
-	@rm $(INSTALL_DIR)/*.a 
-	@rm $(INSTALL_DIR)/toplevel
+test: all
+	$(MAKE) -C samples
 
 clean:
-	@rm -f *~ *.mli *.cm[ia] *.cmx[a] *.a toplevel
+	$(MAKE) -C src clean
+	$(MAKE) -C samples clean
+	$(MAKE) -C bin clean
 
-distclean: clean
-	@rm -f Makefile
+distclean:
+	$(MAKE) -C src distclean
+	$(MAKE) -C samples distclean
+	$(MAKE) -C bin distclean
+	rm -f config.cache config.log config.status makefile.toplevel
 
-include ../makefile.toplevel
+install:
+	$(MAKE) -C src install
+	$(MAKE) -C bin install
 
+uninstall:
+	$(MAKE) -C src install
+	$(MAKE) -C bin uninstall
+
+.PHONY: all test clean distclean install uninstall

@@ -2,7 +2,7 @@ dnl ******
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.15 2002/05/27 22:37:39 xtrm Exp $
+dnl $Id: configure.in,v 1.16 2002/06/04 23:10:36 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -16,14 +16,16 @@ AC_CONFIG_AUX_DIR(./support)
 dnl -*- Check for programs -*-
 AC_PROG_CC
 AC_PROG_INSTALL
-AC_PATH_PROG(CP, cp, 
-	      AC_MSG_ERROR(Cannot find cp.))
 
 #  Check for OCaml programs 
 AC_PATH_PROG(OCAMLC,ocamlc,no)
 if test "$OCAMLC" = no ; then
 	AC_MSG_ERROR(Cannot find ocamlc.)
 fi
+AC_MSG_CHECKING(OCaml system directory)
+OCAMLLIBDIR=$($OCAMLC -where)
+AC_MSG_RESULT($OCAMLLIBDIR)
+AC_SUBST(OCAMLLIBDIR)
 AC_PATH_PROG(OCAMLOPT,ocamlopt,no)
 if test "$OCAMLOPT" = no ; then
 	AC_MSG_ERROR(Cannot find ocamlopt.)
@@ -36,11 +38,17 @@ AC_PATH_PROG(OCAMLDEP,ocamldep,no)
 if test "$OCAMLDEP" = no ; then
 	AC_MSG_ERROR(Cannot find ocamldep.)
 fi
+AC_PATH_PROG(OCAMLMKLIB,ocamlmklib)
+if test -z "$OCAMLMKLIB" ; then
+	AC_MSG_WARN(Cannot find ocamlmklib.)
+fi
 
-AC_SUBST(OCAMLC)
-AC_SUBST(OCAMLOPT)
-AC_SUBST(OCAMLMKTOP)
-AC_SUBST(OCAMLDEP)
+dnl -*- where to install the library ? -*-
+AC_ARG_WITH(installdir,[  --with-installdir=DIR	  specify installation directory],OCAMLSDLDIR="$withval")
+if test -z "$OCAMLSDLDIR" ; then
+  OCAMLSDLDIR='$(CAMLLIBDIR)/sdl'
+fi
+AC_SUBST(OCAMLSDLDIR)
 
 dnl -*- Check for libraries -*-
 
@@ -161,4 +169,4 @@ dnl  Check for library functions
 dnl  Check for system services 
 
 #  Finally create all the generated files 
-AC_OUTPUT(Makefile makefile.toplevel samples/Makefile src/Makefile lib/Makefile doc/Makefile bin/Makefile bin/ocamlsdl )
+AC_OUTPUT(makefile.toplevel)

@@ -18,9 +18,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: ocamlsdl.in,v 1.2 2001/06/11 17:08:29 xtrm Exp $
+# $Id: ocamlsdl.in,v 1.3 2002/06/04 23:10:36 oliv__a Exp $
 
-OCAMLSDL_LIB_PATH=@prefix@/lib/ocaml/sdl
+OCAMLSDL_LIB_PATH=@OCAMLSDLDIR@
 
-$OCAMLSDL_LIB_PATH/toplevel -I $OCAMLSDL_LIB_PATH $*
+exec $OCAMLSDL_LIB_PATH/toplevel -I $OCAMLSDL_LIB_PATH $*
 

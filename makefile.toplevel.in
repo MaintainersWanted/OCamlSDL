@@ -1,3 +1,4 @@
+# -*- makefile -*-
 #
 # OCamlSDL - An ML interface to the SDL library
 # Copyright (C) 1999  Frederic Brunel
@@ -17,21 +18,42 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.toplevel.in,v 1.3 2002/05/27 22:37:39 xtrm Exp $
+# $Id: makefile.toplevel.in,v 1.4 2002/06/04 23:10:36 oliv__a Exp $
 
-PREFIX =	@prefix@
+PREFIX =        @prefix@
+CAMLLIBDIR =    @OCAMLLIBDIR@
+OCAMLSDLDIR =   @OCAMLSDLDIR@
+BINDIR =        $(PREFIX)/bin
+
 INSTALL = 	@INSTALL@
-INSTALL_DATA = 	$(INSTALL) -m 644
-CP	=	@CP@
+INSTALL_DATA = 	@INSTALL_DATA@
 
+PARTS = @PARTS@
 
-CC = 		@CC@ 
-CFLAGS =	@CPPFLAGS@ @CFLAGS@ @DEFS@ -Wall -Wno-unused -D__DEBUG__ # -g -pg #-O3 -pipe -pedantic -m486 
+CFLAGS =	@CPPFLAGS@ @CFLAGS@ @DEFS@ -Wall -Wno-unused -D__DEBUG__
 CAMLC =		@OCAMLC@
 CAMLOPT =	@OCAMLOPT@
 CAMLTOP =	@OCAMLMKTOP@
 CAMLDEP =	@OCAMLDEP@
-MLFLAGS =
-OMLFLAGS =	-unsafe -inline 10 #-ccopt -pg -p
+CAMLMKLIB =     @OCAMLMKLIB@
+
+MLFLAGS  =
+OMLFLAGS =	-unsafe -inline 10
+
+LIBS      =	@LIBS@ @MATHLIB@
+CLIBS     =	$(addprefix -cclib ,$(filter -l%,$(LIBS)))
+MLLDFLAGS =	$(addprefix -ccopt ,$(filter-out -l%,$(LIBS)))
 
 DESTDIR =
+
+%.cmo : %.ml
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.cmx : %.ml
+	$(CAMLOPT) -c $(OMLFLAGS) $<
+
+%.cmi : %.mli
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.o : %.c
+	$(CAMLC) -c -ccopt "$(CFLAGS)" $<

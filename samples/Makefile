@@ -17,61 +17,39 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.3 2002/04/24 13:24:45 xtrm Exp $
+# $Id: Makefile,v 1.1 2002/06/04 23:10:36 oliv__a Exp $
 
 
-CLIBS =		@LIBS@ @MATHLIB@
-MLLIBS =	-cclib "$(CLIBS)"
 include ../makefile.toplevel
 
-BIN_DIR =	../bin
-LIB_DIR =	../lib
+LIB_DIR =	../src
 
-ML_LIBS =	-I $(LIB_DIR)
-OML_LIBS =	-I $(LIB_DIR)
-
-ML_FLAGS += -w s
-OMLFLAGS += -w s
-
-ML_OBJS	=	$(MODULES:=.cmo)
-
-C_OBJS = 	$(ML_OBJS:.cmo=.o)
-
-OPT_OBJS=	$(ML_OBJS:.cmo=.cmx)
-
-OBJS =		$(STUB_OBJS) $(ML_OBJS)
-OOBJS =		$(STUB_OBJS) $(OPT_OBJS)
+MLFLAGS  += -w s -I $(LIB_DIR)
+OMLFLAGS += -w s -I $(LIB_DIR)
 
 LIBRARY = 	$(LIB_DIR)/sdl.cma
 OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
 CLIBRARY = 	$(LIB_DIR)/libsdlstub.a
-
-TEST_OBJS = test_cdrom.cmx
-EXAMPLE_OBJS = example.cmx
-PLAYER_OBJS = ocamlplayer.cmx
 
 SAMPLES = test_cdrom example ocamlplayer
 
 
 all: $(SAMPLES)
 
+test_cdrom: test_cdrom.cmx $(CLIBRARY) $(OLIBRARY)
+	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
 
-test_cdrom: $(CLIBRARY) $(OLIBRARY) $(TEST_OBJS)
-	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -I ../lib -o $@ sdl.cmxa $(TEST_OBJS)
+example: example.cmx $(CLIBRARY) $(OLIBRARY)
+	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
 
-example: $(CLIBRARY) $(OLIBRARY) $(EXAMPLE_OBJS)
-	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -I ../lib -o $@ sdl.cmxa $(EXAMPLE_OBJS)
-
-ocamlplayer: $(CLIBRARY) $(OLIBRARY) $(PLAYER_OBJS)
-	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -I ../lib -o $@ sdl.cmxa $(PLAYER_OBJS)
-
-.SUFFIXES: .c .o .ml .mli .cmo .cmi .cmx
+ocamlplayer: ocamlplayer.cmx $(CLIBRARY) $(OLIBRARY)
+	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
 
 %.cmo : %.ml
-	$(CAMLC) -c $(MLFLAGS) $(ML_LIBS) $<
+	$(CAMLC) -c $(MLFLAGS) $<
 
 %.cmx : %.ml
-	$(CAMLOPT) -c $(OMLFLAGS) $(OML_LIBS) $<
+	$(CAMLOPT) -c $(OMLFLAGS) $<
 
 %.cmi : %.mli
 	$(CAMLC) -c $(MLFLAGS) $<
@@ -80,15 +58,16 @@ ocamlplayer: $(CLIBRARY) $(OLIBRARY) $(PLAYER_OBJS)
 	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
 
 distclean: clean
-	@rm -f Makefile
+	rm -f .depend *~
 
 clean:
-	@rm -f $(SAMPLES) *.o *~ *.cm[iox] .depend
+	rm -f *.cm* *.[oa] *.so $(SAMPLES)
 
-depend:
-	$(CAMLDEP) *.mli *.ml > .depend
+depend: .depend
 
-.depend: 
-	$(CAMLDEP) *.mli *.ml > .depend
+.depend: $(ML_SRCS) $(MLI)
+	@$(CAMLDEP) $^ > $@
 
-include .depend
+.PHONY: all clean distclean depend
+
+-include .depend
