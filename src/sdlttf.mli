@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.13 2002/09/30 21:40:07 oliv__a Exp $ *)
+(* $Id: sdlttf.mli,v 1.14 2003/01/03 20:16:33 oliv__a Exp $ *)
 
 (** This module provides TTF (TrueType Font) support *)
 
@@ -51,8 +51,11 @@ type font_style =
   | ITALIC
   | UNDERLINE
 
-external get_font_style : font -> font_style = "sdlttf_get_font_style"
-external set_font_style : font -> font_style -> unit = "sdlttf_set_font_style"
+external get_font_style : font -> font_style list = "sdlttf_get_font_style"
+(** Retrieve the font style : either [NORMAL] or a combination of 
+   [BOLD], [ITALIC] and [UNDERLINE] *)
+
+external set_font_style : font -> font_style list -> unit = "sdlttf_set_font_style"
 
 (** {1 Font information } *)
 
@@ -92,10 +95,10 @@ external size_text : font -> string -> int * int = "sdlttf_size_text"
 external glyph_metrics : font -> char -> int * int * int * int = "sdlttf_glyph_metrics"
 
 (** Variant type for the generic rendering functions *)
-type render_kind = [
-  | `SOLID   of color
-  | `SHADED  of color * color
-  | `BLENDED of color ]
+type render_kind =
+  | SOLID   of color
+  | SHADED  of color * color
+  | BLENDED of color
 
 (** {2 Text rendering functions} *)
 

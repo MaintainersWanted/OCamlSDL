@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.22 2002/11/21 11:01:17 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.23 2003/01/03 20:16:34 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -133,13 +133,33 @@ sdlttf_open_font(value file, value index, value ptsize)
 CAMLprim value
 sdlttf_get_font_style(value font)
 {
-  return Val_int(TTF_GetFontStyle(SDL_FONT(font)));
+  int style = TTF_GetFontStyle(SDL_FONT(font));
+  if (style == TTF_STYLE_NORMAL)
+    return cons(Val_int(0), Val_emptylist);
+  else {
+    int i;
+    const int font_style_table [] = {
+      TTF_STYLE_BOLD, TTF_STYLE_ITALIC, TTF_STYLE_UNDERLINE } ;
+    value v_style = Val_emptylist;
+    for(i=0; i < 3 ; i++)
+      if(font_style_table[i] & style) 
+	v_style = cons(Val_int(i+1), v_style);
+    return v_style;
+  }
 }
 
 CAMLprim value
 sdlttf_set_font_style(value font, value style)
 {
-  TTF_SetFontStyle(SDL_FONT(font), Int_val(style));
+  const int font_style_table [] = {
+    TTF_STYLE_NORMAL, TTF_STYLE_BOLD, 
+    TTF_STYLE_ITALIC, TTF_STYLE_UNDERLINE } ;
+  int c_style = 0;
+  while (is_not_nil(style)) {
+    c_style |= font_style_table[ Int_val( hd(style) ) ];
+    style = tl(style);
+  }
+  TTF_SetFontStyle(SDL_FONT(font), c_style);
   return Val_unit;
 }
 

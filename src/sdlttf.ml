@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.11 2002/09/30 21:40:07 oliv__a Exp $ *)
+(* $Id: sdlttf.ml,v 1.12 2003/01/03 20:16:33 oliv__a Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -42,8 +42,8 @@ type font_style =
   | ITALIC
   | UNDERLINE
 
-external get_font_style : font -> font_style = "sdlttf_get_font_style"
-external set_font_style : font -> font_style -> unit = "sdlttf_set_font_style"
+external get_font_style : font -> font_style list = "sdlttf_get_font_style"
+external set_font_style : font -> font_style list -> unit = "sdlttf_set_font_style"
 
 external font_height : font -> int = "sdlttf_font_height"
 external font_ascent : font -> int = "sdlttf_font_ascent"
@@ -66,16 +66,16 @@ external render_text_shaded : font -> string ->
 external render_text_blended : font -> string -> 
   fg:color -> surface = "sdlttf_render_text_blended"
 
-type render_kind = [
-  | `SOLID   of color
-  | `SHADED  of color * color
-  | `BLENDED of color ]
+type render_kind =
+  | SOLID   of color
+  | SHADED  of color * color
+  | BLENDED of color
 
 let render_text font kind txt =
   match kind with
-  | `SOLID fg -> render_text_solid font txt ~fg
-  | `SHADED (fg, bg) -> render_text_shaded font txt ~fg ~bg
-  | `BLENDED fg -> render_text_blended font txt ~fg
+  | SOLID fg -> render_text_solid font txt ~fg
+  | SHADED (fg, bg) -> render_text_shaded font txt ~fg ~bg
+  | BLENDED fg -> render_text_blended font txt ~fg
 
 external render_glyph_solid : font -> char -> 
   fg:color -> surface = "sdlttf_render_glyph_solid"
@@ -87,9 +87,9 @@ external render_glyph_blended : font -> char ->
 
 let render_glyph font kind c =
   match kind with
-  | `SOLID fg -> render_glyph_solid font c ~fg
-  | `SHADED (fg, bg) -> render_glyph_shaded font c ~fg ~bg
-  | `BLENDED fg -> render_glyph_blended font c ~fg
+  | SOLID fg -> render_glyph_solid font c ~fg
+  | SHADED (fg, bg) -> render_glyph_shaded font c ~fg ~bg
+  | BLENDED fg -> render_glyph_blended font c ~fg
 
 external glyph_metrics : font -> char -> int * int * int * int 
     = "sdlttf_glyph_metrics"
