@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.11 2003/11/16 14:38:43 oliv__a Exp $ */
+/* $Id: common.h,v 1.12 2003/11/25 12:38:21 oliv__a Exp $ */
 
 #ifndef _COMMON_H_
 #define _COMMON_H_
@@ -100,6 +100,10 @@ void leave_blocking_section(void);
 # ifdef HAVE_ALLOCA
 #  ifdef HAVE_ALLOCA_H
 #   include <alloca.h>
+#  else
+#   ifdef WIN32
+#    include <malloc.h>
+#   endif
 #  endif
 #  define LOCALARRAY(type, x, len) type *x = (type *) alloca(sizeof (type) * (len))
 # else
