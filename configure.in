@@ -2,7 +2,7 @@ dnl ****** -*- m4 -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.23 2002/09/10 11:21:07 oliv__a Exp $
+dnl $Id: configure.in,v 1.24 2002/09/10 11:54:06 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -20,6 +20,9 @@ if test -z "$CFLAGS" ; then
 fi
 AC_PROG_CC
 AC_C_INLINE
+if test "$ac_cv_c_inline" != no ; then
+  AC_DEFINE(HAVE_INLINE)
+fi
 AC_PROG_INSTALL
 
 #  Check for OCaml programs 
