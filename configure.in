@@ -2,7 +2,7 @@ dnl ******
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.13 2001/05/27 18:03:21 xtrm Exp $
+dnl $Id: configure.in,v 1.14 2001/06/11 17:11:51 xtrm Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -191,4 +191,4 @@ dnl  Check for library functions
 dnl  Check for system services 
 
 #  Finally create all the generated files 
-AC_OUTPUT(Makefile makefile.toplevel samples/Makefile src/Makefile lib/Makefile bin/Makefile bin/ocamlsdl)
+AC_OUTPUT(Makefile makefile.toplevel samples/Makefile src/Makefile lib/Makefile doc/Makefile bin/Makefile bin/ocamlsdl )
