@@ -181,9 +181,16 @@ static value val_video_flag(Uint32 flags)
   value l = nil();
   lookup_info *table = ml_table_video_flag;
   int i;
-  for (i = table[0].data; i > 0; i--)
-    if ((flags & table[i].data) == table[i].data)
-      l = cons(table[i].key, l);
+  for (i = table[0].data; i > 0; i--) {
+    lookup_info f = table[i];
+    if (f.data != 0 && ((flags & f.data) == f.data))
+      l = cons(f.key, l);
+  }
+
+  /* special case for SDL_SWSURFACE because its value is 0 */
+  if ((flags & SDL_HWSURFACE) == 0)
+    l = cons(MLTAG_SWSURFACE, l);
+
   return l;
 }
 
