@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.15 2001/05/11 13:58:17 xtrm Exp $ *)
+(* $Id: sdlvideo.mli,v 1.16 2001/06/11 17:07:39 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -78,31 +78,71 @@ type video_flag =
   | C of common_video_flag 
   | E of ext_video_flag
 
-(* Operations on display *)
+(*1 Operations on display *)
 
 val get_video_info : unit -> video_info;;
+(*d returns information about the video hardware *)
+
 val get_display_surface : unit -> surface;;
+(*d 
+  returns the current display surface 
+*)
+
 val set_display_mode : int -> int -> int -> surface;; 
 
 val video_mode_ok : int -> int -> int -> video_flag list -> bool
-	 (* [video_mode_ok width height bpp flags] *)
+(*d
+  [video_mode_ok width height bpp flags] 
+*)
+
 val set_video_mode : int -> int -> int -> video_flag list -> surface
-	 (* [set_video_mode width height bpp flags] *)
-(* val create_rgb_surface : common_video_flag list -> int -> int -> int -> int -> int -> int -> int *)
+(*d 
+  [set_video_mode width height bpp flags] 
+  Set up a video mode with the specified width, height and bits-per-pixel. 
+*)
+    
+(*  val create_rgb_surface : common_video_flag list -> int -> int -> int -> int -> int -> int -> int  *)
 	 (* [create_rgb_surface flags width height bpp rmask gmask bmask amask] *)
 
 val set_opengl_mode : int -> int -> int -> surface;; 
+(*d
+  obsolete must use [set_video_mode]
+*)
 
 val flip : surface -> unit;;
+(*d
+  Swaps screen buffers.
+  
+  On hardware that supports double-buffering ([DOUBLEBUF]), this function 
+  sets up a flip and returns. The hardware will wait for vertical retrace, 
+  and then swap video buffers before the next video surface blit or lock 
+  will return. 
+  
+  On hardware that doesn't support double-buffering, this is equivalent to 
+  calling [update_rect get_display_surface() RectMax]  
+*)
 val update_rect : surface -> rect -> unit;;
+(*d
+  Makes sure the given area is updated on the given screen.
+*)
 
-(* Operations on surfaces *)
+(*1 Operations on surfaces *)
 
 val surface_free : surface -> unit;;
 val surface_loadBMP : string -> surface;;
-val surface_saveBMP : surface -> string -> unit;;
+(*d
+  Loads a surface from a named Windows BMP file.
+  
+  Returns the new [surface], or raise [SDLvideo_exception] 
+  if there was an error
+*)
 
-(* Accessors *)
+val surface_saveBMP : surface -> string -> unit;;
+(*d 
+  Saves tthe [surface] as a Windows BMP file named file.
+*)
+
+(*1 Accessors *)
 val surface_width : surface -> int;;
 val surface_height : surface -> int;;
 val surface_rect : surface -> rect;;
@@ -126,13 +166,13 @@ val surface_get_pixel : surface -> int -> int -> color;;
 
 val unsafe_blit_buffer : surface -> string -> int -> unit;;
 
-(* Operations on colors *)
+(*1 Operations on colors *)
 
 val color_of_int : (int * int * int) -> color;;
 val color_of_float : (float * float * float) -> color;;
 val rgb_vector_of_color : color -> (int * int * int);;
 
-(* Window manager interaction *)
+(*1 Window manager interaction *)
 
 val wm_available : unit -> bool;;
 val wm_set_caption : string -> string -> unit;;

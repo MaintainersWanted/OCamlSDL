@@ -17,13 +17,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.5 2000/03/05 15:27:22 fbrunel Exp $ *)
+(* $Id: sdlevent.mli,v 1.6 2001/06/11 17:07:39 xtrm Exp $ *)
 
-(* Exception *)
+(*d Exception *)
 
 exception SDLevent_exception of string
 
-(* Types *)
+(*d Types *)
 
 (* These key symbols exactly match the enum declaration of the SDL library *)
 type key = 
@@ -286,7 +286,7 @@ type button_state =
     BUTTON_STATE_PRESSED 
   | BUTTON_STATE_RELEASED
 
-(* Definition of the event callbacks *)
+(*1 Definition of the event callbacks *)
 
 (* Keyboard event called with the activated key, its state and the 
    coordinates of the mouse pointer *)
@@ -301,26 +301,26 @@ type mousemotion_event_func = int -> int -> unit
 
 type idle_event_func = unit -> unit
 
-(* Functions for setting the current event callbacks *)
+(*1 Functions for setting the current event callbacks *)
 
 val set_keyboard_event_func : keyboard_event_func -> unit
 val set_mouse_event_func : mouse_event_func -> unit
 val set_mousemotion_event_func : mousemotion_event_func -> unit
 val set_idle_event_func : idle_event_func -> unit
 
-(* Asynchronous functions for getting status of input devices *)
+(*1 Asynchronous functions for getting status of input devices *)
 
 val is_key_pressed : key -> bool
 val is_button_pressed : button -> bool
 val get_mouse_position : unit -> int * int
 
-(* Misc *)
+(*1 Misc *)
 
 (* Set the new position of the mouse cursor and generate a mouse motion
    event *)
 val set_mouse_position : int -> int -> unit
 
-(* Event loop *)
+(*1 Event loop *)
 
 val start_event_loop : unit -> unit
 val exit_event_loop : unit -> unit
