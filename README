@@ -24,9 +24,9 @@ Visit the projects page for additional informations:
 
 OCamlSDL needs the following software and libraries to run:
 
-	 OCaml     |3.0.4| www.ocaml.org/
+	 OCaml     |3.04 | www.ocaml.org/
 	 SDL       | 1.2 | www.libsdl.org/
-	 SDL ttf   | 1.0 ou 2.0 | www.libsdl.org/projects/SDL_ttf/
+	 SDL ttf   | 1.0 or 2.0 | www.libsdl.org/projects/SDL_ttf/
 	 SDL mixer | 1.2 | www.libsdl.org/projects/SDL_mixer/
 	 SDL image | 1.2 | www.libsdl.org/projects/SDL_image/
 
@@ -38,22 +38,16 @@ You can browse ocaml documentation at :
 *Samples
 In the subdirectory samples, you can find some examples:
 
-	 example: open a graphic window, put some sprites. 
-		(SDL, tff, image, timer).
-
 	 test_cdrom: return status of cdrom 
 		(SDL, cdrom)
 
-	 ocamlplayer: providing to play some audiofiles (ogg, xm, s3m, wav)
+	 ocamlplayer: play some audiofiles (ogg, xm, s3m, wav)
 	 	(SDL, mixer)
 	
-	 event_loop: simple event loop interaction 
-		(SDL, video, event)
-
 	 test_joystick: test your joystick
 		(SDL, event, joystick)
 
-	 test_alpha: could perform alpha blit test
+	 test_alpha: alpha blits test
 	 	(SDL, event, video, mouse)
 *Feedback
 
@@ -67,10 +61,10 @@ is the user mailing-list. Here you could discuss about OCamlSDL problems
 and uses.
 
 	ocamlsdl-devel@lists.sourceforge.net 
-is the developer mailing-list. This list is reverved for discussion about 
+is the developer mailing-list. This list is reserved for discussion about 
 the development of OCamlSDL.
 
-Here is the location.
+Here is the location:
 	http://lists.sourceforge.net/lists/listinfo/ocamlsdl-user
 
 	http://lists.sourceforge.net/lists/listinfo/ocamlsdl-devel

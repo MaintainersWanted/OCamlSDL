@@ -17,674 +17,479 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.15 2002/09/02 13:09:43 smkl Exp $ */
+/* $Id: sdlevent_stub.c,v 1.16 2002/11/06 23:05:33 oliv__a Exp $ */
 
-#include <assert.h>
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
-#include <stdio.h>
+
 #include <SDL.h>
-#include "sdlevent_stub.h"
 
-/*
- * Constants
- */
+#include "common.h"
+#include "sdlmouse_stub.h"
 
-#define MAX_FUNC_ARGS 4
-#define MAX_KEY_SYMS 230
+ML_0(SDL_PumpEvents, Unit)
 
-/*
- * Local variables
- */
-
-/* This flag indicates the end of the event loop */
-static char must_exit_loop;
-
-/* OCaml event callbacks */
-static value keyboard_event_func;
-static value mouse_event_func;
-static value mousemotion_event_func;
-static value idle_event_func;
-static value resize_event_func;
-
-/* This array is used for passing arguments to OCaml callbacks */
-static value func_args[MAX_FUNC_ARGS];
-
-/* This array map the ML key values to the SDL ones */
-static SDLKey sdl_key_syms[MAX_KEY_SYMS] = {
-  SDLK_UNKNOWN,
-  SDLK_BACKSPACE,
-  SDLK_TAB,
-  SDLK_CLEAR,
-  SDLK_RETURN,
-  SDLK_PAUSE,
-  SDLK_ESCAPE,
-  SDLK_SPACE,
-  SDLK_EXCLAIM,
-  SDLK_QUOTEDBL,
-  SDLK_HASH,
-  SDLK_DOLLAR,
-  SDLK_AMPERSAND,
-  SDLK_QUOTE,
-  SDLK_LEFTPAREN,
-  SDLK_RIGHTPAREN,
-  SDLK_ASTERISK,
-  SDLK_PLUS,
-  SDLK_COMMA,
-  SDLK_MINUS,
-  SDLK_PERIOD,
-  SDLK_SLASH,
-  SDLK_0,
-  SDLK_1,
-  SDLK_2,
-  SDLK_3,
-  SDLK_4,
-  SDLK_5,
-  SDLK_6,
-  SDLK_7,
-  SDLK_8,
-  SDLK_9,
-  SDLK_COLON,
-  SDLK_SEMICOLON,
-  SDLK_LESS,
-  SDLK_EQUALS,
-  SDLK_GREATER,
-  SDLK_QUESTION,
-  SDLK_AT,
-  /* 
-     Skip uppercase letters
-  */
-  SDLK_LEFTBRACKET,
-  SDLK_BACKSLASH,
-  SDLK_RIGHTBRACKET,
-  SDLK_CARET,
-  SDLK_UNDERSCORE,
-  SDLK_BACKQUOTE,
-  SDLK_a,
-  SDLK_b,
-  SDLK_c,
-  SDLK_d,
-  SDLK_e,
-  SDLK_f,
-  SDLK_g,
-  SDLK_h,
-  SDLK_i,
-  SDLK_j,
-  SDLK_k,
-  SDLK_l,
-  SDLK_m,
-  SDLK_n,
-  SDLK_o,
-  SDLK_p,
-  SDLK_q,
-  SDLK_r,
-  SDLK_s,
-  SDLK_t,
-  SDLK_u,
-  SDLK_v,
-  SDLK_w,
-  SDLK_x,
-  SDLK_y,
-  SDLK_z,
-  SDLK_DELETE,
-  /* End of ASCII mapped keysyms */
-
-  /* International keyboard syms */
-  SDLK_WORLD_0,		/* 0xA0 */
-  SDLK_WORLD_1,
-  SDLK_WORLD_2,
-  SDLK_WORLD_3,
-  SDLK_WORLD_4,
-  SDLK_WORLD_5,
-  SDLK_WORLD_6,
-  SDLK_WORLD_7,
-  SDLK_WORLD_8,
-  SDLK_WORLD_9,
-  SDLK_WORLD_10,
-  SDLK_WORLD_11,
-  SDLK_WORLD_12,
-  SDLK_WORLD_13,
-  SDLK_WORLD_14,
-  SDLK_WORLD_15,
-  SDLK_WORLD_16,
-  SDLK_WORLD_17,
-  SDLK_WORLD_18,
-  SDLK_WORLD_19,
-  SDLK_WORLD_20,
-  SDLK_WORLD_21,
-  SDLK_WORLD_22,
-  SDLK_WORLD_23,
-  SDLK_WORLD_24,
-  SDLK_WORLD_25,
-  SDLK_WORLD_26,
-  SDLK_WORLD_27,
-  SDLK_WORLD_28,
-  SDLK_WORLD_29,
-  SDLK_WORLD_30,
-  SDLK_WORLD_31,
-  SDLK_WORLD_32,
-  SDLK_WORLD_33,
-  SDLK_WORLD_34,
-  SDLK_WORLD_35,
-  SDLK_WORLD_36,
-  SDLK_WORLD_37,
-  SDLK_WORLD_38,
-  SDLK_WORLD_39,
-  SDLK_WORLD_40,
-  SDLK_WORLD_41,
-  SDLK_WORLD_42,
-  SDLK_WORLD_43,
-  SDLK_WORLD_44,
-  SDLK_WORLD_45,
-  SDLK_WORLD_46,
-  SDLK_WORLD_47,
-  SDLK_WORLD_48,
-  SDLK_WORLD_49,
-  SDLK_WORLD_50,
-  SDLK_WORLD_51,
-  SDLK_WORLD_52,
-  SDLK_WORLD_53,
-  SDLK_WORLD_54,
-  SDLK_WORLD_55,
-  SDLK_WORLD_56,
-  SDLK_WORLD_57,
-  SDLK_WORLD_58,
-  SDLK_WORLD_59,
-  SDLK_WORLD_60,
-  SDLK_WORLD_61,
-  SDLK_WORLD_62,
-  SDLK_WORLD_63,
-  SDLK_WORLD_64,
-  SDLK_WORLD_65,
-  SDLK_WORLD_66,
-  SDLK_WORLD_67,
-  SDLK_WORLD_68,
-  SDLK_WORLD_69,
-  SDLK_WORLD_70,
-  SDLK_WORLD_71,
-  SDLK_WORLD_72,
-  SDLK_WORLD_73,
-  SDLK_WORLD_74,
-  SDLK_WORLD_75,
-  SDLK_WORLD_76,
-  SDLK_WORLD_77,
-  SDLK_WORLD_78,
-  SDLK_WORLD_79,
-  SDLK_WORLD_80,
-  SDLK_WORLD_81,
-  SDLK_WORLD_82,
-  SDLK_WORLD_83,
-  SDLK_WORLD_84,
-  SDLK_WORLD_85,
-  SDLK_WORLD_86,
-  SDLK_WORLD_87,
-  SDLK_WORLD_88,
-  SDLK_WORLD_89,
-  SDLK_WORLD_90,
-  SDLK_WORLD_91,
-  SDLK_WORLD_92,
-  SDLK_WORLD_93,
-  SDLK_WORLD_94,
-  SDLK_WORLD_95,		/* 0xFF */
-
-  /* Numeric keypad */
-  SDLK_KP0,
-  SDLK_KP1,
-  SDLK_KP2,
-  SDLK_KP3,
-  SDLK_KP4,
-  SDLK_KP5,
-  SDLK_KP6,
-  SDLK_KP7,
-  SDLK_KP8,
-  SDLK_KP9,
-  SDLK_KP_PERIOD,
-  SDLK_KP_DIVIDE,
-  SDLK_KP_MULTIPLY,
-  SDLK_KP_MINUS,
-  SDLK_KP_PLUS,
-  SDLK_KP_ENTER,
-  SDLK_KP_EQUALS,
-
-  /* Arrows + Home/End pad */
-  SDLK_UP,
-  SDLK_DOWN,
-  SDLK_RIGHT,
-  SDLK_LEFT,
-  SDLK_INSERT,
-  SDLK_HOME,
-  SDLK_END,
-  SDLK_PAGEUP,
-  SDLK_PAGEDOWN,
-
-  /* Function keys */
-  SDLK_F1,
-  SDLK_F2,
-  SDLK_F3,
-  SDLK_F4,
-  SDLK_F5,
-  SDLK_F6,
-  SDLK_F7,
-  SDLK_F8,
-  SDLK_F9,
-  SDLK_F10,
-  SDLK_F11,
-  SDLK_F12,
-  SDLK_F13,
-  SDLK_F14,
-  SDLK_F15,
-
-  /* Key state modifier keys */
-  SDLK_NUMLOCK,
-  SDLK_CAPSLOCK,
-  SDLK_SCROLLOCK,
-  SDLK_RSHIFT,
-  SDLK_LSHIFT,
-  SDLK_RCTRL,
-  SDLK_LCTRL,
-  SDLK_RALT,
-  SDLK_LALT,
-  SDLK_RMETA,
-  SDLK_LMETA,
-  SDLK_LSUPER,		/* Left "Windows" key */
-  SDLK_RSUPER,		/* Right "Windows" key */
-  SDLK_MODE,		/* "Alt Gr" key */
-
-  /* Miscellaneous function keys */
-  SDLK_HELP,
-  SDLK_PRINT,
-  SDLK_SYSREQ,
-  SDLK_BREAK,
-  SDLK_MENU,
-  SDLK_POWER,		/* Power Macintosh power key */
-  SDLK_EURO		/* Some european keyboards */
-};
-
-/*
- * Find the ML key index by the SDL key symbol
- */
-
-static int
-find_key_index (SDLKey key)
+static void raise_event_exn(char *msg)
 {
-  int a = 0;
-  int b = MAX_KEY_SYMS;
-  int c;
-  int prev_c = -1;
-
-  /* Do a dichotomical search to find the key symbol in the array. It
-     is better than a simple search, but a hashtable would be
-     faster. Maybe the next time! ;-) */
-  
-  while (1) {
-    c = (a + b) / 2;
-
-    if (key == sdl_key_syms[c]) {
-      return c;
+  static value *exn = NULL;
+  if(! exn){
+    exn = caml_named_value("sdlevent_exn");
+    if(! exn) {
+      fprintf(stderr, "exception not registered.");
+      abort();
     }
-    else if (key > sdl_key_syms[c]) {
-      a = c;
-    }
-    else {
-      b = c;
-    }
-
-    if (prev_c == c) {
-      /* FATAL: SHOULD NOT HAPPEN! The key symbol is UNKNOWN! */
-      assert(0);
-    }
-    prev_c = c;
-
-
   }
-
-  /* Never reached! */
-  return -1;
+  raise_with_string(*exn, msg);
 }
 
-/*
- * Local functions for converting SDL events to OCamlSDL events callbacks
- */
-
-static void
-treat_keyboard_event (SDL_KeyboardEvent *event)
+static value value_of_active_state(Uint8 state)
 {
-  if (keyboard_event_func != Val_unit) {
-    int mouse_x;
-    int mouse_y;
+  value v = nil();
+  if(state & SDL_APPMOUSEFOCUS)
+    v = cons(Val_int(0), v);
+  if(state & SDL_APPINPUTFOCUS)
+    v = cons(Val_int(1), v);
+  if(state & SDL_APPACTIVE)
+    v = cons(Val_int(2), v);
+  return v;
+}
 
-/*    printf("%d", event->keysym.sym); */
-    
-    /* Get the mouse position */
-    SDL_GetMouseState(&mouse_x, &mouse_y);
+value mlsdlevent_get_app_state(value unit)
+{
+  return value_of_active_state( SDL_GetAppState() );
+}
 
-    /* Fill the arguments array */
-    func_args[0] = Val_int(find_key_index(event->keysym.sym));
-    func_args[1] = (event->state == SDL_PRESSED) ? Val_int(0) : Val_int(1);
-    func_args[2] = Val_int(mouse_x);
-    func_args[3] = Val_int(mouse_y);
-
-    /* Call the OCaml closure */
-    callbackN(keyboard_event_func, 4, func_args);
+static Uint8 state_of_value(value l)
+{
+  Uint8 state = 0;
+  while(is_not_nil(l)){
+    state |= 1 << Int_val(hd(l));
+    l = tl(l);
   }
+  return state;
 }
 
-static void
-treat_mouse_event (SDL_MouseButtonEvent *event)
+static value find_mlsdl_keysym(SDLKey key)
 {
-  if (mouse_event_func != Val_unit) {
-    /* Fill the arguments array */
-    func_args[0] = Val_int(event->button - 1);
-    func_args[1] = (event->state == SDL_PRESSED) ? Val_int(0) : Val_int(1);
-    func_args[2] = Val_int(event->x);
-    func_args[3] = Val_int(event->y);
-
-    /* Call the OCaml closure */
-    callbackN(mouse_event_func, 4, func_args);
+  static value *table = NULL;
+  if(! table){
+    table = caml_named_value("rev_keycode_table");
+    if(! table)
+      raise_event_exn("keysyms lookup table not registered !");
   }
+  return Field(*table, key);
 }
 
-static void
-treat_mousemotion_event (SDL_MouseMotionEvent *event)
+static SDLKey find_sdl_keysym(value mlkey)
 {
-  if (mousemotion_event_func != Val_unit) {
-    callback2(mousemotion_event_func, Val_int(event->x), Val_int(event->y));
+  static value *table = NULL;
+  if(! table){
+    table = caml_named_value("keycode_table");
+    if(! table)
+      raise_event_exn("keysyms lookup table not registered !");
   }
+  return Int_val(Field(*table, Int_val(mlkey)));
 }
 
-static void
-treat_resize_event (SDL_ResizeEvent *event)
-{
-  if (resize_event_func != Val_unit) {
-    callback2(resize_event_func, Val_int(event->w), Val_int(event->h));
-  }
-}
-
-static void treat_idle_event (void)
-{
-  if (idle_event_func != Val_unit) {
-    callback(idle_event_func, Val_unit);
-  }
-}
-
-/*
- * Raise an OCaml exception with a message
- */
-
-static void
-sdlevent_raise_exception (char *msg)
-{
-  static value *event_exn = NULL;
-  if(! event_exn)
-    event_exn = caml_named_value("SDLevent_exception");
-  raise_with_string(*event_exn, msg);
-}
-
-/*
- * Stub initialization
- */
-
-void
-sdlevent_stub_init (void)
-{
-  int i;
-  
-  /* Register the global variables with the garbage collector */
-  register_global_root(&keyboard_event_func);
-  register_global_root(&mouse_event_func);
-  register_global_root(&mousemotion_event_func);
-  register_global_root(&idle_event_func);
-  register_global_root(&resize_event_func);
-  
-  for(i = 0; i < MAX_FUNC_ARGS; i++) {
-    register_global_root(func_args + i);
-  }
-  
-  /* Set this variables to unit */
-  keyboard_event_func = Val_unit;
-  mouse_event_func = Val_unit;
-  mousemotion_event_func = Val_unit;
-  idle_event_func = Val_unit;
-
-  /* Ignore unhandled events */
-  SDL_EventState(SDL_ACTIVEEVENT, SDL_IGNORE);
-#if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION >= 1
-  SDL_EventState(SDL_JOYAXISMOTION, SDL_IGNORE);
-#else
-  SDL_EventState(SDL_JOYMOTION, SDL_IGNORE);
-#endif
-  SDL_EventState(SDL_JOYBUTTONUP, SDL_IGNORE);
-  SDL_EventState(SDL_JOYBUTTONDOWN, SDL_IGNORE);
-  SDL_EventState(SDL_QUIT, SDL_IGNORE);
-  SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
-}
-
-/*
- * Stub shut down
- */
-
-void
-sdlevent_stub_kill (void)
-{
-  int i;
-
-  /* Un-register the global variables from the garbage collector */
-  remove_global_root(&keyboard_event_func);
-  remove_global_root(&mouse_event_func);
-  remove_global_root(&mousemotion_event_func);
-  remove_global_root(&idle_event_func);
-  remove_global_root(&resize_event_func);
-
-  for(i = 0; i < MAX_FUNC_ARGS; i++) {
-    remove_global_root(func_args + i);
-  }
-}
-
-/*
- * OCaml/C conversion functions
- */
-
-value
-sdlevent_set_keyboard_event_func (value func)
-{
-  keyboard_event_func = func;
-  return Val_unit;
-}
-
-value
-sdlevent_set_mouse_event_func (value func)
-{
-  mouse_event_func = func;
-  return Val_unit;
-}
-
-value
-sdlevent_set_mousemotion_event_func (value func)
-{
-  mousemotion_event_func = func;
-  return Val_unit;
-}
-
-value
-sdlevent_set_idle_event_func (value func)
-{
-  idle_event_func = func;
-  return Val_unit;
-}
-
-value
-sdlevent_set_resize_event_func (value func)
-{
-  resize_event_func = func;
-  return Val_unit;
-}
-
-value
-sdlevent_is_key_pressed (value key)
-{
-  unsigned char *keystate = SDL_GetKeyState(NULL);
-  return Val_bool(keystate[sdl_key_syms[Int_val(key)]]);
-}
-
-value
-sdlevent_is_button_pressed (value button)
-{
-  int buttonstate = SDL_GetMouseState(NULL, NULL);
-  return Val_bool(SDL_BUTTON(Int_val(button) + 1));
-}
-
-value
-sdlevent_get_mouse_position (void)
+static value value_of_keyevent(SDL_KeyboardEvent keyevt)
 {
   CAMLparam0();
-  CAMLlocal1(result);
-  int x;
-  int y;
+  CAMLlocal2(v, r);
+  Uint8 char_code = 0;
+  tag_t tag;
+  r = alloc_small(5, 0);
+  Field(r, 0) = Val_int(keyevt.which) ;
+  Field(r, 1) = Val_int(keyevt.state) ; 
+  /* SDL_PRESSED = 0x01, SDL_RELEASED = 0x00 */
+  Field(r, 2) = find_mlsdl_keysym(keyevt.keysym.sym) ;
+  Field(r, 3) = Val_int(keyevt.keysym.mod) ;
+/*    if(SDL_EnableUNICODE(-1) &&  */
+/*       (keyevt.keysym.unicode & 0xFF00) == 0) */
+/*      char_code = keyevt.keysym.unicode; */
+  if(SDL_EnableUNICODE(-1))
+    char_code = keyevt.keysym.unicode & 0x00FF ;
+  Field(r, 4) = Val_int(char_code);
+  tag = keyevt.state == SDL_PRESSED ? 1 : 2 ;
+  v = alloc_small(1, tag);
+  Field(v, 0) = r;
+  CAMLreturn(v);
+} 
 
-  SDL_GetMouseState(&x, &y);
-  
-  result = alloc_tuple(2);
-  Store_field(result, 0, Val_int(x));
-  Store_field(result, 1, Val_int(y));
-
-  CAMLreturn (result);
+static value value_of_SDLEvent(SDL_Event evt)
+{
+  CAMLparam0();
+  CAMLlocal3(v, r, t);
+  tag_t tag;
+  switch(evt.type){
+  case SDL_ACTIVEEVENT :
+    t = value_of_active_state(evt.active.state);
+    r = alloc_small(2, 0);
+    Field(r, 0) = Val_bool(evt.active.gain);
+    Field(r, 1) = t;
+    v = alloc_small(1, 0);
+    Field(v, 0) = r;
+    break ;
+  case SDL_KEYDOWN :
+  case SDL_KEYUP :
+    v = value_of_keyevent(evt.key);
+    break ;
+  case SDL_MOUSEMOTION :
+    t = value_of_mousebutton_state(evt.motion.state);
+    r = alloc_small(6, 0);
+    Field(r, 0) = Val_int(evt.motion.which);
+    Field(r, 1) = t;
+    Field(r, 2) = Val_int(evt.motion.x);
+    Field(r, 3) = Val_int(evt.motion.y);
+    Field(r, 4) = Val_int(evt.motion.xrel);
+    Field(r, 5) = Val_int(evt.motion.yrel);
+    v = alloc_small(1, 3);
+    Field(v, 0) = r;
+    break ;
+  case SDL_MOUSEBUTTONDOWN :
+  case SDL_MOUSEBUTTONUP :
+    r = alloc_small(5, 0);
+    Field(r, 0) = Val_int(evt.button.which);
+    Field(r, 1) = Val_int(evt.button.button - 1);
+    Field(r, 2) = Val_int(evt.button.state);
+    Field(r, 3) = Val_int(evt.button.x);
+    Field(r, 4) = Val_int(evt.button.y);
+    tag = evt.button.state == SDL_PRESSED ? 4 : 5;
+    v = alloc_small(1, tag);
+    Field(v, 0) = r ;
+    break ;
+  case SDL_JOYAXISMOTION :
+    r = alloc_small(3, 0);
+    Field(r, 0) = Val_int(evt.jaxis.which);
+    Field(r, 1) = Val_int(evt.jaxis.axis);
+    Field(r, 2) = Val_int(evt.jaxis.value);
+    v = alloc_small(1, 6);
+    Field(v, 0) = r;
+    break ;
+  case SDL_JOYBALLMOTION :
+    r = alloc_small(4, 0);
+    Field(r, 0) = Val_int(evt.jball.which);
+    Field(r, 1) = Val_int(evt.jball.ball);
+    Field(r, 3) = Val_int(evt.jball.xrel);
+    Field(r, 3) = Val_int(evt.jball.yrel);
+    v = alloc_small(1, 7);
+    Field(v, 0) = r;
+    break ;
+  case SDL_JOYHATMOTION :
+    r = alloc_small(3, 0);
+    Field(r, 0) = Val_int(evt.jhat.which);
+    Field(r, 1) = Val_int(evt.jhat.hat);
+    Field(r, 2) = Val_int(evt.jhat.value);
+    v = alloc_small(1, 8);
+    Field(v, 0) = r;
+    break ;
+  case SDL_JOYBUTTONDOWN :
+  case SDL_JOYBUTTONUP :
+    r = alloc_small(3, 0);
+    Field(r, 0) = Val_int(evt.jbutton.which);
+    Field(r, 1) = Val_int(evt.jbutton.button);
+    Field(r, 2) = Val_int(evt.jbutton.state);
+    tag = evt.jbutton.state == SDL_PRESSED ? 9 : 10 ;
+    v = alloc_small(1, tag);
+    Field(v, 0) = r;
+    break ;
+  case SDL_QUIT :
+    v = Val_int(0);
+    break;
+  case SDL_SYSWMEVENT :
+    v = Val_int(1);
+    break;
+  case SDL_VIDEORESIZE :
+    v = alloc_small(2, 11);
+    Field(v, 0) = Val_int(evt.resize.w);
+    Field(v, 1) = Val_int(evt.resize.h);
+    break;
+  case SDL_VIDEOEXPOSE :
+    v = Val_int(2);
+    break;
+  case SDL_USEREVENT :
+    v = alloc_small(1, 12);
+    Field(v, 0) = Val_int(evt.user.code);
+    break;
+  default : 
+    /* unknown event ? -> raise an exception */
+    raise_event_exn("unknown event");
+  }
+  CAMLreturn(v);
 }
 
-value
-sdlevent_set_mouse_position (value x, value y)
+static SDL_Event SDLEvent_of_value(value e)
 {
-  SDL_WarpMouse(Int_val(x), Int_val(y));
-  return Val_unit;
-}
-
-value
-sdlevent_start_event_loop (void)
-{
-  SDL_Event event;
-  
-  /* Clear the exit flag */
-  must_exit_loop = 0;
-
-  /* Delete the currently pending events */
-  while (SDL_PollEvent(&event))
-    ;
-  
-  /* The event loop */
-  while (!must_exit_loop) {
-    if (SDL_PollEvent(&event)) {
-      /* Proceed with the event */
-      switch(event.type)
-	{
-	case SDL_KEYDOWN:
-	case SDL_KEYUP:
-	  treat_keyboard_event(&(event.key));
-	  break;
-
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEBUTTONUP:
-	  treat_mouse_event(&(event.button));
-	  break;
-
-	case SDL_MOUSEMOTION:
-	  treat_mousemotion_event(&(event.motion));
-	  break;
-
-	case SDL_VIDEORESIZE:
-	  treat_resize_event(&(event.resize));
-	  break;
-
-	default:
-	  break;
-	}
+  SDL_Event evt;
+  if(Is_long(e))
+    switch(Int_val(e)){
+    case 0 :
+      evt.type = SDL_QUIT; break;
+    case 1:
+      goto invalid;
+    case 2:
+      evt.type = SDL_VIDEOEXPOSE; break;
+    default:
+      abort();
     }
-    else {
-      /* Call the idle function */
-      treat_idle_event();
+  else {
+    value r = Field(e, 0);
+    switch(Tag_val(e)){
+    case 0 :
+      evt.type = SDL_ACTIVEEVENT;
+      evt.active.gain  = Bool_val(Field(r, 0));
+      evt.active.state = state_of_value(Field(r, 1));
+      break ;
+    case 1:
+    case 2:
+      evt.type = Tag_val(e) == 1 ? SDL_KEYDOWN : SDL_KEYUP ;
+      evt.key.which = Int_val(Field(r, 0));
+      evt.key.state = Int_val(Field(r, 1));
+      evt.key.keysym.scancode = 0;
+      evt.key.keysym.sym = find_sdl_keysym(Field(r, 2)) ;
+      evt.key.keysym.mod = Int_val(Field(r, 3));
+      evt.key.keysym.unicode = 0;
+    case 3:
+      evt.type = SDL_MOUSEMOTION;
+      evt.motion.which = Int_val(Field(r, 0));
+      evt.motion.state = state_of_value(Field(r, 1));
+      evt.motion.x = Int_val(Field(r, 2));
+      evt.motion.y = Int_val(Field(r, 3));
+      evt.motion.xrel = Int_val(Field(r, 4));
+      evt.motion.yrel = Int_val(Field(r, 5));
+      break;
+    case 4:
+    case 5:
+      evt.type = Tag_val(e) == 4 ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP ;
+      evt.button.which  = Int_val(Field(r, 0));
+      evt.button.button = Int_val(Field(r, 1));
+      evt.button.state  = Int_val(Field(r, 2));
+      evt.button.x      = Int_val(Field(r, 3));
+      evt.button.y      = Int_val(Field(r, 4));
+      break;
+    case 6:
+      evt.type = SDL_JOYAXISMOTION;
+      evt.jaxis.which = Int_val(Field(r, 0));
+      evt.jaxis.axis  = Int_val(Field(r, 1));
+      evt.jaxis.value = Int_val(Field(r, 2));
+      break ;
+    case 7:
+      evt.type = SDL_JOYBALLMOTION;
+      evt.jball.which = Int_val(Field(r, 0));
+      evt.jball.ball  = Int_val(Field(r, 1));
+      evt.jball.xrel  = Int_val(Field(r, 2));
+      evt.jball.yrel  = Int_val(Field(r, 3));
+      break;
+    case 8:
+      evt.type = SDL_JOYHATMOTION;
+      evt.jhat.which = Int_val(Field(r, 0));
+      evt.jhat.hat   = Int_val(Field(r, 1));
+      evt.jhat.value = Int_val(Field(r, 2));
+      break;
+    case 9:
+    case 10:
+      evt.type = Tag_val(e) == 0 ? SDL_JOYBUTTONDOWN : SDL_JOYBUTTONUP ;
+      evt.jbutton.which  = Int_val(Field(r, 0));
+      evt.jbutton.button = Int_val(Field(r, 1));
+      evt.jbutton.state  = Int_val(Field(r, 2));
+      break;
+    case 11:
+      evt.type = SDL_VIDEORESIZE ;
+      evt.resize.w = Int_val(Field(e, 0));
+      evt.resize.h = Int_val(Field(e, 1));
+      break;
+    case 12:
+      evt.type = SDL_USEREVENT ;
+      evt.user.code = Int_val(Field(e, 0));
+      evt.user.data1 = NULL;
+      evt.user.data2 = NULL;
+      break;
+    default:
+      abort();
     }
   }
-  
+  return evt;
+
+ invalid:
+  invalid_argument("SDLEvent_of_value"); 
+
+  return evt;  /* silence compiler */
+}
+
+value mlsdlevent_peek(value omask, value num)
+{
+  int n = Int_val(num);
+  int m;
+#ifdef __GNUC__
+  SDL_Event evt[n];
+#else
+  SDL_Event *evt = stat_alloc(n * sizeof SDL_Event);
+#endif
+  Uint32 mask = Opt_arg(omask, Int_val, SDL_ALLEVENTS);
+  m = SDL_PeepEvents(evt, n, SDL_PEEKEVENT, mask);
+  if(m < 0) {
+#ifndef __GNUC__
+    stat_free(evt);
+#endif
+    raise_event_exn(SDL_GetError());
+  }
+  {
+    int i;
+    CAMLparam0();
+    CAMLlocal1(v);
+    v = nil();
+    for(i=m-1; i>=0; i--){
+      value e = value_of_SDLEvent(evt[i]);
+      v = cons(e, v);
+    }
+#ifndef __GNUC__
+    stat_free(evt);
+#endif
+    CAMLreturn(v);
+  }
+}
+
+value mlsdlevent_get(value omask, value num)
+{
+  int n = Int_val(num);
+  int m;
+#ifdef __GNUC__
+  SDL_Event evt[n];
+#else
+  SDL_Event *evt = stat_alloc(n * sizeof SDL_Event);
+#endif
+  Uint32 mask = Opt_arg(omask, Int_val, SDL_ALLEVENTS);
+  m = SDL_PeepEvents(evt, n, SDL_GETEVENT, mask);
+  if(m < 0) {
+#ifndef __GNUC__
+    stat_free(evt);
+#endif
+    raise_event_exn(SDL_GetError()); 
+  }
+  {
+    int i;
+    CAMLparam0();
+    CAMLlocal1(v);
+    v = nil();
+    for(i=m-1; i>=0; i--){
+      value e = value_of_SDLEvent(evt[i]);
+      v = cons(e, v);
+    }
+#ifndef __GNUC__
+    stat_free(evt);
+#endif
+    CAMLreturn(v);
+  }
+}
+
+value mlsdlevent_add(value elist)
+{
+  int len = list_length(elist);
+#ifdef __GNUC__
+  SDL_Event evt[len];
+#else
+  SDL_Event *evt = stat_alloc(len * sizeof SDL_Event);
+#endif
+  value l = elist;
+  int i=0;
+  while(is_not_nil(l)){
+    evt[i] = SDLEvent_of_value(hd(l));
+    l = tl(l);
+    i++;
+  }
+  if(SDL_PeepEvents(evt, len, SDL_ADDEVENT, SDL_ALLEVENTS) < 0) {
+#ifndef __GNUC__
+    stat_free(evt);
+#endif
+    raise_event_exn(SDL_GetError());
+  }
+#ifndef __GNUC__
+    stat_free(evt);
+#endif
+   return Val_unit;
+}
+
+value mlsdlevent_has_event(value unit)
+{
+  return Val_bool(SDL_PollEvent(NULL));
+}
+
+value mlsdlevent_poll(value unit)
+{
+  SDL_Event evt;
+  value v = Val_none;
+  if(SDL_PollEvent(&evt) == 1)
+    v = Val_some( value_of_SDLEvent(evt) );
+  return v;
+}
+
+
+value mlsdlevent_wait(value unit)
+{
+  int status;
+  enter_blocking_section();
+  status = SDL_WaitEvent(NULL);
+  leave_blocking_section();
+  if(! status)
+    raise_event_exn(SDL_GetError());
   return Val_unit;
 }
 
-value
-sdlevent_exit_event_loop (void)
+value mlsdlevent_wait_event(value unit)
 {
-  /* Set the exit flag */
-  must_exit_loop = 1;
+  SDL_Event evt;
+  int status;
+  enter_blocking_section();
+  status = SDL_WaitEvent(&evt);
+  leave_blocking_section();
+  if(! status)
+    raise_event_exn(SDL_GetError());
+  return value_of_SDLEvent(evt);
+}
+
+static const Uint8 evt_type_of_val [] = {
+  SDL_ACTIVEEVENT, SDL_KEYDOWN, SDL_KEYUP, 
+  SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP,
+  SDL_JOYAXISMOTION, SDL_JOYBALLMOTION, SDL_JOYHATMOTION, 
+  SDL_JOYBUTTONDOWN, SDL_JOYBUTTONUP, SDL_QUIT, SDL_SYSWMEVENT,
+  SDL_VIDEORESIZE, SDL_VIDEOEXPOSE, SDL_USEREVENT, } ;
+
+value mlsdlevent_get_state(value evt_v)
+{
+  return Val_bool( SDL_EventState( evt_type_of_val[ Int_val(evt_v) ], 
+				   SDL_QUERY) );
+}
+
+value mlsdlevent_set_state(value state, value evt_v)
+{
+  int c_state = ( state == Val_true ? SDL_ENABLE : SDL_DISABLE ) ;
+  SDL_EventState( evt_type_of_val[ Int_val(evt_v) ], c_state);
   return Val_unit;
 }
 
-
-
-static SDL_Event evt;
-
-static Uint8 sdl_events[SDL_NUMEVENTS] = {
-       SDL_NOEVENT,                    /* Unused (do not remove) */
-       SDL_ACTIVEEVENT,                        /* Application loses/gains visibility */
-       SDL_KEYDOWN,                    /* Keys pressed */
-       SDL_KEYUP,                      /* Keys released */
-       SDL_MOUSEMOTION,                        /* Mouse moved */
-       SDL_MOUSEBUTTONDOWN,            /* Mouse button pressed */
-       SDL_MOUSEBUTTONUP,              /* Mouse button released */
-       SDL_JOYAXISMOTION,              /* Joystick axis motion */
-       SDL_JOYBALLMOTION,              /* Joystick trackball motion */
-       SDL_JOYHATMOTION,               /* Joystick hat position change */
-       SDL_JOYBUTTONDOWN,              /* Joystick button pressed */
-       SDL_JOYBUTTONUP,                        /* Joystick button released */
-       SDL_QUIT,                       /* User-requested quit */
-       SDL_SYSWMEVENT,                 /* System specific event */
-       SDL_EVENT_RESERVEDA,            /* Reserved for future use.. */
-       SDL_EVENT_RESERVEDB,            /* Reserved for future use.. */
-       SDL_VIDEORESIZE,                        /* User resized video mode */
-       SDL_VIDEOEXPOSE,                        /* Screen needs to be redrawn */
-       SDL_EVENT_RESERVED2,            /* Reserved for future use.. */
-       SDL_EVENT_RESERVED3,            /* Reserved for future use.. */
-       SDL_EVENT_RESERVED4,            /* Reserved for future use.. */
-       SDL_EVENT_RESERVED5,            /* Reserved for future use.. */
-       SDL_EVENT_RESERVED6,            /* Reserved for future use.. */
-       SDL_EVENT_RESERVED7,            /* Reserved for future use.. */
-       /* Events SDL_USEREVENT through SDL_MAXEVENTS-1 are for your use */
-       SDL_USEREVENT
-};
-
-value
-sdlevent_pump (void)
+value mlsdlevent_set_state_by_mask(value mask, value state)
 {
-       SDL_PumpEvents();
-       return Val_unit;
+  int c_state = ( state == Val_true ? SDL_ENABLE : SDL_DISABLE ) ;
+  Uint32 c_mask = Int_val(mask);
+  int i;
+  for(i=0; i<SDL_TABLESIZE(evt_type_of_val); i++) {
+    Uint8 type = evt_type_of_val[i];
+    if(SDL_EVENTMASK(type) & c_mask)
+      SDL_EventState(type, c_state);
+  }
+  return Val_unit;
 }
 
-value
-sdlevent_wait (void)
+value mlsdlevent_get_enabled(value unit)
 {
-       SDL_WaitEvent(&evt);
-       return Val_unit;
-}
-
-value
-sdlevent_poll (void)
-{
-       return Val_int(SDL_PollEvent(&evt));
-}
-
-value
-sdlevent_evt_type (void)
-{
-       int i;
-       for (i=0; i<SDL_NUMEVENTS; i++)
-               if (evt.type == sdl_events[i])
-                       return Val_int(i);
-       return Val_int(-1);
-}
-
-value
-sdlevent_key_sym (void)
-{
-       if (evt.type == SDL_KEYDOWN || evt.type == SDL_KEYUP)
-               return Val_int(find_key_index(evt.key.keysym.sym));
-       else
-               return Val_int(-1);
+  Uint32 mask = 0;
+  register int i;
+  for(i=0; i<SDL_TABLESIZE(evt_type_of_val); i++) {
+    Uint8 type = evt_type_of_val[i];
+    if(SDL_EventState(type, SDL_QUERY))
+      mask |= SDL_EVENTMASK(type);
+  }
+  return Val_int(mask);
 }

@@ -17,15 +17,15 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.17 2002/11/05 14:01:32 oliv__a Exp $
+# $Id: Makefile,v 1.18 2002/11/06 23:05:28 oliv__a Exp $
 
 
 include ../makefile.toplevel
 
 INSTALL_DIR = $(DESTDIR)$(OCAMLSDLDIR)
 
-MODULES = 	sdl sdlvideo sdlcdrom sdlevent sdltimer sdljoystick \
-	        sdlkey sdlmouse sdlevent2 sdlvideo2 sdlwm
+MODULES = 	sdl sdlcdrom sdltimer sdljoystick \
+	        sdlkey sdlmouse sdlevent sdlvideo sdlwm
 
 STUB_SRCS = 	$(MODULES:%=%_stub.c) common.c
 STUB_OBJS =	$(STUB_SRCS:.c=$(OBJSUFFIX))
@@ -92,10 +92,10 @@ sdlttf.cma : sdlttf.cmo
 libsdlttfstub.a dllsdlttfstub.so : sdlttf_stub.o
 	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) -lSDL_ttf $^
 
-sdlloader.cma : sdlloader.cmo sdlloader2.cmo
+sdlloader.cma : sdlloader.cmo 
 	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) -lSDL_image $^
 
-libsdlloaderstub.a dllsdlloaderstub.so : sdlloader_stub.o sdlloader2_stub.o
+libsdlloaderstub.a dllsdlloaderstub.so : sdlloader_stub.o 
 	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) -lSDL_image $^
 
 $(OLIBRARY): $(OPT_OBJS)
@@ -107,7 +107,7 @@ sdlmixer.cmxa : sdlmixer.cmx
 sdlttf.cmxa : sdlttf.cmx
 	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) -lSDL_ttf $^
 
-sdlloader.cmxa : sdlloader.cmx sdlloader2.cmx
+sdlloader.cmxa : sdlloader.cmx 
 	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) -lSDL_image $^
 
 $(CLIBRARY): $(STUB_OBJS)
@@ -121,10 +121,10 @@ install::
 else
 # does not use ocamlmklib
 $(LIBRARY): $(ML_OBJS)
-$(LIBRARY): LIBS = -lsdlstub $(LIBS)
+$(LIBRARY): LIBS += -lsdlstub
 
 $(OLIBRARY): $(OPT_OBJS)
-$(OLIBRARY): LIBS = -lsdlstub $(LIBS)
+$(OLIBRARY): LIBS += -lsdlstub
 
 $(CLIBRARY): $(STUB_OBJS)
 
@@ -136,13 +136,13 @@ sdlttf.cma  : sdlttf.cmo
 sdlttf.cmxa : sdlttf.cmx
 sdlttf.cma sdlttf.cmxa : LIBS = -lsdlttfstub -lSDL_ttf
 
-sdlloader.cma  : sdlloader.cmo sdlloader2.cmo
-sdlloader.cmxa : sdlloader.cmx sdlloader2.cmx
+sdlloader.cma  : sdlloader.cmo
+sdlloader.cmxa : sdlloader.cmx
 sdlloader.cma sdlloader.cmxa : LIBS = -lsdlloaderstub -lSDL_image
 
 libsdlmixerstub.a dllsdlmixerstub.so   : sdlmixer_stub.o 
 libsdlttfstub.a dllsdlttfstub.so       : sdlttf_stub.o
-libsdlloaderstub.a dllsdlloaderstub.so : sdlloader_stub.o sdlloader2_stub.o
+libsdlloaderstub.a dllsdlloaderstub.so : sdlloader_stub.o
 endif
 
 uninstall:	
@@ -150,7 +150,7 @@ uninstall:
 	-rm -f $(CAMLLIBDIR)/stublibs/dllsdl*.so
 
 distclean: clean
-	rm -f .depend .depend.c *~
+	rm -f config.h .depend .depend.c *~
 
 clean:
 	rm -f *.cm* *.[oa] *.so $(TOPLEVEL)
@@ -169,3 +169,4 @@ depend: .depend .depend.c
 
 -include .depend
 -include .depend.c
+

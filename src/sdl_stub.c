@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.13 2002/09/25 09:12:23 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.14 2002/11/06 23:05:28 oliv__a Exp $ */
 
 #include <caml/callback.h>
 #include <caml/alloc.h>
@@ -32,8 +32,6 @@
 #include "common.h"
 
 
-#include "sdlevent_stub.h"
-
 /*
  * Local functions
  */
@@ -43,9 +41,6 @@ static void sdl_internal_quit (void)
 {
   /* Shut down SDL */
   SDL_Quit();
-
-  /* Shut down all stubs */
-  sdlevent_stub_kill();
 }
 
 /*
@@ -82,9 +77,6 @@ sdl_init(value auto_clean, value vf)
   if (SDL_Init(flags) < 0) 
     raise_with_string(*caml_named_value("SDL_init_exception"),
 		      SDL_GetError());
-
-  /* Initialize all stubs */
-  sdlevent_stub_init();
 
   if(clean)
     atexit(sdl_internal_quit);

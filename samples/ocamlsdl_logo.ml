@@ -1,53 +1,47 @@
-(* $Id: ocamlsdl_logo.ml,v 1.1 2002/08/28 13:37:08 xtrm Exp $ *)
-
-open Sdl;;
-open Sdlvideo;;
+(* $Id: ocamlsdl_logo.ml,v 1.2 2002/11/06 23:02:56 oliv__a Exp $ *)
 
 
-init [`VIDEO];;
-
-let create_fade_surface src =
-  let dest = create_rgb_surface [`SWSURFACE;`SRCALPHA] 
-	       ~width:(surface_width src) 
-	       ~height:(surface_height src) 
-	       ~bpp:16 ~rmask:0 ~bmask:0 ~gmask:0 ~amask:0
-  in
-    surface_fill_rect dest RectMax (IntColor(0,0,0));;
+let create_fade_surface w h =
+  let screen = Sdlvideo.get_video_surface () in
+  let dest = Sdlvideo.create_RGB_surface_format 
+      screen 
+      [ `SWSURFACE; `SRCALPHA ] ~w ~h in
+  Sdlvideo.fill_rect dest 
+    (Sdlvideo.map_RGB dest (0, 0, 0)) ;
+  dest
 
 let fade_in tgt =
-  let old_time = ref(Sdltimer.get_ticks()) in
-  let cur_time = ref(!old_time) in
-  let step = ref 0.0 in
-  let alpha = ref 0.01 in
-  let s = get_display_surface() in
-    try 
-      while true 
-      do
-	let _ = surface_set_alpha tgt !alpha in 
-	  step := !step +. ((float_of_int(!cur_time - !old_time)) /. 1500.);
-	  surface_blit tgt RectMax s RectMax;
-	  flip s;
-	  Sdltimer.delay 100;
-	  alpha := !alpha +. 0.01;
-	  old_time := !cur_time;
-	  cur_time := Sdltimer.get_ticks();
-	  if !step /. 2.55 >= 1.
-	then raise Exit
-      done;
-    with Exit -> ();;
+  (* I want a 4 seconds fade in 50 steps *)
+  let total_time = 4000 in
+  let nb_steps = 50 in
+  let delay_time = total_time / nb_steps in
+  let alpha i = 255 * i / (nb_steps - 1) in
+  let s = Sdlvideo.get_video_surface () in
+  for i=0 to pred nb_steps do
+    Sdlvideo.set_alpha tgt (alpha i) ;
+    Sdlvideo.blit_surface ~src:tgt ~dst:s () ;
+    Sdlvideo.flip s ;
+    Sdltimer.delay delay_time ;
+  done
 
-let _ =
+let main () =
+  Sdl.init ~auto_clean:true [ `VIDEO ] ;
   let logo = Sdlloader.load_image "../images/ocamlsdl.png" in 
-  let screen = set_video_mode (surface_width logo) (surface_height logo) 
-		 16 [`HWSURFACE] in
+  let (w, h, _) = Sdlvideo.surface_dims logo in
+  let screen = Sdlvideo.set_video_mode ~w ~h [] in
+  let logo' = Sdlvideo.display_format logo in
 
-      wm_set_caption "OCamlSDL logo" "OCamlSDL icon";
-      surface_blit logo RectMax screen RectMax;
-      flip screen;
-      Sdltimer.delay 1000 ;
-      fade_in (create_fade_surface logo); 
-      fade_in logo;
-      quit();;
+  Sdlwm.set_caption "OCamlSDL logo" "OCamlSDL icon" ;
+  Sdlvideo.blit_surface ~src:logo' ~dst:screen () ;
+  Sdlvideo.flip screen;
+  Sdltimer.delay 1000 ;
+  fade_in (create_fade_surface w h) ; 
+  fade_in logo' ;
+  Sdl.quit()
+
+let _ = 
+  try main ()
+  with exn -> Sdl.quit () ; raise exn
 
 
 

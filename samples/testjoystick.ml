@@ -1,7 +1,7 @@
 
 module J = Sdljoystick
-module E = Sdlevent2
-module V = Sdlvideo2
+module E = Sdlevent
+module V = Sdlvideo
 
 let scr_width  = 640
 let scr_height = 480
@@ -11,7 +11,7 @@ let clip (v : int) a b =
 
 let watch_joystick joystick =
   (* Set a video mode to display joystick axis position *)
-  let screen = Sdlvideo2.set_video_mode 
+  let screen = Sdlvideo.set_video_mode 
       ~w:scr_width ~h:scr_height ~bpp:16 [] in
 
   (* define some colors *)
@@ -40,7 +40,7 @@ let watch_joystick joystick =
 
   (* Loop, getting joystick events! *)
   try while true do
-    begin match Sdlevent2.wait_event () with
+    begin match Sdlevent.wait_event () with
     | E.JOYAXISMOTION jae ->
 	Printf.printf "Joystick %d axis %d value: %d\n"
 	  jae.E.jae_which jae.E.jae_axis jae.E.jae_value

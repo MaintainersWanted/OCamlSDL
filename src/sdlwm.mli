@@ -10,17 +10,17 @@ external get_caption : unit -> string * string
 (** Gets the title and icon text of the display window *)
 
 
-external set_icon : Sdlvideo2.surface -> unit
+external set_icon : Sdlvideo.surface -> unit
     = "ml_SDL_WM_SetIcon"
 (** Sets the icon for the display window. 
    This function must be called before the first call to 
-   {!Sdlvideo2.set_video_mode}. *)
+   {!Sdlvideo.set_video_mode}. *)
 
 external iconify : unit -> bool
     = "ml_SDL_WM_IconifyWindow"
 (** This function iconifies the window, and returns [true] if it
    succeeded.  If the function succeeds, it generates an
-   {!Sdlevent2.active_event} loss event.  This function is a noop and
+   {!Sdlevent.active_event} loss event.  This function is a noop and
    returns [false] in non-windowed environments. *)
 
 external toggle_fullscreen : unit -> bool

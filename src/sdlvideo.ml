@@ -1,198 +1,300 @@
-(*
- * OCamlSDL - An ML interface to the SDL library
- * Copyright (C) 1999  Frederic Brunel
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *)
 
-(* $Id: sdlvideo.ml,v 1.27 2002/09/02 13:09:43 smkl Exp $ *)
+open Bigarray
 
-(* Define a new exception for VIDEO errors and register 
-   it to be callable from C code. *)
+exception Video_exn of string
+let _ = 
+  Callback.register_exception "SDLvideo2_exception" (Video_exn "")
 
-exception SDLvideo_exception of string
-let _ = Callback.register_exception "SDLvideo_exception" (SDLvideo_exception "Any string")
+      
+type rect = {
+    mutable r_x : int ;
+    mutable r_y : int ;
+    mutable r_w : int ;
+    mutable r_h : int ;
+  }
+  (** (x, y, w, h) *)
 
-(* Types *)
+let rect ~x ~y ~w ~h =
+  { r_x = x ; r_y = y ; r_w = w ; r_h = h }
+let copy_rect r =
+  { r with r_x = r.r_x }
 
-type rect = 
-    RectMax
-  | Rect of int * int * int * int
-
-type color = 
-    IntColor of int * int * int
-  | FloatColor of float * float * float
-
-type pixels =
-    Pixels of string * int * int
-  | APixels of string * int * int
-  | RGBPixels of color array array
-  | Buffer of int * int
-
-type surface
-
-type video_info = {
-    hw_available : bool;	(* Hardware surfaces? *)
-    wm_available : bool;	(* Window manager present? *)
-    blit_hw : bool;		(* Accelerated blits HW -> HW *)
-    blit_hw_color_key : bool;	(* Accelerated blits with color key *)
-    blit_hw_alpha : bool;	(* Accelerated blits with alpha *)
-    blit_sw : bool;		(* Accelerated blits SW -> HW *)
-    blit_sw_color_key : bool;	(* Accelerated blits with color key *)
-    blit_sw_alpha : bool;	(* Accelerated blits with alpha *)
-    blit_fill : bool;		(* Accelerated color fill *)
-    video_mem : int;		(* Total amount of video memory (Ko) *)
+type pixel_format_info = {
+    palette  : bool ;
+    bits_pp  : int ;
+    bytes_pp : int ;
+    rmask    : int32 ;
+    gmask    : int32 ;
+    bmask    : int32 ;
+    amask    : int32 ;
+    rshift   : int ;
+    gshift   : int ;
+    bshift   : int ;
+    ashift   : int ;
+    rloss    : int ;
+    gloss    : int ;
+    bloss    : int ;
+    aloss    : int ;
+    colorkey : int32 ;
+    alpha    : int ;
   } 
 
-type pixel_data2 =
-  (int, Bigarray.int8_unsigned_elt, Bigarray.fortran_layout) Bigarray.Array2.t
-
-type pixel_data =
-  (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
+type video_info = {
+    hw_available : bool;	(** Hardware surfaces? *)
+    wm_available : bool;	(** Window manager present? *)
+    blit_hw : bool;		(** Accelerated blits HW -> HW *)
+    blit_hw_color_key : bool;	(** Accelerated blits with color key *)
+    blit_hw_alpha : bool;	(** Accelerated blits with alpha *)
+    blit_sw : bool;		(** Accelerated blits SW -> HW *)
+    blit_sw_color_key : bool;	(** Accelerated blits with color key *)
+    blit_sw_alpha : bool;	(** Accelerated blits with alpha *)
+    blit_fill : bool;		(** Accelerated color fill *)
+    video_mem : int;		(** Total amount of video memory (Ko) *)
+  } 
 
 type video_flag = [
   | `SWSURFACE   (* Surface is in system memory *)
   | `HWSURFACE   (* Surface is in video memory *)
-  | `SRCCOLORKEY (* Blit uses a source color key *)
-  | `SRCALPHA    (* Blit uses source alpha blending *)
   | `ASYNCBLIT   (* Enables the use of asynchronous to the display surface *)
   | `ANYFORMAT   (* Allow any video pixel format *)
   | `HWPALETTE   (* Give SDL exclusive palette access *)
   | `DOUBLEBUF   (* Set up double-buffered video mode *)
   | `FULLSCREEN  (* Surface is a full screen display *)
   | `OPENGL      (* OpenGL rendering *)
-  | `OPENGLBLIT  (* *)
+  | `OPENGLBLIT  
   | `RESIZABLE   (* Create a resizable window *)
   | `NOFRAME     (* Frame without titlebar *)
 ] 
-(* Native C external functions *)
 
-external get_video_info : unit -> video_info = "sdlvideo_get_video_info"
-external get_display_surface : unit -> surface = "sdlvideo_get_display_surface"
-external set_display_mode : width:int -> height:int -> bpp:int -> surface = "sdlvideo_set_display_mode"
+external get_video_info : unit -> video_info
+    = "ml_SDL_GetVideoInfo"
 
-external video_mode_ok : width:int -> height:int -> bpp:int -> video_flag list -> bool = "sdlvideo_video_mode_ok"
-external set_video_mode : int -> int -> int -> video_flag list -> surface = "sdlvideo_set_video_mode"
+external get_video_info_format : unit -> pixel_format_info
+    = "ml_SDL_GetVideoInfo_format"
 
-type common_video_flag = [
-  | `SWSURFACE
-  | `HWSURFACE
-  | `SRCCOLORKEY
-  | `SRCALPHA ] 
-external create_rgb_surface : common_video_flag list -> 
-  width:int -> height:int -> bpp:int -> 
-    rmask:int -> gmask:int -> bmask:int -> amask:int -> surface
-	= "sdlvideo_create_rgb_surface_bc" "sdlvideo_create_rgb_surface"
+external driver_name : unit -> string
+    = "ml_SDL_VideoDriverName"
 
-external set_opengl_mode : int -> int -> int -> surface = "sdlvideo_set_opengl_mode"
-external map_rgb : surface -> color -> int32 = "sdlvideo_map_rgb"
-(*  external map_rgb : surface -> int -> int -> int -> int = "sdlvideo_map_rgb" *)
-external flip : surface -> unit = "sdlvideo_flip"
-external update_rect : surface -> rect -> unit = "sdlvideo_update_rect"
+type modes =
+  | NOMODE
+  | ANY
+  | DIM of (int * int) list
 
-external surface_free : surface -> unit = "sdlvideo_surface_free"
-external surface_loadBMP : string -> surface = "sdlvideo_surface_loadBMP"
-external surface_saveBMP : surface -> string -> unit = "sdlvideo_surface_saveBMP"
+external list_modes : ?bpp:int -> video_flag list -> modes
+    = "ml_SDL_ListModes"
 
-external surface_width : surface -> int = "sdlvideo_surface_width"
-external surface_pitch : surface -> int = "sdlvideo_surface_pitch"
-external surface_height : surface -> int = "sdlvideo_surface_height"
-external surface_bpp : surface -> int = "sdlvideo_surface_bpp" 
-external surface_rmask : surface -> int = "sdlvideo_surface_rmask" 
-external surface_gmask : surface -> int = "sdlvideo_surface_gmask" 
-external surface_bmask : surface -> int = "sdlvideo_surface_bmask" 
-external surface_amask : surface -> int = "sdlvideo_surface_amask" 
+external video_mode_ok : w:int -> h:int -> bpp:int -> video_flag list -> int
+    = "ml_SDL_VideoModeOK"
+(** Check to see if a particular video mode is supported. *)
 
-external surface_fill_rect : surface -> rect -> color -> surface = "sdlvideo_surface_fill_rect"
-external surface_blit : surface -> rect -> surface -> rect -> unit = "sdlvideo_surface_blit"
-external surface_set_alpha : surface -> float -> surface = "sdlvideo_surface_set_alpha"
+type surface_flags = [
+  | video_flag
+  | `HWACCEL
+  | `SRCCOLORKEY (** Blit uses a source color key *)
+  | `RLEACCEL
+  | `SRCALPHA (** Blit uses source alpha blending *)
+  | `PREALLOC ] 
 
-external wm_available : unit -> bool = "sdlvideo_wm_available"
-external wm_set_caption : string -> string -> unit = "sdlvideo_wm_set_caption" 
-external wm_iconify_window : unit -> unit = "sdlvideo_wm_iconify_window"
+type surface 
+type surface_info = {
+    flags     : surface_flags list ;
+    w         : int ;
+    h         : int ;
+    pitch     : int ;
+    clip_rect : rect ;
+    refcount  : int ;
+  }
 
-(* TO FIX: external wm_toggle_fullscreen : surface -> int = "sdlvideo_wm_toggle_fullscreen" *)
-(* TO DO: external wm_get_caption : string -> string -> unit = "sdlvideo_wm_get_caption"  *)
-(* TO DO: extern wm_set_icon : surface -> int = "sdlvideo_wm_set_icon" *)
+external surface_info : surface -> surface_info
+    = "ml_sdl_surface_info"
 
-external surface_set_colorkey : surface -> color option -> unit = "sdlvideo_surface_set_colorkey"
-external surface_display_format : surface -> surface = "sdlvideo_surface_display_format"
+let surface_dims s =
+  let { w = w; h = h; pitch = pitch } =
+    surface_info s in
+  (w, h, pitch)
 
-external empty_surface : int -> int -> surface = "sdlvideo_empty_surface"
-external surface_from_rawrgb : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgb"
-external surface_from_rawrgba : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgba"
+external surface_format : surface -> pixel_format_info
+    = "ml_sdl_surface_info_format"
 
-external surface_set_pixel : surface -> int -> int -> color -> unit = "sdlvideo_surface_set_pixel"
-external surface_get_pixel : surface -> int -> int -> color = "sdlvideo_surface_get_pixel"
+let surface_flags s =
+  (surface_info s).flags
 
-external unsafe_blit_buffer : surface -> string -> int -> unit = "sdlvideo_blit_raw_buffer"
-external show_cursor : bool -> unit = "sdlvideo_show_cursor"
+let surface_bpp s = 
+  (surface_format s).bits_pp
 
-(* UNTESTED *)
-external must_lock : surface -> bool = "sdlvideo_must_lock"
-external lock_surface : surface -> unit = "sdlvideo_lock_surface"
-external unlock_surface  : surface -> unit = "sdlvideo_unlock_surface"
-external surface_pixel_data : surface -> pixel_data = "sdlvideo_surface_pixel_data"
-external gl_swap_buffers : unit -> unit = "sdlvideo_gl_swap_buffers"
+type color = int * int * int 
+  (** (r, g, b) *)
 
-(* ML functions *)
+let black:color = (0, 0, 0)
+let white:color = (255, 255, 255)      
 
-let bound_int_comp c =
-  if c < 0 then 0
-  else if c > 255 then 255
-  else c
+let red:color = (255, 0, 0)
+let green:color = (0, 255, 0)
+let blue:color = (0, 0, 255)
 
-let bound_float_comp c =
-  if c < 0.0 then 0.0
-  else if c > 1.0 then 1.0
-  else c
+let yellow:color = (255, 255, 0)
+let cyan:color = (0, 255, 255)
+let magenta:color = (255, 0, 255)
 
-let color_of_int (r, g, b) = 
-  IntColor(bound_int_comp r,
-	   bound_int_comp g,
-	   bound_int_comp b)
-  
-let color_of_float (r, g, b) = 
-  FloatColor(bound_float_comp r,
-	     bound_float_comp g,
-	     bound_float_comp b)
 
-let rgb_vector_of_color color =
-  match color with
-    IntColor(r, g, b) -> (bound_int_comp r, bound_int_comp g, bound_int_comp b)
-  | FloatColor(r, g, b) -> (bound_int_comp (int_of_float (r *. 255.0)), 
-			    bound_int_comp (int_of_float (g *. 255.0)), 
-			    bound_int_comp (int_of_float (b *. 255.0)))
+external use_palette : surface -> bool
+    = "ml_sdl_surface_use_palette"
+external palette_ncolors     : surface -> int = "ml_sdl_palette_ncolors"
+external get_palette_color   : surface -> int -> color = "ml_sdl_palette_get_color"
+type palette_flag =
+  | LOGPAL
+  | PHYSPAL
+  | LOGPHYSPAL
+external set_palette : surface -> ?flag:palette_flag -> ?firstcolor:int -> color array -> unit
+    = "ml_SDL_SetPalette"
 
-let surface_rect surf =
-  Rect(0, 0, surface_width surf, surface_height surf)
+external get_video_surface : unit -> surface
+    = "ml_SDL_GetVideoSurface"
 
-let surface_from_pixels = function
-    RGBPixels mat ->
-      let w = Array.length mat and h = Array.length mat.(0) in
-      let str = String.create (w * h * 3) in
-      for i = 0 to w - 1 do
-      	for j = 0 to h - 1 do
-          let (r,g,b) = rgb_vector_of_color mat.(i).(j) in
-	  let ind = (i + j * w) * 3 in
-	  str.[ind] <- Char.unsafe_chr r;
-	  str.[ind + 1] <- Char.unsafe_chr g;
-	  str.[ind + 2] <- Char.unsafe_chr b;
-      	done
-      done;
-      surface_from_rawrgb str w h
-  | Pixels (str, w, h) -> surface_from_rawrgb str w h
-  | APixels (str, w, h) -> surface_from_rawrgba str w h
-  | Buffer (w, h) -> empty_surface w h
+external set_video_mode : w:int -> h:int -> ?bpp:int -> video_flag list -> surface
+    = "ml_SDL_SetVideoMode"
+
+external update_rect : ?rect:rect -> surface -> unit
+    = "ml_SDL_UpdateRect"
+
+external update_rects : rect list -> surface -> unit
+    = "ml_SDL_UpdateRects"
+
+external flip : surface -> unit
+    = "ml_SDL_Flip"
+
+external set_gamma : r:float -> g:float -> b:float -> unit
+    = "ml_SDL_SetGamma"
+
+external map_RGB : surface -> ?alpha:int -> color -> int32
+    = "ml_SDL_MapRGB"
+
+external get_RGB : surface -> int32 -> color
+    = "ml_SDL_GetRGB"
+
+external get_RGBA : surface -> int32 -> color * int
+    = "ml_SDL_GetRGBA"
+
+external create_RGB_surface : 
+  [ `SWSURFACE | `HWSURFACE | `ASYNCBLIT | `SRCCOLORKEY | `SRCALPHA ] list ->
+  w:int -> h:int -> bpp:int -> 
+  rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
+    = "ml_SDL_CreateRGBSurface_bc" "ml_SDL_CreateRGBSurface"
+
+external create_RGB_surface_format : surface ->
+  [ `SWSURFACE | `HWSURFACE | `ASYNCBLIT | `SRCCOLORKEY | `SRCALPHA ] list ->
+  w:int -> h:int -> surface
+    = "ml_SDL_CreateRGBSurface_format"
+
+external _create_RGB_surface_from : 
+  ('a, 'b, c_layout) Array1.t ->
+  w:int -> h:int -> bpp:int -> pitch:int ->
+  rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
+    = "ml_SDL_CreateRGBSurfaceFrom_bc" "ml_SDL_CreateRGBSurfaceFrom"
+
+let create_RGB_surface_from_32  =
+  _create_RGB_surface_from ~bpp:32
+let create_RGB_surface_from_24 a ~w ~h ~pitch ~rmask ~gmask ~bmask ~amask =
+  _create_RGB_surface_from a ~w ~h ~pitch ~bpp:24 
+    ~rmask:(Int32.of_int rmask) ~gmask:(Int32.of_int gmask)
+    ~bmask:(Int32.of_int bmask) ~amask:(Int32.of_int amask)
+let create_RGB_surface_from_16  a ~w ~h ~pitch ~rmask ~gmask ~bmask ~amask =
+  _create_RGB_surface_from a ~w ~h ~pitch ~bpp:16
+    ~rmask:(Int32.of_int rmask) ~gmask:(Int32.of_int gmask)
+    ~bmask:(Int32.of_int bmask) ~amask:(Int32.of_int amask)
+let create_RGB_surface_from_8  a ~w ~h ~pitch ~rmask ~gmask ~bmask ~amask =
+  _create_RGB_surface_from a ~w ~h ~pitch ~bpp:8
+    ~rmask:(Int32.of_int rmask) ~gmask:(Int32.of_int gmask)
+    ~bmask:(Int32.of_int bmask) ~amask:(Int32.of_int amask)
+
+external must_lock : surface -> bool
+    = "ml_SDL_MustLock" "noalloc"
+external lock : surface -> unit
+    = "ml_SDL_LockSurface"
+external unlock : surface -> unit
+    = "ml_SDL_UnlockSurface" "noalloc"
+
+external load_BMP : string -> surface
+    = "ml_SDL_LoadBMP"
+external save_BMP : string -> surface -> unit
+    = "ml_SDL_SaveBMP"
+
+
+external unset_color_key : surface -> unit
+    = "ml_SDL_unset_color_key"
+external set_color_key : surface -> ?rle:bool -> int32 -> unit
+    = "ml_SDL_SetColorKey"
+external get_color_key : surface -> int32
+    = "ml_SDL_get_color_key"
+
+external unset_alpha : surface -> unit
+    = "ml_SDL_unset_alpha"
+external set_alpha : surface -> ?rle:bool -> int -> unit
+    = "ml_SDL_SetAlpha"
+external get_alpha : surface -> int
+    = "ml_SDL_get_alpha"
+
+external unset_clip_rect : surface -> unit
+    = "ml_SDL_UnsetClipRect"
+external set_clip_rect : surface -> rect -> unit
+    = "ml_SDL_SetClipRect"
+external get_clip_rect : surface -> rect
+    = "ml_SDL_GetClipRect"
+
+external blit_surface :
+  src:surface -> ?src_rect:rect -> 
+  dst:surface -> ?dst_rect:rect -> unit -> unit
+  = "ml_SDL_BlitSurface"
+
+external fill_rect : ?rect:rect -> surface ->  int32 -> unit
+    = "ml_SDL_FillRect"
+
+external display_format : ?alpha:bool -> surface -> surface
+    = "ml_SDL_DisplayFormat"
+
+
+external _pixel_data : surface -> int -> ('a, 'b, c_layout) Array1.t
+    = "ml_bigarray_pixels"
+
+let pixel_data s =
+  (_pixel_data s 0 : (int, int8_unsigned_elt, c_layout) Array1.t)
+
+let pixel_data_8 s =
+  (_pixel_data s 1 : (int, int8_unsigned_elt, c_layout) Array1.t)
+
+let pixel_data_16 s =
+  (_pixel_data s 2 : (int, int16_unsigned_elt, c_layout) Array1.t)
+
+let pixel_data_24 s =
+  (_pixel_data s 3 : (int, int8_unsigned_elt, c_layout) Array1.t)
+
+let pixel_data_32 s =
+  (_pixel_data s 4 : (int32, int32_elt, c_layout) Array1.t)
+
+external gl_swap_buffers : unit -> unit
+    = "ml_SDL_GL_SwapBuffers"
+
+type gl_attr =
+  | GL_RED_SIZE of int
+  | GL_GREEN_SIZE of int
+  | GL_BLUE_SIZE of int
+  | GL_ALPHA_SIZE of int
+  | GL_BUFFER_SIZE of int
+  | GL_DOUBLEBUFFER of bool
+  | GL_DEPTH_SIZE of int
+  | GL_STENCIL_SIZE of int
+  | GL_ACCUM_RED_SIZE of int
+  | GL_ACCUM_GREEN_SIZE of int
+  | GL_ACCUM_BLUE_SIZE of int
+  | GL_ACCUM_ALPHA_SIZ of int
+
+external gl_set_attr : gl_attr list -> unit
+    = "ml_SDL_GL_SetAttribute"
+
+external gl_get_attr : unit -> gl_attr list
+    = "ml_SDL_GL_GetAttribute"
+
+external get_pixel : surface -> x:int -> y:int -> color
+    = "ml_SDL_get_pixel"
+external put_pixel : surface -> x:int -> y:int -> color -> unit
+    = "ml_SDL_put_pixel"

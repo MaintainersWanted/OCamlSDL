@@ -1,34 +1,13 @@
-/*
- * OCamlSDL - An ML interface to the SDL library
- * Copyright (C) 1999  Frederic Brunel
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* $Id: sdlvideo_stub.c,v 1.37 2002/09/24 22:34:54 oliv__a Exp $ */
-
-#include <caml/alloc.h>
-#include <caml/callback.h>
-#include <caml/fail.h>
-#include <caml/memory.h>
-#include <caml/mlvalues.h>
-#include <caml/bigarray.h>
-
 
 #include <stdio.h>
-#include <string.h>
+
+#include <caml/mlvalues.h>
+#include <caml/alloc.h>
+#include <caml/memory.h>
+#include <caml/callback.h>
+#include <caml/fail.h>
+#include <caml/bigarray.h>
+#include <caml/custom.h>
 
 #include <SDL.h>
 
@@ -36,141 +15,170 @@
 #include "common.h"
 #include "sdlvideo_stub.h"
 
-/*
- * Conversion macros
- */
-
 #ifndef HAVE_INLINE
-extern void SDL_COLOR_FROM_VALUE(value ml_color, SDL_Color *c)
+extern SDL_Surface *SDL_SURFACE(value v)
 {
-  if(Tag_val(ml_color) == 0) { /* IntColor */
-    c->r = Int_val(Field(ml_color, 0));
-    c->g = Int_val(Field(ml_color, 1));
-    c->b = Int_val(Field(ml_color, 2));
-  } else { /* FloatColor */
-    c->r = 255 * Double_val(Field(ml_color, 0));
-    c->g = 255 * Double_val(Field(ml_color, 1));
-    c->b = 255 * Double_val(Field(ml_color, 2));
-  }
+  struct ml_sdl_surf_data *cb_data;
+  cb_data = (Tag_val(v) == 0) ? 
+    Data_custom_val(Field(v, 0)) : Data_custom_val(v);
+  return cb_data->s;
 }
 #endif
 
-#define MLRECT_TO_SDLRECT(ml_rect, sdl_rect)		\
-	sdl_rect.x = Int_val(Field(ml_rect, 0));	\
-	sdl_rect.y = Int_val(Field(ml_rect, 1));	\
-	sdl_rect.w = Int_val(Field(ml_rect, 2));	\
-	sdl_rect.h = Int_val(Field(ml_rect, 3));
 
-#define MLRECT_IS_MAX(ml_rect) (Int_val(ml_rect) == 0)
-
-/*
- * Convert a color from the ML side into three integers between 0 and 255
- */
-
-static void
-convert_color (value color, unsigned char *r, unsigned char *g,
-	       unsigned char *b)
+/* ************************************************** */
+/* memory management : custom blocks & co. */
+/* ************************************************** */
+static void ml_SDL_FreeSurface(value s)
 {
-  if (Tag_val(color) == 0) { /* 3 ints */
-    *r = (unsigned char)Int_val(Field(color, 0));
-    *g = (unsigned char)Int_val(Field(color, 1));
-    *b = (unsigned char)Int_val(Field(color, 2));
-  }
-  else { /* 3 floats */
-    *r = (unsigned char)(Double_val(Field(color, 0)) * 255);
-    *g = (unsigned char)(Double_val(Field(color, 1)) * 255);
-    *b = (unsigned char)(Double_val(Field(color, 2)) * 255);
+  struct ml_sdl_surf_data *cb_data;
+  cb_data = (Tag_val(s) == 0) ? 
+    Data_custom_val(Field(s, 0)) : Data_custom_val(s);
+  if(cb_data->freeable)
+    SDL_FreeSurface(cb_data->s);
+}
+
+static int ml_SDL_surf_compare(value v1, value v2)
+{
+  SDL_Surface *s1 = SDL_SURFACE(v1);
+  SDL_Surface *s2 = SDL_SURFACE(v2);
+  if(s1 == s2) return 0;
+  if(s1 < s2) return -1; 
+  else return 1;
+}
+
+static struct custom_operations sdl_surface_ops = {
+  "sdlsurface",
+  &ml_SDL_FreeSurface,
+  &ml_SDL_surf_compare,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default 
+};
+
+extern value Val_SDLSurface(SDL_Surface *surf, int freeable, value barr)
+{
+  CAMLparam1(barr);
+  CAMLlocal2(s, v);
+  int used = surf->w * surf->h;
+  struct ml_sdl_surf_data *cb_data;
+  s = alloc_custom(&sdl_surface_ops, 
+		   sizeof (*cb_data),
+		   used, 1000000);
+  cb_data = Data_custom_val(s);
+  cb_data->s = surf;
+  cb_data->freeable = freeable;
+  if(barr == Val_unit)
+    CAMLreturn(s);
+  else {
+    v = alloc_small(2, 0);
+    Field(v, 0) = s;
+    Field(v, 1) = barr;
+    CAMLreturn(v);
   }
 }
 
-/*
- * Raise an OCaml exception with a message
- */
 
-static void
-sdlvideo_raise_exception (char *msg)
+
+/*
+ * Error handling
+ */
+static void sdlvideo_raise_exception (char *msg)
 {
   static value *video_exn = NULL;
-  if(! video_exn)
-    video_exn = caml_named_value("SDLvideo_exception");
+  if(! video_exn) {
+    video_exn = caml_named_value("SDLvideo2_exception");
+    if(! video_exn){
+      fprintf(stderr, "exception not registered.");
+      abort();
+    }
+  }
   raise_with_string(*video_exn, msg);
 }
 
 /*
- * OCaml/C conversion functions
+ * some static conversion functions
  */
+#ifndef HAVE_INLINE
+static inline void SDLColor_of_value(SDL_Color *c, value v)
+{
+  c->r = Int_val(Field(v, 0));
+  c->g = Int_val(Field(v, 1));
+  c->b = Int_val(Field(v, 2));
+}
+#endif
 
-value
-sdlvideo_get_video_info (void)
+static value value_of_Rect(SDL_Rect r)
+{
+  value v = alloc_small(4, 0);
+  Field(v, 0) = Val_int(r.x);
+  Field(v, 1) = Val_int(r.y);
+  Field(v, 2) = Val_int(r.w);
+  Field(v, 3) = Val_int(r.h);
+  return v;
+}
+
+static inline void SDLRect_of_value(SDL_Rect *r, value v)
+{
+  r->x = Int_val(Field(v, 0));
+  r->y = Int_val(Field(v, 1));
+  r->w = Int_val(Field(v, 2));
+  r->h = Int_val(Field(v, 3));
+}
+
+static inline void update_value_from_SDLRect(value vr, SDL_Rect *r)
+{
+  CAMLparam1(vr);
+  Store_field(vr, 0, Val_int(r->x));
+  Store_field(vr, 1, Val_int(r->y));
+  Store_field(vr, 2, Val_int(r->w));
+  Store_field(vr, 3, Val_int(r->h));
+  CAMLreturn0;
+}
+
+static value value_of_PixelFormat(SDL_PixelFormat *fmt)
 {
   CAMLparam0();
-  CAMLlocal1(result);
-  const SDL_VideoInfo *info = SDL_GetVideoInfo();
-
-  result = alloc(10, 0);
-  Store_field(result, 0, Val_bool(info->hw_available));
-  Store_field(result, 1, Val_bool(info->wm_available));
-  Store_field(result, 2, Val_bool(info->blit_hw));
-  Store_field(result, 3, Val_bool(info->blit_hw_CC));
-  Store_field(result, 4, Val_bool(info->blit_hw_A));
-  Store_field(result, 5, Val_bool(info->blit_sw));
-  Store_field(result, 6, Val_bool(info->blit_sw_CC));
-  Store_field(result, 7, Val_bool(info->blit_sw_A));
-  Store_field(result, 8, Val_bool(info->blit_fill));
-  Store_field(result, 9, Val_int(info->video_mem));
-
-  CAMLreturn(result);
-}
-
-value
-sdlvideo_get_display_surface (void)
-{
-  return ML_SURFACE(SDL_GetVideoSurface());
-}
-
-value
-sdlvideo_set_display_mode (value width, value height, value bpp)
-{
-  SDL_Surface *surf;
-  int depth = Int_val(bpp);
-
-  /* Modes not implemented */
-  if (depth != 0 && depth < 15) {
-    sdlvideo_raise_exception("Bit depth not implemented!");
-  }
-
-  surf = SDL_SetVideoMode(Int_val(width),
-			  Int_val(height),
-			  Int_val(bpp),
-			  SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
-
-  if (surf == NULL) {
-    sdlvideo_raise_exception(SDL_GetError());
-  }
-
-  return ML_SURFACE(surf);
+  CAMLlocal1(v);
+  if( !fmt)
+    abort();
+  v = alloc(17, 0);
+  Store_field(v, 0, fmt->palette ? Val_true : Val_false);
+  Store_field(v, 1, Val_int(fmt->BitsPerPixel));
+  Store_field(v, 2, Val_int(fmt->BytesPerPixel));
+  Store_field(v, 3, copy_int32(fmt->Rmask));
+  Store_field(v, 4, copy_int32(fmt->Gmask));
+  Store_field(v, 5, copy_int32(fmt->Bmask));
+  Store_field(v, 6, copy_int32(fmt->Amask));
+  Store_field(v, 7, Val_int(fmt->Rshift));
+  Store_field(v, 8, Val_int(fmt->Gshift));
+  Store_field(v, 9, Val_int(fmt->Bshift));
+  Store_field(v,10, Val_int(fmt->Ashift));
+  Store_field(v,11, Val_int(fmt->Rloss));
+  Store_field(v,12, Val_int(fmt->Gloss));
+  Store_field(v,13, Val_int(fmt->Bloss));
+  Store_field(v,14, Val_int(fmt->Aloss));
+  Store_field(v,15, copy_int32(fmt->colorkey));
+  Store_field(v,16, Val_int(fmt->alpha));
+  CAMLreturn(v);
 }
 
 /* video flags */
 #include "sdlvideo_flag.h"
 #include "sdlvideo_flag.c"
 
-int 
-video_flag_val(value flag_list)
+static Uint32 video_flag_val(value flag_list)
 {
-  int flag = 0;
+  Uint32 flag = 0;
   value l = flag_list;
 
-  while (is_not_nil(l))
-    {
+  while (is_not_nil(l)) {
       flag |= Video_flag_val(hd(l));
-      l = tl(l);
-    }
+      l = tl(l); }
   return flag;
 }
 
-value 
-val_video_flag(int flags)
+static value val_video_flag(Uint32 flags)
 {
   value l = nil();
   lookup_info *table = ml_table_video_flag;
@@ -181,554 +189,673 @@ val_video_flag(int flags)
   return l;
 }
 
-value 
-sdlvideo_video_mode_ok(value width, value height, value vbpp, value vf) 
-{
-  int w = Int_val(width);
-  int h = Int_val(height);
-  int bpp = Int_val(vbpp);
-  int flags = video_flag_val(vf);
 
-  return Val_bool(SDL_VideoModeOK(w,h,bpp,flags));
-}
-
-value 
-sdlvideo_set_video_mode(value width, value height, value vbpp, value vf) 
-{
-  int w = Int_val(width);
-  int h = Int_val(height);
-  int bpp = Int_val(vbpp);
-  int flags = video_flag_val(vf);
-  SDL_Surface* s;
-  
-  if ((s = SDL_SetVideoMode(w,h,bpp,flags)) == NULL)
-    sdlvideo_raise_exception(SDL_GetError());
-
-  return ML_SURFACE(s);
-}
-
-value 
-sdlvideo_create_rgb_surface(value flags, value width, value height, 
-			    value bpp, value rmask, value gmask, 
-			    value bmask, value amask) 
-{
-  SDL_Surface* s;
-  
-  s = SDL_CreateRGBSurface(Int_val(flags), Int_val(width),Int_val(height),
-			   Int_val(bpp), Int_val(rmask), Int_val(gmask), 
-			   Int_val(bmask), Int_val(amask));
-  if (s == NULL) 
-    sdlvideo_raise_exception(SDL_GetError());
-
-  return ML_SURFACE(s);
-}
-
-value
-sdlvideo_create_rgb_surface_bc(value *argv, int argc)
-{
-  return sdlvideo_create_rgb_surface(argv[0], argv[1], argv[2],
-				     argv[3], argv[4], argv[5],
-				     argv[6], argv[7]);
-}
-
-value
-sdlvideo_set_opengl_mode (value width, value height, value bpp)
-{
-  SDL_Surface *surf;
-  int depth = Int_val(bpp);
-
-  /* Modes not implemented */
-  if (depth != 0 && depth < 15) {
-    sdlvideo_raise_exception("Bit depth not implemented!");
-  }
-
-  surf = SDL_SetVideoMode(Int_val(width),
-			  Int_val(height),
-			  Int_val(bpp),
-			  SDL_OPENGL);
-
-  if (surf == NULL) {
-    sdlvideo_raise_exception(SDL_GetError());
-  }
-
-  return ML_SURFACE(surf);
-}
 /*
- * Make a SDL color matching the surface pixel format
+ * Palette stuff
+ */
+value ml_sdl_surface_use_palette(value s)
+{
+  SDL_Surface *surf = SDL_SURFACE(s);
+  return Val_bool(surf->format->palette != NULL);
+}
+
+value ml_sdl_palette_ncolors(value surf)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  SDL_Palette *p = s->format->palette;
+  if(! p)
+    invalid_argument("surface not palettized");
+  return Val_int(p->ncolors);
+}
+
+value ml_sdl_palette_get_color(value surf, value n)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  SDL_Palette *p = s->format->palette;
+  SDL_Color c;
+  int c_n = Int_val(n);
+  value v;
+  if(! p)
+    invalid_argument("surface not palettized");
+  if(c_n < 0 || c_n >= p->ncolors)
+    invalid_argument("out of bounds palette access");
+  c = p->colors[c_n];
+  v = alloc_small(3, 0);
+  Field(v, 0) = Val_int(c.r);
+  Field(v, 1) = Val_int(c.g);
+  Field(v, 2) = Val_int(c.b);
+  return v;
+}
+
+value ml_SDL_SetPalette(value surf, value flags, 
+			value ofirstcolor, value c_arr)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  SDL_Palette *p = s->format->palette;
+  int firstcolor = Opt_arg(ofirstcolor, Int_val, 0);
+  int c_flags;
+  int n = Wosize_val(c_arr);
+  int i, status;
+#ifdef __GNUC__
+  SDL_Color color[n];
+#else
+  SDL_Color *color = calloc(sizeof(SDL_Color), n);
+#endif
+
+  if(! p) {
+#ifndef __GNUC__
+    free(color);
+#endif
+    invalid_argument("surface not palettized");
+  }
+  if(firstcolor + n > p->ncolors || firstcolor < 0) {
+#ifndef __GNUC__
+    free(color);
+#endif
+    invalid_argument("out of bounds palette access");
+  }
+
+  for(i=0; i< n; i++)
+    SDLColor_of_value(&color[i], Field(c_arr, i));
+  if(flags == Val_none)
+    c_flags = SDL_LOGPAL | SDL_PHYSPAL ;
+  else
+    c_flags = Int_val(Unopt(flags)) +1 ;
+
+  status = SDL_SetPalette(s, c_flags, color, ofirstcolor, n);
+#ifndef __GNUC__
+  free(color);
+#endif
+  return Val_bool(status);
+}
+  
+
+/*
+ * Video modes-related functions
  */
 
-value
-sdlvideo_map_rgb(value surface, value color)
+value ml_SDL_GetVideoInfo(value unit)
 {
-  unsigned char r, g, b;
-
-  convert_color(color, &r, &g, &b);
-  return copy_int32(SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b));
+  value result;
+  const SDL_VideoInfo *info = SDL_GetVideoInfo();
+  result = alloc_small(10, 0);
+  Field(result, 0) = Val_bool(info->hw_available);
+  Field(result, 1) = Val_bool(info->wm_available);
+  Field(result, 2) = Val_bool(info->blit_hw);
+  Field(result, 3) = Val_bool(info->blit_hw_CC);
+  Field(result, 4) = Val_bool(info->blit_hw_A);
+  Field(result, 5) = Val_bool(info->blit_sw);
+  Field(result, 6) = Val_bool(info->blit_sw_CC);
+  Field(result, 7) = Val_bool(info->blit_sw_A);
+  Field(result, 8) = Val_bool(info->blit_fill);
+  Field(result, 9) = Val_int(info->video_mem);
+  return result;
 }
 
-value
-sdlvideo_flip (value surface)
+value ml_SDL_GetVideoInfo_format(value unit)
 {
-  if (SDL_Flip(SDL_SURFACE(surface)) < 0) {
-    sdlvideo_raise_exception(SDL_GetError());
-  }
+  const SDL_VideoInfo *info = SDL_GetVideoInfo();
+  return value_of_PixelFormat(info->vfmt);
+}
 
+value ml_SDL_VideoDriverName(value unit)
+{
+  char buff[64];
+  if(! SDL_VideoDriverName(buff, 64))
+    sdlvideo_raise_exception(SDL_GetError());
+  return copy_string(buff);
+}
+
+value ml_SDL_ListModes(value obpp, value flag_list)
+{
+  Uint8 bpp = Opt_arg(obpp, Int_val, 0);
+  SDL_Rect **modes;
+  SDL_PixelFormat fmt;
+  if(bpp){
+    fmt.BitsPerPixel = bpp;
+    modes = SDL_ListModes(&fmt, video_flag_val(flag_list));
+  }
+  else
+    modes = SDL_ListModes(NULL, video_flag_val(flag_list));
+  if(modes == (SDL_Rect **)0)
+    return Val_int(0);
+  if(modes == (SDL_Rect **)-1)
+    return Val_int(1);
+  {
+    CAMLparam0();
+    CAMLlocal3(v, l, r);
+    register int i;
+    l = nil();
+    for(i=0; modes[i]; i++){
+      r = alloc_small(2, 0);
+      Field(r, 0) = Val_int(modes[i]->w);
+      Field(r, 1) = Val_int(modes[i]->h);
+      l = cons(r, l);
+    }
+    v = alloc_small(1, 0);
+    Field(v, 0) = l;
+    CAMLreturn(v);
+  }
+}
+
+value ml_SDL_VideoModeOK(value w, value h, value bpp, value flags)
+{
+  return Val_int(SDL_VideoModeOK(Int_val(w), Int_val(h), 
+				 Int_val(bpp), video_flag_val(flags)));
+}
+
+value ml_sdl_surface_info(value s)
+{
+  CAMLparam0();
+  CAMLlocal3(f, r, v);
+  SDL_Surface *surf = SDL_SURFACE(s);
+  if(! surf)
+    sdlvideo_raise_exception("dead surface");
+  f = val_video_flag(surf->flags);
+  r = value_of_Rect(surf->clip_rect);
+  v = alloc_small(6, 0);
+  Field(v, 0) = f;
+  Field(v, 1) = Val_int(surf->w);
+  Field(v, 2) = Val_int(surf->h);
+  Field(v, 3) = Val_int(surf->pitch);
+  Field(v, 4) = r;
+  Field(v, 5) = Val_int(surf->refcount);
+  CAMLreturn(v);
+}
+
+value ml_sdl_surface_info_format(value s)
+{
+  SDL_Surface *surf = SDL_SURFACE(s);
+  return value_of_PixelFormat(surf->format);
+}
+
+value ml_SDL_GetVideoSurface(value unit)
+{
+  SDL_Surface *s = SDL_GetVideoSurface();
+  if( !s)
+    sdlvideo_raise_exception(SDL_GetError());
+
+  return Val_SDLSurface(s, 0, Val_unit);
+}
+
+value ml_SDL_SetVideoMode(value w, value h, value obpp, value flags)
+{
+  int bpp = Opt_arg(obpp, Int_val, 0);
+  SDL_Surface *s = SDL_SetVideoMode(Int_val(w), Int_val(h), 
+				    bpp, video_flag_val(flags));
+  if( !s)
+    sdlvideo_raise_exception(SDL_GetError());
+
+  return Val_SDLSurface(s, 0, Val_unit);
+}
+
+
+
+value ml_SDL_UpdateRect(value orect, value screen)
+{
+  SDL_Rect r = {0, 0, 0, 0};
+  if(orect != Val_none)
+    SDLRect_of_value(&r, Unopt(orect));
+  SDL_UpdateRect(SDL_SURFACE(screen), r.x, r.y, r.w, r.h);
   return Val_unit;
 }
 
-value
-sdlvideo_update_rect (value surface, value rect)
+value ml_SDL_UpdateRects(value rectl, value screen)
 {
-  SDL_Surface *surf = SDL_SURFACE(surface);
-  SDL_Rect sdl_rect;
-
-  if (MLRECT_IS_MAX(rect)) {
-    SDL_UpdateRect(surf, 0, 0, 0, 0);
+  int len = list_length(rectl);
+  register int i;
+#ifdef __GNUC__
+  SDL_Rect r[len];
+#else
+  SDL_Rect *r = calloc(sizeof(SDL_Rect), len);
+#endif
+  for(i=0; i<len; i++){
+    SDLRect_of_value(&r[i], hd(rectl));
+    rectl = tl(rectl);
   }
+  SDL_UpdateRects(SDL_SURFACE(screen), len, r);
+#ifndef __GNUC__
+  free(r);
+#endif
+  return Val_unit;
+}
+
+value ml_SDL_Flip(value screen)
+{
+  if(SDL_Flip(SDL_SURFACE(screen)) < 0)
+    sdlvideo_raise_exception(SDL_GetError());
+  return Val_unit;
+}
+
+value ml_SDL_SetGamma(value rg, value gg, value bg)
+{
+  if(SDL_SetGamma(Double_val(rg), Double_val(gg), Double_val(bg)) < 0)
+    sdlvideo_raise_exception(SDL_GetError());
+  return Val_unit;
+}
+
+/* SDL_SetGammaRamp */
+/* SDL_GetGammaRamp */
+
+/*
+ * Pixels conversions
+ */
+value ml_SDL_MapRGB(value surf, value alpha, value color)
+{
+  Uint32 p;
+  SDL_Color c;
+  SDL_Surface *s = SDL_SURFACE(surf);
+  SDLColor_of_value(&c, color);
+  if(alpha == Val_none)
+    p = SDL_MapRGB(s->format, c.r, c.g, c.b);
+  else
+    p = SDL_MapRGBA(s->format, c.r, c.g, c.b, Int_val(Unopt(alpha)) );
+  return copy_int32(p);
+}
+
+value ml_SDL_GetRGB(value surf, value pixel)
+{
+  Uint32 p = Int32_val(pixel);
+  SDL_Surface *s = SDL_SURFACE(surf);
+  Uint8 r,g,b;
+  value v;
+  SDL_GetRGB(p, s->format, &r, &g, &b);
+  v = alloc_small(3, 0);
+  Field(v, 0) = Val_int(r);
+  Field(v, 1) = Val_int(g);
+  Field(v, 2) = Val_int(b);
+  return v;
+}
+
+value ml_SDL_GetRGBA(value surf, value pixel)
+{
+  Uint32 p = Int32_val(pixel);
+  SDL_Surface *s = SDL_SURFACE(surf);
+  Uint8 r,g,b,a;
+  SDL_GetRGBA(p, s->format, &r, &g, &b, &a);
+  {
+    CAMLparam0();
+    CAMLlocal2(c, v);
+    c = alloc_small(3, 0);
+    Field(c, 0) = Val_int(r);
+    Field(c, 1) = Val_int(g);
+    Field(c, 2) = Val_int(b);
+    v = alloc_small(2, 0);
+    Field(v, 0) = c;
+    Field(v, 1) = Val_int(a);
+    CAMLreturn(v);
+  }
+}
+
+
+/*
+ * Surface-related functions
+ */
+value ml_SDL_CreateRGBSurface(value videoflags, value w, value h,
+			      value depth, value rmask, value gmask,
+			      value bmask, value amask)
+{
+  SDL_Surface *s = SDL_CreateRGBSurface(video_flag_val(videoflags), 
+					Int_val(w), Int_val(h), 
+					Int_val(depth),
+					Int32_val(rmask), Int32_val(gmask), 
+					Int32_val(bmask), Int32_val(amask));
+  if(! s)
+    sdlvideo_raise_exception(SDL_GetError());
+  return ML_SURFACE(s);
+}
+
+value ml_SDL_CreateRGBSurface_bc(value *argv, int argc)
+{
+  return ml_SDL_CreateRGBSurface(argv[0], argv[1], argv[2], argv[3],
+				 argv[4], argv[5], argv[6], argv[7]);
+}
+
+value ml_SDL_CreateRGBSurface_format(value surf, value videoflags, 
+				     value w, value h)
+{
+  SDL_PixelFormat *fmt = SDL_SURFACE(surf)->format;
+  SDL_Surface *s = SDL_CreateRGBSurface(video_flag_val(videoflags), 
+					Int_val(w), Int_val(h), 
+					fmt->BitsPerPixel,
+					fmt->Rmask, fmt->Gmask,
+					fmt->Bmask, fmt->Amask);
+  if(! s)
+    sdlvideo_raise_exception(SDL_GetError());
+  return ML_SURFACE(s);
+}
+
+value ml_SDL_CreateRGBSurfaceFrom(value pixels, value w, value h,
+				  value depth, value pitch,
+				  value rmask, value gmask,
+				  value bmask, value amask)
+{
+  struct caml_bigarray *barr = Bigarray_val(pixels);
+  SDL_Surface *s = SDL_CreateRGBSurfaceFrom(barr->data, Int_val(w),
+					    Int_val(h), Int_val(depth),
+					    Int_val(pitch),
+					    Int32_val(rmask), Int32_val(gmask),
+					    Int32_val(bmask), Int32_val(amask)) ;
+  return Val_SDLSurface(s, 1, pixels);
+}
+
+value ml_SDL_CreateRGBSurfaceFrom_bc(value *argv, int argc)
+{
+  return ml_SDL_CreateRGBSurfaceFrom(argv[0], argv[1], argv[2], 
+				     argv[3], argv[4], argv[5], 
+				     argv[6], argv[7], argv[8]);
+}
+
+value ml_SDL_MustLock(value s)
+{
+  return Val_bool(SDL_MUSTLOCK(SDL_SURFACE(s)));
+}
+
+value ml_SDL_LockSurface(value s)
+{
+  if(SDL_LockSurface(SDL_SURFACE(s)) < 0)
+    sdlvideo_raise_exception(SDL_GetError());
+  return Val_unit;
+}
+
+ML_1(SDL_UnlockSurface, SDL_SURFACE, Unit)
+
+/*
+ * BMP images loader
+ */
+value ml_SDL_LoadBMP(value fname)
+{
+  SDL_Surface *s = SDL_LoadBMP(String_val(fname));
+  if(! s)
+    sdlvideo_raise_exception(SDL_GetError());
+  return ML_SURFACE(s);
+}
+
+value ml_SDL_SaveBMP(value surf, value fname)
+{
+  if(SDL_SaveBMP(SDL_SURFACE(surf), String_val(fname)) < 0)
+    sdlvideo_raise_exception(SDL_GetError());
+  return Val_unit;
+}
+
+
+/*
+ * colorkey / alpha / cliprect
+ */
+value ml_SDL_unset_color_key(value surf)
+{
+  if(SDL_SetColorKey(SDL_SURFACE(surf), 0, 0) < 0)
+    sdlvideo_raise_exception(SDL_GetError());
+  return Val_unit;
+}
+
+value ml_SDL_SetColorKey(value surf, value orle, value key)
+{
+  Uint32 flags = SDL_SRCCOLORKEY;
+  int rle = Opt_arg(orle, Bool_val, 0);
+  if(rle)
+    flags |= SDL_RLEACCEL;
+  if(SDL_SetColorKey(SDL_SURFACE(surf), flags, Int32_val(key)) < 0)
+    sdlvideo_raise_exception(SDL_GetError());
+  return Val_unit;
+}
+
+value ml_SDL_get_color_key(value s)
+{
+  SDL_Surface *surf = SDL_SURFACE(s);
+  return copy_int32(surf->format->colorkey);
+}
+
+value ml_SDL_unset_alpha(value surf)
+{
+  if(SDL_SetAlpha(SDL_SURFACE(surf), 0, 0) < 0)
+    sdlvideo_raise_exception(SDL_GetError());
+  return Val_unit;
+}
+
+value ml_SDL_SetAlpha(value surf, value orle, value alpha)
+{
+  Uint32 flags = SDL_SRCALPHA;
+  int rle = Opt_arg(orle, Bool_val, 0);
+  if(rle)
+    flags |= SDL_RLEACCEL;
+  if(SDL_SetAlpha(SDL_SURFACE(surf), flags, Int_val(alpha)) < 0)
+    sdlvideo_raise_exception(SDL_GetError());
+  return Val_unit;
+}
+
+value ml_SDL_get_alpha(value s)
+{
+  SDL_Surface *surf = SDL_SURFACE(s);
+  return Val_int(surf->format->alpha);
+}
+
+value ml_SDL_UnsetClipRect(value surf)
+{
+  SDL_SetClipRect(SDL_SURFACE(surf), NULL);
+  return Val_unit;
+}
+
+value ml_SDL_SetClipRect(value surf, value r)
+{
+  SDL_Rect rect;
+  SDLRect_of_value(&rect, r);
+  return Val_bool(SDL_SetClipRect(SDL_SURFACE(surf), &rect));
+}
+
+value ml_SDL_GetClipRect(value s)
+{
+  SDL_Rect r;
+  SDL_GetClipRect(SDL_SURFACE(s), &r);
+  return value_of_Rect(r);
+}
+
+
+/* 
+ * surface blittinf and conversion
+ */
+
+value ml_SDL_BlitSurface(value src_s, value osrc_r, 
+			 value dst_s, value odst_r, value unit)
+{
+  SDL_Rect tmp_src_r, tmp_dst_r, *src_r, *dst_r;
+  if(osrc_r == Val_none)
+    src_r = NULL;
   else {
-    MLRECT_TO_SDLRECT(rect, sdl_rect);
-    SDL_UpdateRects(surf, 1, &sdl_rect);
+    SDLRect_of_value(&tmp_src_r, Unopt(osrc_r));
+    src_r = &tmp_src_r;
   }
-  
-  return Val_unit;
-}
-
-value
-sdlvideo_surface_free (value surface)
-{
-  SDL_FreeSurface(SDL_SURFACE(surface));
-  return Val_unit;
-}
-
-value
-sdlvideo_surface_loadBMP (value path)
-{
-  SDL_PixelFormat format;
-  SDL_Surface *converted; 
-  SDL_Surface *surf = SDL_LoadBMP(String_val(path));
-
-  if (surf == NULL) {
-    sdlvideo_raise_exception(SDL_GetError());
-  }
-
-  memset(&format, 0, sizeof(format)); 
-  format.BytesPerPixel = 3;
-  format.BitsPerPixel = 24;
-  format.Rmask = 0x000000ff;
-  format.Gmask = 0x0000ff00;
-  format.Bmask = 0x00ff0000;
-  
-  converted = SDL_ConvertSurface(surf, &format, SDL_SWSURFACE);
-  if (converted == NULL) {
-    sdlvideo_raise_exception(SDL_GetError());
-  }
-  SDL_FreeSurface(surf);
-  
-  return ML_SURFACE(converted);
-}
-
-value
-sdlvideo_surface_saveBMP (value surface, value path)
-{
-  if (SDL_SaveBMP(SDL_SURFACE(surface), String_val(path)) < 0) {
-    sdlvideo_raise_exception(SDL_GetError());
-  }
-
-  return Val_unit;
-}
-
-value
-sdlvideo_surface_width (value surface)
-{
-  return Val_int(SDL_SURFACE(surface)->w);
-}
-
-value
-sdlvideo_surface_pitch (value surface)
-{
-  return Val_int(SDL_SURFACE(surface)->pitch);
-}
-
-value
-sdlvideo_surface_height (value surface)
-{
-  return Val_int(SDL_SURFACE(surface)->h);
-}
-
-value 
-sdlvideo_surface_bpp(value surface) 
-{
-  return Val_int(SDL_SURFACE(surface)->format->BitsPerPixel);
-}
-
-value 
-sdlvideo_surface_rmask(value surface) 
-{
-  return Val_int(SDL_SURFACE(surface)->format->Rmask);
-}
-
-value 
-sdlvideo_surface_gmask(value surface) 
-{
-  return Val_int(SDL_SURFACE(surface)->format->Gmask);
-}
-
-value 
-sdlvideo_surface_bmask(value surface) 
-{
-  return Val_int(SDL_SURFACE(surface)->format->Bmask);
-}
-
-value 
-sdlvideo_surface_amask(value surface) 
-{
-  return Val_int(SDL_SURFACE(surface)->format->Amask);
-}
-
-value
-sdlvideo_surface_fill_rect (value surface, value rect, value color)
-{
-  SDL_Rect sdl_rect;
-  SDL_Rect *rectp;
-  int res;
-  
-  if(MLRECT_IS_MAX(rect))
-    rectp = NULL;
+  if(odst_r == Val_none)
+    dst_r = NULL;
   else {
-    rectp = &sdl_rect;
-    MLRECT_TO_SDLRECT(rect, sdl_rect);
-  } ;
-  res = SDL_FillRect(SDL_SURFACE(surface), rectp,
-		     Int32_val(sdlvideo_map_rgb(surface, color)));
-    
-  if (res < 0) {
+    SDLRect_of_value(&tmp_dst_r, Unopt(odst_r));
+    dst_r = &tmp_dst_r;
+  }
+
+  if( SDL_BlitSurface(SDL_SURFACE(src_s), src_r, 
+		      SDL_SURFACE(dst_s), dst_r) < 0)
     sdlvideo_raise_exception(SDL_GetError());
-  }
-  /* GNI? : why return the surface ? */
-  return surface;
-}
 
-value
-sdlvideo_surface_blit (value surface_src, value rect_src,
-		       value surface_dst, value rect_dst)
-{
-  SDL_Surface *src;
-  SDL_Surface *dst;
-  SDL_Rect src_conv_rect;
-  SDL_Rect dst_conv_rect;
-  SDL_Rect *src_sdl_rect = NULL;
-  SDL_Rect *dst_sdl_rect = NULL;
-  
-  src = SDL_SURFACE(surface_src);
-  dst = SDL_SURFACE(surface_dst);
-
-  if (!MLRECT_IS_MAX(rect_src)) {
-    MLRECT_TO_SDLRECT(rect_src, src_conv_rect);
-    src_sdl_rect = &src_conv_rect;
-  }
-
-  if (!MLRECT_IS_MAX(rect_dst)) {
-    MLRECT_TO_SDLRECT(rect_dst, dst_conv_rect);
-    dst_sdl_rect = &dst_conv_rect;
-  }
-
-  if (SDL_BlitSurface(src, src_sdl_rect, dst, dst_sdl_rect) < 0) {
-    sdlvideo_raise_exception(SDL_GetError());
-  }
-  
+  if(osrc_r != Val_none)
+    update_value_from_SDLRect(Unopt(osrc_r), src_r);
+  if(odst_r != Val_none)
+    update_value_from_SDLRect(Unopt(odst_r), dst_r);
   return Val_unit;
 }
 
-value
-sdlvideo_surface_set_alpha (value surface, value alpha)
+value ml_SDL_FillRect(value odst_r, value dst_s, value pixel)
 {
-  float a = (float)Double_val(alpha);
-  
-  if (a != 0.0f) {
-    SDL_SetAlpha(SDL_SURFACE(surface), SDL_SRCALPHA,
-		 (char)(a * 255));
-  }
+  SDL_Rect tmp_r, *r;
+  if(odst_r == Val_none) 
+    r = NULL;
   else {
-    SDL_SetAlpha(SDL_SURFACE(surface), 0, 0);
+    SDLRect_of_value(&tmp_r, Unopt(odst_r));
+    r = &tmp_r;
   }
-  
-  return surface;
-}
-
-value
-sdlvideo_wm_available (void)
-{
-  return Val_bool(SDL_GetVideoInfo()->wm_available);
-}
-
-value
-sdlvideo_wm_set_caption (value title, value icon)
-{
-  SDL_WM_SetCaption(String_val(title), String_val(icon));
-  return Val_unit;
-}
-/* TODO:
- *  value
- *  sdlvideo_wm_get_caption (value title, value icon)
- *  {
- *    return Val_unit;
- *  } */
-value
-sdlvideo_wm_iconify_window (void)
-{
-  SDL_WM_IconifyWindow();
+  if( SDL_FillRect(SDL_SURFACE(dst_s), r, Int32_val(pixel)) < 0 )
+    sdlvideo_raise_exception(SDL_GetError());
+  if(odst_r != Val_none)
+    update_value_from_SDLRect(Unopt(odst_r), r);
   return Val_unit;
 }
 
-/* TO FIX:
- *  value
- *  sdlvideo_wm_toggle_fullscreen (value surface)
- *  {
- *    SDL_Surface *s = SDL_SURFACE(surface);
- *  
- *    return Val_int(SDL_WM_ToggleFullScreen(s));
- *  } */
-
-value
-sdlvideo_surface_set_colorkey (value surface, value key)
+value ml_SDL_DisplayFormat(value oalpha, value surf)
 {
-   int res;
-   
-   if (Is_long(key)) {
-     res = SDL_SetColorKey(SDL_SURFACE(surface), 0, 0);
-   }
-   else {
-     res = SDL_SetColorKey(SDL_SURFACE(surface),
-			   SDL_SRCCOLORKEY | SDL_RLEACCEL,
-			   Int32_val(sdlvideo_map_rgb(surface, Field(key, 0))));
-   }
-   
-   if (res < 0) {
-     sdlvideo_raise_exception(SDL_GetError());
-   }
-   
-   return Val_unit;
+  SDL_Surface *s;
+  int alpha = Opt_arg(oalpha, Bool_val, 0);
+  if(! alpha)
+    s = SDL_DisplayFormat(SDL_SURFACE(surf));
+  else
+    s = SDL_DisplayFormatAlpha(SDL_SURFACE(surf));
+  if(! s)
+    sdlvideo_raise_exception(SDL_GetError());
+  return ML_SURFACE(s);
 }
 
-value
-sdlvideo_surface_display_format(value surface)
+value ml_bigarray_pixels(value s, value mlBpp)
 {
-   SDL_Surface *res = SDL_DisplayFormat(SDL_SURFACE(surface));
-
-   if (res == NULL)
-     sdlvideo_raise_exception(SDL_GetError());
-
-   return ML_SURFACE(res);
+  SDL_Surface *surf = SDL_SURFACE(s);
+  Uint8 Bpp = Int_val(mlBpp);
+  int b_flag = 0;
+  long dim = surf->h;
+  if(Bpp != 0 && Bpp != surf->format->BytesPerPixel)
+    invalid_argument("wrong pixel format");
+  switch (Bpp) {
+  case 0:
+  case 1:  /* 8 bpp */
+    dim *= surf->pitch;
+    b_flag |= BIGARRAY_UINT8; break;
+  case 2:  /* 16 bpp */
+    dim *= surf->pitch / 2;
+    b_flag |= BIGARRAY_UINT16; break;
+  case 3:  /* 24 bpp */
+    dim *= surf->pitch;
+    b_flag |= BIGARRAY_UINT8; break;
+  case 4:  /* 32 bpp */
+    dim *= surf->pitch / 4;
+    b_flag |= BIGARRAY_INT32; break;
+  default:
+    sdlvideo_raise_exception("unsupported");
+  }
+  b_flag |= BIGARRAY_C_LAYOUT | BIGARRAY_EXTERNAL ;
+  return alloc_bigarray(b_flag, 1, surf->pixels, &dim);
 }
 
-value
-sdlvideo_empty_surface(value width, value height)
+
+
+/*
+ * GL interaction functions
+ */
+
+ML_0(SDL_GL_SwapBuffers, Unit)
+
+static const SDL_GLattr GL_attr_map[12] = {
+  SDL_GL_RED_SIZE, SDL_GL_GREEN_SIZE,
+  SDL_GL_BLUE_SIZE, SDL_GL_ALPHA_SIZE,
+  SDL_GL_BUFFER_SIZE, SDL_GL_DOUBLEBUFFER,
+  SDL_GL_DEPTH_SIZE, SDL_GL_STENCIL_SIZE,
+  SDL_GL_ACCUM_RED_SIZE, SDL_GL_ACCUM_GREEN_SIZE,
+  SDL_GL_ACCUM_BLUE_SIZE, SDL_GL_ACCUM_ALPHA_SIZE, };
+
+value ml_SDL_GL_SetAttribute(value attrl)
 {
-   SDL_Surface *surf;
-   int w, h;
-   w = Int_val(width);
-   h = Int_val(height);
-
-   surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 24,
-			       0x0000000ff, 0x0000ff00, 0x00ff0000, 0);
-
-   if (surf == NULL)
-     sdlvideo_raise_exception(SDL_GetError());
-
-   return ML_SURFACE(surf);
-}
-
-value
-sdlvideo_surface_from_rawrgb(value raw, value width, value height)
-{
-   SDL_Surface *surf;
-   char *dest, *src;
-   int w, h, i;
-   w = Int_val(width);
-   h = Int_val(height);
-
-   surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 24,
-			       0x0000000ff, 0x0000ff00, 0x00ff0000, 0);
-   
-   if (surf == NULL)
-     sdlvideo_raise_exception(SDL_GetError());
-   
-   dest = surf->pixels;
-   src = &Byte(raw, 0);
-   
-   for (i = 0; i < h; i++) {
-     memcpy(dest,src, w * 3);
-     src += w * 3;
-     dest += surf->pitch;
-   }
-   
-   return ML_SURFACE(surf);
-}
-
-value
-sdlvideo_surface_from_rawrgba(value raw, value width, value height)
-{
-   SDL_Surface *surf;
-   char *dest, *src;
-   int w, h, i;
-   w = Int_val(width);
-   h = Int_val(height);
-
-   surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32,
-			       0x000000ff, 0x0000ff00, 0x00ff0000,
-			       0xff000000);
-   if (surf == NULL)
-     sdlvideo_raise_exception(SDL_GetError());
-
-   dest = surf->pixels;
-   src = &Byte(raw, 0);
-   
-   for (i = 0; i < h; i++) {
-     memcpy(dest, src, w * 4);
-     src += w * 4;
-     dest += surf->pitch;
-   }
-
-   return ML_SURFACE(surf);
-}
-
-value
-sdlvideo_surface_set_pixel(value ml_surf, value x, value y,
-			   value color)
-{
-   unsigned char *location;
-   unsigned char r, g, b;
-   SDL_Surface *surf = SDL_SURFACE(ml_surf);
-
-   convert_color(color, &r, &g, &b);
-   
-   location = ((unsigned char *)surf->pixels) +
-              surf->pitch * Int_val(y) +
-              surf->format->BytesPerPixel * Int_val(x);
-   /* location[0] = r; */
-   /* location[1] = g; */
-   /* location[2] = b; */
-
-   if(surf->format->BytesPerPixel > 2) {
-     location[0] = r;
-     location[1] = g;
-     location[2] = b;
-   } else {
-     location[0] = (b>>3) | (((g>>2) & 0x7) << 5);
-     location[1] = (g >> 5) | ((r>>3) << 3);
-   }
-
-   return Val_unit;
-}
-
-value
-sdlvideo_surface_get_pixel(value ml_surf, value x, value y)
-{
-   CAMLparam3(ml_surf, x, y);
-   CAMLlocal1(ret);
-   unsigned char *location;
-   SDL_Surface *surf = SDL_SURFACE(ml_surf);
-
-   ret = alloc_tuple(3);
-   location = ((unsigned char*)surf->pixels) +
-              surf->pitch * Int_val(y) +
-              surf->format->BytesPerPixel * Int_val(x);
-   /* Field(ret, 0) = Val_int(location[0]); */
-   /* Field(ret, 1) = Val_int(location[1]); */
-   /* Field(ret, 2) = Val_int(location[2]); */
-
-   if(surf->format->BytesPerPixel > 2) {
-     Field(ret, 0) = Val_int(location[0]);
-     Field(ret, 1) = Val_int(location[1]);
-     Field(ret, 2) = Val_int(location[2]);
-   } else {
-     Field(ret, 0) = Val_int(location[1] & 0xf8);
-     Field(ret, 1) = Val_int(
-			     ((location[1] & 0x07)<<5)
-			     |
-			     (((location[0] & 0xe0))>>3)
-			     );
-     Field(ret, 2) = Val_int((location[0] & 0x1f)<<3);
-   }
-
-   CAMLreturn(ret);
-}
-
-value
-sdlvideo_blit_raw_buffer(value screen, value buffer, value size)
-{
-   int ret;
-   SDL_Surface *scr = SDL_SURFACE(screen);
-   ret = SDL_LockSurface(scr);
-   if (ret < 0) sdlvideo_raise_exception(SDL_GetError());
-   memcpy(scr->pixels, &Byte(buffer,0), Int_val(size));
-   SDL_UnlockSurface(scr);
-   return Val_unit;
-}
-
-value sdlvideo_show_cursor(value vtoggle)
-{
-  int toggle = Bool_val(vtoggle);
-
-  SDL_ShowCursor(toggle);
-  return Val_unit;
-}
-  
-
-/* UNSTESTED */
-value
-sdlvideo_must_lock(value s)
-{
-   int b = SDL_MUSTLOCK(SDL_SURFACE(s));
-   return Val_bool(b);
-}
-
-value sdlvideo_lock_surface(value s)
-{
-   if (SDL_LockSurface(SDL_SURFACE(s)) < 0)
-     sdlvideo_raise_exception(SDL_GetError());
-   	return Val_unit;
-}
-
-value sdlvideo_unlock_surface(value s)
-{
-  SDL_UnlockSurface(SDL_SURFACE(s));
+  while( is_not_nil(attrl) ){
+    value attr = hd(attrl);
+    SDL_GL_SetAttribute( GL_attr_map[ Tag_val(attr) ], 
+			 Int_val(Field(attr, 0)) );
+    attrl = tl(attrl);
+  }
   return Val_unit;
 }
 
-value
-sdlvideo_surface_pixel_data(value surface)
+value ml_SDL_GL_GetAttribute(value unit)
 {
-   long dims[1];
-   SDL_Surface *surf = SDL_SURFACE(surface);
-   dims[0] = surf->h * surf->pitch;
-   return alloc_bigarray(BIGARRAY_UINT8 | BIGARRAY_C_LAYOUT,
-			 1, surf->pixels, dims);
+  CAMLparam0();
+  CAMLlocal2(v, a);
+  int i, val;
+  v = nil();
+  for(i=11; i>=0; i--){
+    if( SDL_GL_GetAttribute( GL_attr_map[i], &val) < 0)
+      CAMLreturn( ( sdlvideo_raise_exception(SDL_GetError()) ,
+		   Val_unit ) ) ;
+    a = alloc_small(1, i);
+    Field(a, 0) = Val_int(val);
+    v = cons(a, v);
+  }
+  CAMLreturn(v);
 }
 
 /*
-value
-sdlvideo_surface_pixel_data(value surface)
-{
-   SDL_Surface *surf = SDL_SURFACE(surface);
-   return alloc_bigarray_dims(BIGARRAY_UINT8 | BIGARRAY_FORTRAN_LAYOUT,
-			 2, surf->pixels, surf->pitch, surf->h);
-}
-*/
+ * get/put_pixel functions
+ * stolen from http://sdldoc.csn.ul.ie/guidevideo.php
+ */
 
-value
-sdlvideo_surface_pixel_data2(value surface)
+Uint32 getpixel(SDL_Surface *surface, int x, int y)
 {
-   SDL_Surface *surf = SDL_SURFACE(surface);
-   
-   return alloc_bigarray_dims(BIGARRAY_UINT8 | BIGARRAY_FORTRAN_LAYOUT,
-			      2, surf->pixels, surf->pitch, surf->h);
-}
+    int bpp = surface->format->BytesPerPixel;
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
 
-value
-sdlvideo_gl_swap_buffers(value unit)
-{
-   SDL_GL_SwapBuffers();
-   return Val_unit;
+    switch(bpp) {
+    case 1: return *p;
+    case 2: return *(Uint16 *)p;
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            return p[0] << 16 | p[1] << 8 | p[2];
+        else
+            return p[0] | p[1] << 8 | p[2] << 16;
+    case 4: return *(Uint32 *)p;
+    default: 
+      return 0;       /* shouldn't happen, but avoids warnings */
+    }
 }
 
+void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
+{
+    int bpp = surface->format->BytesPerPixel;
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch(bpp) {
+    case 1: *p = pixel; 
+      break;
+    case 2: *(Uint16 *)p = pixel;
+      break;
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+            p[0] = (pixel >> 16) & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = pixel & 0xff;
+        } else {
+            p[0] = pixel & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = (pixel >> 16) & 0xff;
+        }
+        break;
+    case 4: *(Uint32 *)p = pixel;
+      break;
+    }
+}
+
+value ml_SDL_get_pixel(value surf, value x, value y)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  Uint32 pixel = getpixel(s, Int_val(x), Int_val(y));
+  Uint8 r,g,b;
+  value v;
+  SDL_GetRGB(pixel, s->format, &r, &g, &b);
+  v = alloc_small(3, 0);
+  Field(v, 0) = Val_int(r);
+  Field(v, 1) = Val_int(g);
+  Field(v, 2) = Val_int(b);
+  return v;
+}
+
+value ml_SDL_put_pixel(value surf, value x, value y, value color)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  Uint32 pixel;
+  SDL_Color c;
+  SDLColor_of_value(&c, color);
+  pixel = SDL_MapRGB(s->format, c.r, c.g, c.b);
+  putpixel(s, Int_val(x), Int_val(y), pixel);
+  return Val_unit;
+}

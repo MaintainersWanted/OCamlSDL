@@ -14,8 +14,7 @@ with the executable.
    $ make install
 
 installs libraries and static toplevel in OCAMLSDLDIR (defaults to
-CAMLLIBDIR/sdl), and a script ocamlsdl calling the toplevel in
-PREFIX/usr/bin. 
+CAMLLIBDIR/sdl).
 For packagers, there's a DESTDIR makefile variable.
 
 If you use OCaml >= 3.04, the static toplevel is not really necessary

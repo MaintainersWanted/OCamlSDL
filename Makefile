@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.9 2002/10/02 07:19:18 xtrm Exp $
+# $Id: Makefile,v 1.10 2002/11/06 23:02:07 oliv__a Exp $
 
 all:
 	$(MAKE) -C src
@@ -31,25 +31,23 @@ doc: all
 clean:
 	$(MAKE) -C src clean
 	$(MAKE) -C samples clean
-	$(MAKE) -C bin clean
 
 distclean:
 	$(MAKE) -C src distclean
 	$(MAKE) -C samples distclean
-	$(MAKE) -C bin distclean
-	rm -f config.cache config.log config.status makefile.toplevel
+	rm -f config.cache config.log config.status makefile.toplevel aclocal.m4
 
 install:
 	$(MAKE) -C src install
-	$(MAKE) -C bin install
 
 uninstall:
 	$(MAKE) -C src uninstall
-	$(MAKE) -C bin uninstall
 
 makefile.toplevel : configure ; $(error "please run ./configure")
 configure : configure.in
-	./autogen.sh
+	aclocal -I support
+	autoconf
+
 -include makefile.toplevel
 
 .PHONY: all test clean distclean install uninstall

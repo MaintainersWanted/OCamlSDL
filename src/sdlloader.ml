@@ -17,51 +17,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlloader.ml,v 1.5 2002/09/09 15:51:28 smkl Exp $ *)
+(* $Id: sdlloader.ml,v 1.6 2002/11/06 23:05:34 oliv__a Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
 
 exception SDLloader_exception of string
-let _ = Callback.register_exception "SDLloader_exception" (SDLloader_exception "Any string")
+let _ = Callback.register_exception 
+    "SDLloader_exception" (SDLloader_exception "")
 
-(* Native C external functions *)
+external load_image : string -> Sdlvideo.surface 
+    = "ml_IMG_Load"
 
-external load_image : string -> Sdlvideo.surface = "sdlloader_load_image";;
-
-(*
-external load_png : string -> Sdlvideo.surface = "sdlloader_load_png";;
-external load_png_with_alpha : string -> Sdlvideo.surface = "sdlloader_load_png_with_alpha";;
-*)
-
-let load_png = load_image
-let load_png_with_alpha = load_image
-
-(* ML functions *)
-
-let load_ppm_pixels str =
-  try
-    let chn = open_in_bin str in
-    let _ = input_line chn in
-    let rec ignore_comments () =
-      let ln = input_line chn in
-      if String.length ln < 1 or ln.[0] = '#' then ignore_comments ()
-      else ln in
-    let ln = ignore_comments () in
-    let l1 = String.index ln ' ' in
-    let w = int_of_string (String.sub ln 0 l1) in
-    let h = int_of_string (String.sub ln (l1 + 1) (String.length ln - l1 - 1)) in
-    ignore (input_line chn);
-    let buffer = String.create (w * h * 3) in
-    really_input chn buffer 0 (w * h * 3);
-    close_in chn;
-    (buffer, w, h)
-  with a ->
-    begin
-      prerr_string ("Bad file: " ^ str ^ "\n");
-      raise a
-    end
-
-let load_ppm str =
-  let (buffer, w, h) = load_ppm_pixels str in
-  Sdlvideo.surface_from_pixels (Sdlvideo.Pixels (buffer, w, h))
+external read_XPM_from_array : string array -> Sdlvideo.surface
+    = "ml_IMG_ReadXPMFromArray"

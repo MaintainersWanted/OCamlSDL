@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.20 2002/09/30 21:40:07 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.21 2002/11/06 23:05:36 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -28,6 +28,7 @@
 
 #include <SDL_ttf.h>
 
+#include "common.h"
 #include "sdlvideo_stub.h"
 
 /*
@@ -192,7 +193,7 @@ sdlttf_render_text_solid(value font, value text, value fg)
    SDL_Color sfg;
    SDL_Surface *surf;
 
-   SDL_COLOR_FROM_VALUE(fg,&sfg);
+   SDLColor_of_value(&sfg, fg);
 
    surf = TTF_RenderText_Solid(SDL_FONT(font),String_val(text), sfg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
@@ -208,7 +209,7 @@ sdlttf_render_glyph_solid(value font, value ch, value fg)
    SDL_Color sfg;
    SDL_Surface *surf;
 
-   SDL_COLOR_FROM_VALUE(fg,&sfg);
+   SDLColor_of_value(&sfg, fg);
 
    surf = TTF_RenderGlyph_Solid(SDL_FONT(font),Int_val(ch), sfg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
@@ -226,8 +227,8 @@ sdlttf_render_text_shaded(value font, value text, value fg, value bg)
    SDL_Color sbg;
    SDL_Surface *surf;
 
-   SDL_COLOR_FROM_VALUE(fg,&sfg);
-   SDL_COLOR_FROM_VALUE(bg,&sbg);
+   SDLColor_of_value(&sfg, fg);
+   SDLColor_of_value(&sbg, bg);
 
    surf = TTF_RenderText_Shaded(SDL_FONT(font),String_val(text), sfg, sbg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
@@ -244,8 +245,8 @@ sdlttf_render_glyph_shaded(value font, value ch, value fg, value bg)
    SDL_Color sbg;
    SDL_Surface *surf;
 
-   SDL_COLOR_FROM_VALUE(fg,&sfg);
-   SDL_COLOR_FROM_VALUE(bg,&sbg);
+   SDLColor_of_value(&sfg, fg);
+   SDLColor_of_value(&sbg, bg);
 
    surf = TTF_RenderGlyph_Shaded(SDL_FONT(font),Int_val(ch), sfg, sbg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
@@ -261,7 +262,7 @@ sdlttf_render_text_blended(value font, value text, value fg)
    SDL_Color sfg;
    SDL_Surface *surf;
 
-   SDL_COLOR_FROM_VALUE(fg,&sfg);
+   SDLColor_of_value(&sfg, fg);
 
    surf = TTF_RenderText_Blended(SDL_FONT(font),String_val(text), sfg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
@@ -277,7 +278,7 @@ sdlttf_render_glyph_blended(value font, value ch, value fg)
    SDL_Color sfg;
    SDL_Surface *surf;
 
-   SDL_COLOR_FROM_VALUE(fg,&sfg);
+   SDLColor_of_value(&sfg, fg);
 
    surf = TTF_RenderGlyph_Blended(SDL_FONT(font),Int_val(ch), sfg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);

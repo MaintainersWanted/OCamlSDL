@@ -4,7 +4,7 @@
 #include <SDL.h>
 
 #include "common.h"
-#include "sdlvideo2_stub.h"
+#include "sdlvideo_stub.h"
 
 ML_2(SDL_WM_SetCaption, String_val, String_val, Unit)
   

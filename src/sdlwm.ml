@@ -4,7 +4,7 @@ external set_caption : title:string -> icon:string -> unit
 external get_caption : unit -> string * string
     = "ml_SDL_WM_GetCaption"
 
-external set_icon : Sdlvideo2.surface -> unit
+external set_icon : Sdlvideo.surface -> unit
     = "ml_SDL_WM_SetIcon"
 
 external iconify : unit -> bool
