@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.24 2002/04/24 15:13:06 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.25 2002/04/29 19:24:27 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -77,14 +77,14 @@ convert_color (value color, unsigned char *r, unsigned char *g,
  * Make a SDL color matching the surface pixel format
  */
 
-static int
-map_rgb_color (value surface, value color)
-{
-  unsigned char r, g, b;
-
-  convert_color(color, &r, &g, &b);
-  return SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b);
-}
+/*  static int
+ *  map_rgb_color (value surface, value color)
+ *  {
+ *    unsigned char r, g, b;
+ *  
+ *    convert_color(color, &r, &g, &b);
+ *    return SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b);
+ *  } */
 
 /*
  * Raise an OCaml exception with a message
@@ -306,6 +306,18 @@ sdlvideo_set_opengl_mode (value width, value height, value bpp)
 
   return ML_SURFACE(surf);
 }
+/*
+ * Make a SDL color matching the surface pixel format
+ */
+
+value
+sdlvideo_map_rgb(value surface, value color)
+{
+  unsigned char r, g, b;
+
+  convert_color(color, &r, &g, &b);
+  return Val_int(SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b));
+}
 
 value
 sdlvideo_flip (value surface)
@@ -428,12 +440,12 @@ sdlvideo_surface_fill_rect (value surface, value rect, value color)
   
   if (MLRECT_IS_MAX(rect)) {
     res = SDL_FillRect(SDL_SURFACE(surface), NULL,
-		       map_rgb_color(surface, color));
+		       (int)sdlvideo_map_rgb(surface, color));
   }
   else {
     MLRECT_TO_SDLRECT(rect, sdl_rect);
     res = SDL_FillRect(SDL_SURFACE(surface), &sdl_rect,
-		       map_rgb_color(surface, color));
+		       (int)sdlvideo_map_rgb(surface, color));
   }
     
   if (res < 0) {
@@ -535,7 +547,7 @@ sdlvideo_surface_set_colorkey (value surface, value key)
    else {
      res = SDL_SetColorKey(SDL_SURFACE(surface),
 			   SDL_SRCCOLORKEY | SDL_RLEACCEL,
-			   map_rgb_color(surface, Field(key, 0)));
+			   (int)sdlvideo_map_rgb(surface, Field(key, 0)));
    }
    
    if (res < 0) {

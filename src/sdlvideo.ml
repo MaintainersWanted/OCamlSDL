@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.17 2002/04/24 15:13:06 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.18 2002/04/29 19:24:27 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -90,6 +90,8 @@ external set_video_mode : int -> int -> int -> video_flag list -> surface = "sdl
 (* external create_rgb_surface : common_video_flag list -> int -> int -> int -> int -> int -> int -> int = "sdlvideo_create_rgb_surface" *)
 
 external set_opengl_mode : int -> int -> int -> surface = "sdlvideo_set_opengl_mode";;
+external map_rgb : surface -> color -> int = "sdlvideo_map_rgb";;
+(*  external map_rgb : surface -> int -> int -> int -> int = "sdlvideo_map_rgb";; *)
 external flip : surface -> unit = "sdlvideo_flip";;
 external update_rect : surface -> rect -> unit = "sdlvideo_update_rect";;
 
