@@ -17,18 +17,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.10 2002/08/14 14:32:35 oliv__a Exp $ *)
+(* $Id: sdlttf.mli,v 1.11 2002/08/29 09:32:25 oliv__a Exp $ *)
 
 (** This module provides TTF (TrueType Font) support *)
 
 (** Exception for reporting errors *)
 exception SDLttf_exception of string
 
+(** {1 General operations on font datatype} *)
+
 type font
 (** abstract font datatype *)
-
-
-(** {1 General operations on font datatype} *)
 
 val open_font : string -> ?index:int -> int -> font
 (** open a font file and create a font of the specified point size 
@@ -87,7 +86,7 @@ external size_text : font -> string -> int * int = "sdlttf_size_text"
 (** @return the metrics (minx,maxx,miny,maxy) of a glyph *) 
 external glyph_metrics : font -> char -> int * int * int * int = "sdlttf_glyph_metrics"
 
-(** Text rendering functions *)
+(** {2 Text rendering functions} *)
 
 external render_text_solid : font -> string -> 
   fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_solid"
@@ -97,7 +96,7 @@ external render_text_shaded : font -> string ->
 external render_text_blended : font -> string -> 
   fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_blended"
 
-(** Glyph rendering functions *)
+(** {2 Glyph rendering functions} *)
 
 external render_glyph_solid : font -> char -> 
   fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_glyph_solid"
