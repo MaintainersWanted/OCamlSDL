@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.5 2002/04/24 15:13:06 xtrm Exp $
+# $Id: Makefile.in,v 1.6 2002/05/27 22:37:39 xtrm Exp $
 
 
 CLIBS =		@LIBS@ @MATHLIB@
@@ -26,19 +26,19 @@ MLLIBS =	-cclib "$(CLIBS)"
 BIN_DIR =	../bin
 LIB_DIR =	../lib
 
-#don't put a space behind the last module
+PARTS = @PARTS@
 MODULES = 	sdl sdlvideo sdlcdrom sdlevent \
-		sdltimer sdlttf sdlmixer sdlloader
+		sdltimer $(addprefix sdl,$(PARTS))
 
-STUB_SRCS = 	$(MODULES:=_stub.c) common.c
+STUB_SRCS = 	$(addsuffix _stub.c,$(MODULES)) common.c
 
 STUB_OBJS =	$(STUB_SRCS:.c=.o)
 
-ML_OBJS	=	$(MODULES:=.cmo)
+ML_OBJS	=	$(addsuffix .cmo,$(MODULES))
 
-CMI	=	$(MODULES:=.cmi)
+CMI	=	$(addsuffix .cmi,$(MODULES))
 
-MLI	=	$(MODULES:=.mli)
+MLI	=	$(addsuffix .mli,$(MODULES))
 
 C_OBJS = 	$(ML_OBJS:.cmo=.o)
 
@@ -71,14 +71,13 @@ $(LIBRARY): $(CLIBRARY) $(ML_OBJS)
 	$(CAMLC) -custom -a -o $(LIBRARY) $(ML_OBJS) $(MLLIBS) -cclib -lsdlstub
 
 $(OLIBRARY): $(LIBRARY) $(OPT_OBJS)
-	$(CAMLOPT) -a -o $(OLIBRARY) $(OPT_OBJS) -cclib -lsdlstub\
-	-ccopt "-lSDL -lSDL_ttf -lSDL_mixer -lpng -lSDL_image"
+	$(CAMLOPT) -a -o $(OLIBRARY) $(OPT_OBJS) $(MLLIBS) -cclib -lsdlstub
 
 $(CLIBRARY): $(STUB_OBJS)
 	@ar cr $(CLIBRARY) $(STUB_OBJS)
 	@ranlib $(CLIBRARY)
 
-instlocal: $(CMI) $(MLI)
+instlocal: $(CMI) $(MLI) $(OPT_OBJS)
 	$(CP) $? $(LIB_DIR)
 
 .SUFFIXES: .c .o .ml .mli .cmo .cmi .cmx
