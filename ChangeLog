@@ -1,4 +1,8 @@
 
+2000-11-05  Sami Mäkelä  <sajuma@utu.fi>
+
+	* FIX (sdlstub*): Fixed some bugs with playing and query_specs
+
 2000-09-04  Sami Mäkelä  <sajuma@utu.fi>
 
 	* ADD (sdlvideo*): bigarray support, function surface_pixel_data

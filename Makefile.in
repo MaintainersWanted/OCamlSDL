@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.16 2000/09/04 17:52:12 smkl Exp $
+# $Id: Makefile.in,v 1.17 2000/11/05 01:36:41 smkl Exp $
 
 CC = 		@CC@ 
 CFLAGS =	@CFLAGS@ @DEFS@ -Wall -D__DEBUG__ # -g -pg #-O3 -pipe -pedantic -m486 
@@ -52,7 +52,7 @@ OBJS =		$(STUB_OBJS) $(ML_OBJS)
 OOBJS =		$(STUB_OBJS) $(OPT_OBJS)
 
 TOPLEVEL = 	$(BIN_DIR)/toplevel
-RUNTIME = 	$(BIN_DIR)sdlrun
+RUNTIME = 	$(BIN_DIR)/sdlrun
 LIBRARY = 	$(LIB_DIR)/sdl.cma
 OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
 CLIBRARY = 	$(LIB_DIR)/libstub.a
@@ -83,7 +83,8 @@ $(LIBRARY): $(CLIBRARY) $(ML_OBJS)
 	$(CAMLC) -linkall -a -o $(LIBRARY) $(ML_OBJS) $(MLLIBS) -cclib -lstub
 
 $(OLIBRARY): $(LIBRARY) $(OPT_OBJS)
-	$(CAMLOPT) -linkall -a -o $(OLIBRARY) $(OPT_OBJS)
+	$(CAMLOPT) -linkall -a -o $(OLIBRARY) $(OPT_OBJS) -cclib -lstub\
+	-ccopt "-lSDL -lSDL_ttf -lSDL_mixer -lpng -lSDL_image"
 
 $(CLIBRARY): $(STUB_OBJS)
 	ar cr $(CLIBRARY) $(STUB_OBJS)

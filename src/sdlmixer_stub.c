@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.6 2000/05/05 09:45:56 xtrm Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.7 2000/11/05 01:36:41 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -126,7 +126,7 @@ sdlmixer_query_specs(void)
   CAMLparam0();
   CAMLlocal2(result, query);
   int freq, chan, ret;
-  short form;
+  unsigned short form;
 
   ret = Mix_QuerySpec(&freq, &form, &chan);
   /* return None */
@@ -136,7 +136,7 @@ sdlmixer_query_specs(void)
   }
   else {
     int ml_format = 0;
-    switch (Int_val(form))
+    switch (form)
       {
       case AUDIO_U8:
 	ml_format = 1;
@@ -146,11 +146,13 @@ sdlmixer_query_specs(void)
 	ml_format = 2;
 	break;
 	
-      case AUDIO_U16:
+      case AUDIO_U16LSB:
+      case AUDIO_U16MSB:
 	ml_format = 3;
 	break;
 	
-      case AUDIO_S16:
+      case AUDIO_S16LSB:
+      case AUDIO_S16MSB:
 	ml_format = 4;
 	break;
       }
@@ -300,7 +302,7 @@ sdlmixer_play_channel_timed(value chn, value sound, value loops, value tme)
   if (Int_val(tme) == 0) t = -1;
   else t = (int)(1000.0 * Double_val(Field(tme,0)));
   return Val_int(Mix_PlayChannelTimed(MAGIC_OF_OPTION(chn), (Mix_Chunk *)sound,
-				      MAGIC_OF_OPTION(loops), t));
+				      MAGIC_OF_OPTION(loops)-1, t));
 }
 
 value
@@ -329,7 +331,7 @@ sdlmixer_fadein_channel(value chn, value chunk, value loops, value tme1,
   if (Int_val(tme2) == 0) t2 = -1;
   else t2 = (int)(1000.0 * Double_val(Field(tme2,0)));
   return Val_int(Mix_FadeInChannelTimed(MAGIC_OF_OPTION(chn), (Mix_Chunk *)chunk,
-					MAGIC_OF_OPTION(loops), t1, t2));
+					MAGIC_OF_OPTION(loops)-1, t1, t2));
 }
 
 value

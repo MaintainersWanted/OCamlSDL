@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.ml,v 1.4 2000/03/05 17:01:35 smkl Exp $ *)
+(* $Id: sdlmixer.ml,v 1.5 2000/11/05 01:36:41 smkl Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -37,16 +37,20 @@ type fade_status =
  | FADING_OUT
  | FADING_IN
 
-type channels = STEREO | MONO
+type channels = MONO | STEREO
 
 type chunk
 type music
 type channel = int
 type group = int
+type specs =
+  { frequency : int;
+    format : format;
+    channels : int }
 
 external open_audio : int -> format -> channels -> unit = "sdlmixer_open_audio";;
 external close_audio : unit -> unit = "sdlmixer_close_audio";;
-external query_specs : unit -> int * format * int = "sdlmixer_query_specs";;
+external query_specs : unit -> specs option = "sdlmixer_query_specs";;
 
 (* Loading and freeing sounds *)
 
