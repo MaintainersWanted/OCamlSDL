@@ -71,6 +71,8 @@ CAMLprim value ml_SDL_GL_to_raw(value s)
   Base_raw(raw) = Val_bp(pixels);
   Offset_raw(raw) = Val_int(0);
   Static_raw(raw) = Val_false;
+  /* we extend the record with a field containing the
+     SDL surface to keep it live */
   Field(raw, SIZE_RAW) = s;
   return raw;
 }

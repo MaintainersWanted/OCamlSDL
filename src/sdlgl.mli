@@ -13,7 +13,7 @@ type attr =
   | ACCUM_RED_SIZE of int
   | ACCUM_GREEN_SIZE of int
   | ACCUM_BLUE_SIZE of int
-  | ACCUM_ALPHA_SIZ of int
+  | ACCUM_ALPHA_SIZE of int
 
 external set_attr : attr list -> unit
     = "ml_SDL_GL_SetAttribute"
