@@ -17,7 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdltimer.mli,v 1.3 2002/08/21 18:40:20 oliv__a Exp $ *)
+(* $Id: sdltimer.mli,v 1.4 2002/11/05 14:59:02 oliv__a Exp $ *)
+
+(** Time-related functions *)
 
 (** Wait a specified number of milliseconds before returning *)
 external delay : int -> unit = "sdltimer_delay" "noalloc"
