@@ -1,3 +1,12 @@
+2000-06-13  Luc Mazardo  <l.mazardo@free.fr>
+
+	* ADD (sdlvideo*): functions wm_set_caption && wm_iconify_window 
+
+	* FIX (test_cdrom.ml): track_of_int -> track_get_number 
+	&& cd_track_offset -> cd_track_current_time
+	
+	* CHANGES (ChangeLog): update this file
+
 2000-05-09  Luc Mazardo  <l.mazardo@free.fr>
 
 	* ADD (test_cdrom.ml): test file using sdlcdrom
