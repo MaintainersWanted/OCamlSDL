@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.12 2002/09/24 22:34:54 oliv__a Exp $ *)
+(* $Id: sdlttf.mli,v 1.13 2002/09/30 21:40:07 oliv__a Exp $ *)
 
 (** This module provides TTF (TrueType Font) support *)
 
@@ -39,9 +39,6 @@ external open_font : string -> ?index:int -> int -> font = "sdlttf_open_font"
 (** open a font file and create a font of the specified point size 
    @return font datatype 
 *)
-
-external close_font : font -> unit = "sdlttf_close_font"
-(** close a previouly opened font file *)
 
 (** Set and retrieve the font style
    This font style is implemented by modifying the font glyphs, and
@@ -86,33 +83,40 @@ external style_name : font -> string = "ml_TTF_FontFaceStyleName"
 
 (** {1 Text rendering functions} *)
 
+open Sdlvideo
+
 (** Get the dimensions of a rendered string of text *)
 external size_text : font -> string -> int * int = "sdlttf_size_text"
 
 (** @return the metrics (minx,maxx,miny,maxy) of a glyph *) 
 external glyph_metrics : font -> char -> int * int * int * int = "sdlttf_glyph_metrics"
 
+(** Variant type for the generic rendering functions *)
+type render_kind = [
+  | `SOLID   of color
+  | `SHADED  of color * color
+  | `BLENDED of color ]
+
 (** {2 Text rendering functions} *)
 
 external render_text_solid : font -> string -> 
-  fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_solid"
+  fg:color -> surface = "sdlttf_render_text_solid"
 external render_text_shaded : font -> string -> 
-  fg:Sdlvideo.color -> bg:Sdlvideo.color -> Sdlvideo.surface
+  fg:color -> bg:color -> surface
     = "sdlttf_render_text_shaded"
 external render_text_blended : font -> string -> 
-  fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_blended"
+  fg:color -> surface = "sdlttf_render_text_blended"
+
+val render_text : font -> render_kind -> string -> surface
 
 (** {2 Glyph rendering functions} *)
 
 external render_glyph_solid : font -> char -> 
-  fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_glyph_solid"
+  fg:color -> surface = "sdlttf_render_glyph_solid"
 external render_glyph_shaded : font -> char -> 
-  fg:Sdlvideo.color -> bg:Sdlvideo.color -> Sdlvideo.surface
+  fg:color -> bg:color -> surface
     = "sdlttf_render_glyph_shaded"
 external render_glyph_blended : font -> char -> 
-  fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_glyph_blended"
+  fg:color -> surface = "sdlttf_render_glyph_blended"
 
-
-(* Return a function to print strings, and another to clean up printer *)
-(* val make_printer : font -> (int * int * int) ->
-  (Sdlvideo.surface -> int -> int -> string -> unit) * (unit -> unit) *)
+val render_glyph : font -> render_kind -> char -> surface

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.10 2002/09/24 22:34:54 oliv__a Exp $ *)
+(* $Id: sdlttf.ml,v 1.11 2002/09/30 21:40:07 oliv__a Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -35,7 +35,6 @@ external quit : unit -> unit = "sdlttf_kill"
 (* Native C external functions *)
 
 external open_font : string -> ?index:int -> int -> font = "sdlttf_open_font"
-external close_font : font -> unit = "sdlttf_close_font"
 
 type font_style =
   | NORMAL
@@ -57,63 +56,40 @@ external style_name : font -> string = "ml_TTF_FontFaceStyleName"
 
 external size_text : font -> string -> int * int = "sdlttf_size_text"
 
+open Sdlvideo
+
 external render_text_solid : font -> string -> 
-  fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_solid"
+  fg:color -> surface = "sdlttf_render_text_solid"
 external render_text_shaded : font -> string -> 
-  fg:Sdlvideo.color -> bg:Sdlvideo.color -> Sdlvideo.surface
+  fg:color -> bg:color -> surface
     = "sdlttf_render_text_shaded"
 external render_text_blended : font -> string -> 
-  fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_blended"
+  fg:color -> surface = "sdlttf_render_text_blended"
+
+type render_kind = [
+  | `SOLID   of color
+  | `SHADED  of color * color
+  | `BLENDED of color ]
+
+let render_text font kind txt =
+  match kind with
+  | `SOLID fg -> render_text_solid font txt ~fg
+  | `SHADED (fg, bg) -> render_text_shaded font txt ~fg ~bg
+  | `BLENDED fg -> render_text_blended font txt ~fg
 
 external render_glyph_solid : font -> char -> 
-  fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_glyph_solid"
+  fg:color -> surface = "sdlttf_render_glyph_solid"
 external render_glyph_shaded : font -> char -> 
-  fg:Sdlvideo.color -> bg:Sdlvideo.color -> Sdlvideo.surface
+  fg:color -> bg:color -> surface
     = "sdlttf_render_glyph_shaded"
 external render_glyph_blended : font -> char -> 
-  fg:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_glyph_blended"
+  fg:color -> surface = "sdlttf_render_glyph_blended"
 
+let render_glyph font kind c =
+  match kind with
+  | `SOLID fg -> render_glyph_solid font c ~fg
+  | `SHADED (fg, bg) -> render_glyph_shaded font c ~fg ~bg
+  | `BLENDED fg -> render_glyph_blended font c ~fg
 
 external glyph_metrics : font -> char -> int * int * int * int 
     = "sdlttf_glyph_metrics"
-
-(* ML functions *)
-
-(* let make_glyph font col str =*)
-(*   let text = render_text_blended font str col (0,0,0) in*)
-(*   Sdlvideo.surface_set_colorkey text (Some (Sdlvideo.IntColor(0, 0, 0)));*)
-(*   let conv = Sdlvideo.surface_display_format text in*)
-(*   Sdlvideo.surface_free text;*)
-(*   conv*)
-
-(* let make_printer font col =*)
-(*   (* make a memo array *)*)
-(*   let glyphs = Array.make 256 (make_glyph font col "a") in*)
-(*   for i = 1 to 255 do*)
-(*     glyphs.(i) <- make_glyph font col (String.make 1 (Char.chr i))*)
-(*   done;*)
-(*   let blaa = Array.make 256 0 in*)
-(*   for i = 1 to 255 do*)
-(*     let minx, maxx, miny, maxy = font_metrics font i in*)
-(*     blaa.(i) <- miny*)
-(*   done;*)
-(*   let height = font_height font in*)
-(*   let free_fonts () =*)
-(*     for i = 0 to 255 do*)
-(*       Sdlvideo.surface_free glyphs.(i)*)
-(*     done in  *)
-(*   let print_string screen x y str =*)
-(*     let x = ref x in*)
-(*     for i = 0 to String.length str - 1 do*)
-(*       let code = Char.code str.[i] in*)
-(*       let img = glyphs.(code) in*)
-(*       let w = Sdlvideo.surface_width img*)
-(*       and h = Sdlvideo.surface_height img*)
-(*       and yplus = blaa.(code) in*)
-(*       Sdlvideo.surface_blit img (Sdlvideo.Rect (0,0,w,h))*)
-(*                             screen (Sdlvideo.Rect (!x, y-yplus,w,h));*)
-(*       x := !x + w;*)
-(*       if str.[i] = ' ' then x := !x + 5*)
-(*     done in*)
-(*   print_string, free_fonts*)
-

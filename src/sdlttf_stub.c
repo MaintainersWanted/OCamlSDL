@@ -17,14 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.19 2002/09/24 22:34:54 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.20 2002/09/30 21:40:07 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
-#include <stdio.h>
+#include <caml/custom.h>
 
 #include <SDL_ttf.h>
 
@@ -33,12 +33,40 @@
 /*
  * Convertion Macros
  */
-#ifdef __GNUC__ /* typechecked macro */
-#define ML_FONT(f)  ( { TTF_Font *_mlsdl__f=f; abstract_ptr(_mlsdl__f); } )
-#else
-#define ML_FONT(f)  abstract_ptr(f);
-#endif
-#define SDL_FONT(f) ((TTF_Font *)Field((f), 0))
+#define SDL_FONT(f) (*(TTF_Font **)Data_custom_val(f))
+
+static void ml_TTF_CloseFont(value v)
+{
+  TTF_CloseFont(SDL_FONT(v));
+}
+  
+static int ml_TTF_compare(value v1, value v2)
+{
+  TTF_Font *f1 = SDL_FONT(v1);
+  TTF_Font *f2 = SDL_FONT(v2);
+  if(f1 == f2) return 0;
+  if(f1 < f2) return -1;
+  else return 1;
+}
+
+static struct custom_operations sdl_ttf_ops = {
+  "sdlsurface",
+  &ml_TTF_CloseFont,
+  &ml_TTF_compare,
+  custom_hash_default,
+  custom_serialize_default,
+  custom_deserialize_default 
+};
+
+static value ML_FONT(TTF_Font *f)
+{
+  value v;
+  TTF_Font **b;
+  v = alloc_custom(&sdl_ttf_ops, sizeof(*b), 0, 1);
+  b = Data_custom_val(v);
+  *b = f;
+  return v;
+}
 
 /*
  * Raise an OCaml exception with a message
@@ -89,15 +117,9 @@ sdlttf_open_font(value file, value index, value ptsize)
   int c_index = Opt_arg(index, Int_val, 0);
   TTF_Font *font=NULL;
 
-#if (TTF_RELEASE == 2) || \
-    ((TTF_MAJOR_VERSION >= 2) && \
-     (TTF_MAJOR_VERSION >= 0) && \
-     (TTF_PATCHLEVEL >= 6))
-
+#if (TTF_RELEASE == 2)
   font = TTF_OpenFontIndex(String_val(file), Int_val(ptsize), c_index);
-
 #else  /* try to keep compatibility with SDL_ttf v1 */
-
   font = TTF_OpenFont(String_val(file), Int_val(ptsize));
 #endif
 
@@ -139,29 +161,17 @@ sdlttf_font_descent(value font)
 }
 
 ML_1(TTF_FontLineSkip, SDL_FONT, Val_int)
-#if (TTF_RELEASE == 2) || \
-    ((TTF_MAJOR_VERSION >= 2) && \
-     (TTF_MAJOR_VERSION >= 0) && \
-     (TTF_PATCHLEVEL >= 6))
+#if (TTF_RELEASE == 2)
 ML_1(TTF_FontFaces, SDL_FONT, Val_int)
 ML_1(TTF_FontFaceIsFixedWidth, SDL_FONT, Val_bool)
 ML_1(TTF_FontFaceFamilyName, SDL_FONT, copy_string)
 ML_1(TTF_FontFaceStyleName, SDL_FONT, copy_string)
 #else
-
-CAMLprim value ml_TTF_FontFaces(value arg1) { return Val_int(0);}
-CAMLprim value ml_TTF_FontFaceIsFixedWidth(value arg1) { return Val_true;}
-CAMLprim value ml_TTF_FontFaceFamilyName(value arg1) { return copy_string("not implemented");}
-CAMLprim value ml_TTF_FontFaceStyleName(value arg1) { return copy_string("not implemented");}
+CAMLprim value ml_TTF_FontFaces(value arg1) { failwith("not implemented"); return Val_unit;}
+CAMLprim value ml_TTF_FontFaceIsFixedWidth(value arg1) { failwith("not implemented"); return Val_unit;}
+CAMLprim value ml_TTF_FontFaceFamilyName(value arg1) { failwith("not implemented"); return Val_unit;}
+CAMLprim value ml_TTF_FontFaceStyleName(value arg1) { failwith("not implemented"); return Val_unit;}
 #endif
-
-value
-sdlttf_close_font(value font)
-{
-   TTF_CloseFont(SDL_FONT(font));
-   SDL_FONT(font) = NULL;
-   return Val_unit;
-}
 
 value
 sdlttf_size_text(value font, value text)
