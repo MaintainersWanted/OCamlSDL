@@ -1,3 +1,12 @@
+2002-03-26  Luc Mazardo <luc@mazardo.com>
+
+	* samples/example.ml apply patch from josh cogliati 
+	  for using alpha level in example.ml
+
+	* src/sdlvideo_stub.c: apply patch from guillaume cottenceau 
+	  for {set,get}_pixel()
+
+
 2002-03-26  Frederic Brunel  <brunel@mail.dotcom.fr>
 
 	* HISTORY: Release 0.5-pre3.
