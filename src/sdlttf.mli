@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.6 2002/04/29 19:16:39 xtrm Exp $ *)
+(* $Id: sdlttf.mli,v 1.7 2002/04/30 16:04:36 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -51,9 +51,17 @@ val font_metrics : font -> int -> int*int*int*int
 
 (*1 Render text functions *)
 
+
+(* render text functions *)
+val render_text_shaded : f:font -> text:string -> foreground:Sdlvideo.color -> background:Sdlvideo.color -> Sdlvideo.surface
+val render_text_blended : f:font -> text:string -> foreground:Sdlvideo.color -> Sdlvideo.surface
+val render_text_solid : f:font -> text:string -> foreground:Sdlvideo.color -> Sdlvideo.surface
+
+(*
 val render_text_shaded : f:font -> text:string -> foreground:(int * int * int) -> background:(int * int * int) -> Sdlvideo.surface
 val render_text_blended : f:font -> text:string -> foreground:(int * int * int) -> Sdlvideo.surface
 val render_text_solid : f:font -> text:string -> foreground:(int * int * int) -> Sdlvideo.surface
+*)
 
 (* deprecated *)
 val render_text : font -> string -> (int * int * int) -> (int * int * int) -> Sdlvideo.surface

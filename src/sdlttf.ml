@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.7 2002/04/29 19:16:39 xtrm Exp $ *)
+(* $Id: sdlttf.ml,v 1.8 2002/04/30 16:04:36 xtrm Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -37,11 +37,13 @@ external font_height : font -> int = "sdlttf_font_height"
 external font_ascent : font -> int = "sdlttf_font_ascent"
 external font_descent : font -> int = "sdlttf_font_descent"
 external font_metrics : font -> int -> (int*int*int*int) = "sdlttf_font_metrics"
-external render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text"
 
-external render_text_shaded : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text_shaded"
-external render_text_blended : font -> string -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text_blended"
-external render_text_solid : font -> string -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text_solid"
+external render_text_shaded : f:font -> text:string -> foreground:Sdlvideo.color -> background:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_shaded"
+external render_text_blended : f:font -> text:string -> foreground:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_blended"
+external render_text_solid : f:font -> text:string -> foreground:Sdlvideo.color -> Sdlvideo.surface = "sdlttf_render_text_solid"
+
+(* deprecated *)
+external render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text"
 
 let make_glyph font col str =
   let text = render_text font str col (0,0,0) in
