@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.34 2002/09/02 13:09:43 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.35 2002/09/09 15:44:20 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -547,7 +547,7 @@ value
 sdlvideo_surface_from_rawrgb(value raw, value width, value height)
 {
    SDL_Surface *surf;
-   void *dest, *src;
+   char *dest, *src;
    int w, h, i;
    w = Int_val(width);
    h = Int_val(height);
@@ -574,7 +574,7 @@ value
 sdlvideo_surface_from_rawrgba(value raw, value width, value height)
 {
    SDL_Surface *surf;
-   void *dest, *src;
+   char *dest, *src;
    int w, h, i;
    w = Int_val(width);
    h = Int_val(height);
@@ -607,7 +607,7 @@ sdlvideo_surface_set_pixel(value ml_surf, value x, value y,
 
    convert_color(color, &r, &g, &b);
    
-   location = surf->pixels +
+   location = ((unsigned char *)surf->pixels) +
               surf->pitch * Int_val(y) +
               surf->format->BytesPerPixel * Int_val(x);
    /* location[0] = r; */
@@ -635,7 +635,7 @@ sdlvideo_surface_get_pixel(value ml_surf, value x, value y)
    SDL_Surface *surf = SDL_SURFACE(ml_surf);
 
    ret = alloc_tuple(3);
-   location = surf->pixels +
+   location = ((unsigned char*)surf->pixels) +
               surf->pitch * Int_val(y) +
               surf->format->BytesPerPixel * Int_val(x);
    /* Field(ret, 0) = Val_int(location[0]); */
