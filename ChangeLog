@@ -1,3 +1,13 @@
+2002-04-29  Luc Mazardo <luc@mazardo.com>
+
+	* ADD (src/*tff*) font_descent, font_ascent functions
+
+	* CHANGE (src/*tff*) put labels in render_text_{shaded, blended, solid}
+
+	* ADD (src/*ttf*) cdk_doc comments style
+
+	* CHANGE (src/*video*) visibilty of map_rgb, it becomes external
+
 2002-04-24  Luc Mazardo <luc@mazardo.com>
 
 	* REMOVE (debian/): remove all files for a real debian packaging
