@@ -1,3 +1,16 @@
+2000-05-09  Luc Mazardo  <l.mazardo@free.fr>
+
+	* ADD (test_cdrom.ml): test file using sdlcdrom
+
+	* CHANGES (example.ml): display the OCaml logo picture at the end.
+
+	* ADD (configure*): added some unfinished stuff using --disable-sdl-*
+	
+	* ADD (sdlcdrom*.ml*): Added some functions to know the current
+	track, the current offset and a "track to int" conversion
+
+	* CHANGES (ChangeLog): update this file
+	
 2000-05-30  Luc Mazardo  <l.mazardo@free.fr>
 
 	* ADD (fonts/Arial.ttf): a truetype font for example.ml
