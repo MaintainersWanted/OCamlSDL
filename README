@@ -32,7 +32,8 @@ and optionally:
 Using
 =====
 
-See the INSTALL file for information on how to compile and install the library.
+See the INSTALL file (and INSTALL.win32) for information on how to
+compile and install the library.
 
 The library use the Bigarray module (distributed with OCaml), to
 interface with C so programs using OCamlSDL must also be linked with
@@ -46,6 +47,8 @@ care of that:
 
  $ ocamlfind ocamlc -c -package sdlttf -linkpkg my_prog.ml
  $ ocamlfind ocamlc -o my_prog -package sdlttf -linkpkg my_prog.cmo
+
+MacOSX users should also read README.macosx .
 
 
 Documentation

@@ -1,7 +1,7 @@
 Using
 =====
 
-1. Native code. Same as in the INSTALL/README.
+1. Native code. Same as in the README.
 
 2. Byte code.
 You cannot use dynamic linking of stub code. This stub code must be
@@ -10,7 +10,7 @@ statically linked into a custom runtime.
  $ ocamlc -I +sdl -c my_prog.ml
  $ ocamlc -I +sdl -custom -o my_prog bigarray.cma sdl.cma my_prog.cmo
 
-3. Top-level
+3. Top-level.
 Here again you cannot use dynamic linking, you need to build a custom 
 top level.
 

@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.20 2005/01/30 22:31:44 oliv__a Exp $
+# $Id: Makefile,v 1.21 2005/01/30 22:49:59 oliv__a Exp $
 
 all doc clean install:
 	$(MAKE) -C src $@
@@ -34,7 +34,7 @@ configure : configure.in
 	autoconf
 endif
 
-DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README NEWS \
+DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README README.macosx NEWS \
            Makefile META \
            configure.in aclocal.m4 configure \
            makefile.config.gcc.in makefile.config.msvc makefile.rules makefile.platform \
