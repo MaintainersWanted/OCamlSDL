@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.21 2001/06/11 17:06:58 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.22 2002/03/26 16:27:18 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -631,7 +631,7 @@ value
 sdlvideo_surface_set_pixel(value ml_surf, value x, value y,
 			   value color)
 {
-   char *location;
+   unsigned char *location;
    unsigned char r, g, b;
    SDL_Surface *surf = SDL_SURFACE(ml_surf);
 
@@ -652,7 +652,7 @@ sdlvideo_surface_get_pixel(value ml_surf, value x, value y)
 {
    CAMLparam3(ml_surf, x, y);
    CAMLlocal1(ret);
-   char *location;
+   unsigned char *location;
    SDL_Surface *surf = SDL_SURFACE(ml_surf);
 
    ret = alloc_tuple(3);
