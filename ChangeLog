@@ -1,4 +1,11 @@
 
+2001-05-09  Luc Mazardo  <l.mazardo@free.fr>
+
+	* FIX: (Makefile.in {src,lib,bin}/Makefile.in bin/ocamlsdl.in) 
+		toplevel creation and installation
+	
+	* FIX: (configure configure.in) freetype.h detection
+
 2001-04-24  Luc Mazardo  <l.mazardo@free.fr>
 
 	* CHANGE : now the main init function Sdl.init is called 
