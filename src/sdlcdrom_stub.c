@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.6 2000/06/09 07:57:04 xtrm Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.7 2000/06/09 14:34:30 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -249,7 +249,7 @@ sdlcdrom_cd_current_track (value cdrom)
 
 
 value 
-sdlcdrom_track_of_int (value track) 
+sdlcdrom_track_get_number (value track) 
 {
   SDL_CDtrack *tr = (SDL_CDtrack *)track;
 
@@ -257,7 +257,7 @@ sdlcdrom_track_of_int (value track)
 }
 
 value
-sdlcdrom_cd_track_offset (value cdrom)
+sdlcdrom_cd_track_current_time (value cdrom)
 {
   CAMLparam1(cdrom);
   CAMLlocal1(result);

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.mli,v 1.3 2000/06/09 07:57:04 xtrm Exp $ *)
+(* $Id: sdlcdrom.mli,v 1.4 2000/06/09 14:34:30 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -77,8 +77,8 @@ val cd_track_list : cdrom_drive -> cdrom_track list;;
 val track_length : cdrom_track -> int * int;;
 val track_type : cdrom_track -> cdrom_track_type;;
 
-val cd_track_offset : cdrom_drive -> int * int ;;
+val cd_track_current_time : cdrom_drive -> int * int ;;
 val cd_current_track : cdrom_drive -> cdrom_track;;
-val track_of_int : cdrom_track -> int ;;
+val track_get_number : cdrom_track -> int ;;
 
 
