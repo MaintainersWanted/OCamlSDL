@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.1 2002/08/26 12:28:34 oliv__a Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.2 2002/08/26 16:07:59 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -311,10 +311,10 @@ value mlsdlevent_peek(value omask, value num)
   if(m < 0)
     raise_event_exn(SDL_GetError());
   {
+    int i;
     CAMLparam0();
     CAMLlocal1(v);
     v = nil();
-    register int i;
     for(i=m-1; i>=0; i--){
       value e = value_of_SDLEvent(evt[i]);
       v = cons(e, v);
@@ -333,10 +333,10 @@ value mlsdlevent_get(value omask, value num)
   if(m < 0)
     raise_event_exn(SDL_GetError());
   {
+    int i;
     CAMLparam0();
     CAMLlocal1(v);
     v = nil();
-    register int i;
     for(i=m-1; i>=0; i--){
       value e = value_of_SDLEvent(evt[i]);
       v = cons(e, v);
@@ -415,7 +415,7 @@ value mlsdlevent_set_state_by_mask(value mask, value state)
 {
   int c_state = ( state == Val_true ? SDL_ENABLE : SDL_DISABLE ) ;
   Uint32 c_mask = Int_val(mask);
-  register int i;
+  int i;
   for(i=SDL_NOEVENT + 1; i<SDL_NUMEVENTS; i++)
     if(SDL_EVENTMASK(i) & c_mask)
       SDL_EventState(i, c_state);
