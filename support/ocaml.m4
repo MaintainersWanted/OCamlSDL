@@ -138,11 +138,10 @@ dnl   ocamlfind if configure is called with --with-findlib
 AC_DEFUN(AC_PROG_FINDLIB,
 [dnl
 AC_ARG_WITH(findlib,[  --with-findlib	  use findlib package system],
-  use_findlib="$withval")
+  use_findlib="$withval",use_findlib="yes")
 # checking for ocamlfind
-if test "$use_findlib" ; then 
-	AC_CHECK_PROG(OCAMLFIND,ocamlfind,ocamlfind,
-	  AC_MSG_ERROR(ocamlfind not found))
+if test "$use_findlib" = "yes" ; then 
+	AC_CHECK_PROG(OCAMLFIND,ocamlfind,ocamlfind)
 else
 	unset OCAMLFIND
 fi

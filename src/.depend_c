@@ -1,0 +1,16 @@
+sdlcdrom_stub.o: sdlcdrom_stub.c common.h config.h
+sdlevent_stub.o: sdlevent_stub.c common.h config.h sdlmouse_stub.h
+sdlgl_stub.o: sdlgl_stub.c common.h config.h sdlvideo_stub.h
+sdljoystick_stub.o: sdljoystick_stub.c common.h config.h
+sdlkey_stub.o: sdlkey_stub.c common.h config.h
+sdlloader_stub.o: sdlloader_stub.c common.h config.h sdlvideo_stub.h \
+  sdlrwops_stub.h
+sdlmixer_stub.o: sdlmixer_stub.c common.h config.h sdlrwops_stub.h
+sdlmouse_stub.o: sdlmouse_stub.c common.h config.h sdlmouse_stub.h
+sdlrwops_stub.o: sdlrwops_stub.c common.h config.h sdlrwops_stub.h
+sdl_stub.o: sdl_stub.c common.h config.h sdlinit_flag.h sdlinit_flag.c
+sdltimer_stub.o: sdltimer_stub.c common.h config.h
+sdlttf_stub.o: sdlttf_stub.c common.h config.h sdlvideo_stub.h
+sdlvideo_stub.o: sdlvideo_stub.c common.h config.h sdlvideo_stub.h \
+  sdlrwops_stub.h sdlvideo_flag.h sdlvideo_flag.c
+sdlwm_stub.o: sdlwm_stub.c common.h config.h sdlvideo_stub.h

@@ -1,0 +1,24 @@
+description = "Bindings for the SDL multimedia library"
+requires    = "bigarray"
+version     = "0.7.0"
+
+archive(byte)   = "sdl.cma"
+archive(native) =" sdl.cmxa"
+
+package "sdlimage" (
+  requires = "sdl"
+  archive(byte)   = "sdlloader.cma"
+  archive(native) = "sdlloader.cmxa"
+)
+
+package "sdlmixer" (
+  requires = "sdl"
+  archive(byte)   = "sdlmixer.cma"
+  archive(native) = "sdlmixer.cmxa"
+)
+
+package "sdlttf" (
+  requires = "sdl"
+  archive(byte)   = "sdlttf.cma"
+  archive(native) = "sdlttf.cmxa"
+)

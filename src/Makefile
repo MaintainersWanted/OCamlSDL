@@ -1,8 +1,7 @@
 
-include ../makefile.toplevel
+include ../makefile.platform
+include ../$(MAKEFILE_CONFIG)
 include ../makefile.rules
-
-INSTALL_DIR = $(DESTDIR)$(OCAMLSDLDIR)
 
 OMLFLAGS = -unsafe
 MLFLAGS  = -g
@@ -56,9 +55,12 @@ libsdlttfstub.$(A) dllsdlttfstub.so : $(call STUB_OBJS,ttf)
 LABLGLINC = $(if $(LABLGLDIR),-I $(LABLGLDIR))
 sdlgl.cm% :  MLINC=$(LABLGLINC)
 
-
-INSTALL_TARGETS = install-byte $(if $(OCAMLOPT),install-opt) $(if $(OCAMLMKLIB),install-dll)
-install : $(INSTALL_TARGETS)
+ifdef INSTALL
+INSTALL_DIR = $(DESTDIR)$(OCAMLSDLDIR)
+INSTALL_TARGETS = $(if $(OCAMLFIND), \
+                    install-findlib, \
+                    install-byte $(if $(OCAMLOPT),install-opt) $(if $(OCAMLMKLIB),install-dll))
+install : all $(INSTALL_TARGETS)
 install-byte:
 	$(INSTALL) -d $(INSTALL_DIR)
 	$(INSTALL_DATA) *.cma lib*.$(A) *.cmi *.mli $(INSTALL_DIR)
@@ -68,10 +70,23 @@ install-dll:
 	$(INSTALL) -d $(DESTDIR)$(OCAMLLIBDIR)/stublibs
 	$(INSTALL) dll*.so $(DESTDIR)$(OCAMLLIBDIR)/stublibs
 
+ifdef OCAMLFIND
+install-findlib :
+	$(OCAMLFIND) install sdl ../META \
+          *.cma lib*.$(A) *.cmi *.mli \
+          $(if $(OCAMLOPT),*.cmxa sdl*.$(A) *.cmx) \
+          $(if $(OCAMLMKLIB),dll*.so)
+else
+install-findlib : ; $(error "findlib is not installed")
+endif
+
+.PHONY : install install-byte install-opt install-dll install-findlib
+endif
+
+ifdef OCAMLDOC
 MLI = $(foreach part,sdl $(PARTS),$(patsubst %.ml,%.mli,$(call ML_SRCS,$(part))))
 CMI = $(patsubst %.mli,%.cmi,$(MLI))
 
-ifdef OCAMLDOC
 doc : ../doc/html/index.html ../doc/ocamlsdl.texi
 ../doc/html/index.html : $(CMI)
 	mkdir -p ../doc/html
@@ -91,13 +106,15 @@ depend: .depend .depend.c
 .depend: $(wildcard *.ml *.mli)
 	@echo "making deps..."
 	@$(OCAMLDEP) $^ > $@
+-include .depend
 
-.depend.c : $(wildcard *_stub.c)
+ifeq ($(OCAML_C_BACKEND),gcc)
+.depend_c : $(wildcard *.c)
 	@echo "making C deps..."
 	@$(CC) -MM $^ > $@
+-include .depend_c
+else
+include .depend_c
+endif
 
-.PHONY: all doc clean depend install install-byte install-opt install-dll
-
--include .depend
--include .depend.c
-
+.PHONY: all doc clean depend

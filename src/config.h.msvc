@@ -1,0 +1,12 @@
+/* config.h file for ocamlsdl, MSVC */
+
+#define HAVE_INLINE
+#define inline __inline
+
+#define HAVE_SDL_MIXER_H 1
+#define HAVE_SDL_TTF_H 1
+#define SDL_TTF_VERSION 206
+#define SDL_IMAGE_VERSION 121
+
+#define HAVE_ALLOCA_H 1
+#define HAVE_ALLOCA 1

@@ -1,0 +1,21 @@
+# -*- makefile -*-
+
+LABLGLDIR =     
+
+PARTS = ttf loader mixer
+
+CPPFLAGS = /MT 
+CFLAGS   = /O
+RANLIB   =
+OBJEXT   = obj
+A        = lib
+
+OCAMLC     = ocamlc
+OCAMLOPT   = ocamlopt
+OCAMLDEP   = ocamldep
+CAMLDOC    = ocamldoc
+OCAMLMKLIB =
+OCAMLDOC   = ocamldoc
+OCAMLFIND  =
+
+SDL_LIBS = -lSDL -lSDL_ttf -lSDL_image -lSDL_mixer

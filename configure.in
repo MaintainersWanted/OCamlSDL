@@ -2,7 +2,7 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.34 2004/03/11 10:38:07 oliv__a Exp $
+dnl $Id: configure.in,v 1.35 2004/04/29 11:18:25 oliv__a Exp $
 
 dnl begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -12,6 +12,7 @@ AC_CONFIG_HEADER(src/config.h)
 
 # Check for OCaml programs 
 AC_PROG_OCAML()
+AC_PROG_FINDLIB()
 
 # Check for programs
 if test -z "$CFLAGS" ; then
@@ -27,13 +28,6 @@ if test "$ac_cv_c_inline" != no ; then
 fi
 
 AC_PROG_INSTALL
-
-# Check for cygwin system
-AC_CANONICAL_HOST
-case $host in
- *-*-cygwin* )  CYGWIN=y ;;
-esac
-AC_SUBST(CYGWIN)
 
 # Checking for lablGL
 AC_ARG_WITH(lablgldir,[  --with-lablgldir=DIR	  specify location of lablgl],LABLGLDIR="$withval")
@@ -101,13 +95,13 @@ if test "$sdl_mixer" = yes ; then
   fi
 fi
 
-AC_OUTPUT(makefile.toplevel)
+AC_OUTPUT(makefile.config.gcc)
 
 # Output the configuration summary
 echo
 echo "Configure summary:"
 if test -n "$LABLGLDIR" ; then lablgl_support=yes ; else lablgl_support=no ; fi
-echo "  lablGL	" $lablgl_support
+echo "  LablGL	" $lablgl_support
 echo "  SDL_image	" $sdl_image
 echo "  SDL_mixer	" $sdl_mixer
 echo "  SDL_tff	" $sdl_ttf

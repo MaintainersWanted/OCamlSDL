@@ -18,15 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.vcc,v 1.9 2004/01/31 09:15:50 smkl Exp $
-
-PREFIX =        /usr/local
-CAMLLIBDIR =    /usr/local/lib/ocaml
-OCAMLSDLDIR =   $(CAMLLIBDIR)/sdl
-BINDIR =        $(PREFIX)/bin
-
-INSTALL = 	/usr/bin/install -c
-INSTALL_DATA = 	${INSTALL} -m 644
+# $Id: makefile.vcc,v 1.10 2004/04/29 11:18:25 oliv__a Exp $
 
 PARTS = ttf loader mixer
 
@@ -37,7 +29,6 @@ CAMLC =		ocamlc
 CAMLOPT =	ocamlopt
 CAMLTOP =	ocamlmktop
 CAMLDEP =	ocamldep
-#CAMLMKLIB =     ocamlmklib
 CAMLDOC = 	ocamldoc
 
 MLFLAGS  =
