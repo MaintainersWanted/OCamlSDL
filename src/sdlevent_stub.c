@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.3 2000/01/13 17:45:10 smkl Exp $ */
+/* $Id: sdlevent_stub.c,v 1.4 2000/01/14 00:53:19 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -57,11 +57,6 @@ static value func_args[MAX_FUNC_ARGS];
 static void
 treat_keyboard_event (SDL_KeyboardEvent *event)
 {
-#ifdef __DEBUG_EVENT
-  printf("Keyboard event (type = %d, state = %d, sym = %d)\n",
-	 event->type, event->state, event->keysym.sym);
-#endif
-
   if (keyboard_event_func != Val_unit) {
     int mouse_x;
     int mouse_y;
@@ -85,12 +80,6 @@ treat_keyboard_event (SDL_KeyboardEvent *event)
 static void
 treat_mouse_event (SDL_MouseButtonEvent *event)
 {
-#ifdef __DEBUG_EVENT  
-  printf("Mouse button event (type = %d, state = %d, button = %d, x = %d, y = %d)\n",
-	 event->type, event->state, event->button, event->x,
-	 event->y);
-#endif
-  
   if (mouse_event_func != Val_unit) {
     /* Fill the arguments array */
     func_args[0] = Val_int(event->button - 1);
@@ -106,12 +95,6 @@ treat_mouse_event (SDL_MouseButtonEvent *event)
 static void
 treat_mousemotion_event (SDL_MouseMotionEvent *event)
 {
-#ifdef __DEBUG_EVENT
-  printf("Mouse motion event (type = %d, state = %d, x = %d, y = %d, xrel = %d, yrel = %d)\n",
-	 event->type, event->state, event->x, event->y, event->xrel,
-	 event->yrel);
-#endif
-
   if (mousemotion_event_func != Val_unit) {
     callback2(mousemotion_event_func, Val_int(event->x), Val_int(event->y));
   }
@@ -217,6 +200,44 @@ value
 sdlevent_set_idle_event_func (value func)
 {
   idle_event_func = func;
+  return Val_unit;
+}
+
+value
+sdlevent_is_key_pressed (value key)
+{
+  int *keystate = SDL_GetKeyState(NULL);
+  return Val_bool(keystate[Int_val(key)]);
+}
+
+value
+sdlevent_is_button_pressed (value button)
+{
+  int button = SDL_GetMouseState(NULL, NULL);
+  return Val_bool(SDL_BUTTON(Int_val(button) + 1));
+}
+
+value
+sdlevent_get_mouse_position (void)
+{
+  CAMLparam0();
+  CAMLlocal1(result);
+  int x;
+  int y;
+
+  SDL_GetMouseState(&x, &y);
+  
+  result = alloc_tuple(2);
+  Store_field(result, 0, Val_int(x));
+  Store_field(result, 1, Val_int(y));
+
+  CAMLreturn (result);
+}
+
+value
+sdlevent_set_mouse_position (value x, value y)
+{
+  SDL_WarpMouse(Int_val(x), Int_val(y));
   return Val_unit;
 }
 
