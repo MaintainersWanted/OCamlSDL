@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.17 2002/08/05 22:45:51 xtrm Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.18 2002/08/06 13:17:02 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -162,12 +162,12 @@ sdlmixer_query_specs(value unit)
     case AUDIO_U16MSB: ml_format = 4; break;
     case AUDIO_S16MSB: ml_format = 5; break;
     }
-    result = alloc_small(1, 0);
     query  = alloc_small(3, 0);
     Field(query, 0) = Val_int(freq);
     Field(query, 1) = Val_int(ml_format);
     Field(query, 2) = Val_int(chan-1);
-    Store_field(result, 0, query);
+    result = alloc_small(1, 0);
+    Field(result, 0) = query;
     CAMLreturn(result);      
   }
 }
