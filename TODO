@@ -1,2 +1,3 @@
-* To complete the interface of the main modules: video and events
+* Complete the interface of the main modules: video and events.
+* Comment the sdlvideo.mli and sdlevent.mli interface file.
 * Build the distribution with Autoconf and Automake.
