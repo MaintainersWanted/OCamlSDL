@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.11 2002/06/26 11:05:58 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.12 2002/06/26 15:24:55 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -29,6 +29,10 @@
 
 #include <SDL.h>
 #include <SDL_mixer.h>
+
+
+#include "common.h"
+
 
 static value arg_string;
 static value music_finished;
