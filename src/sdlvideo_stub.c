@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.35 2002/09/09 15:44:20 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.36 2002/09/10 12:01:21 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -32,13 +32,28 @@
 
 #include <SDL.h>
 
-
+#include "config.h"
 #include "common.h"
 #include "sdlvideo_stub.h"
 
 /*
  * Conversion macros
  */
+
+#ifndef HAVE_INLINE
+extern void SDL_COLOR_FROM_VALUE(value ml_color, SDL_Color *c)
+{
+  if(Tag_val(ml_color) == 0) { /* IntColor */
+    c->r = Int_val(Field(ml_color, 0));
+    c->g = Int_val(Field(ml_color, 1));
+    c->b = Int_val(Field(ml_color, 2));
+  } else { /* FloatColor */
+    c->r = 255 * Double_val(Field(ml_color, 0));
+    c->g = 255 * Double_val(Field(ml_color, 1));
+    c->b = 255 * Double_val(Field(ml_color, 2));
+  }
+}
+#endif
 
 #define MLRECT_TO_SDLRECT(ml_rect, sdl_rect)		\
 	sdl_rect.x = Int_val(Field(ml_rect, 0));	\

@@ -1,0 +1,9 @@
+/* config.h file for ocamlsdl */
+
+#undef HAVE_INLINE
+#undef inline
+
+#undef HAVE_SDL_MIXER_H
+#undef HAVE_SDL_TTF_H
+#define TTF_RELEASE 0
+

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.8 2002/09/09 15:51:29 smkl Exp $ */
+/* $Id: sdlloader_stub.c,v 1.9 2002/09/10 12:01:18 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -25,6 +25,7 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <stdio.h>
+#include <string.h>
 #include <SDL.h>
 #include <SDL_image.h>
 

@@ -17,11 +17,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.h,v 1.4 2002/08/30 22:20:28 oliv__a Exp $ */
+/* $Id: sdlvideo_stub.h,v 1.5 2002/09/10 12:01:22 oliv__a Exp $ */
 
 #ifndef __SDLVIDEO_STUB_H__
 #define __SDLVIDEO_STUB_H__
 
+#include "config.h"
 #include "common.h"
 
 /* Init the stub internal datas */
@@ -44,7 +45,10 @@ extern void sdlvideo_stub_kill (void);
 #endif
 #define SDL_SURFACE(surface) ((SDL_Surface *)Field((surface), 0))
 
-static __inline__ 
+#ifndef HAVE_INLINE
+extern void SDL_COLOR_FROM_VALUE(value, SDL_Color *);
+#else
+static inline
 void SDL_COLOR_FROM_VALUE(value ml_color, SDL_Color *c)
 {
   if(Tag_val(ml_color) == 0) { /* IntColor */
@@ -57,5 +61,6 @@ void SDL_COLOR_FROM_VALUE(value ml_color, SDL_Color *c)
     c->b = 255 * Double_val(Field(ml_color, 2));
   }
 }
+#endif
 
 #endif /* __SDLVIDEO_STUB_H__ */

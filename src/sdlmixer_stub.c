@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.24 2002/09/09 17:11:37 smkl Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.25 2002/09/10 12:01:20 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -29,34 +29,15 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef __GNUC__
-#include <error.h>
-#else
-
-#include <stdio.h>
-
-static void error(int status, int errnum, const char *format, ...)
-{
-      fprintf(stderr,format);
-}
-
-#endif
-
 #include <SDL.h>
 #include <SDL_mixer.h>
 
-
+#include "config.h"
 #include "common.h"
 #include "sdlmixer_stub.h"
 
-#if ( __STDC_VERSION__ == 199901L )
-#define ___inline inline
-#else
-#define ___inline
-#endif
-     
 /*
- * memory management (custom locks)
+ * memory management (custom blocks)
  */
 #define SDL_CHUNK(v) (* (Mix_Chunk **)Data_custom_val(v))
 #define SDL_MUS(v) (* (Mix_Music **)Data_custom_val(v))
@@ -106,7 +87,7 @@ static struct custom_operations music_chunk_ops = {
   custom_serialize_default, custom_deserialize_default 
 };
 
-static ___inline value ML_CHUNK(Mix_Chunk *c)
+static inline value ML_CHUNK(Mix_Chunk *c)
 {
   Mix_Chunk **chk;
   value v = alloc_custom(&mixer_chunk_ops, sizeof(*chk),
@@ -116,7 +97,7 @@ static ___inline value ML_CHUNK(Mix_Chunk *c)
   return v;
 }
 
-static ___inline value ML_MUS(Mix_Music *c)
+static inline value ML_MUS(Mix_Music *c)
 {
   Mix_Music **mus;
   value v =alloc_custom(&music_chunk_ops, 
@@ -136,8 +117,10 @@ sdlmixer_raise_exception (char *msg)
   static value *mixer_exn = NULL;
   if(! mixer_exn){
     mixer_exn = caml_named_value("SDLmixer_exception");
-    if(! mixer_exn)
-      error(-1, 0, "exception not registered.");
+    if(! mixer_exn) {
+      fprintf(stderr, "exception not registered."); 
+      abort();
+    }
   }
   raise_with_string(*mixer_exn, msg);
 }

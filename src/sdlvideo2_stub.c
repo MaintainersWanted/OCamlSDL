@@ -1,16 +1,5 @@
 
-#ifdef __GNUC__
-#include <error.h>
-#else
-
 #include <stdio.h>
-
-static void error(int status, int errnum, const char *format, ...)
-{
-   fprintf(stderr,format);
-}
-
-#endif
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -22,20 +11,18 @@ static void error(int status, int errnum, const char *format, ...)
 
 #include <SDL.h>
 
+#include "config.h"
 #include "common.h"
-
 #include "sdlvideo2_stub.h"
 
-#if ( __STDC_VERSION__ != 199901L )
-
-static SDL_Surface *SDL_SURFACE(value v)
+#ifndef HAVE_INLINE
+extern SDL_Surface *SDL_SURFACE(value v)
 {
-     struct ml_sdl_surf_data *cb_data;
-     cb_data = (Tag_val(v) == 0) ?
-     Data_custom_val(Field(v, 0)) : Data_custom_val(v);
-     return cb_data->s;
+  struct ml_sdl_surf_data *cb_data;
+  cb_data = (Tag_val(v) == 0) ? 
+    Data_custom_val(Field(v, 0)) : Data_custom_val(v);
+  return cb_data->s;
 }
-
 #endif
 
 
@@ -101,22 +88,18 @@ static void sdlvideo_raise_exception (char *msg)
   static value *video_exn = NULL;
   if(! video_exn) {
     video_exn = caml_named_value("SDLvideo2_exception");
-    if(! video_exn)
-      error(-1, 0, "exception not registered.");
+    if(! video_exn){
+      fprintf(stderr, "exception not registered.");
+      abort();
+    }
   }
   raise_with_string(*video_exn, msg);
 }
 
-#if ( __STDC_VERSION__ == 199901L )
-#define ___inline inline
-#else
-#define ___inline
-#endif
-
 /*
  * some static conversion functions
  */
-static ___inline void SDLColor_of_value(SDL_Color *c, value v)
+static inline void SDLColor_of_value(SDL_Color *c, value v)
 {
   c->r = Int_val(Field(v, 0));
   c->g = Int_val(Field(v, 1));
@@ -133,7 +116,7 @@ static value value_of_Rect(SDL_Rect r)
   return v;
 }
 
-static ___inline void SDLRect_of_value(SDL_Rect *r, value v)
+static inline void SDLRect_of_value(SDL_Rect *r, value v)
 {
   r->x = Int_val(Field(v, 0));
   r->y = Int_val(Field(v, 1));
@@ -141,7 +124,7 @@ static ___inline void SDLRect_of_value(SDL_Rect *r, value v)
   r->h = Int_val(Field(v, 3));
 }
 
-static ___inline void update_value_from_SDLRect(value vr, SDL_Rect *r)
+static inline void update_value_from_SDLRect(value vr, SDL_Rect *r)
 {
   CAMLparam1(vr);
   Store_field(vr, 0, Val_int(r->x));
@@ -251,26 +234,24 @@ value ml_SDL_SetPalette(value surf, value flags,
   int c_flags;
   int n = Wosize_val(c_arr);
   int i, status;
-#if ( __STDC_VERSION__ == 199901L )
+#ifdef __GNUC__
   SDL_Color color[n];
 #else
   SDL_Color *color = calloc(sizeof(SDL_Color), n);
 #endif
 
-  if(! p)
-     {
-#if ( __STDC_VERSION__ != 199901L )
-        free(color);
+  if(! p) {
+#ifndef __GNUC__
+    free(color);
 #endif
-	invalid_argument("surface not palettized");
-     }
-  if(firstcolor + n > p->ncolors || firstcolor < 0)
-     {
-#if ( __STDC_VERSION__ != 199901L )
-         free(color);
+    invalid_argument("surface not palettized");
+  }
+  if(firstcolor + n > p->ncolors || firstcolor < 0) {
+#ifndef __GNUC__
+    free(color);
 #endif
-	invalid_argument("out of bounds palette access");
-     }
+    invalid_argument("out of bounds palette access");
+  }
 
   for(i=0; i< n; i++)
     SDLColor_of_value(&color[i], Field(c_arr, i));
@@ -280,8 +261,8 @@ value ml_SDL_SetPalette(value surf, value flags,
     c_flags = Int_val(Unopt(flags)) +1 ;
 
   status = SDL_SetPalette(s, c_flags, color, ofirstcolor, n);
-#if ( __STDC_VERSION__ != 199901L )
-         free(color);
+#ifndef __GNUC__
+  free(color);
 #endif
   return Val_bool(status);
 }
@@ -421,7 +402,7 @@ value ml_SDL_UpdateRects(value rectl, value screen)
 {
   int len = list_length(rectl);
   register int i;
-#if ( __STDC_VERSION__ == 199901L )
+#ifdef __GNUC__
   SDL_Rect r[len];
 #else
   SDL_Rect *r = calloc(sizeof(SDL_Rect), len);
@@ -431,7 +412,7 @@ value ml_SDL_UpdateRects(value rectl, value screen)
     rectl = tl(rectl);
   }
   SDL_UpdateRects(SDL_SURFACE(screen), len, r);
-#if ( __STDC_VERSION__ != 199901L )
+#ifndef __GNUC__
   free(r);
 #endif
   return Val_unit;
