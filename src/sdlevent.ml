@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.ml,v 1.10 2003/01/04 01:37:08 oliv__a Exp $ *)
+(* $Id: sdlevent.ml,v 1.11 2003/11/11 08:34:55 smkl Exp $ *)
 
 exception Event_exn of string
 let _ = 
@@ -26,7 +26,7 @@ let _ =
 type active_state = 
   | MOUSEFOCUS
   | INPUTFOCUS
-  | ACTIVE
+  | APPACTIVE
 
 external get_app_state : unit -> active_state list
     = "mlsdlevent_get_app_state"

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.13 2003/01/05 11:23:53 oliv__a Exp $ *)
+(* $Id: sdlevent.mli,v 1.14 2003/11/11 08:34:55 smkl Exp $ *)
 
 (** SDL event handling *)
 
@@ -30,7 +30,7 @@ exception Event_exn of string
 type active_state = 
   | MOUSEFOCUS  (** The app has mouse coverage *)
   | INPUTFOCUS  (** The app has input focus *)
-  | ACTIVE      (** The application is active *)
+  | APPACTIVE      (** The application is active *)
 
 (** This function returns the current state of the application. If
    ACTIVE is set, then the user is able to see your application,
