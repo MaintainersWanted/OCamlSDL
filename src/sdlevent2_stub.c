@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.8 2002/09/25 22:29:05 oliv__a Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.9 2002/09/25 23:04:11 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -468,9 +468,9 @@ value mlsdlevent_set_state_by_mask(value mask, value state)
   Uint32 c_mask = Int_val(mask);
   int i;
   for(i=0; i<SDL_TABLESIZE(evt_type_of_val); i++) {
-    Uint32 evt_mask = SDL_EVENTMASK(evt_type_of_val[i]);
-    if(evt_mask & c_mask)
-      SDL_EventState(evt_mask, c_state);
+    Uint8 type = evt_type_of_val[i];
+    if(SDL_EVENTMASK(type) & c_mask)
+      SDL_EventState(type, c_state);
   }
   return Val_unit;
 }
