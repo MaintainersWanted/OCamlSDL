@@ -7,3 +7,6 @@
 #undef HAVE_SDL_TTF_H
 #define TTF_RELEASE 0
 #define IMAGE_RELEASE 0
+
+#undef HAVE_ALLOCA_H
+#undef HAVE_ALLOCA

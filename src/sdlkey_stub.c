@@ -1,10 +1,4 @@
-/* $Id: sdlkey_stub.c,v 1.5 2002/11/21 11:01:16 oliv__a Exp $ */
-
-#include <caml/mlvalues.h>
-#include <caml/alloc.h>
-#include <caml/fail.h>
-#include <caml/memory.h>
-#include <caml/bigarray.h>
+/* $Id: sdlkey_stub.c,v 1.6 2003/11/16 14:26:38 oliv__a Exp $ */
 
 #include <SDL.h>
 

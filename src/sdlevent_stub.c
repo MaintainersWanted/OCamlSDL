@@ -17,13 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.18 2003/11/15 10:51:10 oliv__a Exp $ */
-
-#include <caml/alloc.h>
-#include <caml/callback.h>
-#include <caml/fail.h>
-#include <caml/memory.h>
-#include <caml/mlvalues.h>
+/* $Id: sdlevent_stub.c,v 1.19 2003/11/16 14:26:38 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -323,19 +317,11 @@ CAMLprim value mlsdlevent_peek(value omask, value num)
 {
   int n = Int_val(num);
   int m;
-#ifdef __GNUC__
-  SDL_Event evt[n];
-#else
-  SDL_Event *evt = stat_alloc(n * sizeof SDL_Event);
-#endif
+  LOCALARRAY(SDL_Event, evt, n);
   Uint32 mask = Opt_arg(omask, Int_val, SDL_ALLEVENTS);
   m = SDL_PeepEvents(evt, n, SDL_PEEKEVENT, mask);
-  if(m < 0) {
-#ifndef __GNUC__
-    stat_free(evt);
-#endif
+  if(m < 0)
     raise_event_exn(SDL_GetError());
-  }
   {
     int i;
     CAMLparam0();
@@ -345,9 +331,6 @@ CAMLprim value mlsdlevent_peek(value omask, value num)
       value e = value_of_SDLEvent(evt[i]);
       v = cons(e, v);
     }
-#ifndef __GNUC__
-    stat_free(evt);
-#endif
     CAMLreturn(v);
   }
 }
@@ -356,19 +339,11 @@ CAMLprim value mlsdlevent_get(value omask, value num)
 {
   int n = Int_val(num);
   int m;
-#ifdef __GNUC__
-  SDL_Event evt[n];
-#else
-  SDL_Event *evt = stat_alloc(n * sizeof SDL_Event);
-#endif
+  LOCALARRAY(SDL_Event, evt, n);
   Uint32 mask = Opt_arg(omask, Int_val, SDL_ALLEVENTS);
   m = SDL_PeepEvents(evt, n, SDL_GETEVENT, mask);
-  if(m < 0) {
-#ifndef __GNUC__
-    stat_free(evt);
-#endif
-    raise_event_exn(SDL_GetError()); 
-  }
+  if(m < 0)
+    raise_event_exn(SDL_GetError());
   {
     int i;
     CAMLparam0();
@@ -378,9 +353,6 @@ CAMLprim value mlsdlevent_get(value omask, value num)
       value e = value_of_SDLEvent(evt[i]);
       v = cons(e, v);
     }
-#ifndef __GNUC__
-    stat_free(evt);
-#endif
     CAMLreturn(v);
   }
 }
@@ -388,11 +360,7 @@ CAMLprim value mlsdlevent_get(value omask, value num)
 CAMLprim value mlsdlevent_add(value elist)
 {
   int len = list_length(elist);
-#ifdef __GNUC__
-  SDL_Event evt[len];
-#else
-  SDL_Event *evt = stat_alloc(len * sizeof SDL_Event);
-#endif
+  LOCALARRAY(SDL_Event, evt, len);
   value l = elist;
   int i=0;
   while(is_not_nil(l)){
@@ -400,16 +368,9 @@ CAMLprim value mlsdlevent_add(value elist)
     l = tl(l);
     i++;
   }
-  if(SDL_PeepEvents(evt, len, SDL_ADDEVENT, SDL_ALLEVENTS) < 0) {
-#ifndef __GNUC__
-    stat_free(evt);
-#endif
+  if(SDL_PeepEvents(evt, len, SDL_ADDEVENT, SDL_ALLEVENTS) < 0)
     raise_event_exn(SDL_GetError());
-  }
-#ifndef __GNUC__
-    stat_free(evt);
-#endif
-   return Val_unit;
+  return Val_unit;
 }
 
 CAMLprim value mlsdlevent_has_event(value unit)

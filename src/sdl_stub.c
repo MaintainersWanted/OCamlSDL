@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.17 2003/02/24 22:55:10 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.18 2003/11/16 14:26:38 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -27,11 +27,8 @@
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
 
-
 #include <SDL.h>
 
-
-#include "config.h"
 #include "common.h"
 
 

@@ -1,12 +1,6 @@
 
 #include <SDL_mouse.h>
 
-#include <caml/mlvalues.h>
-#include <caml/bigarray.h>
-#include <caml/memory.h>
-#include <caml/alloc.h>
-#include <caml/fail.h>
-
 #include "common.h"
 #include "sdlmouse_stub.h"
 

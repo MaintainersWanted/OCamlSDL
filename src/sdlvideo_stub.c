@@ -1,17 +1,8 @@
 
 #include <stdio.h>
 
-#include <caml/mlvalues.h>
-#include <caml/alloc.h>
-#include <caml/memory.h>
-#include <caml/callback.h>
-#include <caml/fail.h>
-#include <caml/bigarray.h>
-#include <caml/custom.h>
-
 #include <SDL.h>
 
-#include "config.h"
 #include "common.h"
 #include "sdlvideo_stub.h"
 #include "sdlrwops_stub.h"
@@ -243,24 +234,12 @@ CAMLprim value ml_SDL_SetPalette(value surf, value flags,
   int c_flags;
   int n = Wosize_val(c_arr);
   int i, status;
-#ifdef __GNUC__
-  SDL_Color color[n];
-#else
-  SDL_Color *color = calloc(sizeof(SDL_Color), n);
-#endif
+  LOCALARRAY(SDL_Color, color, n);
 
-  if(! p) {
-#ifndef __GNUC__
-    free(color);
-#endif
+  if(! p)
     invalid_argument("surface not palettized");
-  }
-  if(firstcolor + n > p->ncolors || firstcolor < 0) {
-#ifndef __GNUC__
-    free(color);
-#endif
+  if(firstcolor + n > p->ncolors || firstcolor < 0)
     invalid_argument("out of bounds palette access");
-  }
 
   for(i=0; i< n; i++)
     SDLColor_of_value(&color[i], Field(c_arr, i));
@@ -270,9 +249,6 @@ CAMLprim value ml_SDL_SetPalette(value surf, value flags,
     c_flags = Int_val(Unopt(flags)) +1 ;
 
   status = SDL_SetPalette(s, c_flags, color, ofirstcolor, n);
-#ifndef __GNUC__
-  free(color);
-#endif
   return Val_bool(status);
 }
   
@@ -411,19 +387,12 @@ CAMLprim value ml_SDL_UpdateRects(value rectl, value screen)
 {
   int len = list_length(rectl);
   register int i;
-#ifdef __GNUC__
-  SDL_Rect r[len];
-#else
-  SDL_Rect *r = calloc(sizeof(SDL_Rect), len);
-#endif
+  LOCALARRAY(SDL_Rect, r, len);
   for(i=0; i<len; i++){
     SDLRect_of_value(&r[i], hd(rectl));
     rectl = tl(rectl);
   }
   SDL_UpdateRects(SDL_SURFACE(screen), len, r);
-#ifndef __GNUC__
-  free(r);
-#endif
   return Val_unit;
 }
 

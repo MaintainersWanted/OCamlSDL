@@ -1,8 +1,4 @@
 
-#include <caml/mlvalues.h>
-#include <caml/memory.h>
-#include <caml/alloc.h>
-
 #include <SDL.h>
 
 #include "common.h"

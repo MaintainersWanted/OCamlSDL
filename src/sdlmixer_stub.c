@@ -17,13 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.31 2003/02/24 22:55:11 oliv__a Exp $ */
-
-#include <caml/alloc.h>
-#include <caml/callback.h>
-#include <caml/fail.h>
-#include <caml/memory.h>
-#include <caml/mlvalues.h>
+/* $Id: sdlmixer_stub.c,v 1.32 2003/11/16 14:26:38 oliv__a Exp $ */
 
 #include <stdio.h>
 #include <string.h>
@@ -31,10 +25,8 @@
 #include <SDL.h>
 #include <SDL_mixer.h>
 
-#include "sdlrwops_stub.h"
-
-#include "config.h"
 #include "common.h"
+#include "sdlrwops_stub.h"
 
 /*
  * memory management (custom blocks)

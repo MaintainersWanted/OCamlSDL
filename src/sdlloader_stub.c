@@ -17,15 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.12 2003/02/24 22:55:10 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.13 2003/11/16 14:26:38 oliv__a Exp $ */
 
 #include <string.h>
-
-#include <caml/alloc.h>
-#include <caml/callback.h>
-#include <caml/fail.h>
-#include <caml/memory.h>
-#include <caml/mlvalues.h>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -68,19 +62,12 @@ CAMLprim value ml_IMG_Load_RW(value o_autoclose, value rwops)
 CAMLprim value ml_IMG_ReadXPMFromArray(value string_arr)
 {
 #if (IMAGE_RELEASE == 2)
-  int len = Bosize_val(string_arr);
-#ifdef __GNUC__
-  char *xpm[len+1];
-#else
-  char *xpm = stat_alloc(len+1);
-#endif
+  int len = Wosize_val(string_arr);
+  LOCALARRAY(char *, xpm, len+1);
   SDL_Surface *s;
-  memcpy(xpm, Bp_val(string_arr), len);
+  memcpy(xpm, Bp_val(string_arr), Bsize_wsize(len));
   xpm[len] = NULL;
   s = IMG_ReadXPMFromArray(xpm);
-#ifndef __GNUC__
-    stat_free(xpm);
-#endif
   if(! s)
     sdlloader_raise_exception(IMG_GetError());
   return ML_SURFACE(s);

@@ -1,10 +1,6 @@
 #include <string.h>
 #include <SDL.h>
 
-#include <caml/mlvalues.h>
-#include <caml/memory.h>
-#include <caml/alloc.h>
-
 #include "common.h"
 #include "sdlrwops_stub.h"
 

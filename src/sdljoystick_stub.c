@@ -17,12 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdljoystick_stub.c,v 1.3 2002/11/21 11:01:16 oliv__a Exp $ */
-
-#include <caml/mlvalues.h>
-#include <caml/callback.h>
-#include <caml/fail.h>
-#include <caml/alloc.h>
+/* $Id: sdljoystick_stub.c,v 1.4 2003/11/16 14:26:38 oliv__a Exp $ */
 
 #include <SDL.h>
 
