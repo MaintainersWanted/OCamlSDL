@@ -1,0 +1,20 @@
+OCamlSDL: An interface between OCaml and SDL (Simple DirectMedia Layer)
+-----------------------------------------------------------------------
+
+The goal of OCamlSDL is to provide access the multimedia hardware
+in the ML programming language with the help of the SDL library.
+The Simple DirectMedia Layer is a generic API that provides low
+level access to audio, keyboard, mouse, and display framebuffer across
+multiple platforms. 
+
+This ML interface might be used to prototype multimedia applications. 
+As soon as possible, I will write some examples.
+
+Follow these links for more infos:
+
+OCaml : http://ocaml.inria.fr/
+SDL   : http://www.devolution.com/~slouken/SDL/
+
+--
+Frederic Brunel
+brunel@mail.dotcom.fr
