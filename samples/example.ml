@@ -1,14 +1,14 @@
-(* $Id: example.ml,v 1.3 2000/05/30 16:42:05 xtrm Exp $ *)
+(* $Id: example.ml,v 1.4 2000/06/09 08:29:25 xtrm Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
 
 init_with_auto_clean();;
 
-let screen = set_display_mode 800 600 16;;
+let screen = set_display_mode 640 480 16;;
 let clouds = surface_loadBMP "images/clouds.bmp";;
 let icon = surface_loadBMP "images/icon.bmp";;
-(*  let logo = Sdlloader.load_png "images/ocamlsdl.png";; *)
+let logo = Sdlloader.load_image "images/ocamlsdl.png";; 
 
 let black = color_of_int(0,0,0) ;;
 let white = color_of_int(255,255,255) ;;
@@ -33,7 +33,7 @@ let random_placement src dst =
     
   in
     surface_blit src r_src dst r_smiley;
-    update_rect screen r_smiley;;
+    update_rect dst r_smiley;;
     
 let place_max_icons max delay = 
   for i = 0 to max do
@@ -51,23 +51,27 @@ let display_text f s bg fg =
 
 let f = Sdlttf.open_font "fonts/Arial.ttf" 20;;
 
-flip (screen_clear white);;
-display_text f "Wait 2 seconds..." black white ;;
-Sdltimer.delay 2000 ;;
 
-flip (screen_clear black);;
-display_text f "Going in the sky in 2 seconds and let's the pacmen" white black;;
-Sdltimer.delay 2000 ;;
+ flip (screen_clear white);;
+ display_text f "Wait 2 seconds..." black white ;;
+ Sdltimer.delay 2000 ;;
+ 
+ flip (screen_clear black);;
+ display_text f "Going in the sky in 2 seconds and let's the pacmen" white black;;
+ Sdltimer.delay 2000 ;;
+ 
+ screen_fill clouds;;
+ flip screen ;;
+ (*  display_text f "Let's the pacmen !!" white black;; *)
+ place_max_icons 100 1;;
+ Sdltimer.delay 2000 ;;
+ 
+ flip (screen_clear white);;
+ screen_fill logo ;;
+ flip screen;;
+ display_text f "Made with OCamlSDL" black white;;
+ Sdltimer.delay 5000 ;;
+ 
+ Sdlttf.close_font f ;;
 
-screen_fill clouds;;
-flip screen ;;
-(*  display_text f "Let's the pacmen !!" white black;; *)
-place_max_icons 1000 1;;
-Sdltimer.delay 2000 ;;
-
-flip (screen_clear black);;
-display_text f "Made with OCamlSDL" white black;;
-Sdltimer.delay 5000 ;;
-
-Sdlttf.close_font f ;;
 
