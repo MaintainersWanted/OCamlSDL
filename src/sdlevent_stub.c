@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.17 2002/11/21 11:01:15 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.18 2003/11/15 10:51:10 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -251,6 +251,7 @@ static SDL_Event SDLEvent_of_value(value e)
       evt.key.keysym.sym = find_sdl_keysym(Field(r, 2)) ;
       evt.key.keysym.mod = Int_val(Field(r, 3));
       evt.key.keysym.unicode = 0;
+      break;
     case 3:
       evt.type = SDL_MOUSEMOTION;
       evt.motion.which = Int_val(Field(r, 0));
