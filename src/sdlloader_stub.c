@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.1 2000/01/17 18:36:17 smkl Exp $ */
+/* $Id: sdlloader_stub.c,v 1.2 2000/01/19 23:58:02 fbrunel Exp $ */
 
 #include <png.h>
 #include <caml/alloc.h>
@@ -29,19 +29,18 @@
 #include <SDL.h>
 
 static void
-sdlpng_raise_exception (char *msg)
+sdlloader_raise_exception (char *msg)
 {
    raise_with_string(*caml_named_value("SDLloader_exception"), msg);
 }
 
 value
-sdlpng_load_png(value file_name)
+sdlloader_load_png(value file_name)
 {
    SDL_Surface *surf;
    png_structp png_ptr;
    png_infop info_ptr;
    png_uint_32 width, height;
-   png_color_16 my_background, *image_background;
    int bit_depth, color_type, interlace_type;
    FILE *fp;
    png_bytep *row_pointers;
@@ -50,25 +49,25 @@ sdlpng_load_png(value file_name)
    /* open the file and initialize libpng */
    
    if ((fp = fopen(&Byte(file_name, 0), "rb")) == NULL)
-     sdlpng_raise_exception("Can't open file");
+     sdlloader_raise_exception("Can't open file");
    
    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
    if (png_ptr == NULL) {
      fclose(fp);
-     sdlpng_raise_exception("Cannot initialize libpng reader");
+     sdlloader_raise_exception("Cannot initialize libpng reader");
    }
    
    info_ptr = png_create_info_struct(png_ptr);
    if (info_ptr == NULL) {
      fclose(fp);
      png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
-     sdlpng_raise_exception("Cannot initialize libpng info");
+     sdlloader_raise_exception("Cannot initialize libpng info");
    }
    
    /* this is not working */
    if (setjmp(png_ptr->jmpbuf)) {
-     sdlpng_raise_exception("libpng died");
+     sdlloader_raise_exception("libpng died");
    }
    
    png_init_io(png_ptr, fp);
@@ -103,7 +102,7 @@ sdlpng_load_png(value file_name)
 			       0x000000ff, 0x0000ff00, 0x00ff0000, 0x0);
    {
      char *src, *dest;
-     int i, j;
+     int i;
      dest = surf->pixels;
      for (i = 0; i < height; i++) {
        src = row_pointers[i];
@@ -120,13 +119,12 @@ sdlpng_load_png(value file_name)
 }
 
 value
-sdlpng_load_png_with_alpha(value file_name)
+sdlloader_load_png_with_alpha(value file_name)
 {
    SDL_Surface *surf;
    png_structp png_ptr;
    png_infop info_ptr;
    png_uint_32 width, height;
-   png_color_16 my_background, *image_background;
    int bit_depth, color_type, interlace_type;
    FILE *fp;
    png_bytep *row_pointers;
@@ -134,25 +132,25 @@ sdlpng_load_png_with_alpha(value file_name)
    
    /* open the file and initialize libpng */
    if ((fp = fopen(&Byte(file_name, 0), "rb")) == NULL)
-     sdlpng_raise_exception("Can't open file");
+     sdlloader_raise_exception("Can't open file");
    
    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
    if (png_ptr == NULL) {
      fclose(fp);
-     sdlpng_raise_exception("Cannot initialize libpng reader");
+     sdlloader_raise_exception("Cannot initialize libpng reader");
    }
    
    info_ptr = png_create_info_struct(png_ptr);
    if (info_ptr == NULL) {
      fclose(fp);
      png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
-     sdlpng_raise_exception("Cannot initialize libpng info");
+     sdlloader_raise_exception("Cannot initialize libpng info");
    }
    
    if (setjmp(png_ptr->jmpbuf)) {
      png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
      fclose(fp);
-     sdlpng_raise_exception("libpng failed");
+     sdlloader_raise_exception("libpng failed");
    }
    
    png_init_io(png_ptr, fp);
@@ -189,7 +187,7 @@ sdlpng_load_png_with_alpha(value file_name)
 			       0xff000000);
    {
      void *src, *dest;
-     int i, j;
+     int i;
      dest = surf->pixels;
      
      for (i = 0; i < height; i++) {
