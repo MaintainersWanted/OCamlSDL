@@ -1,6 +1,14 @@
+2002-05-22  Luc Mazardo <luc@mazardo.com>
+
+	* CHANGE: (README.cvs) add cvs instructions for getting fixed and
+	devel release. Removing old instructions concerning branching and 
+	merging (the way explaned is not the usual).
+
+	* FIX: (src/sdlttf_stub.c) applying Olivier Andrieu patch 
+
 2002-05-07  Luc Mazardo <luc@mazardo.com>
 
-	* NEW: (README.cvs) add cvs instructions for tagging and mergind
+	* NEW: (README.cvs) add cvs instructions for tagging and merging
 
 	* ADD: add ocamlsdl-devel branch
 

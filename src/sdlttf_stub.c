@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.10 2002/04/30 16:04:36 xtrm Exp $ */
+/* $Id: sdlttf_stub.c,v 1.11 2002/05/21 23:05:58 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -73,7 +73,7 @@ sdlttf_stub_kill(void)
 value
 sdlttf_open_font(value file, value ptsize)
 {
-   TTF_Font *font = TTF_OpenFont(&Byte(file,0), Int_val(ptsize));
+   TTF_Font *font = TTF_OpenFont(String_val(file), Int_val(ptsize));
    if (font == NULL) {
       sdlttf_raise_exception(SDL_GetError());
    }
@@ -113,7 +113,7 @@ sdlttf_render_text_solid(value font, value text, value fg)
 
    SDL_COLOR_FROM_VALUE(fg,sfg)
 
-   surf = TTF_RenderText_Solid((TTF_Font *)font,&Byte(text,0), sfg);
+   surf = TTF_RenderText_Solid((TTF_Font *)font,String_val(text), sfg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
@@ -131,7 +131,7 @@ sdlttf_render_text_shaded(value font, value text, value fg, value bg)
    SDL_COLOR_FROM_VALUE(fg,sfg)
    SDL_COLOR_FROM_VALUE(bg,sbg)
 
-   surf = TTF_RenderText_Shaded((TTF_Font *)font,&Byte(text,0), sfg, sbg);
+   surf = TTF_RenderText_Shaded((TTF_Font *)font,String_val(text), sfg, sbg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
@@ -147,7 +147,7 @@ sdlttf_render_text_blended(value font, value text, value fg)
 
    SDL_COLOR_FROM_VALUE(fg,sfg)
 
-   surf = TTF_RenderText_Blended((TTF_Font *)font,&Byte(text,0), sfg);
+   surf = TTF_RenderText_Blended((TTF_Font *)font,String_val(text), sfg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
@@ -166,7 +166,7 @@ sdlttf_render_text(value font, value text, value fg, value bg)
    SDL_COLOR_FROM_VALUE(fg,sfg)
    SDL_COLOR_FROM_VALUE(bg,sbg)
 
-   surf = TTF_RenderText_Shaded((TTF_Font *)font,&Byte(text,0), sfg, sbg);
+   surf = TTF_RenderText_Shaded((TTF_Font *)font,String_val(text), sfg, sbg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
@@ -188,8 +188,8 @@ sdlttf_font_metrics(value fnt, value chr)
    TTF_GlyphMetrics(font, c, &minx, &maxx, &miny, &maxy, &advance);
    result = alloc(4, 0);
    Store_field(result, 0, Val_int(minx));
-   Store_field(result, 0, Val_int(maxx));
-   Store_field(result, 0, Val_int(miny));
-   Store_field(result, 0, Val_int(maxy));
+   Store_field(result, 1, Val_int(maxx));
+   Store_field(result, 2, Val_int(miny));
+   Store_field(result, 3, Val_int(maxy));
    return result;
 }
