@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader2_stub.c,v 1.2 2002/10/01 23:00:05 xtrm Exp $ */
+/* $Id: sdlloader2_stub.c,v 1.3 2002/10/03 23:00:45 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -76,7 +76,8 @@ value ml_IMG_ReadXPMFromArray(value string_arr)
     sdlloader_raise_exception(IMG_GetError());
   return ML_SURFACE(s);
 #else
-    sdlloader_raise_exception("not supported");
+  sdlloader_raise_exception("not supported");
+  return Val_unit;
 #endif
 }
 
