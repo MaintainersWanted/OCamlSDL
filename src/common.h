@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.6 2002/07/31 09:49:19 oliv__a Exp $ */
+/* $Id: common.h,v 1.7 2002/08/08 12:34:35 oliv__a Exp $ */
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
@@ -61,5 +61,17 @@ extern value abstract_ptr(void *);
 #define Val_none Val_unit
 #define Unopt(v) Field((v), 0)
 #define Opt_arg(v, conv, def) (Is_block(v) ? conv(Field((v),0)) : (def))
+
+/*
+ * convenient wrappers (stolen from LablGTK)
+ */
+#define Unit(x) ((x), Val_unit)
+#define ML_0(cname, conv) \
+CAMLprim value ml_##cname (value unit) { return conv (cname ()); }
+#define ML_1(cname, conv1, conv) \
+CAMLprim value ml_##cname (value arg1) { return conv (cname (conv1 (arg1))); }
+#define ML_1_name(mlname, cname, conv1, conv) \
+CAMLprim value mlname (value arg1) { return conv (cname (conv1 (arg1))); }
+
 
 #endif /* __COMMON_H__ */

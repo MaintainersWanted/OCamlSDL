@@ -17,14 +17,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.5 2002/07/13 14:20:01 oliv__a Exp $
+# $Id: Makefile,v 1.6 2002/08/08 12:34:35 oliv__a Exp $
 
 
 include ../makefile.toplevel
 
 INSTALL_DIR = $(DESTDIR)$(OCAMLSDLDIR)
 
-MODULES = 	sdl sdlvideo sdlcdrom sdlevent sdltimer \
+MODULES = 	sdl sdlvideo sdlcdrom sdlevent sdltimer sdljoystick \
                 $(addprefix sdl,$(PARTS))
 
 STUB_SRCS = 	$(addsuffix _stub.c,$(MODULES)) common.c
@@ -68,13 +68,13 @@ ifdef CAMLMKLIB
 CLIBRARY += dllsdlstub.so
 
 $(LIBRARY): $(ML_OBJS)
-	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(LIBS) $^
+	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
 
 $(OLIBRARY): $(OPT_OBJS)
-	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(LIBS) $^
+	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
 
 $(CLIBRARY): $(STUB_OBJS)
-	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(LIBS) $^
+	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
 
 install:: dllsdlstub.so
 	-$(INSTALL) -d $(DESTDIR)$(CAMLLIBDIR)/shlibs
