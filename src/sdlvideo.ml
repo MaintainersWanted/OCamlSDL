@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.10 2000/06/13 12:26:41 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.11 2000/07/06 13:44:00 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -92,6 +92,10 @@ external surface_set_pixel : surface -> int -> int -> color -> unit = "sdlvideo_
 external surface_get_pixel : surface -> int -> int -> color = "sdlvideo_surface_get_pixel";;
 
 external unsafe_blit_buffer : surface -> string -> int -> unit = "sdlvideo_blit_raw_buffer";;
+
+external must_lock : surface -> bool = "sdlvideo_must_lock";;
+external lock_surface : surface -> unit = "sdlvideo_lock_surface";;
+external unlock_surface  : surface -> unit = "sdlvideo_unlock_surface";;
 
 external surface_final : unit -> surface = "sdlvideo_surface_final";;
 
