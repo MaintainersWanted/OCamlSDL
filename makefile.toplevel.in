@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.toplevel.in,v 1.16 2002/12/11 23:13:12 oliv__a Exp $
+# $Id: makefile.toplevel.in,v 1.17 2003/01/05 09:43:24 oliv__a Exp $
 
 PREFIX =        @prefix@
 CAMLLIBDIR =    @OCAMLLIB@
@@ -42,7 +42,7 @@ CAMLMKLIB =     @OCAMLMKLIB@
 CAMLDOC = 	@OCAMLDOC@
 
 MLFLAGS  =
-OMLFLAGS =	-unsafe -inline 10
+OMLFLAGS =	-unsafe
 
 CYGWIN   = @CYGWIN@
 
