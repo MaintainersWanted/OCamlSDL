@@ -55,4 +55,5 @@ let check_file_and_play_it f =
 List.iter check_file_and_play_it (List.tl (Array.to_list Sys.argv));;
 close_audio ();
 Printf.printf "closing audio device\n";
+flush stdout;
 quit();;
