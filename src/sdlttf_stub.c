@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.26 2004/02/04 12:00:22 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.27 2004/07/26 01:31:45 oliv__a Exp $ */
 
 #include <SDL_ttf.h>
 
@@ -113,7 +113,7 @@ sdlttf_open_font(value file, value index, value ptsize)
   int c_index = Opt_arg(index, Int_val, 0);
   TTF_Font *font=NULL;
 
-#if (TTF_RELEASE >= 204)
+#if (SDL_TTF_VERSION >= 204)
   font = TTF_OpenFontIndex(String_val(file), Int_val(ptsize), c_index);
 #else  /* try to keep compatibility with SDL_ttf v1 */
   font = TTF_OpenFont(String_val(file), Int_val(ptsize));

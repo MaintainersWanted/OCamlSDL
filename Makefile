@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.14 2004/07/26 00:41:21 oliv__a Exp $
+# $Id: Makefile,v 1.15 2004/07/26 01:31:45 oliv__a Exp $
 
 all doc clean install:
 	$(MAKE) -C src $@
@@ -26,7 +26,7 @@ all doc clean install:
 include makefile.platform
 include makefile.config.$(OCAML_C_BACKEND)
 
-ifneq ($(PLATFORM),Win32)
+ifeq ($(OCAML_C_BACKEND),gcc)
 makefile.config.gcc : makefile.config.gcc.in configure
 	$(error "please run ./configure or edit makefile.platform")
 configure : configure.in

@@ -111,7 +111,7 @@ depend: .depend .depend.c
 ifeq ($(OCAML_C_BACKEND),gcc)
 .depend_c : $(wildcard *.c)
 	@echo "making C deps..."
-	@$(CC) -MM $^ > $@
+	$(CC) $(patsubst -I%,-isystem %,$(CPPFLAGS)) -isystem $(OCAMLLIBDIR) -MM $^ > $@
 -include .depend_c
 else
 include .depend_c
