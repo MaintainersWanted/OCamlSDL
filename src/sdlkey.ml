@@ -314,6 +314,11 @@ open Bigarray
 external get_key_state : unit -> (int, int8_unsigned_elt, c_layout) Array1.t
     = "ml_SDL_GetKeyState"
 
+external _is_key_pressed : int -> bool
+    = "ml_sdl_key_pressed"
+let is_key_pressed key = 
+  _is_key_pressed (int_of_key key)
+
 type mod_state = int
 let kmod_none  = 0x0000
 let kmod_lshift= 0x0001
@@ -337,3 +342,5 @@ external get_mod_state : unit -> mod_state
     = "ml_SDL_GetModState"
 external set_mod_state : mod_state -> unit
     = "ml_SDL_SetModState"
+
+let link_me = ()

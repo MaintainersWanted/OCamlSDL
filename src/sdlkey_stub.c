@@ -1,4 +1,4 @@
-/* $Id: sdlkey_stub.c,v 1.2 2002/08/23 09:52:23 xtrm Exp $ */
+/* $Id: sdlkey_stub.c,v 1.3 2002/08/24 21:03:07 oliv__a Exp $ */
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -42,3 +42,10 @@ value ml_SDL_GetKeyState(value unit)
 
 ML_0(SDL_GetModState, Val_int)
 ML_1(SDL_SetModState, Int_val, Unit)
+
+value ml_sdl_key_pressed(value ksym)
+{
+  int len;
+  Uint8 *keystate = SDL_GetKeyState(&len);
+  return Val_bool( keystate[ Int_val(ksym) ] );
+}

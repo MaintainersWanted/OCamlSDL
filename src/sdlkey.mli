@@ -277,6 +277,9 @@ external get_key_state : unit -> (int, int8_unsigned_elt, c_layout) Array1.t
    @return an array of keystates, indexed by the SDL keysyms 
    (cf {! Sdlkey.int_of_key}) *)
 
+val is_key_pressed : key -> bool
+(** Checks wether a key is currently pressed on the keyboard. *)
+
 
 (** {1 Key modifiers } *)
 
@@ -310,3 +313,5 @@ external set_mod_state : mod_state -> unit
     = "ml_SDL_SetModState"
 (** Set the current key modifier state
    This does not change the keyboard state, only the key modifier flags. *)
+
+val link_me : unit
