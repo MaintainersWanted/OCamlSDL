@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.4 2002/04/24 13:24:44 xtrm Exp $
+# $Id: Makefile.in,v 1.5 2002/04/24 15:13:06 xtrm Exp $
 
 
 CLIBS =		@LIBS@ @MATHLIB@
@@ -30,7 +30,7 @@ LIB_DIR =	../lib
 MODULES = 	sdl sdlvideo sdlcdrom sdlevent \
 		sdltimer sdlttf sdlmixer sdlloader
 
-STUB_SRCS = 	$(MODULES:=_stub.c) stub_shared.c common.c
+STUB_SRCS = 	$(MODULES:=_stub.c) common.c
 
 STUB_OBJS =	$(STUB_SRCS:.c=.o)
 

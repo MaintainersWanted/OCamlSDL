@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.23 2002/04/24 13:24:44 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.24 2002/04/24 15:13:06 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -732,17 +732,3 @@ sdlvideo_gl_swap_buffers(value unit)
    return Val_unit;
 }
 
-/* EXPERIMENTAL */
-
-value
-sdlvideo_surface_final(void)
-{
-  CAMLparam0();
-  CAMLlocal1(ret);
-  static int i = 0;
-
-  ALLOC_FINAL_PTR((long)i, finalize_surface, ret);
-
-  printf("Allocated final: %p %d\n", ret, i++);
-  CAMLreturn(ret);
-}

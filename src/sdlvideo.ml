@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.16 2001/05/11 13:58:17 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.17 2002/04/24 15:13:06 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -136,8 +136,6 @@ external lock_surface : surface -> unit = "sdlvideo_lock_surface";;
 external unlock_surface  : surface -> unit = "sdlvideo_unlock_surface";;
 external surface_pixel_data : surface -> pixel_data = "sdlvideo_surface_pixel_data";;
 external gl_swap_buffers : unit -> unit = "sdlvideo_gl_swap_buffers";;
-
-external surface_final : unit -> surface = "sdlvideo_surface_final";;
 
 (* ML functions *)
 

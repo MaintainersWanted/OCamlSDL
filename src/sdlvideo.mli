@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.16 2001/06/11 17:07:39 xtrm Exp $ *)
+(* $Id: sdlvideo.mli,v 1.17 2002/04/24 15:13:06 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -190,8 +190,6 @@ val unlock_surface : surface -> unit;;
 val surface_pixel_data : surface -> pixel_data;;
 val gl_swap_buffers : unit -> unit;;
 
-(* DO NOT USE. EXPERIMENTAL *)
 
-val surface_final : unit -> surface;;
 
 
