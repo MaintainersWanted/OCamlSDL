@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.10 2002/09/26 15:59:58 oliv__a Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.11 2002/10/04 21:26:27 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -325,13 +325,13 @@ value mlsdlevent_peek(value omask, value num)
 #ifdef __GNUC__
   SDL_Event evt[n];
 #else
-  SDL_Event *evt = calloc(sizeof(SDL_Event), n);
+  SDL_Event *evt = stat_alloc(n * sizeof SDL_Event);
 #endif
   Uint32 mask = Opt_arg(omask, Int_val, SDL_ALLEVENTS);
   m = SDL_PeepEvents(evt, n, SDL_PEEKEVENT, mask);
   if(m < 0) {
 #ifndef __GNUC__
-    free(evt);
+    stat_free(evt);
 #endif
     raise_event_exn(SDL_GetError());
   }
@@ -345,7 +345,7 @@ value mlsdlevent_peek(value omask, value num)
       v = cons(e, v);
     }
 #ifndef __GNUC__
-    free(evt);
+    stat_free(evt);
 #endif
     CAMLreturn(v);
   }
@@ -358,16 +358,16 @@ value mlsdlevent_get(value omask, value num)
 #ifdef __GNUC__
   SDL_Event evt[n];
 #else
-  SDL_Event *evt = calloc(sizeof(SDL_Event), n);
+  SDL_Event *evt = stat_alloc(n * sizeof SDL_Event);
 #endif
   Uint32 mask = Opt_arg(omask, Int_val, SDL_ALLEVENTS);
   m = SDL_PeepEvents(evt, n, SDL_GETEVENT, mask);
-  if(m < 0)
-     {
+  if(m < 0) {
 #ifndef __GNUC__
-    free(evt);
+    stat_free(evt);
 #endif
-    raise_event_exn(SDL_GetError()); }
+    raise_event_exn(SDL_GetError()); 
+  }
   {
     int i;
     CAMLparam0();
@@ -378,7 +378,7 @@ value mlsdlevent_get(value omask, value num)
       v = cons(e, v);
     }
 #ifndef __GNUC__
-    free(evt);
+    stat_free(evt);
 #endif
     CAMLreturn(v);
   }
@@ -390,7 +390,7 @@ value mlsdlevent_add(value elist)
 #ifdef __GNUC__
   SDL_Event evt[len];
 #else
-  SDL_Event *evt = calloc(sizeof(SDL_Event), len);
+  SDL_Event *evt = stat_alloc(len * sizeof SDL_Event);
 #endif
   value l = elist;
   int i=0;
@@ -399,15 +399,14 @@ value mlsdlevent_add(value elist)
     l = tl(l);
     i++;
   }
-  if(SDL_PeepEvents(evt, len, SDL_ADDEVENT, SDL_ALLEVENTS) < 0)
-     {
+  if(SDL_PeepEvents(evt, len, SDL_ADDEVENT, SDL_ALLEVENTS) < 0) {
 #ifndef __GNUC__
-    free(evt);
+    stat_free(evt);
 #endif
     raise_event_exn(SDL_GetError());
-     }
+  }
 #ifndef __GNUC__
-    free(evt);
+    stat_free(evt);
 #endif
    return Val_unit;
 }

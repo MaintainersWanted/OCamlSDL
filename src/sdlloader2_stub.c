@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader2_stub.c,v 1.3 2002/10/03 23:00:45 oliv__a Exp $ */
+/* $Id: sdlloader2_stub.c,v 1.4 2002/10/04 21:26:27 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -63,14 +63,14 @@ value ml_IMG_ReadXPMFromArray(value string_arr)
 #ifdef __GNUC__
   char *xpm[len+1];
 #else
-  char *xpm = malloc(len+1);
+  char *xpm = stat_alloc(len+1);
 #endif
   SDL_Surface *s;
   memcpy(xpm, Bp_val(string_arr), len);
   xpm[len] = NULL;
   s = IMG_ReadXPMFromArray(xpm);
 #ifndef __GNUC__
-    free(xpm);
+    stat_free(xpm);
 #endif
   if(! s)
     sdlloader_raise_exception(IMG_GetError());
