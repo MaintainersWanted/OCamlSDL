@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.5 2000/05/05 09:45:56 xtrm Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.6 2000/06/09 07:57:04 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -94,7 +94,7 @@ sdlcdrom_drive_name (value num_drive)
     sdlcdrom_raise_exception(SDL_GetError());
   }
   
-  return copy_string(SDL_CDName(Int_val(num_drive)));;
+  return copy_string((char *)SDL_CDName(num)); /* Int_val(num_drive)));; */
 }
 
 value
@@ -238,3 +238,39 @@ sdlcdrom_track_type (value track)
   SDL_CDtrack *tr = (SDL_CDtrack *)track;;
   return (tr->type == 0) ? Val_int(0) : Val_int(1);
 }
+
+value 
+sdlcdrom_cd_current_track (value cdrom)
+{
+    SDL_CD *cd = (SDL_CD *)cdrom;
+
+    return (value) sdlcdrom_track_num(cdrom, Val_int(cd->cur_track));
+} 
+
+
+value 
+sdlcdrom_track_of_int (value track) 
+{
+  SDL_CDtrack *tr = (SDL_CDtrack *)track;
+
+  return Val_int(tr->id) ;
+}
+
+value
+sdlcdrom_cd_track_offset (value cdrom)
+{
+  CAMLparam1(cdrom);
+  CAMLlocal1(result);
+  SDL_CD *cd = (SDL_CD *)cdrom;
+  SDL_CDtrack *tr = (SDL_CDtrack *) sdlcdrom_cd_current_track(cdrom);
+  int min, sec, frame;
+  
+  FRAMES_TO_MSF(cd->cur_frame, &min, &sec, &frame);
+
+  result = alloc_tuple(2);
+  Store_field(result, 0, Val_int(min));
+  Store_field(result, 1, Val_int(sec));
+
+  CAMLreturn (result);
+}
+

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.ml,v 1.1 2000/01/02 01:32:27 fbrunel Exp $ *)
+(* $Id: sdlcdrom.ml,v 1.2 2000/06/09 07:57:04 xtrm Exp $ *)
 
 (* Define a new exception for CD-ROM errors and register 
    it to be callable from C code. *)
@@ -59,6 +59,10 @@ external cd_get_num_tracks : cdrom_drive -> int = "sdlcdrom_get_num_tracks";;
 external cd_track_num : cdrom_drive -> int -> cdrom_track = "sdlcdrom_track_num";;
 external track_length : cdrom_track -> int * int = "sdlcdrom_track_length";;
 external track_type : cdrom_track -> cdrom_track_type = "sdlcdrom_track_type";;
+
+external cd_track_offset : cdrom_drive -> int * int = "sdlcdrom_cd_track_offset" ;;
+external cd_current_track : cdrom_drive -> cdrom_track = "sdlcdrom_cd_current_track" ;;
+external track_of_int : cdrom_track -> int = "sdlcdrom_track_of_int" ;;
 
 (* ML functions *)
 
