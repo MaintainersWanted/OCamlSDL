@@ -138,6 +138,8 @@ type palette_flag =
 external set_palette : surface -> ?flag:palette_flag -> ?firstcolor:int -> color array -> unit
     = "ml_SDL_SetPalette"
 
+external get_video_surface : unit -> surface
+    = "ml_SDL_GetVideoSurface"
 
 external set_video_mode : w:int -> h:int -> bpp:int -> video_flag list -> surface
     = "ml_SDL_SetVideoMode"
