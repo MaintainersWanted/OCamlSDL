@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.2 2002/06/04 23:17:09 oliv__a Exp $
+# $Id: Makefile,v 1.3 2002/06/18 10:15:01 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -52,7 +52,7 @@ $(TOPLEVEL): $(LIBRARY) $(CLIBRARY)
 install:: all
 	$(INSTALL) -d $(INSTALL_DIR)
 	$(INSTALL) $(TOPLEVEL) $(INSTALL_DIR)
-	$(INSTALL_DATA) $(LIBRARY) $(OLIBRARY) $(CLIBRARY) $(CMI) $(INSTALL_DIR)
+	$(INSTALL_DATA) $(LIBRARY) $(OLIBRARY) sdl.a $(CLIBRARY) $(CMI) $(INSTALL_DIR)
 	$(INSTALL_DATA) $(OPT_OBJS) $(INSTALL_DIR)
 	$(INSTALL_DATA) $(MLI) $(INSTALL_DIR)
 
@@ -90,16 +90,22 @@ uninstall:
 	rm -Rf $(INSTALL_DIR)
 
 distclean: clean
-	rm -f .depend *~
+	rm -f .depend .depend.c *~
 
 clean:
 	rm -f *.cm* *.[oa] *.so $(TOPLEVEL)
 
-depend: .depend
+depend: .depend .depend.c
 
 .depend: $(ML_SRCS) $(MLI)
+	@echo "making deps..."
 	@$(CAMLDEP) $^ > $@
+
+.depend.c : $(STUB_SRCS)
+	@echo "making C deps..."
+	@$(CC) $(CFLAGS) -I $(CAMLLIBDIR) -MM $^ > $@
 
 .PHONY: all bin libs clean distclean depend install uninstall
 
 -include .depend
+-include .depend.c

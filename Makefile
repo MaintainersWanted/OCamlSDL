@@ -17,10 +17,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.5 2002/06/14 09:15:44 xtrm Exp $
+# $Id: Makefile,v 1.6 2002/06/18 10:15:00 oliv__a Exp $
 
 all:
-	$(MAKE) -C src depend
 	$(MAKE) -C src
 
 test: all
@@ -44,5 +43,8 @@ install:
 uninstall:
 	$(MAKE) -C src install
 	$(MAKE) -C bin uninstall
+
+makefile.toplevel : ; $(error "please run ./configure")
+include makefile.toplevel
 
 .PHONY: all test clean distclean install uninstall
