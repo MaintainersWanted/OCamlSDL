@@ -13,15 +13,22 @@ let print_mod kmod =
 
 let print_key { Sdlevent2.ke_state = state; 
 		Sdlevent2.keysym = key ;
-		Sdlevent2.keymod = kmod } =
+		Sdlevent2.keymod = kmod ;
+		Sdlevent2.keycode = kcode } =
   let c = 
     try Sdlkey.char_of_key key
     with Invalid_argument _ -> '?' in
-  Printf.printf "Key %s: %c (%03d) - %s"
+  Printf.printf "Key %s: %c [%s] (%03d) - %s -"
     ( match state with
     | Sdlevent2.PRESSED ->  "pressed "
     | Sdlevent2.RELEASED -> "released" )
-    c (Sdlkey.int_of_key key) (Sdlkey.name key) ;
+    c 
+    (if kcode = '\000' 
+    then ""
+    else if Char.code kcode < 32
+    then "^" ^ String.make 1 (Char.chr (Char.code kcode + Char.code '@'))
+    else String.make 1 kcode)
+    (Sdlkey.int_of_key key) (Sdlkey.name key) ;
   print_mod kmod ;
   flush stdout
 
@@ -35,6 +42,7 @@ let main () =
     Sdlevent2.mousebuttonup_mask lor
     Sdlevent2.quit_mask in
   Sdlevent2.enable_events mask ;
+  Sdlkey.enable_unicode true ;
 
   try while true do
     Sdlevent2.pump () ;

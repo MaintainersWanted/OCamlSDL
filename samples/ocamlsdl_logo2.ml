@@ -1,13 +1,11 @@
-(* $Id: ocamlsdl_logo2.ml,v 1.1 2002/08/28 15:17:17 oliv__a Exp $ *)
+(* $Id: ocamlsdl_logo2.ml,v 1.2 2002/09/04 16:34:53 oliv__a Exp $ *)
 
 
 let create_fade_surface w h =
-  let bpp = Sdlvideo2.surface_bpps (Sdlvideo2.get_video_surface ()) in
-  let dest = Sdlvideo2.create_RGB_surface [ `SWSURFACE; `SRCALPHA ] 
-      ~w ~h ~bpp 
-      ~rmask:(Int32.zero) ~bmask:(Int32.zero) 
-      ~gmask:(Int32.zero) ~amask:(Int32.zero)
-  in
+  let screen = Sdlvideo2.get_video_surface () in
+  let dest = Sdlvideo2.create_RGB_surface_format 
+      screen 
+      [ `SWSURFACE; `SRCALPHA ] ~w ~h in
   Sdlvideo2.fill_rect dest 
     (Sdlvideo2.map_RGB dest (0, 0, 0)) ;
   dest
@@ -30,10 +28,7 @@ let main () =
   Sdl.init ~auto_clean:true [ `VIDEO ] ;
   let logo = Sdlloader2.load_image "../images/ocamlsdl.png" in 
   let (w, h, _) = Sdlvideo2.surface_dims logo in
-  let bpp = Sdlvideo2.video_mode_ok ~w ~h ~bpp:16 [] in
-  Printf.printf "using %d bpp surfaces\n" bpp ; flush stdout ;
-  let screen = 
-    Sdlvideo2.set_video_mode ~w ~h ~bpp [] in
+  let screen = Sdlvideo2.set_video_mode ~w ~h [] in
   let logo' = Sdlvideo2.display_format logo in
 
   (* wm_set_caption "OCamlSDL logo" "OCamlSDL icon";*)
