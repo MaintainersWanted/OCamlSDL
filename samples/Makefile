@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.1 2002/06/04 23:10:36 oliv__a Exp $
+# $Id: Makefile,v 1.2 2002/08/13 14:46:45 xtrm Exp $
 
 
 include ../makefile.toplevel
@@ -31,7 +31,7 @@ LIBRARY = 	$(LIB_DIR)/sdl.cma
 OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
 CLIBRARY = 	$(LIB_DIR)/libsdlstub.a
 
-SAMPLES = test_cdrom example ocamlplayer
+SAMPLES = test_cdrom example ocamlplayer event_loop
 
 
 all: $(SAMPLES)
@@ -43,6 +43,9 @@ example: example.cmx $(CLIBRARY) $(OLIBRARY)
 	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
 
 ocamlplayer: ocamlplayer.cmx $(CLIBRARY) $(OLIBRARY)
+	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
+
+event_loop: event_loop.cmx $(CLIBRARY) $(OLIBRARY)
 	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
 
 %.cmo : %.ml
