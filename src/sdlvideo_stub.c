@@ -182,7 +182,7 @@ static value val_video_flag(Uint32 flags)
   lookup_info *table = ml_table_video_flag;
   int i;
   for (i = table[0].data; i > 0; i--)
-    if (flags & table[i].data) 
+    if ((flags & table[i].data) == table[i].data)
       l = cons(table[i].key, l);
   return l;
 }
