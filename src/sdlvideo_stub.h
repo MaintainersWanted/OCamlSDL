@@ -17,15 +17,36 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.h,v 1.1 2000/01/13 00:46:25 fbrunel Exp $ */
+/* $Id: sdlvideo_stub.h,v 1.2 2002/07/13 17:13:07 oliv__a Exp $ */
 
 #ifndef __SDLVIDEO_STUB_H__
 #define __SDLVIDEO_STUB_H__
+
+#include "common.h"
 
 /* Init the stub internal datas */
 extern void sdlvideo_stub_init (void);
 
 /* Clean the stub internal datas */
 extern void sdlvideo_stub_kill (void);
+
+
+/*
+ * Convertion Macros
+ */
+
+/* Simple surfaces (not finalized) */
+#ifdef __GNUC__ /* typechecked macro */
+#define ML_SURFACE(surface)  ( { SDL_Surface *_mlsdl__s=surface; abstract_ptr(_mlsdl__s); } )
+#else
+#define ML_SURFACE(surface)  abstract_ptr(surface);
+#endif
+#define SDL_SURFACE(surface) ((SDL_Surface *)Field((surface), 0))
+
+
+#define SDL_COLOR_FROM_VALUE(ml_color, c_color)\
+(&(c_color))->r = Int_val(Field((ml_color),0));\
+(&(c_color))->g = Int_val(Field((ml_color),1));\
+(&(c_color))->b = Int_val(Field((ml_color),2));
 
 #endif /* __SDLVIDEO_STUB_H__ */

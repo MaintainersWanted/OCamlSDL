@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.30 2002/07/13 15:19:56 oliv__a Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.31 2002/07/13 17:13:07 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -34,9 +34,6 @@
 
 
 #include "common.h"
-
-
-#include "stub_shared.h"
 #include "sdlvideo_stub.h"
 
 /*
@@ -59,14 +56,12 @@ static void
 convert_color (value color, unsigned char *r, unsigned char *g,
 	       unsigned char *b)
 {
-  /* Maybe there is a more general method to identify the right
-     type constructor ? */
-  if (Is_long(Field(color, 0))) {
+  if (Tag_val(color) == 0) { /* 3 ints */
     *r = (unsigned char)Int_val(Field(color, 0));
     *g = (unsigned char)Int_val(Field(color, 1));
     *b = (unsigned char)Int_val(Field(color, 2));
   }
-  else {
+  else { /* 3 floats */
     *r = (unsigned char)(Double_val(Field(color, 0)) * 255);
     *g = (unsigned char)(Double_val(Field(color, 1)) * 255);
     *b = (unsigned char)(Double_val(Field(color, 2)) * 255);
@@ -214,7 +209,7 @@ sdlvideo_set_video_mode(value width, value height, value vbpp, value vf)
   if ((s = SDL_SetVideoMode(w,h,bpp,flags)) == NULL) 
     sdlvideo_raise_exception(SDL_GetError());
 
-  return (value) s;
+  return ML_SURFACE(s);
 }
 
 value 
@@ -230,7 +225,7 @@ sdlvideo_create_rgb_surface(value flags, value width, value height,
   if (s == NULL) 
     sdlvideo_raise_exception(SDL_GetError());
 
-  return (value) s;
+  return ML_SURFACE(s);
 }
 
 value
@@ -273,7 +268,7 @@ sdlvideo_map_rgb(value surface, value color)
   unsigned char r, g, b;
 
   convert_color(color, &r, &g, &b);
-  return SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b);
+  return copy_int32(SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b));
 }
 
 value
@@ -393,23 +388,23 @@ value
 sdlvideo_surface_fill_rect (value surface, value rect, value color)
 {
   SDL_Rect sdl_rect;
+  SDL_Rect *rectp;
   int res;
   
-  if (MLRECT_IS_MAX(rect)) {
-    res = SDL_FillRect(SDL_SURFACE(surface), NULL,
-		       (int)sdlvideo_map_rgb(surface, color));
-  }
+  if(MLRECT_IS_MAX(rect))
+    rectp = NULL;
   else {
+    rectp = &sdl_rect;
     MLRECT_TO_SDLRECT(rect, sdl_rect);
-    res = SDL_FillRect(SDL_SURFACE(surface), &sdl_rect,
-		       (int)sdlvideo_map_rgb(surface, color));
-  }
+  } ;
+  res = SDL_FillRect(SDL_SURFACE(surface), rectp,
+		     Int32_val(sdlvideo_map_rgb(surface, color)));
     
   if (res < 0) {
     sdlvideo_raise_exception(SDL_GetError());
   }
-
-  return ML_SURFACE(surface);
+  /* GNI? : why return the surface ? */
+  return surface;
 }
 
 value
@@ -498,13 +493,13 @@ sdlvideo_surface_set_colorkey (value surface, value key)
 {
    int res;
    
-   if (key == Val_unit) {
+   if (Is_long(key)) {
      res = SDL_SetColorKey(SDL_SURFACE(surface), 0, 0);
    }
    else {
      res = SDL_SetColorKey(SDL_SURFACE(surface),
 			   SDL_SRCCOLORKEY | SDL_RLEACCEL,
-			   (int)sdlvideo_map_rgb(surface, Field(key, 0)));
+			   Int32_val(sdlvideo_map_rgb(surface, Field(key, 0))));
    }
    
    if (res < 0) {

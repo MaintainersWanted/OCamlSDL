@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.13 2002/07/13 15:19:56 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.14 2002/07/13 17:13:07 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -28,9 +28,8 @@
 
 #include <SDL_ttf.h>
 
-
-#include "stub_shared.h"
-
+#include "sdlvideo_stub.h"
+#include "sdlttf_stub.h"
 
 /*
  * Raise an OCaml exception with a message
@@ -80,31 +79,31 @@ sdlttf_open_font(value file, value ptsize)
    if (font == NULL) {
       sdlttf_raise_exception(SDL_GetError());
    }
-   return (value)font;
+   return ML_FONT(font);
 }
 
 value
 sdlttf_font_height(value font)
 {
-   return Val_int(TTF_FontHeight((TTF_Font *)font));
+   return Val_int(TTF_FontHeight(SDL_FONT(font)));
 }
 
 value
 sdlttf_font_ascent(value font)
 {
-   return Val_int(TTF_FontAscent((TTF_Font *)font));
+   return Val_int(TTF_FontAscent(SDL_FONT(font)));
 }
 
 value
 sdlttf_font_descent(value font)
 {
-   return Val_int(TTF_FontDescent((TTF_Font *)font));
+   return Val_int(TTF_FontDescent(SDL_FONT(font)));
 }
 
 value
 sdlttf_close_font(value font)
 {
-   TTF_CloseFont((TTF_Font *)font);
+   TTF_CloseFont(SDL_FONT(font));
    return Val_unit;
 }
 
@@ -116,12 +115,12 @@ sdlttf_render_text_solid(value font, value text, value fg)
 
    SDL_COLOR_FROM_VALUE(fg,sfg)
 
-   surf = TTF_RenderText_Solid((TTF_Font *)font,String_val(text), sfg);
+   surf = TTF_RenderText_Solid(SDL_FONT(font),String_val(text), sfg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
    }
-   return (value)surf;
+   return ML_SURFACE(surf);
 
 }
 value
@@ -134,12 +133,12 @@ sdlttf_render_text_shaded(value font, value text, value fg, value bg)
    SDL_COLOR_FROM_VALUE(fg,sfg)
    SDL_COLOR_FROM_VALUE(bg,sbg)
 
-   surf = TTF_RenderText_Shaded((TTF_Font *)font,String_val(text), sfg, sbg);
+   surf = TTF_RenderText_Shaded(SDL_FONT(font),String_val(text), sfg, sbg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
    }
-   return (value)surf;
+   return ML_SURFACE(surf);
 
 }
 value
@@ -150,12 +149,12 @@ sdlttf_render_text_blended(value font, value text, value fg)
 
    SDL_COLOR_FROM_VALUE(fg,sfg)
 
-   surf = TTF_RenderText_Blended((TTF_Font *)font,String_val(text), sfg);
+   surf = TTF_RenderText_Blended(SDL_FONT(font),String_val(text), sfg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
    }
-   return (value)surf;
+   return ML_SURFACE(surf);
 }
 
 
@@ -169,12 +168,12 @@ sdlttf_render_text(value font, value text, value fg, value bg)
    SDL_COLOR_FROM_VALUE(fg,sfg)
    SDL_COLOR_FROM_VALUE(bg,sbg)
 
-   surf = TTF_RenderText_Shaded((TTF_Font *)font,String_val(text), sfg, sbg);
+   surf = TTF_RenderText_Shaded(SDL_FONT(font),String_val(text), sfg, sbg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
    }
-   return (value)surf;
+   return ML_SURFACE(surf);
 }
 
 value
@@ -187,7 +186,7 @@ sdlttf_font_metrics(value fnt, value chr)
    int advance;
    int c = Int_val(chr);
    value result;
-   TTF_Font *font = (TTF_Font *)fnt;
+   TTF_Font *font = SDL_FONT(fnt);
    TTF_GlyphMetrics(font, c, &minx, &maxx, &miny, &maxy, &advance);
    result = alloc(4, 0);
    Store_field(result, 0, Val_int(minx));

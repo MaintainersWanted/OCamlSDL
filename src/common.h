@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.4 2002/06/26 11:05:58 oliv__a Exp $ */
+/* $Id: common.h,v 1.5 2002/07/13 17:13:07 oliv__a Exp $ */
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
@@ -32,17 +32,12 @@
   made by Jean-Christophe FILLIATRE 
 */
 
-extern value nil(void);
-
+#define nil()      Val_emptylist
 extern value cons(value x,value l);
-
-extern int is_nil(value l);
-
-extern int is_not_nil(value l);
-
-extern value hd(value l); 
-
-extern value tl(value l);
+#define is_nil     Is_long
+#define is_not_nil Is_block
+#define hd(v)      Field((v), 0)
+#define tl(v)      Field((v) ,1)
 
 
 /* 
@@ -54,6 +49,11 @@ typedef struct { value key; int data; } lookup_info;
 value ml_lookup_from_c (lookup_info *table, int data);
 int ml_lookup_to_c (lookup_info *table, value key);
 
+
+/*
+  Wrapping of malloc'ed C pointers in Abstract blocks.
+*/
+extern value abstract_ptr(void *);
 
 /*
    Optional arguments

@@ -17,16 +17,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.h,v 1.1 2000/02/08 01:03:40 smkl Exp $ */
+/* $Id: sdlttf_stub.h,v 1.2 2002/07/13 17:13:07 oliv__a Exp $ */
 
 #ifndef __SDLTTF_STUB_H__
 #define __SDLTTF_STUB_H__
+
+#include "common.h"
 
 /* Init the stub internal datas */
 extern void sdlttf_stub_init (void);
 
 /* Clean the stub internal datas */
 extern void sdlttf_stub_kill (void);
+
+/*
+ * Convertion Macros
+ */
+#ifdef __GNUC__ /* typechecked macro */
+#define ML_FONT(f)  ( { TTF_Font *_mlsdl__f=f; abstract_ptr(_mlsdl__f); } )
+#else
+#define ML_FONT(f)  abstract_ptr(f);
+#endif
+#define SDL_FONT(f) ((TTF_Font *)Field((f), 0))
 
 #endif /* __SDLTTF_STUB_H__ */
 

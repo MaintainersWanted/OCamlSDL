@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.6 2002/07/13 15:19:56 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.7 2002/07/13 17:13:07 oliv__a Exp $ */
 
 #include <png.h>
 #include <caml/alloc.h>
@@ -28,6 +28,8 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_image.h>
+
+#include "sdlvideo_stub.h"
 
 static void
 sdlloader_raise_exception (char *msg)
@@ -57,7 +59,7 @@ sdlloader_load_image(value file)
       sdlloader_raise_exception(SDL_GetError());
    }
    SDL_FreeSurface(surf);
-   return (value)converted;
+   return ML_SURFACE(converted);
 }
 
 value
@@ -142,7 +144,7 @@ sdlloader_load_png(value file_name)
      free(row_pointers[row]);
    free(row_pointers);
    
-   return (value)surf;
+   return ML_SURFACE(surf);
 }
 
 value
@@ -229,6 +231,6 @@ sdlloader_load_png_with_alpha(value file_name)
      free(row_pointers[row]);
    free(row_pointers);
    
-   return (value)surf;
+   return ML_SURFACE(surf);
 }
 
