@@ -6,7 +6,9 @@
 #include <ctype.h>
 #include <stdlib.h>
 
+#ifdef WIN32
 #include <windows.h>
+#endif
 #include <malloc.h>		/* For _alloca() */
 
 #include <SDL.h>
