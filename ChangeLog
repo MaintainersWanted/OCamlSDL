@@ -1,3 +1,9 @@
+2000-05-05  Luc Mazardo  <l.mazardo@free.fr>
+
+	* FIX (sdl*_stub.c) : include directories in all stubs 
+
+	* FIX : Makefile.in and configure.in uses the new directories
+
 2000-03-06  Sami Mäkelä  <sajuma@utu.fi>
 
 	* sdlmixer*: Made the interface nicer.
