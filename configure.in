@@ -87,11 +87,11 @@ if test "$image_ok" = no; then
 fi
 LIBS="$LIBS -lSDL_image"
 
-AC_CHECK_LIB(SDLttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
+AC_CHECK_LIB(SDL_ttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
 if test "$ttf_ok" = no; then
         AC_MSG_ERROR(Cannot find SDL TTF library.)
 fi
-LIBS="$LIBS -lSDLttf"
+LIBS="$LIBS -lSDL_ttf"
 
 AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, mixer_ok=yes, mixer_ok=no)
 if test "$mixer_ok" = no; then
