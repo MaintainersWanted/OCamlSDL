@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.2 2000/01/12 00:51:52 fbrunel Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.3 2000/01/13 17:45:10 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -99,7 +99,7 @@ sdlvideo_get_video_info (void)
   Store_field(result, 8, Val_bool(info->blit_fill));
   Store_field(result, 9, Val_int(info->video_mem));
 
-  CAMLreturn result;
+  CAMLreturn(result);
 }
 
 value
@@ -269,3 +269,73 @@ sdlvideo_wm_available (void)
 {
   return Val_bool(SDL_GetVideoInfo()->wm_available);
 }
+
+value
+sdlvideo_surface_set_colorkey(value surface, value key)
+{
+   int res;
+   if (Int_val(key) == 0) {
+	res = SDL_SetColorKey(SDL_SURFACE(surface), 0, 0);
+     }
+   else {
+	res = SDL_SetColorKey(SDL_SURFACE(surface),
+   			      SDL_SRCCOLORKEY|SDL_RLEACCEL,
+			      Int_val(Field(key,0)));
+     }
+   if (res < 0) sdlvideo_raise_exception(SDL_GetError());
+   return Val_unit;
+}
+
+value
+sdlvideo_surface_display_format(value surface)
+{
+   SDL_Surface *res = SDL_DisplayFormat(SDL_SURFACE(surface));
+   if (res == NULL) sdlvideo_raise_exception(SDL_GetError());
+   return ML_SURFACE(res);
+}
+
+value
+sdlvideo_surface_from_rawrgb(value raw, value width, value height)
+{
+   SDL_Surface *surf;
+   void *dest, *src;
+   int w, h, i;
+   w = Int_val(width);
+   h = Int_val(height);
+   surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 24,
+			       0x00ff0000, 0x0000ff00, 0x000000ff, 0);
+   if (surf == NULL) sdlvideo_raise_exception(SDL_GetError());
+   dest = surf->pixels;
+   src = &Byte(raw, 0);
+   for (i = 0; i < h; i++)
+     {
+	memcpy(dest,src, w*3);
+	src += w*3;
+	dest += surf->pitch;
+     }
+   return ML_SURFACE(surf);
+}
+
+value
+sdlvideo_surface_from_rawrgba(value raw, value width, value height)
+{
+   SDL_Surface *surf;
+   void *dest, *src;
+   int w, h, i;
+   w = Int_val(width);
+   h = Int_val(height);
+   surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32,
+			       0xff000000, 0x00ff0000, 0x0000ff00,
+			       0x000000ff);
+   if (surf == NULL) sdlvideo_raise_exception(SDL_GetError());
+   dest = surf->pixels;
+   src = &Byte(raw, 0);
+   for (i = 0; i < h; i++)
+     {
+	memcpy(dest,src, w*4);
+	src += w*4;
+	dest += surf->pitch;
+     }
+   return ML_SURFACE(surf);
+}
+

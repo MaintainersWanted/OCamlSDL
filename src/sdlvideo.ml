@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.2 2000/01/12 00:52:52 fbrunel Exp $ *)
+(* $Id: sdlvideo.ml,v 1.3 2000/01/13 17:45:10 smkl Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -28,6 +28,11 @@ let _ = Callback.register_exception "SDLvideo_exception" (SDLvideo_exception "An
 (* Types *)
 
 type rect = Rect of int * int * int * int
+
+type pixels =
+   Pixels of string * int * int
+ | APixels of string * int * int
+
 type surface
 type pixel_format
 type color = int
@@ -64,12 +69,21 @@ external surface_blit : surface -> rect -> surface -> rect -> unit = "sdlvideo_s
 external surface_set_alpha : surface -> float -> surface = "sdlvideo_surface_set_alpha";;
 
 external make_rgb_color : pixel_format -> float -> float -> float -> color = "sdlvideo_make_rgb_color";;
-  
+
 external wm_available : unit -> bool = "sdlvideo_wm_available";;
+
+external surface_set_colorkey : surface -> color option -> unit = "sdlvideo_surface_set_colorkey";;
+external surface_display_format : surface -> surface = "sdlvideo_surface_display_format";;
+external surface_from_rawrgb : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgb";;
+external surface_from_rawrgba : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgba";;
 
 (* ML functions *)
 
 let surface_rect surf =
   Rect(0, 0, surface_width surf, surface_height surf);;
+
+let surface_from_pixels = function
+ | Pixels (str, w, h) -> surface_from_rawrgb str w h
+ | APixels (str, w, h) -> surface_from_rawrgba str w h
 
 

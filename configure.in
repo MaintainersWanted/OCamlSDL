@@ -50,8 +50,8 @@ else
         SDL_LIBS=`$SDL_CONFIG --libs`
 fi
 
-CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
+CFLAGS="$CFLAGS $SDL_CFLAGS"
 
 dnl Check for libraries
 
@@ -74,7 +74,21 @@ dnl Check for typedefs
 dnl Check for structures
 dnl Check for compiler characteristics
 dnl Check for library functions
+
+AC_CHECK_LIB(png, png_read_image, png_ok=yes, png_ok=no, -lz -lm)
+
+if test "$png_ok" = yes; then
+  PNGSTUB=sdlpng_stub.o
+  PNGOBJ=sdlpng.cmo
+  LIBS="$LIBS -lpng -lz"
+fi
+
+AC_SUBST(PNGSTUB)
+AC_SUBST(PNGOBJ)
+
 dnl Check for system services
 
 # Finally create all the generated files
 AC_OUTPUT(Makefile)
+
+

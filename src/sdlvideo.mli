@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.2 2000/01/12 00:53:10 fbrunel Exp $ *)
+(* $Id: sdlvideo.mli,v 1.3 2000/01/13 17:45:10 smkl Exp $ *)
 
 (* Exception *)
 
@@ -26,6 +26,11 @@ exception SDLvideo_exception of string
 (* Types *)
 
 type rect = Rect of int * int * int * int
+
+type pixels =
+   Pixels of string * int * int
+ | APixels of string * int * int
+
 type surface
 type pixel_format
 type color
@@ -64,6 +69,10 @@ val surface_pixel_format : surface -> pixel_format;;
 val surface_fill_rect : surface -> rect -> color -> surface;;
 val surface_blit : surface -> rect -> surface -> rect -> unit;;
 val surface_set_alpha : surface -> float -> surface;;
+val surface_set_colorkey : surface -> color option -> unit;;
+val surface_display_format : surface -> surface;;
+
+val surface_from_pixels : pixels -> surface;;
 
 (* Operations on colors *)
 

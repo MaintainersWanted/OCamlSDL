@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.2 2000/01/12 00:50:30 fbrunel Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.3 2000/01/13 17:45:10 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -26,6 +26,7 @@
 #include <caml/mlvalues.h>
 #include <stdio.h>
 #include <SDL.h>
+#include "sdlcdrom_stub.h"
 
 /*
  * Define some error messages (not from SDL)
@@ -228,7 +229,7 @@ sdlcdrom_track_length (value track)
   Store_field(result, 0, Val_int(min));
   Store_field(result, 1, Val_int(sec));
 
-  CAMLreturn result;
+  CAMLreturn (result);
 }
 
 value

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.1 2000/01/12 00:56:34 fbrunel Exp $ *)
+(* $Id: sdlevent.mli,v 1.2 2000/01/13 17:45:10 smkl Exp $ *)
 
 (* Exception *)
 
@@ -28,7 +28,7 @@ exception SDLevent_exception of string
 type key = int
 
 type key_state = 
-    KEY_PRESSED 
+    KEY_PRESSED
   | KEY_RELEASED
 
 type button =
@@ -36,7 +36,7 @@ type button =
   | BUTTON_MIDDLE
   | BUTTON_RIGHT
 
-type button_state = 
+type button_state =
     BUTTON_PRESSED 
   | BUTTON_RELEASED
 

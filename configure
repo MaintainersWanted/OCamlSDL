@@ -1053,8 +1053,8 @@ else
         SDL_LIBS=`$SDL_CONFIG --libs`
 fi
 
-CFLAGS="$CFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
+CFLAGS="$CFLAGS $SDL_CFLAGS"
 
 
 case "$target" in
@@ -1068,6 +1068,58 @@ case "$target" in
         MATHLIB="-lm"
         ;;
 esac
+
+
+
+echo $ac_n "checking for png_read_image in -lpng""... $ac_c" 1>&6
+echo "configure:1076: checking for png_read_image in -lpng" >&5
+ac_lib_var=`echo png'_'png_read_image | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lpng -lz -lm $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 1084 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char png_read_image();
+
+int main() {
+png_read_image()
+; return 0; }
+EOF
+if { (eval echo configure:1095: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  png_ok=yes
+else
+  echo "$ac_t""no" 1>&6
+png_ok=no
+fi
+
+
+if test "$png_ok" = yes; then
+  PNGSTUB=sdlpng_stub.o
+  PNGOBJ=sdlpng.cmo
+  LIBS="$LIBS -lpng -lz"
+fi
+
+
 
 
 
@@ -1223,6 +1275,8 @@ s%@OCAMLMKTOP@%$OCAMLMKTOP%g
 s%@OCAMLDEP@%$OCAMLDEP%g
 s%@SDL_CONFIG@%$SDL_CONFIG%g
 s%@MATHLIB@%$MATHLIB%g
+s%@PNGSTUB@%$PNGSTUB%g
+s%@PNGOBJ@%$PNGOBJ%g
 
 CEOF
 EOF
@@ -1329,4 +1383,6 @@ EOF
 chmod +x $CONFIG_STATUS
 rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
+
+
 
