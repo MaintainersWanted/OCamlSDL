@@ -1,4 +1,4 @@
-(* $Id: example.ml,v 1.14 2002/09/30 21:19:53 oliv__a Exp $ *)
+(* $Id: example.ml,v 1.15 2003/02/13 21:21:57 oliv__a Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
@@ -6,9 +6,9 @@ open Sdlvideo;;
 init [`EVERYTHING];; (* init_with_auto_clean();; *)
 Sdlttf.init ();;
 
-let screen = set_video_mode 640 480 16 [`HWSURFACE];;
+let screen = set_video_mode 640 480 [`HWSURFACE];;
 let s = "OCamlSDL" ;;
-wm_set_caption s s;;
+Sdlwm.set_caption s s;;
 
 let clouds = surface_loadBMP "../images/clouds.bmp";;
 let icon = surface_loadBMP "../images/icon.bmp";;
