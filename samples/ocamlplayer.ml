@@ -14,7 +14,7 @@ then
     exit 0
   end;;
 
-init [EVERYTHING];;
+init [`EVERYTHING];;
 
 try 
   open_audio 44100 AUDIO_FORMAT_S16 STEREO;

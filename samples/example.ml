@@ -1,11 +1,11 @@
-(* $Id: example.ml,v 1.10 2002/05/27 22:21:32 xtrm Exp $ *)
+(* $Id: example.ml,v 1.11 2002/05/30 16:38:36 xtrm Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
 
-init [EVERYTHING];; (* init_with_auto_clean();; *)
+init [`EVERYTHING];; (* init_with_auto_clean();; *)
 
-let screen = set_video_mode 640 480 16 [HWSURFACE;FULLSCREEN];;
+let screen = set_video_mode 640 480 16 [`HWSURFACE];;
 let s = "OCamlSDL" ;;
 wm_set_caption s s;;
 
@@ -69,7 +69,7 @@ let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
  
  screen_fill clouds;;
  flip screen ;;
- (*  display_text f "Let's the pacmen !!" white black;; *)
+ (* display_text f "Let's the pacmen !!" white black;; *)
  place_max_icons 100 1;;
  Sdltimer.delay 2000 ;;
  
