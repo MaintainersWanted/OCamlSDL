@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.h,v 1.3 2002/08/09 15:39:22 oliv__a Exp $ */
+/* $Id: sdlvideo_stub.h,v 1.4 2002/08/30 22:20:28 oliv__a Exp $ */
 
 #ifndef __SDLVIDEO_STUB_H__
 #define __SDLVIDEO_STUB_H__
@@ -44,18 +44,18 @@ extern void sdlvideo_stub_kill (void);
 #endif
 #define SDL_SURFACE(surface) ((SDL_Surface *)Field((surface), 0))
 
-#ifdef __GNUC__
-#define SDL_COLOR_FROM_VALUE(ml_color, c_color) ( {\
-value _mlsdl__val = ml_color; \
-SDL_Color _mlsdl__color = c_color; \
-_mlsdl__color.r = Int_val(Field(_mlsdl__val,0));\
-_mlsdl__color.g = Int_val(Field(_mlsdl__val,1));\
-_mlsdl__color.b = Int_val(Field(_mlsdl__val,2)); } )
-#else
-#define SDL_COLOR_FROM_VALUE(ml_color, c_color)\
-(&(c_color))->r = Int_val(Field((ml_color),0));\
-(&(c_color))->g = Int_val(Field((ml_color),1));\
-(&(c_color))->b = Int_val(Field((ml_color),2));
-#endif
+static __inline__ 
+void SDL_COLOR_FROM_VALUE(value ml_color, SDL_Color *c)
+{
+  if(Tag_val(ml_color) == 0) { /* IntColor */
+    c->r = Int_val(Field(ml_color, 0));
+    c->g = Int_val(Field(ml_color, 1));
+    c->b = Int_val(Field(ml_color, 2));
+  } else { /* FloatColor */
+    c->r = 255 * Double_val(Field(ml_color, 0));
+    c->g = 255 * Double_val(Field(ml_color, 1));
+    c->b = 255 * Double_val(Field(ml_color, 2));
+  }
+}
 
 #endif /* __SDLVIDEO_STUB_H__ */
