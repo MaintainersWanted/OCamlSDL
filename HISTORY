@@ -1,3 +1,9 @@
+Release 0.5:
+	* Ocamlplayer has been added, it provides to play audio file (ogg,xm, s3m, wav) 
+	  on the commande line.
+
+	* Applying many patches.
+
 Release 0.5-pre3:
 
 	* Adding documentation directory
