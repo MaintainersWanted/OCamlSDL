@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.ml,v 1.6 2002/04/04 16:48:14 xtrm Exp $ *)
+(* $Id: sdlevent.ml,v 1.7 2002/05/27 11:47:26 xtrm Exp $ *)
 
 (* Define a new exception for event errors and register 
    it to be callable from C code. *)
@@ -394,3 +394,37 @@ let char_of_key = function
   | KEY_KP_PLUS -> '+'
   | KEY_KP_EQUALS -> '='
   | _ -> raise (Invalid_argument "char_of_key")
+
+
+type event_type = 
+  | EVENT_NOEVENT
+  | EVENT_ACTIVEEVENT
+  | EVENT_KEYDOWN
+  | EVENT_KEYUP
+  | EVENT_MOUSEMOTION
+  | EVENT_MOUSEBUTTONDOWN
+  | EVENT_MOUSEBUTTONUP
+  | EVENT_JOYAXISMOTION
+  | EVENT_JOYBALLMOTION
+  | EVENT_JOYHATMOTION
+  | EVENT_JOYBUTTONDOWN
+  | EVENT_JOYBUTTONUP
+  | EVENT_QUIT
+  | EVENT_SYSWMEVENT
+  | EVENT_EVENT_RESERVEDA
+  | EVENT_EVENT_RESERVEDB
+  | EVENT_VIDEORESIZE
+  | EVENT_VIDEOEXPOSE
+  | EVENT_EVENT_RESERVED2
+  | EVENT_EVENT_RESERVED3
+  | EVENT_EVENT_RESERVED4
+  | EVENT_EVENT_RESERVED5
+  | EVENT_EVENT_RESERVED6
+  | EVENT_EVENT_RESERVED7
+  | EVENT_USEREVENT
+
+external wait : unit -> unit = "sdlevent_wait"
+external poll : unit -> int = "sdlevent_poll"
+external pump : unit -> unit = "sdlevent_pump"
+external evt_type : unit -> event_type = "sdlevent_evt_type"
+external key_sym : unit -> key = "sdlevent_key_sym"

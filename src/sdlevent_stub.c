@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.11 2002/04/04 16:48:14 xtrm Exp $ */
+/* $Id: sdlevent_stub.c,v 1.12 2002/05/27 11:47:26 xtrm Exp $ */
 
 #include <assert.h>
 #include <caml/alloc.h>
@@ -590,4 +590,76 @@ sdlevent_exit_event_loop (void)
   /* Set the exit flag */
   must_exit_loop = 1;
   return Val_unit;
+}
+
+
+
+static SDL_Event evt;
+
+static Uint8 sdl_events[SDL_NUMEVENTS] = {
+       SDL_NOEVENT,                    /* Unused (do not remove) */
+       SDL_ACTIVEEVENT,                        /* Application loses/gains visibility */
+       SDL_KEYDOWN,                    /* Keys pressed */
+       SDL_KEYUP,                      /* Keys released */
+       SDL_MOUSEMOTION,                        /* Mouse moved */
+       SDL_MOUSEBUTTONDOWN,            /* Mouse button pressed */
+       SDL_MOUSEBUTTONUP,              /* Mouse button released */
+       SDL_JOYAXISMOTION,              /* Joystick axis motion */
+       SDL_JOYBALLMOTION,              /* Joystick trackball motion */
+       SDL_JOYHATMOTION,               /* Joystick hat position change */
+       SDL_JOYBUTTONDOWN,              /* Joystick button pressed */
+       SDL_JOYBUTTONUP,                        /* Joystick button released */
+       SDL_QUIT,                       /* User-requested quit */
+       SDL_SYSWMEVENT,                 /* System specific event */
+       SDL_EVENT_RESERVEDA,            /* Reserved for future use.. */
+       SDL_EVENT_RESERVEDB,            /* Reserved for future use.. */
+       SDL_VIDEORESIZE,                        /* User resized video mode */
+       SDL_VIDEOEXPOSE,                        /* Screen needs to be redrawn */
+       SDL_EVENT_RESERVED2,            /* Reserved for future use.. */
+       SDL_EVENT_RESERVED3,            /* Reserved for future use.. */
+       SDL_EVENT_RESERVED4,            /* Reserved for future use.. */
+       SDL_EVENT_RESERVED5,            /* Reserved for future use.. */
+       SDL_EVENT_RESERVED6,            /* Reserved for future use.. */
+       SDL_EVENT_RESERVED7,            /* Reserved for future use.. */
+       /* Events SDL_USEREVENT through SDL_MAXEVENTS-1 are for your use */
+       SDL_USEREVENT
+};
+
+value
+sdlevent_pump (void)
+{
+       SDL_PumpEvents();
+       return Val_unit;
+}
+
+value
+sdlevent_wait (void)
+{
+       SDL_WaitEvent(&evt);
+       return Val_unit;
+}
+
+value
+sdlevent_poll (void)
+{
+       return Val_int(SDL_PollEvent(&evt));
+}
+
+value
+sdlevent_evt_type (void)
+{
+       int i;
+       for (i=0; i<SDL_NUMEVENTS; i++)
+               if (evt.type == sdl_events[i])
+                       return Val_int(i);
+       return Val_int(-1);
+}
+
+value
+sdlevent_key_sym (void)
+{
+       if (evt.type == SDL_KEYDOWN || evt.type == SDL_KEYUP)
+               return Val_int(find_key_index(evt.key.keysym.sym));
+       else
+               return Val_int(-1);
 }

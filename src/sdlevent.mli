@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.8 2002/04/04 16:48:14 xtrm Exp $ *)
+(* $Id: sdlevent.mli,v 1.9 2002/05/27 11:47:26 xtrm Exp $ *)
 
 (*d Exception *)
 
@@ -327,3 +327,37 @@ val start_event_loop : unit -> unit
 val exit_event_loop : unit -> unit
 
 val char_of_key : key -> char
+
+
+type event_type = 
+  | EVENT_NOEVENT
+  | EVENT_ACTIVEEVENT
+  | EVENT_KEYDOWN
+  | EVENT_KEYUP
+  | EVENT_MOUSEMOTION
+  | EVENT_MOUSEBUTTONDOWN
+  | EVENT_MOUSEBUTTONUP
+  | EVENT_JOYAXISMOTION
+  | EVENT_JOYBALLMOTION
+  | EVENT_JOYHATMOTION
+  | EVENT_JOYBUTTONDOWN
+  | EVENT_JOYBUTTONUP
+  | EVENT_QUIT
+  | EVENT_SYSWMEVENT
+  | EVENT_EVENT_RESERVEDA
+  | EVENT_EVENT_RESERVEDB
+  | EVENT_VIDEORESIZE
+  | EVENT_VIDEOEXPOSE
+  | EVENT_EVENT_RESERVED2
+  | EVENT_EVENT_RESERVED3
+  | EVENT_EVENT_RESERVED4
+  | EVENT_EVENT_RESERVED5
+  | EVENT_EVENT_RESERVED6
+  | EVENT_EVENT_RESERVED7
+  | EVENT_USEREVENT
+
+val wait : unit -> unit
+val pump : unit -> unit
+val poll : unit -> int
+val evt_type : unit -> event_type
+val key_sym : unit -> key

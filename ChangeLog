@@ -1,3 +1,8 @@
+2002-05-27  Luc Mazardo <luc@mazardo.com>
+
+	* CHANGE: (src/sdlevent*) applying gc patch about event module:
+	adding wait/pull/pump
+
 2002-05-22  Luc Mazardo <luc@mazardo.com>
 
 	* CHANGE: (README.cvs) add cvs instructions for getting fixed and
