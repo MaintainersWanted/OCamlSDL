@@ -2,7 +2,7 @@ dnl ******
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.21 2002/08/10 13:53:58 oliv__a Exp $
+dnl $Id: configure.in,v 1.22 2002/08/26 15:11:51 xtrm Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -105,18 +105,28 @@ then
   AC_CHECK_HEADERS(SDL_ttf.h, have_sdl_ttf="true", have_sdl_ttf="false")
   if test "$have_sdl_ttf" = true;
   then
-    AC_CHECK_LIB(SDL_ttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
-    if test "$ttf_ok" = no;
+    AC_CHECK_LIB(SDL_ttf, TTF_OpenFontIndex, ttf2_ok=yes, ttf2_ok=no)
+    if test "$ttf2_ok" = no;
     then
-      AC_MSG_ERROR(Cannot find SDL_tff library.)
+      AC_CHECK_LIB(SDL_ttf, TTF_OpenFont, ttf_ok=yes, ttf_ok=no)
+      if test "$ttf_ok" = no;
+      then
+        AC_MSG_ERROR(Cannot find SDL_tff library.)
+      else
+        LIBS="$LIBS -lSDL_ttf"
+        PARTS="ttf"
+        TTF_FLAGS="-DTTF_RELEASE=1"
+      fi
     else
       LIBS="$LIBS -lSDL_ttf"
       PARTS="ttf"
+      TTF_FLAGS="-DTTF_RELEASE=2"
     fi
   else
     sdl_ttf=no
   fi
 fi
+AC_SUBST(TTF_FLAGS)
 
 dnl -*- Checking for lib SDL_image -*-
 if test x"$sdl_image" = x"yes"
@@ -163,8 +173,8 @@ if test x"$sdl_image" = x"yes"
 then 
   AC_CHECK_HEADER(png.h,,AC_MSG_ERROR(Cannot find png.h.))
   AC_CHECK_LIB(png, png_read_image,
-	       png_ok=yes,
-               AC_MSG_ERROR(Cannot find libpng.),
+	       png_ok=yes, 
+              AC_MSG_ERROR(Cannot find libpng.),
 	       -lz -lm)
   LIBS="$LIBS -lpng -lz"
 fi
