@@ -28,17 +28,17 @@ with _ ->
 (* exceptions must be caught *)
 let check_file_and_play_it f =
   if (Sys.file_exists f) 
-  then
-    begin  
-      Printf.printf "Loading music: %s\n" f;
-      flush stdout;
-      let m = load_music f in
-	play_music m ;
-	while playing_music()
-	do
-	  Sdltimer.delay 10;
-	done
-    end;;
+  then begin  
+    Printf.printf "Loading music: %s\n" f;
+    flush stdout;
+    let m = load_music f in
+    play_music m ;
+    while playing_music() do
+      Sdltimer.delay 10;
+    done ;
+    free_music m
+  end
+;;
 
 List.iter check_file_and_play_it (List.tl (Array.to_list Sys.argv));;
 close_audio ();
