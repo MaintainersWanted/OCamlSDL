@@ -1,3 +1,131 @@
+2002-08-26 15:06  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/Makefile: ADD: Sdlevent2 Sdlvideo2
+
+2002-08-26 15:05  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/sdlvideo2_stub.c: bug fix
+
+2002-08-26 14:31  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* samples/: testjoystick.ml, Makefile, testalpha.ml: ADD: test
+	alpha blitting and joystick
+
+2002-08-26 14:28  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdlevent2.ml, sdlevent2.mli, sdlevent2_stub.c,
+	sdlvideo2.ml, sdlvideo2.mli, sdlvideo2_stub.c, sdlvideo2_stub.h:
+	ADD: new versions of events and video
+
+2002-08-25 14:50  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* samples/: event_loop.ml, example.ml: FIX: sync with Sdlttf
+
+2002-08-25 00:40  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdljoystick.ml, sdljoystick.mli, sdljoystick_stub.c: ADD:
+	querying joystick status
+
+2002-08-24 23:04  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdlvideo_flag.c, sdlvideo_flag.h: ADD: some flags
+	(RLEACCEL, PREALLOC, HWACCEL)
+
+2002-08-24 23:03  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdlkey.ml, sdlkey.mli, sdlkey_stub.c: ADD: is_key_pressed
+
+2002-08-24 23:01  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: common.c, sdlmixer_stub.c, sdlmouse_stub.c: FIX: small
+	bugs, typo, ...
+
+2002-08-23 11:52  Luc Mazardo <luc@mazardo.com>
+
+	* src/sdlkey_stub.c: FIX: works with gcc 2.95
+
+2002-08-23 09:15  Luc Mazardo <luc@mazardo.com>
+
+	* src/sdlcdrom_stub.c: REMOVE: warning
+
+2002-08-21 22:02  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: Makefile, sdlkey.ml, sdlkey.mli, sdlkey_stub.c,
+	sdlmouse.ml, sdlmouse.mli, sdlmouse_stub.c, sdlmouse_stub.h: ADD:
+	Sdlkey and Sdlmouse for key/mouse handling
+
+2002-08-21 20:40  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdltimer.ml, sdltimer.mli, sdltimer_stub.c: CHANGE:
+	ocamldoc comments + add blocking_section stuff for multithreaded
+	programs
+
+2002-08-21 20:26  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/sdl.mli: CHANGE: init is not an external any more (to force
+	module linking)
+
+2002-08-21 20:09  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: common.c, common.h: ADD: list_length, Val_some
+
+2002-08-14 16:32  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdlttf.mli, sdlttf_stub.c: FIX: initialization issues
+
+2002-08-14 16:16  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* doc/: Sdl.html, Sdlcdrom.html, Sdlevent.html, Sdljoystick.html,
+	Sdlloader.html, Sdlmixer.html, Sdltimer.html, Sdlttf.html,
+	Sdlvideo.html, index.html, index_attributes.html,
+	index_class_types.html, index_classes.html, index_exceptions.html,
+	index_methods.html, index_module_types.html, index_modules.html,
+	index_types.html, index_values.html, style.css, type_Sdl.html,
+	type_Sdlcdrom.html, type_Sdlevent.html, type_Sdljoystick.html,
+	type_Sdlloader.html, type_Sdlmixer.html, type_Sdltimer.html,
+	type_Sdlttf.html, type_Sdlvideo.html: remove auto-generated doc
+	files from CVS
+
+2002-08-14 16:07  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdlmixer.ml, sdlmixer.mli, sdlmixer_stub.c: CHANGE: removed
+	callbacks, fixed some initialization issue
+
+2002-08-13 16:48  Luc Mazardo <luc@mazardo.com>
+
+	* samples/test_cdrom.ml: CHANGE: display
+
+2002-08-13 16:46  Luc Mazardo <luc@mazardo.com>
+
+	* samples/Makefile: ADD: new target event_loop
+
+2002-08-13 16:45  Luc Mazardo <luc@mazardo.com>
+
+	* samples/event_loop.ml: NEW: initial revision thanks to jjc
+
+2002-08-10 15:53  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* configure, configure.in, src/Makefile: ocamldoc fix
+
+2002-08-09 17:39  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdlttf.ml, sdlttf.mli, sdlttf_stub.c, sdlvideo_stub.h:
+	CHANGE: completed SDL_ttf API
+
+2002-08-09 15:46  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* samples/test_cdrom.ml: CHANGE: cdrom API (introduced cdrom_info
+	type)
+
+2002-08-09 15:40  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/: sdlcdrom.ml, sdlcdrom.mli, sdlcdrom_stub.c: CHANGE: cdrom
+	API (introduced cdrom_info type)
+
+2002-08-09 10:33  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/Makefile: fix the doc target
+
 2002-08-08 Luc Mazardo <luc@mazardo.com>
 	* ADD (src/sdlttf.mli) ocamldoc comments
 	* FIX (samples/ocamlplayer.ml) doesn't use callback anymore and 
@@ -12,6 +140,10 @@
 	* ADD: (src/sdlttf.mli) ocamldoc comments" 
 	* ADD: (src/Makefile, Makefile) doc target
 	* CHANGE: (configure configure.in)  little change ocamldoc and comments
+
+2002-08-08  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* ADD (src/sdljoystick*) joystick support
 
 2002-08-05 Luc Mazardo <luc@mazardo.com>
 	* CHANGE (sdlmixer_stub.c) add preprocessor directives 
