@@ -73,19 +73,19 @@ let pprint_cursor c =
     print_newline ()
   done
 
-let convert_to_cursor a_data a_mask w h hot_x hot_y =
-  if Array.length a_data <> Array.length a_mask ||
+let convert_to_cursor ~data ~mask ~w ~h ~hot_x ~hot_y =
+  if Array.length data <> Array.length mask ||
   w mod 8 <> 0 ||
-  Array.length a_data <> h * w / 8
+  Array.length data <> h * w / 8
   then invalid_arg "Sdlmouse.convert_to_cursor" ;
   let w' = w / 8 in
-  let data = Array2.create int8_unsigned c_layout h w' in
-  let mask = Array2.create int8_unsigned c_layout h w' in
+  let b_data = Array2.create int8_unsigned c_layout h w' in
+  let b_mask = Array2.create int8_unsigned c_layout h w' in
   for i=0 to pred h do
     for j=0 to pred w' do
-      data.{i, j} <- a_data.( w' * i + j) ;
-      mask.{i, j} <- a_mask.( w' * i + j)
+      b_data.{i, j} <- data.( w' * i + j) ;
+      b_mask.{i, j} <- mask.( w' * i + j)
     done 
   done ;
-  make_cursor ~data ~mask ~hot_x ~hot_y
+  make_cursor ~data:b_data ~mask:b_mask ~hot_x ~hot_y
 

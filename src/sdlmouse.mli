@@ -84,5 +84,5 @@ val pprint_cursor : cursor -> unit
 (** for debugging : prints on stdout *)
 
 val convert_to_cursor : 
-  int array -> int array ->
-  int -> int -> int -> int -> cursor
+  data:int array -> mask:int array ->
+  w:int -> h:int -> hot_x:int -> hot_y:int -> cursor
