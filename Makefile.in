@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.3 2000/01/13 17:45:10 smkl Exp $
+# $Id: Makefile.in,v 1.4 2000/01/14 00:49:03 fbrunel Exp $
 
 CC = 		@CC@ 
 CFLAGS =	@CFLAGS@ #-Wall -O3 -pipe -pedantic -m486 
@@ -63,7 +63,7 @@ $(RUNTIME): $(OBJS)
 	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
 
 distclean:
-	rm -f $(TOPLEVEL) *.o *~ *.cm[iox] .depend
+	rm -f $(TOPLEVEL) $(RUNTIME) *.o *~ *.cm[iox] .depend
 	rm -f config.status config.cache config.log Makefile
 
 clean:
