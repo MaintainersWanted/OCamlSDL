@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.15 2002/07/31 18:57:50 smkl Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.16 2002/08/05 10:43:54 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -34,15 +34,10 @@
 #include "common.h"
 #include "sdlmixer_stub.h"
 
-static value arg_string = Val_unit;
-static value music_finished = Val_unit;
-
-/*
- * Conversion macros
- */
-
-#define MAGIC_OF_OPTION(opt)\
-   ((opt) == Val_unit ? -1 : Int_val(Field((opt),0)))
+static value cb_channel_finished = Val_unit;
+static value cb_music_finished = Val_unit;
+/*  static value cb_postmix = Val_unit; */
+/*  static value cb_music = Val_unit; */
 
 /*
  * Raise an OCaml exception with a message
@@ -64,8 +59,10 @@ sdlmixer_raise_exception (char *msg)
 void
 sdlmixer_stub_init()
 {
-  register_global_root(&arg_string);
-  register_global_root(&music_finished);
+  register_global_root(&cb_channel_finished);
+  register_global_root(&cb_music_finished);
+  /*  register_global_root(&cb_postmix); */
+  /*  register_global_root(&cb_music); */
 }
 
 /*
@@ -75,8 +72,10 @@ sdlmixer_stub_init()
 void
 sdlmixer_stub_kill()
 {
-  remove_global_root(&arg_string);
-  remove_global_root(&music_finished);
+  remove_global_root(&cb_channel_finished);
+  remove_global_root(&cb_music_finished);
+  /*  remove_global_root(&cb_postmix); */
+  /*  remove_global_root(&cb_music); */
 }
 
 /*
@@ -85,20 +84,28 @@ sdlmixer_stub_kill()
 
 value
 sdlmixer_open_audio(value frequency, value format, 
-		    value chunksize, value channels)
+		    value chunksize, value channels, value unit)
 {
   static const int format_of_val[] = { 
-    MIX_DEFAULT_FORMAT, 
     AUDIO_U8, AUDIO_S8, 
-    AUDIO_U16, AUDIO_S16, } ;
-  int ret;
-  int mstr = 1;
-  int c_format = format_of_val[Int_val(format)];
+    AUDIO_U16LSB, AUDIO_S16LSB,
+    AUDIO_U16MSB, AUDIO_S16MSB,
+    AUDIO_U16SYS, AUDIO_S16SYS, } ;
+  int ret, mstr, c_format;
+  int c_frequency = Opt_arg(frequency, Int_val, MIX_DEFAULT_FREQUENCY);
   int c_chunksize = Opt_arg(chunksize, Int_val, 4096);
 
-  if (Int_val (channels) == 1) mstr = 2;
+  if(channels == Val_none)
+    mstr = MIX_DEFAULT_CHANNELS;
+  else
+    mstr = Int_val(Unopt(channels)) + 1;
+  
+  if(format == Val_none)
+    c_format = MIX_DEFAULT_FORMAT;
+  else
+    c_format = format_of_val[ Int_val(Unopt(format)) ];
 
-  ret = Mix_OpenAudio(Int_val(frequency), c_format, mstr, c_chunksize);
+  ret = Mix_OpenAudio(c_frequency, c_format, mstr, c_chunksize);
 
   if (ret == -1)
     sdlmixer_raise_exception(Mix_GetError());
@@ -113,51 +120,47 @@ sdlmixer_allocate_channels(value channels)
 }
 
 value
-sdlmixer_query_specs(void)
+sdlmixer_version(value unit)
 {
-  CAMLparam0();
-  CAMLlocal2(result, query);
+  const SDL_version *v;
+  value r;
+  v = Mix_Linked_Version();
+  r = alloc_small(3, 0);
+  Field(r, 0) = Val_int(v->major);
+  Field(r, 1) = Val_int(v->minor);
+  Field(r, 2) = Val_int(v->patch);
+  return r;
+}
+
+value
+sdlmixer_query_specs(value unit)
+{
   int freq, chan, ret;
-  unsigned short form;
+  Uint16 form;
 
   ret = Mix_QuerySpec(&freq, &form, &chan);
-  /* return None */
-  
-  if (ret == 0) {
-    result = Val_int(0);
-  }
-  else {
+  if(ret == 0)
+    sdlmixer_raise_exception(Mix_GetError());
+  {
+    CAMLparam0();
+    CAMLlocal2(result, query);
     int ml_format = 0;
-    switch (form)
-      {
-      case AUDIO_U8:
-	ml_format = 1;
-	break;
-	
-      case AUDIO_S8:
-	ml_format = 2;
-	break;
-	
-      case AUDIO_U16LSB:
-      case AUDIO_U16MSB:
-	ml_format = 3;
-	break;
-	
-      case AUDIO_S16LSB:
-      case AUDIO_S16MSB:
-	ml_format = 4;
-	break;
-      }
-
-    result = alloc(1, 0);
-    query = alloc_tuple(3);
-    Store_field(query, 0, Val_int(freq));
-    Store_field(query, 1, Val_int(ml_format));
-    Store_field(query, 2, Val_int(chan-1));
+    switch (form) {
+    case AUDIO_U8:     ml_format = 0; break;
+    case AUDIO_S8:     ml_format = 1; break;
+    case AUDIO_U16LSB: ml_format = 2; break;
+    case AUDIO_S16LSB: ml_format = 3; break;
+    case AUDIO_U16MSB: ml_format = 4; break;
+    case AUDIO_S16MSB: ml_format = 5; break;
+    }
+    result = alloc_small(1, 0);
+    query  = alloc_small(3, 0);
+    Field(query, 0) = Val_int(freq);
+    Field(query, 1) = Val_int(ml_format);
+    Field(query, 2) = Val_int(chan-1);
     Store_field(result, 0, query);
+    CAMLreturn(result);      
   }
-  
-  CAMLreturn(result);      
 }
 
 value
@@ -165,7 +168,10 @@ sdlmixer_loadWAV(value fname)
 {
   Mix_Chunk *chunk;
   chunk = Mix_LoadWAV(String_val(fname));
-  if (chunk == NULL) sdlmixer_raise_exception(Mix_GetError());
+
+  if (chunk == NULL) 
+    sdlmixer_raise_exception(Mix_GetError());
+
   return ML_CHUNK(chunk);
 }
 
@@ -194,9 +200,43 @@ sdlmixer_load_string(value data)
 }
 
 value
+sdlmixer_get_music_type(value music)
+{
+  Mix_Music *mus = Opt_arg(music, SDL_MUS, NULL);
+  value v = Val_int(0);
+  switch(Mix_GetMusicType(mus)) {
+  case MUS_NONE : v = Val_int(0); break;
+  case MUS_CMD  : v = Val_int(1); break;
+  case MUS_WAV  : v = Val_int(2); break;
+  case MUS_MOD  : v = Val_int(3); break;
+  case MUS_MID  : v = Val_int(4); break;
+  case MUS_OGG  : v = Val_int(5); break;
+  case MUS_MP3  : v = Val_int(6); break;
+  }
+  return v;
+}
+
+value 
+sdlmixer_set_music_cmd(value command)
+{
+  int ret = Mix_SetMusicCMD(String_val(command));
+  if(ret == -1)
+    raise_out_of_memory();
+  return Val_unit;
+}
+
+value 
+sdlmixer_unset_music_cmd(value unit)
+{
+  Mix_SetMusicCMD(NULL);
+  return Val_unit;
+}
+
+value
 sdlmixer_free_chunk(value chunk)
 {
   Mix_FreeChunk(SDL_CHUNK(chunk));
+  SDL_CHUNK(chunk) = NULL;
   return Val_unit;
 }
 
@@ -204,44 +244,112 @@ value
 sdlmixer_free_music(value chunk)
 {
   Mix_FreeMusic(SDL_MUS(chunk));
+  SDL_MUS(chunk) = NULL;
   return Val_unit;
 }
 
-void
-sdlmixer_data_hook(void *udata, Uint8 *stream, int len)
+/* The 2 following hooks are disbled for now :
+   we should use bigarrays for this */
+
+/*  static void */
+/*  sdlmixer_data_hook(void *udata, Uint8 *stream, int len) */
+/*  { */
+/*    value closure; */
+/*    value arg_string = alloc_string(len); */
+/*    memcpy(Bp_val(arg_string), stream, len); */
+/*    closure = *(value *)udata; */
+/*    if (closure != Val_unit) */
+/*      callback(closure, arg_string); */
+/*  } */
+
+/*  static void */
+/*  sdlmixer_music_hook(void *udata, Uint8 *stream, int len) */
+/*  { */
+/*    value closure= *(value *)udata; */
+/*    value str = callback_exn(closure, Val_int(len)); */
+/*    if(Is_exception_result(str)){ */
+/*      fprintf(stderr, "callback raised an exeption\n"); */
+/*      goto abort; */
+/*    } */
+/*    if(string_length(str) != len){ */
+/*      fprintf(stderr, "callback returned string of wrong size\n"); */
+/*      goto abort; */
+/*    } */
+/*    memcpy(stream, String_val(str), len); */
+/*    return; */
+
+/*   abort: */
+/*    fflush(stderr); */
+/*    abort(); */
+/*  } */
+
+static void
+sdlmixer_channel_finished_hook(int channel)
 {
-  arg_string = alloc_string(len);
-  memcpy(Bp_val(arg_string), stream, len);
-  callback((value)udata, arg_string);
-  arg_string = Val_unit;
+  if (cb_channel_finished != Val_unit)
+    callback(cb_channel_finished, Val_int(channel));
 }
 
-void
+static void
 sdlmixer_music_finished_hook(void)
 {
-  if (music_finished != Val_unit)
-    callback(music_finished, Val_unit);
+  if (cb_music_finished != Val_unit)
+    callback(cb_music_finished, Val_unit);
 }
 
+/*  value */
+/*  sdlmixer_set_postmix(value cb) */
+/*  { */
+/*    cb_postmix = cb; */
+/*    Mix_SetPostMix(sdlmixer_data_hook, &cb_postmix); */
+/*    return Val_unit; */
+/*  } */
+
+/*  value */
+/*  sdlmixer_set_music(value cb) */
+/*  { */
+/*    cb_music = cb; */
+/*    Mix_HookMusic(sdlmixer_music_hook, &cb_music); */
+/*    return Val_unit; */
+/*  } */
+
+/*  value */
+/*  sdlmixer_unset_music(value unit) */
+/*  { */
+/*    cb_music = Val_unit; */
+/*    Mix_HookMusic(NULL, NULL); */
+/*    return Val_unit; */
+/*  } */
+
 value
-sdlmixer_set_postmix(value cb)
+sdlmixer_set_channel_finished(value cb)
 {
-  Mix_SetPostMix(sdlmixer_data_hook, (void *)cb);
+  cb_channel_finished = cb;
+  Mix_ChannelFinished(sdlmixer_channel_finished_hook);
   return Val_unit;
 }
 
 value
-sdlmixer_set_music(value cb)
+sdlmixer_unset_channel_finished(value unit)
 {
-  Mix_HookMusic(sdlmixer_data_hook, (void *)cb);
+  cb_channel_finished = Val_unit;
+  Mix_ChannelFinished(NULL);
   return Val_unit;
 }
 
 value
 sdlmixer_set_music_finished(value cb)
 {
-  music_finished = cb;
+  cb_music_finished = cb;
   Mix_HookMusicFinished(sdlmixer_music_finished_hook);
+  return Val_unit;
+}
+
+value
+sdlmixer_unset_music_finished(value unit)
+{
+  cb_music_finished = Val_unit;
+  Mix_HookMusicFinished(NULL);
   return Val_unit;
 }
 
@@ -255,18 +363,31 @@ value
 sdlmixer_group_channel(value chn, value grp)
 {
   int res;
-  res = Mix_GroupChannel(Int_val(chn), MAGIC_OF_OPTION(grp));
+  res = Mix_GroupChannel(Int_val(chn), Int_val(grp));
 
-  if (res == -1)
+  if (res == 0)
     sdlmixer_raise_exception(Mix_GetError());
   
   return Val_unit;
 }
 
 value
+sdlmixer_group_channels(value from_chn, value to_chn, value grp)
+{
+  int from = Int_val(from_chn);
+  int to = Int_val(to_chn);
+  if(Mix_GroupChannels(from, to, Int_val(grp)) != (to-from+1))
+    sdlmixer_raise_exception(Mix_GetError());
+  return Val_unit;
+}
+
+value
 sdlmixer_group_available(value grp)
 {
-  return Val_int(Mix_GroupAvailable(Int_val(grp)));
+  int ret = Mix_GroupAvailable(Int_val(grp));
+  if(ret == -1)
+    raise_not_found();
+  return Val_int(ret);
 }
 
 value
@@ -278,92 +399,114 @@ sdlmixer_group_count(value grp)
 value
 sdlmixer_group_oldest(value grp)
 {
-  return Val_int(Mix_GroupOldest(Int_val(grp)));
+  int ret = Mix_GroupOldest(Int_val(grp));
+  if(ret == -1)
+    raise_not_found();
+  return Val_int(ret);
 }
 
 value
 sdlmixer_group_newer(value grp)
 {
-  return Val_int(Mix_GroupNewer(Int_val(grp)));
+  int ret = Mix_GroupNewer(Int_val(grp));
+  if(ret == -1)
+    raise_not_found();
+  return Val_int(ret);
 }
 
 value
-sdlmixer_play_channel_timed(value chn, value sound, value loops, value tme)
+sdlmixer_play_channel_timed(value chn, value loops, value tme, value sound)
 {
   int t;
-  if (Int_val(tme) == 0) t = -1;
-  else t = (int)(1000.0 * Double_val(Field(tme,0)));
-  return Val_int(Mix_PlayChannelTimed(MAGIC_OF_OPTION(chn), 
-				      SDL_CHUNK(sound),
-				      MAGIC_OF_OPTION(loops)-1, t));
+  int ret;
+  int c_chn   = Opt_arg(chn, Int_val, -1);
+  int c_loops = Opt_arg(loops, Int_val, 1);
+  if (c_loops == 0) return Val_unit;
+  if (c_loops > 0) c_loops -= 1;
+  if (tme == Val_none) t = -1;
+  else t = 1000.0 * Double_val(Unopt(tme));
+  ret = Mix_PlayChannelTimed(c_chn, SDL_CHUNK(sound),
+			     c_loops, t);
+  if(ret == -1)
+    sdlmixer_raise_exception(Mix_GetError());
+  return Val_unit;
 }
 
 value
-sdlmixer_play_music(value music, value loops)
+sdlmixer_play_music(value loops, value music)
 {
-  return Val_int(Mix_PlayMusic(SDL_MUS(music), MAGIC_OF_OPTION(loops)));
+  int c_loops = Opt_arg(loops, Int_val, -1);
+  int ret = Mix_PlayMusic(SDL_MUS(music), c_loops);
+  if(ret == -1)
+    sdlmixer_raise_exception(Mix_GetError());
+  return Val_unit;
 }
 
 value
-sdlmixer_fadein_music(value music, value loops, value tme)
+sdlmixer_fadein_music(value loops, value music, value ms)
 {
-  int t;
-  if (Int_val(tme) == 0) t = -1;
-  else t = (int)(1000.0 * Double_val(Field(tme,0)));
-  return Val_int(Mix_FadeInMusic(SDL_MUS(music),
-				 MAGIC_OF_OPTION(loops),t));
+  int c_ms    = 1000 * Double_val(ms) ;
+  int c_loops = Opt_arg(loops, Int_val, -1);
+  int ret = Mix_FadeInMusic(SDL_MUS(music), c_loops, c_ms);
+  if(ret == -1)
+    sdlmixer_raise_exception(Mix_GetError());
+  return Val_unit;
 }
 
 value
-sdlmixer_fadein_channel(value chn, value chunk, value loops, value tme1,
-			value tme2)
+sdlmixer_fadein_channel(value chn, value loops, value ticks, 
+			value chunk, value ms)
 {
-  int t1, t2;
-  if (Int_val(tme1) == 0) t1 = -1;
-  else t1 = (int)(1000.0 * Double_val(Field(tme1,0)));
-  if (Int_val(tme2) == 0) t2 = -1;
-  else t2 = (int)(1000.0 * Double_val(Field(tme2,0)));
-  return Val_int(Mix_FadeInChannelTimed(MAGIC_OF_OPTION(chn), 
-					SDL_CHUNK(chunk),
-					MAGIC_OF_OPTION(loops)-1, t1, t2));
+  int c_ticks, ret;
+  int c_ms    = 1000 * Double_val(ms) ;
+  int c_chn   = Opt_arg(chn, Int_val, -1);
+  int c_loops = Opt_arg(loops, Int_val, 0);
+  if (c_loops > 0) c_loops -= 1;
+  if (ticks == Val_none) c_ticks = -1;
+  else c_ticks = 1000.0 * Double_val(Unopt(ticks));
+  ret = Mix_FadeInChannelTimed(c_chn, SDL_CHUNK(chunk), 
+			       c_loops, c_ms, c_ticks);
+  if(ret == -1)
+    sdlmixer_raise_exception(Mix_GetError());
+  return Val_unit;    
 }
 
 value
 sdlmixer_volume_channel(value chn)
 {
-  return copy_double(Mix_Volume(MAGIC_OF_OPTION(chn), -1) / 128.0);
+  return copy_double(Mix_Volume(Int_val(chn), -1) / (double) MIX_MAX_VOLUME);
 }
 
 value
 sdlmixer_volume_chunk(value chunk)
 {
-  return copy_double(Mix_VolumeChunk((Mix_Chunk *)chunk, -1) / 128.0);
+  return copy_double(Mix_VolumeChunk(SDL_CHUNK(chunk), -1) / (double) MIX_MAX_VOLUME);
 }
 
 value
 sdlmixer_volume_music(value unit)
 {
-  return copy_double(Mix_VolumeMusic(-1) / 128.0);
+  return copy_double(Mix_VolumeMusic(-1) / (double) MIX_MAX_VOLUME);
 }
 
 value
 sdlmixer_setvolume_channel(value chn, value vol)
 {
-  Mix_Volume(MAGIC_OF_OPTION(chn), (int)(Double_val(vol)*128.0));
+  Mix_Volume(Int_val(chn), Double_val(vol) * MIX_MAX_VOLUME);
   return Val_unit;
 }
 
 value
 sdlmixer_setvolume_chunk(value chunk, value vol)
 {
-  Mix_VolumeChunk(SDL_CHUNK(chunk), (int)(Double_val(vol)*128.0));
+  Mix_VolumeChunk(SDL_CHUNK(chunk), Double_val(vol) * MIX_MAX_VOLUME);
   return Val_unit;
 }
 
 value
 sdlmixer_setvolume_music(value vol)
 {
-  Mix_VolumeMusic((int)(Double_val(vol)*128.0));
+  Mix_VolumeMusic(Double_val(vol) * MIX_MAX_VOLUME );
   return Val_unit;
 }
 
@@ -389,11 +532,11 @@ sdlmixer_halt_music(void)
 }
 
 value
-sdlmixer_expire_channel(value chn, value tme)
+sdlmixer_expire_channel(value chn, value ticks)
 {
   int t;
-  if (Int_val(tme) == 0) t = -1;
-  else t = (int)(1000.0 * Double_val(Field(tme,0)));
+  if (ticks == Val_none) t = -1;
+  else t = 1000.0 * Double_val(Unopt(ticks));
   Mix_ExpireChannel(Int_val(chn), t);
   return Val_unit;
 }
@@ -454,6 +597,8 @@ value
 sdlmixer_fading_channel(value chn)
 {
   Mix_Fading f;
+  if(Int_val(chn) < 0)
+    invalid_argument("Sdlmixer.fading_channel");
   f = Mix_FadingChannel(Int_val(chn));
   return convert_fading_status(f);
 }
@@ -473,8 +618,16 @@ sdlmixer_resume_channel(value chn)
 }
 
 value
+sdlmixer_numpaused_channel(value unit)
+{
+  return Val_int(Mix_Paused(-1));
+}
+
+value
 sdlmixer_paused_channel(value chn)
 {
+  if(Int_val(chn) < 0)
+    invalid_argument("Sdlmixer.paused_channel");
   return Val_bool(Mix_Paused(Int_val(chn)));
 }
 
@@ -506,9 +659,17 @@ sdlmixer_paused_music(void)
 }
 
 value
+sdlmixer_numplaying(value unit)
+{
+  return Val_int(Mix_Playing(-1));
+}
+
+value
 sdlmixer_playing(value chn)
 {
-  return Val_bool(Mix_Playing(MAGIC_OF_OPTION(chn)));
+  if(Int_val(chn) < 0)
+    invalid_argument("Sdlmixer.playing_channel");
+  return Val_bool(Mix_Playing(Int_val(chn)));
 }
 
 value
@@ -518,8 +679,9 @@ sdlmixer_playing_music(void)
 }
 
 value
-sdlmixer_close_audio(void)
+sdlmixer_close_audio(value unit)
 {
   Mix_CloseAudio();
   return Val_unit;
 }
+

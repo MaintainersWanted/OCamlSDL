@@ -14,10 +14,10 @@ then
     exit 0
   end;;
 
-init [`EVERYTHING];;
+init [`AUDIO];;
 
 try 
-  open_audio ~freq:44100 AUDIO_FORMAT_S16 STEREO;
+  open_audio ~freq:44100 () ;
   Printf.printf "audio device initialised\n";
   flush stdout;
 with _ ->
@@ -41,15 +41,14 @@ let check_file_and_play_it f =
 	Printf.printf "Loading music: %s\n" f;
 	flush stdout;
 	let m = load_music f in
-	let _ = play_music m (Some 1) 
-	in 
-	  Queue.add m queue;
-	  set_music_finished cb_music_finished;
-	  playing := true;
-	  while !playing
-	  do
-	    Sdltimer.delay 10;
-	  done
+	play_music m ;
+	Queue.add m queue;
+	set_music_finished cb_music_finished;
+	playing := true;
+	while !playing
+	do
+	  Sdltimer.delay 10;
+	done
       end;;
 
 List.iter check_file_and_play_it (List.tl (Array.to_list Sys.argv));;

@@ -1,3 +1,29 @@
+2002-08-05  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* CHANGE (sdlmixer.ml*) 
+	- use ocamldoc comments
+	- sync format type with SDL audio formats
+	- openaudio use optional arguments with SDL defaults
+	  (MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, etc.)
+	- added version for querying SDL_mixer version
+	- query_specs raises an exception if audio is not opened
+	- added set_music_cmd and unset_music_cmd for external players
+	- added music_type (requires SDL_mixer >= 1.2.4)
+	- added set_channel_finished and unset_channel_finished for
+	  channels hooks
+	- removed set_postmix and set_music hooks (unsafe and not working)
+	- added all_channels and default_group values (-1)
+	- added group_channels and num_channels
+	- {play,fade_in}_{channel,music} use optional arguments
+	- first argument of setvolume_channel and volume_channel is of
+          type channel, not channel option
+	- added num_paused_channels and num_playing_channel
+	
+2002-07-30  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* ADD (sdl.ml*)
+	- added version type and version function for querying SDL version
+
 2002-06-20 Olivier Andrieu <oliv__a@users.sourceforge.net>
 
 	* FIX: (configure.in, makefile.toplevel.in, *_stub.c)
