@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.5 2001/05/16 16:03:24 smkl Exp $ *)
+(* $Id: sdlttf.ml,v 1.6 2002/04/25 16:45:50 xtrm Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -36,6 +36,10 @@ external close_font : font -> unit = "sdlttf_close_font"
 external font_height : font -> int = "sdlttf_font_height"
 external font_metrics : font -> int -> (int*int*int*int) = "sdlttf_font_metrics"
 external render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text"
+
+external render_text_shaded : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text_shaded"
+external render_text_blended : font -> string -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text_blended"
+external render_text_solid : font -> string -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text_solid"
 
 let make_glyph font col str =
   let text = render_text font str col (0,0,0) in

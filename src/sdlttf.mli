@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.4 2001/05/16 16:03:24 smkl Exp $ *)
+(* $Id: sdlttf.mli,v 1.5 2002/04/25 16:45:50 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -33,6 +33,13 @@ val open_font : string -> int -> font
 val close_font : font -> unit
 val font_height : font -> int
 val font_metrics : font -> int -> int*int*int*int
+
+(* render text functions *)
+val render_text_shaded : font -> string -> (int * int * int) -> (int * int * int) -> Sdlvideo.surface
+val render_text_blended : font -> string -> (int * int * int) -> Sdlvideo.surface
+val render_text_solid : font -> string -> (int * int * int) -> Sdlvideo.surface
+
+(* deprecated *)
 val render_text : font -> string -> (int * int * int) -> (int * int * int) -> Sdlvideo.surface
 
 (* Return a function to print strings, and another to clean up printer *)
