@@ -17,10 +17,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.11 2004/02/04 12:00:22 oliv__a Exp $
+# $Id: Makefile,v 1.12 2004/05/03 08:49:42 oliv__a Exp $
 
 
-include ../makefile.toplevel
+include ../makefile.platform
+include ../makefile.config.$(OCAML_C_BACKEND)
 include ../makefile.rules
 
 LIB_DIR = ../src
