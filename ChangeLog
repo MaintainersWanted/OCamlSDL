@@ -1,4 +1,14 @@
 
+2001-04-23  Luc Mazardo  <l.mazardo@free.fr>
+
+	* CHANGE (*): major changes in the repository
+	              split the old ditribution in two modules
+		      OCamlSDL and games.
+		      Added some directories (src, doc, ...)
+
+	* CHANGE (sdlevent_stub.c): adapt preprocessor directive 
+	                            for libSDL1.2
+
 2001-01-03  Sami Mäkelä  <sajuma@utu.fi>
 
 	* ADD (sdlvideo*): Added some experimental support for opengl
