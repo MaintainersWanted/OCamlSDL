@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.ml,v 1.11 2003/11/11 08:34:55 smkl Exp $ *)
+(* $Id: sdlevent.ml,v 1.12 2004/07/26 00:28:49 oliv__a Exp $ *)
 
 exception Event_exn of string
 let _ = 
@@ -166,7 +166,7 @@ let userevent_mask       = 0x1000000
 let keyboard_event_mask  = 0x0C
 let mouse_event_mask     = 0x70
 let joystick_event_mask  = 0xF80
-let all_events_mask      = 0xFFFFFFFF
+let all_events_mask      = 0x7FFFFFFF
 
 let make_mask = 
   List.fold_left

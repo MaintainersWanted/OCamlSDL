@@ -17,7 +17,7 @@ struct mem_pos_data {
   size_t max;
 };
 
-#define RWmem_pos_data(r) ((struct mem_pos_data *)(r->hidden.unknown.data1))
+#define RWmem_pos_data(r) (r->hidden.unknown.data1)
 
 static int mlsdl_mem_seek(SDL_RWops *context, int offset, int whence)
 {

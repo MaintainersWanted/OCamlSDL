@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.15 2003/11/16 14:40:28 oliv__a Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.16 2004/07/26 00:28:50 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -99,7 +99,7 @@ CAMLprim value
 sdlcdrom_close (value cdrom)
 {
   SDL_CDClose(CDROM_val(cdrom));
-  CDROM_val(cdrom) = NULL;
+  nullify_abstract(cdrom);
   return Val_unit;
 }
 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.33 2003/11/16 14:40:28 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.34 2004/07/26 00:28:49 oliv__a Exp $ */
 
 #include <stdio.h>
 #include <string.h>
@@ -248,7 +248,7 @@ CAMLprim value
 sdlmixer_free_chunk(value chunk)
 {
   Mix_FreeChunk(SDL_CHUNK(chunk));
-  SDL_CHUNK(chunk) = NULL;
+  nullify_abstract(chunk);
   return Val_unit;
 }
 
@@ -256,7 +256,7 @@ CAMLprim value
 sdlmixer_free_music(value chunk)
 {
   Mix_FreeMusic(SDL_MUS(chunk));
-  SDL_MUS(chunk) = NULL;
+  nullify_abstract(chunk);
   return Val_unit;
 }
 

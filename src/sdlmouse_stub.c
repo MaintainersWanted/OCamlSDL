@@ -82,7 +82,7 @@ CAMLprim value ml_SDL_CreateCursor(value data, value mask, value hot_x, value ho
 CAMLprim value ml_SDL_FreeCursor(value c)
 {
   SDL_FreeCursor( MLSDL_CURSOR(c) );
-  MLSDL_CURSOR(c) = NULL;
+  nullify_abstract (Field(c, 0));
   Store_field(c, 1, Val_unit);
   Store_field(c, 2, Val_unit);
   return Val_unit;

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.13 2004/02/04 12:00:22 oliv__a Exp $ */
+/* $Id: common.h,v 1.14 2004/07/26 00:28:50 oliv__a Exp $ */
 
 #ifndef _COMMON_H_
 #define _COMMON_H_
@@ -62,6 +62,7 @@ int mlsdl_lookup_to_c (lookup_info *table, value key);
   Wrapping of malloc'ed C pointers in Abstract blocks.
 */
 extern value abstract_ptr(void *);
+extern void nullify_abstract(value);
 
 /*
    Optional arguments

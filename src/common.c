@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.c,v 1.8 2002/08/24 21:01:37 oliv__a Exp $ */
+/* $Id: common.c,v 1.9 2004/07/26 00:28:50 oliv__a Exp $ */
 
 
 #include <caml/mlvalues.h>
@@ -91,6 +91,11 @@ value abstract_ptr(void *p)
   return v;
 }
 
+void nullify_abstract(value v)
+{
+  void **p = (void **) v;
+  *p = NULL;
+}
 
 value Val_some(value v)
 {
