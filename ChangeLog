@@ -1,27 +1,45 @@
+2002-04-24  Luc Mazardo <luc@mazardo.com>
+
+	* REMOVE (debian/): remove all files for a real debian packaging
+
+	* CHANGE (samples/ocamlplayer.ml): adding Sdltimer.delay instead of true
+
+	* CHANGE (samples/Makefile.in, src/Makefile.in, src/sdlmixer_stub.c,
+		  src/sdlvideo_stub.c, src/stub_shared.c): applying  olivier 
+		 andrieu patch
+
+	* REMOVE (sdlvideo.ml, sdlvideo.mli, sdlvideo_stub.c, stub_shared.c, 
+		  stub_shared.h, Makefile.in) removing experimental surface 
+		  garbage collection
+
+	* ADD (TODO): adding some future plan
+
+	* CHANGE (src/stub_shared.h) add SDL_COLOR_FROM_VALUE macro
+
 2002-04-04  Luc Mazardo <luc@mazardo.com>
 
-	* samples/ocamlplayer.ml: a music player
-	* samples/Makefile.in: added compilation rules for ocamlplayer
+	* NEW (samples/ocamlplayer.ml): a music player
+	* CHANGE (samples/Makefile.in): added compilation rules for ocamlplayer
 
-	* README: added some comments
+	* CHANGE (README) : added some comments
 
 2002-04-04  Luc Mazardo <luc@mazardo.com>
 
-	* src/sdlevent_stub.c, src/sdlevent.ml*: applying Josh Cogliati 
-	patch about aalib and KEY_UNKNOWN
+	* CHANGE (src/sdlevent_stub.c, src/sdlevent.ml*): applying Josh 
+	Cogliati patch about aalib and KEY_UNKNOWN
 
-	* src/sdlttf_stub.c: applying Nathan Whitehead patch about 
+	* CHANGE (src/sdlttf_stub.c): applying Nathan Whitehead patch about 
 	TTF_RenderText_Shaded
 
 2002-03-26  Luc Mazardo <luc@mazardo.com>
 
-	* samples/example.ml apply patch from josh cogliati 
+	* CHANGE (samples/example.ml) apply patch from josh cogliati 
 	  for using alpha level in example.ml
 
-	* src/sdlvideo_stub.c: apply patch from guillaume cottenceau 
+	* CHANGE (src/sdlvideo_stub.c): apply patch from guillaume cottenceau 
 	  for {set,get}_pixel()
 
-	* src/sdl{cdrom,timer}.ml: apply patch from josh cogliati 
+	* CHANGE (src/sdl{cdrom,timer}.ml): apply patch from josh cogliati 
 	  for labels use
 
 
