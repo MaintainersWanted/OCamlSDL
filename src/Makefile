@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.10 2002/08/21 20:02:54 oliv__a Exp $
+# $Id: Makefile,v 1.11 2002/08/26 13:06:35 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -25,7 +25,7 @@ include ../makefile.toplevel
 INSTALL_DIR = $(DESTDIR)$(OCAMLSDLDIR)
 
 MODULES = 	sdl sdlvideo sdlcdrom sdlevent sdltimer sdljoystick \
-	        sdlkey sdlmouse \
+	        sdlkey sdlmouse sdlevent2 sdlvideo2 \
                 $(addprefix sdl,$(PARTS))
 
 STUB_SRCS = 	$(addsuffix _stub.c,$(MODULES)) common.c
@@ -49,9 +49,10 @@ bin:  $(TOPLEVEL)
 libs:: $(LIBRARY) $(CLIBRARY) 
 
 ifdef CAMLDOC
-doc : ../doc/index.html
-../doc/index.html : $(MLI)
-	$(CAMLDOC) -d ../doc -html -v -t ocamlsdl $^
+doc : ../doc/html/index.html
+../doc/html/index.html : $(MLI)
+	mkdir -p ../doc/html
+	$(CAMLDOC) -d ../doc/html -html -v -t ocamlsdl $^
 else
 doc : ; $(error "you need ocamldoc to generate the documentation")
 endif
@@ -78,13 +79,13 @@ ifdef CAMLMKLIB
 CLIBRARY += dllsdlstub.so
 
 $(LIBRARY): $(ML_OBJS)
-	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
+	$(CAMLMKLIB) -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
 
 $(OLIBRARY): $(OPT_OBJS)
-	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
+	$(CAMLMKLIB) -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
 
 $(CLIBRARY): $(STUB_OBJS)
-	$(CAMLMKLIB) -v -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
+	$(CAMLMKLIB) -o sdl -oc sdlstub $(filter -l% -L%,$(LIBS)) $^
 
 install:: dllsdlstub.so
 	-$(INSTALL) -d $(DESTDIR)$(CAMLLIBDIR)/shlibs
