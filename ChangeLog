@@ -1,3 +1,19 @@
+2000-03-05  Frederic Brunel  <brunel@mail.dotcom.fr>
+
+	* NEW (stub_shared): Contains convertion macros and finalization
+	functions. These functions will be used by the sdlvideo and
+	sdlloader modules.
+	
+	* EXPERIMENTAL: Begin experimentation with finalized
+	surfaces. Some functions have been added only for testing
+	purposes, DO NOT USE THEM!
+
+	* sdlvideo_stub.c: Modified some functions to deal with the new
+	color type.
+
+	* sdlvideo*: Added the color type composed of a vector of
+	values. Also added some functions to make a color from various sources.
+
 2000-02-27  Frederic Brunel  <brunel@mail.dotcom.fr>
 
 	* sdlmixer.mli: Reduced the audio formats list

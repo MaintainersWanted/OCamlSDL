@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.4 2000/02/27 22:50:08 fbrunel Exp $ *)
+(* $Id: sdlevent.mli,v 1.5 2000/03/05 15:27:22 fbrunel Exp $ *)
 
 (* Exception *)
 
@@ -27,7 +27,7 @@ exception SDLevent_exception of string
 
 (* These key symbols exactly match the enum declaration of the SDL library *)
 type key = 
-  | KEY_BACKSPACE
+    KEY_BACKSPACE
   | KEY_TAB
   | KEY_CLEAR
   | KEY_RETURN
