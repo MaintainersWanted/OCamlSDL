@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.10 2002/06/20 13:20:44 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.11 2002/06/26 11:05:58 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -77,34 +77,17 @@ sdlmixer_stub_kill()
  */
 
 value
-sdlmixer_open_audio(value frequency, value format, value channels, value chunksize)
+sdlmixer_open_audio(value frequency, value format, 
+		    value chunksize, value channels)
 {
-  int c_format = AUDIO_U8;
+  static const int format_of_val[] = { 
+    MIX_DEFAULT_FORMAT, 
+    AUDIO_U8, AUDIO_S8, 
+    AUDIO_U16, AUDIO_S16, } ;
   int ret;
   int mstr = 1;
-
-  switch (Int_val(format))
-    {
-    case 0:
-      c_format = MIX_DEFAULT_FORMAT;
-      break;
-      
-    case 1:
-      c_format = AUDIO_U8;
-      break;
-      
-    case 2:
-      c_format = AUDIO_S8;
-      break;
-      
-    case 3:
-      c_format = AUDIO_U16;
-      break;
-      
-    case 4:
-      c_format = AUDIO_S16;
-      break;
-    }
+  int c_format = format_of_val[Int_val(format)];
+  int c_chunksize = Opt_arg(chunksize, Int_val, 4096);
 
   if (Int_val (channels) == 1) mstr = 2;
 
@@ -163,7 +146,7 @@ sdlmixer_query_specs(void)
     query = alloc_tuple(3);
     Store_field(query, 0, Val_int(freq));
     Store_field(query, 1, Val_int(ml_format));
-    Store_field(query, 2, Val_int(chan));
+    Store_field(query, 2, Val_int(chan-1));
     Store_field(result, 0, query);
   }
   

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.3 2002/05/30 15:52:13 xtrm Exp $ */
+/* $Id: common.h,v 1.4 2002/06/26 11:05:58 oliv__a Exp $ */
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
@@ -44,8 +44,20 @@ extern value hd(value l);
 
 extern value tl(value l);
 
+
+/* 
+   Polymorphic variants <-> C ints conversion
+
+   taken from LablGTK
+*/
 typedef struct { value key; int data; } lookup_info;
 value ml_lookup_from_c (lookup_info *table, int data);
 int ml_lookup_to_c (lookup_info *table, value key);
+
+
+/*
+   Optional arguments
+*/
+#define Opt_arg(v, conv, def) (Is_block(v) ? conv(Field((v),0)) : (def))
 
 #endif /* __COMMON_H__ */

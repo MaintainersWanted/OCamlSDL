@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.6 2002/06/07 09:51:39 xtrm Exp $ *)
+(* $Id: sdlmixer.mli,v 1.7 2002/06/26 11:05:58 oliv__a Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -47,9 +47,11 @@ type group = int
 type specs =
   { frequency : int;
     format : format;
-    channels : int }
+    channels : channels }
 
-val open_audio : freq:int -> format:format ->  ?chunksize:int -> channels ->unit 
+external open_audio : 
+  freq:int -> format -> ?chunksize:int -> channels -> unit
+    = "sdlmixer_open_audio";;
 (*d 
   [open_audio frequency format channels [chunksize]] open the mixer with a certain 
   audio format.
