@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.mli,v 1.4 2000/06/09 14:34:30 xtrm Exp $ *)
+(* $Id: sdlcdrom.mli,v 1.5 2000/07/06 13:34:08 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -48,10 +48,15 @@ type cdrom_track_type =
 val get_num_drives : unit -> int;;
 
 (* Return a human-redeable identifier for the CD-ROM *)
-val drive_name : int -> string;;
+val drive_name : drive:int -> string;;
 
+(* Opens a CD-ROM drive for access *)
 val cd_open : int -> cdrom_drive;;
+
+(* Closes the handle for the cdrom_drive *)
 val cd_close : cdrom_drive -> unit;;
+
+(* This function returns the current status of the given drive. *)
 val cd_status : cdrom_drive -> cdrom_drive_status;;
 
 (* Play the given CD with these parameters
@@ -59,26 +64,50 @@ val cd_status : cdrom_drive -> cdrom_drive_status;;
    start_frame : int => the starting frame
    ntracks : int     => the number of tracks to play
    nframes : int     => the number of frames to play *)
-val cd_play_tracks : cdrom_drive -> int -> int -> int -> int -> unit;;
+val cd_play_tracks : cdrom_drive:cdrom_drive -> start_track:int -> 
+  start_frame:int -> num_tracks:int -> num_frames:int -> unit;;
 
-val cd_play_track : cdrom_drive -> int -> unit;;
+(* Play the track n on the given cdrom_drive *)
+val cd_play_track : cdrom_drive:cdrom_drive -> n:int -> unit;;
+
+(* Pause play *)
 val cd_pause : cdrom_drive -> unit;;
+
+(* Resume play *)
 val cd_resume : cdrom_drive -> unit;;
+
+(* Stop play *)
 val cd_stop : cdrom_drive -> unit;;
+
+(* Eject CD-ROM *) 
 val cd_eject : cdrom_drive -> unit;;
 
 (*
  * Operations on tracks 
  *)
 
+(* Return the number of tracks *)
 val cd_get_num_tracks : cdrom_drive -> int;;
-val cd_track_num : cdrom_drive -> int -> cdrom_track;;
+
+(* Return the Nth track *)
+val cd_track_num : cdrom_drive:cdrom_drive -> n:int -> cdrom_track;;
+
+(* Return list of track *) 
 val cd_track_list : cdrom_drive -> cdrom_track list;;
+
+(* Return length of track *)
 val track_length : cdrom_track -> int * int;;
+
+(* Return type of cdrom_track (TRACK_AUDIO or TRACK_DATA) *)
 val track_type : cdrom_track -> cdrom_track_type;;
 
+(* Return the minute and seconds elapted *)
 val cd_track_current_time : cdrom_drive -> int * int ;;
+
+(* Return the current track played *)
 val cd_current_track : cdrom_drive -> cdrom_track;;
+
+(* Convert cdrom_track type to int *)
 val track_get_number : cdrom_track -> int ;;
 
 
