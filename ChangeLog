@@ -1,3 +1,8 @@
+2002-06-20 Olivier Andrieu <oliv__a@users.sourceforge.net>
+
+	* FIX: (configure.in, makefile.toplevel.in, *_stub.c)
+	changed #include <SDL/SDL.h> into #include <SDL.h>
+
 2002-06-07 Luc Mazardo <luc@mazardo.com>
 
 	* CHANGE: (AUTHORS) add olivier in this file
