@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.mli,v 1.1 2000/01/02 01:32:27 fbrunel Exp $ *)
+(* $Id: sdlcdrom.mli,v 1.2 2000/01/13 00:38:49 fbrunel Exp $ *)
 
 (* Exception *)
 
@@ -50,13 +50,8 @@ val get_num_drives : unit -> int;;
 (* Return a human-redeable identifier for the CD-ROM *)
 val drive_name : int -> string;;
 
-(* Open a CD-ROM drive for access *)
 val cd_open : int -> cdrom_drive;;
-
-(* Close a CD-ROM drive *)
 val cd_close : cdrom_drive -> unit;;
-
-(* Return the current status a CD-ROM drive *)
 val cd_status : cdrom_drive -> cdrom_drive_status;;
 
 (* Play the given CD with these parameters
@@ -66,36 +61,18 @@ val cd_status : cdrom_drive -> cdrom_drive_status;;
    nframes : int     => the number of frames to play *)
 val cd_play_tracks : cdrom_drive -> int -> int -> int -> int -> unit;;
 
-(* Play only one track *)
 val cd_play_track : cdrom_drive -> int -> unit;;
-
-(* Pause play *)
 val cd_pause : cdrom_drive -> unit;;
-
-(* Resume play *)
 val cd_resume : cdrom_drive -> unit;;
-
-(* Stop play *)
 val cd_stop : cdrom_drive -> unit;;
-
-(* Eject CD-ROM *)
 val cd_eject : cdrom_drive -> unit;;
 
 (*
  * Operations on tracks 
  *)
 
-(* Return the number of tracks on a CD-ROM *)
 val cd_get_num_tracks : cdrom_drive -> int;;
-
-(* Return a track of a CD-ROM *)
 val cd_track_num : cdrom_drive -> int -> cdrom_track;;
-
-(* Return the list of the tracks of a CD-ROM *)
 val cd_track_list : cdrom_drive -> cdrom_track list;;
-
-(* Return the length (minutes, seconds) of a track *)
 val track_length : cdrom_track -> int * int;;
-
-(* Return the type a of track *)
 val track_type : cdrom_track -> cdrom_track_type;;
