@@ -1,3 +1,11 @@
+2002-04-30  Luc Mazardo <luc@mazardo.com>
+
+	* FIX (src/*tff*) render_text_{shaded, blended, solid}
+
+	* CHANGE (src/sdlvideo_stub.c) remove Val_int in sdlvideo_map_rgb()
+	* ADD  (src/sdlvideo_stub.c) 8 bit stuff (must test heavily)
+	* FIX (src/sdlvideo_stub.c) applying patch for fullscreen mode
+
 2002-04-29  Luc Mazardo <luc@mazardo.com>
 
 	* ADD (src/*tff*) font_descent, font_ascent functions
