@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.8 2002/04/25 16:45:50 xtrm Exp $ */
+/* $Id: sdlttf_stub.c,v 1.9 2002/04/29 19:16:39 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -26,7 +26,6 @@
 #include <caml/mlvalues.h>
 #include <stdio.h>
 
-#include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 
 
@@ -85,6 +84,18 @@ value
 sdlttf_font_height(value font)
 {
    return Val_int(TTF_FontHeight((TTF_Font *)font));
+}
+
+value
+sdlttf_font_ascent(value font)
+{
+   return Val_int(TTF_FontAscent((TTF_Font *)font));
+}
+
+value
+sdlttf_font_descent(value font)
+{
+   return Val_int(TTF_FontDescent((TTF_Font *)font));
 }
 
 value

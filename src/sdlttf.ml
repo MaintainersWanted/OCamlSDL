@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.6 2002/04/25 16:45:50 xtrm Exp $ *)
+(* $Id: sdlttf.ml,v 1.7 2002/04/29 19:16:39 xtrm Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -34,6 +34,8 @@ type font
 external open_font : string -> int -> font = "sdlttf_open_font"
 external close_font : font -> unit = "sdlttf_close_font"
 external font_height : font -> int = "sdlttf_font_height"
+external font_ascent : font -> int = "sdlttf_font_ascent"
+external font_descent : font -> int = "sdlttf_font_descent"
 external font_metrics : font -> int -> (int*int*int*int) = "sdlttf_font_metrics"
 external render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text"
 
