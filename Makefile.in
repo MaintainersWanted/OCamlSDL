@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.21 2001/06/11 17:13:01 xtrm Exp $
+# $Id: Makefile.in,v 1.22 2001/06/12 08:37:49 xtrm Exp $
 
 all:
 	@(cd src && make)
@@ -33,6 +33,7 @@ distclean:
 	@(cd samples && make distclean)
 	@(cd lib && make distclean)
 	@(cd bin && make distclean)
+	@(cd doc && make distclean)
 	@rm -f config.cache config.log config.status Makefile makefile.toplevel
 	
 install:
