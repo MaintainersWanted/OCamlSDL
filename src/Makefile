@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.13 2002/09/09 17:41:47 smkl Exp $
+# $Id: Makefile,v 1.14 2002/09/09 18:22:37 smkl Exp $
 
 
 include ../makefile.toplevel
@@ -29,7 +29,7 @@ MODULES = 	sdl sdlvideo sdlcdrom sdlevent sdltimer sdljoystick \
                 $(addprefix sdl,$(PARTS))
 
 STUB_SRCS = 	$(addsuffix _stub.c,$(MODULES)) common.c
-STUB_OBJS =	$(STUB_SRCS:.c=.o)
+STUB_OBJS =	$(STUB_SRCS:.c=$(OBJSUFFIX))
 
 ML_SRCS =       $(addsuffix .ml,$(MODULES))
 ML_OBJS	=	$(ML_SRCS:.ml=.cmo)
