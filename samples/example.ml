@@ -1,4 +1,4 @@
-(* $Id: example.ml,v 1.5 2000/06/13 12:26:41 xtrm Exp $ *)
+(* $Id: example.ml,v 1.6 2001/04/07 14:36:34 xtrm Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
@@ -9,9 +9,9 @@ let screen = set_display_mode 640 480 16;;
 let s = "OCamlSDL" ;;
 wm_set_caption s s;;
 
-let clouds = surface_loadBMP "images/clouds.bmp";;
-let icon = surface_loadBMP "images/icon.bmp";;
-let logo = Sdlloader.load_image "images/ocamlsdl.png";; 
+let clouds = surface_loadBMP "../images/clouds.bmp";;
+let icon = surface_loadBMP "../images/icon.bmp";;
+let logo = Sdlloader.load_image "../images/ocamlsdl.png";; 
 
 let black = color_of_int(0,0,0) ;;
 let white = color_of_int(255,255,255) ;;
@@ -52,7 +52,7 @@ let display_text f s bg fg =
   in
     random_placement s_text screen ;;
 
-let f = Sdlttf.open_font "fonts/Arial.ttf" 20;;
+let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
 
 
  flip (screen_clear white);;
