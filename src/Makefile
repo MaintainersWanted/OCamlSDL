@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.23 2003/02/24 22:55:08 oliv__a Exp $
+# $Id: Makefile,v 1.24 2004/01/31 09:15:50 smkl Exp $
 
 
 include ../makefile.toplevel
@@ -41,7 +41,7 @@ CMI	=	$(MLI:.mli=.cmi)
 
 TOPLEVEL = 	toplevel
 LIBRARY = 	sdl.cma
-OLIBRARY = 	sdl.cmxa sdl.a
+OLIBRARY = 	sdl.cmxa sdl$(LIBSUFFIX)
 
 all:: libs 
 
@@ -53,7 +53,7 @@ all:: bin
 endif	
 
 bin:  $(TOPLEVEL)
-libs:: $(LIBRARY) $(CLIBRARY) $(PARTS:%=sdl%.cma) $(PARTS:%=libsdl%stub.a)
+libs:: $(LIBRARY) $(CLIBRARY) $(PARTS:%=sdl%.cma) $(PARTS:%=libsdl%stub$(LIBSUFFIX))
 
 ifdef CAMLDOC
 LABLGLINC = $(if $(LABLGLDIR),-I $(LABLGLDIR))
@@ -73,13 +73,13 @@ $(TOPLEVEL): $(LIBRARY) $(CLIBRARY) $(PARTS:%=sdl%.cma)
 install:: all
 	$(INSTALL) -d $(INSTALL_DIR)
 	test -f $(TOPLEVEL) && $(INSTALL) $(TOPLEVEL) $(INSTALL_DIR) || :
-	$(INSTALL_DATA) *.cma lib*.a *.cmi *.mli $(INSTALL_DIR)
+	$(INSTALL_DATA) *.cma lib*$(LIBSUFFIX) *.cmi *.mli $(INSTALL_DIR)
 
 ifdef CAMLOPT
 libs :: $(OLIBRARY) $(PARTS:%=sdl%.cmxa)
 
 install :: 
-	$(INSTALL_DATA) *.cmxa sdl*.a *.cmx $(INSTALL_DIR)
+	$(INSTALL_DATA) *.cmxa sdl*$(LIBSUFFIX) *.cmx $(INSTALL_DIR)
 endif
 
 sdlgl.cmo : MLFLAGS+=  -I $(LABLGLDIR)
@@ -94,34 +94,34 @@ $(LIBRARY): $(ML_OBJS)
 	$(CAMLMKLIB) -o sdl -oc sdlstub $(LIBS) $^
 
 sdlmixer.cma : sdlmixer.cmo
-	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) -lSDL_mixer $^
+	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) $(SDLMIXERLIB) $^
 
 libsdlmixerstub.a dllsdlmixerstub.so : sdlmixer_stub.o 
-	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) -lSDL_mixer $^
+	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) $(SDLMIXERLIB) $^
 
 sdlttf.cma : sdlttf.cmo
-	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) -lSDL_ttf $^
+	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) $(SDLTTFLIB) $^
 
 libsdlttfstub.a dllsdlttfstub.so : sdlttf_stub.o
-	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) -lSDL_ttf $^
+	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) $(SDLTTFLIB) $^
 
 sdlloader.cma : sdlloader.cmo 
-	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) -lSDL_image $^
+	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) $(SDLLOADERLIB) $^
 
 libsdlloaderstub.a dllsdlloaderstub.so : sdlloader_stub.o 
-	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) -lSDL_image $^
+	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) $(SDLLOADERLIB) $^
 
 $(OLIBRARY): $(OPT_OBJS)
 	$(CAMLMKLIB) -o sdl -oc sdlstub $(LIBS) $^
 
 sdlmixer.cmxa : sdlmixer.cmx
-	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) -lSDL_mixer $^
+	$(CAMLMKLIB) -o sdlmixer -oc sdlmixerstub $(LIBS) $(SDLMIXERLIB) $^
 
 sdlttf.cmxa : sdlttf.cmx
-	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) -lSDL_ttf $^
+	$(CAMLMKLIB) -o sdlttf -oc sdlttfstub $(LIBS) $(SDLTTFLIB) $^
 
 sdlloader.cmxa : sdlloader.cmx 
-	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) -lSDL_image $^
+	$(CAMLMKLIB) -o sdlloader -oc sdlloaderstub $(LIBS) $(SDLLOADERLIB) $^
 
 $(CLIBRARY): $(STUB_OBJS)
 	$(CAMLMKLIB) -o sdl -oc sdlstub $(LIBS) $^
@@ -134,28 +134,41 @@ install::
 else
 # does not use ocamlmklib
 $(LIBRARY): $(ML_OBJS)
-$(LIBRARY): LIBS = -lsdlstub $(LIBS)
+	$(OCAMLC) -a -o $(LIBRARY) $(ML_OBJS) -cclib -lsdlstub -cclib $(SDLLIB)
 
 $(OLIBRARY): $(OPT_OBJS)
-$(OLIBRARY): LIBS = -lsdlstub $(LIBS)
+	$(OCAMLC) -a -o $(OLIBRARY) $(OPT_OBJS) -cclib -lsdlstub -cclib $(SDLLIB)
 
 $(CLIBRARY): $(STUB_OBJS)
+	$(CMAKELIB)$(CLIBRARY) $(STUB_OBJS)
+
+libsdlmixerstub$(LIBSUFFIX): sdlmixer_stub$(OBJSUFFIX)
+	$(CMAKELIB)libsdlmixerstub$(LIBSUFFIX) sdlmixer_stub$(OBJSUFFIX)
+
+libsdlloaderstub.$(LIBSUFFIX): sdlloader_stub.$(OBJSUFFIX)
+	$(CMAKELIB)libsdlloaderstub$(LIBSUFFIX) sdlloader_stub$(OBJSUFFIX)
+
+libsdlttfstub.$(LIBSUFFIX): sdlttf_stub.$(OBJSUFFIX)
+	$(CMAKELIB)libsdlttfstub$(LIBSUFFIX) sdlttf_stub$(OBJSUFFIX)
 
 sdlmixer.cma  : sdlmixer.cmo
-sdlmixer.cmxa : sdlmixer.cmx
-sdlmixer.cma sdlmixer.cmxa : LIBS = -lsdlmixerstub -lSDL_mixer
+	$(OCAMLC) -a -o sdlmixer.cma sdlmixer.cmo -cclib -lsdlmixerstub -cclib $(SDLMIXERLIB)
 
-sdlttf.cma  : sdlttf.cmo
-sdlttf.cmxa : sdlttf.cmx
-sdlttf.cma sdlttf.cmxa : LIBS = -lsdlttfstub -lSDL_ttf
+sdlmixer.cmxa  : sdlmixer.cmx
+	$(OCAMLOPT) -a -o sdlmixer.cmxa sdlmixer.cmx -cclib -lsdlmixerstub -cclib $(SDLMIXERLIB)
 
 sdlloader.cma  : sdlloader.cmo
-sdlloader.cmxa : sdlloader.cmx
-sdlloader.cma sdlloader.cmxa : LIBS = -lsdlloaderstub -lSDL_image
+	$(OCAMLC) -a -o sdlloader.cma sdlloader.cmo -cclib -lsdlloaderstub -cclib $(SDLLOADERLIB)
 
-libsdlmixerstub.a dllsdlmixerstub.so   : sdlmixer_stub.o 
-libsdlttfstub.a dllsdlttfstub.so       : sdlttf_stub.o
-libsdlloaderstub.a dllsdlloaderstub.so : sdlloader_stub.o
+sdlloader.cmxa  : sdlloader.cmx
+	$(OCAMLOPT) -a -o sdlloader.cmxa sdlloader.cmx -cclib -lsdlloaderstub -cclib $(SDLLOADERLIB)
+
+sdlttf.cma  : sdlttf.cmo
+	$(OCAMLC) -a -o sdlttf.cma sdlttf.cmo -cclib -lsdlttfstub -cclib $(SDLTTFLIB)
+
+sdlttf.cmxa  : sdlttf.cmx
+	$(OCAMLOPT) -a -o sdlttf.cmxa sdlttf.cmx -cclib -lsdlttfstub -cclib $(SDLTTFLIB)
+
 endif
 
 uninstall:	
