@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.1 2001/04/24 19:39:28 xtrm Exp $ */
+/* $Id: common.h,v 1.2 2002/05/27 22:06:25 xtrm Exp $ */
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
@@ -36,13 +36,8 @@ extern value nil(void);
 
 extern value cons(value x,value l);
 
-extern int is_nil(value l);
-
-extern int is_not_nil(value l);
-
-extern value hd(value l); 
-
-extern value tl(value l);
-
+struct vals { long * values; long size; long maxsize; };
+void block2vals(value v, struct vals * values);
+void freevals(struct vals * values);
 
 #endif /* __COMMON_H__ */
