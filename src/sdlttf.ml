@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.3 2000/02/08 00:00:42 fbrunel Exp $ *)
+(* $Id: sdlttf.ml,v 1.4 2000/03/05 15:26:51 fbrunel Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -39,9 +39,7 @@ external render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvi
 
 let make_glyph font col str =
   let text = render_text font str col (0,0,0) in
-  let pf = Sdlvideo.surface_pixel_format text in
-  let color = Sdlvideo.make_rgb_color pf 0.0 0.0 0.0 in
-  Sdlvideo.surface_set_colorkey text (Some color);
+  Sdlvideo.surface_set_colorkey text (Some (Sdlvideo.IntColor(0, 0, 0)));
   let conv = Sdlvideo.surface_display_format text in
   Sdlvideo.surface_free text;
   conv
