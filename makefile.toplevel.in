@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.toplevel.in,v 1.8 2002/08/26 15:11:52 xtrm Exp $
+# $Id: makefile.toplevel.in,v 1.9 2002/09/09 17:41:47 smkl Exp $
 
 PREFIX =        @prefix@
 CAMLLIBDIR =    @OCAMLLIBDIR@
@@ -60,3 +60,7 @@ DESTDIR =
 
 %.o : %.c
 	$(CAMLC) -c -ccopt "$(CPPFLAGS) $(CFLAGS)" $<
+
+CLIBRARY =      libsdlstub.a
+
+CMAKELIB = ar cruvs $(CLIBRARY)

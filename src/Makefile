@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.12 2002/09/04 17:46:32 oliv__a Exp $
+# $Id: Makefile,v 1.13 2002/09/09 17:41:47 smkl Exp $
 
 
 include ../makefile.toplevel
@@ -40,8 +40,6 @@ CMI	=	$(ML_SRCS:.ml=.cmi)
 TOPLEVEL = 	toplevel
 LIBRARY = 	sdl.cma
 OLIBRARY = 	sdl.cmxa
-CLIBRARY = 	libsdlstub.a 
-
 
 all: libs bin
 
@@ -99,7 +97,7 @@ $(OLIBRARY): $(OPT_OBJS)
 	$(CAMLOPT) -o $@ -a $(CLIBS) $(MLLDFLAGS) -cclib -lsdlstub $^
 
 $(CLIBRARY): $(STUB_OBJS)
-	ar cruvs $@ $^
+	$(CMAKELIB) $^
 
 endif
 

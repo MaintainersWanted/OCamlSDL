@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.vcc,v 1.4 2002/09/09 15:36:13 smkl Exp $
+# $Id: makefile.vcc,v 1.5 2002/09/09 17:41:47 smkl Exp $
 
 PREFIX =        /usr/local
 CAMLLIBDIR =    /usr/local/lib/ocaml
@@ -60,3 +60,6 @@ DESTDIR =
 
 %.o : %.c
 	$(CAMLC) -c -ccopt "$(CPPFLAGS) $(CFLAGS)" $<
+
+CLIBRARY =      libsdlstub.lib
+CMAKELIB = lib /out:$(CLIBRARY)
