@@ -15,6 +15,10 @@ Follow these links for more infos:
 OCaml : http://caml.inria.fr/
 SDL   : http://www.devolution.com/~slouken/SDL/
 
+SDL ttf: http://www.devolution.com/~slouken/SDL/projects/SDL_ttf/index.html
+SDL mixer: http://www.devolution.com/~slouken/SDL/projects/SDL_mixer/index.html
+SDL image: http://www.devolution.com/~slouken/SDL/projects/SDL_image/index.html
+
 --
 Frederic Brunel
 brunel@mail.dotcom.fr
