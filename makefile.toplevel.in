@@ -18,10 +18,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.toplevel.in,v 1.12 2002/09/24 22:34:54 oliv__a Exp $
+# $Id: makefile.toplevel.in,v 1.13 2002/10/03 15:48:37 xtrm Exp $
 
 PREFIX =        @prefix@
-CAMLLIBDIR =    @OCAMLLIBDIR@
+CAMLLIBDIR =    @OCAMLLIB@
 OCAMLSDLDIR =   @OCAMLSDLDIR@
 BINDIR =        $(PREFIX)/bin
 
