@@ -258,6 +258,13 @@ val name : key -> string
 
 (** {1 Keyboard handling } *)
 
+external enable_unicode : bool -> unit
+    = "ml_SDL_EnableUNICODE"
+(** Enable unicode translation of keysyms for keyboard events *)
+external query_unicode : unit -> bool
+    = "ml_SDL_QueryUNICODE"
+
+
 external disable_key_repeat : unit -> unit
     = "ml_SDL_DisableKeyRepeat"
 (** Disable keyboard repeat *)

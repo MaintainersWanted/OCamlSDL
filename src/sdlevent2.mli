@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent2.mli,v 1.2 2002/08/27 09:53:39 oliv__a Exp $ *)
+(* $Id: sdlevent2.mli,v 1.3 2002/09/04 16:36:56 oliv__a Exp $ *)
 
 
 exception Event_exn of string
@@ -44,7 +44,8 @@ type keyboard_event = {
     ke_state : switch_state ;
     keysym   : Sdlkey.key ;
     keymod   : Sdlkey.mod_state ;
-  } 
+    keycode  : char ;
+  }
 
 type mousemotion_event = {
     mme_which  : int ;

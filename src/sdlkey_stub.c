@@ -1,4 +1,4 @@
-/* $Id: sdlkey_stub.c,v 1.3 2002/08/24 21:03:07 oliv__a Exp $ */
+/* $Id: sdlkey_stub.c,v 1.4 2002/09/04 16:36:56 oliv__a Exp $ */
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -48,4 +48,10 @@ value ml_sdl_key_pressed(value ksym)
   int len;
   Uint8 *keystate = SDL_GetKeyState(&len);
   return Val_bool( keystate[ Int_val(ksym) ] );
+}
+
+ML_1(SDL_EnableUNICODE, Bool_val, Unit)
+value ml_SDL_QueryUNICODE(value unit)
+{
+  return Val_bool(SDL_EnableUNICODE(-1));
 }

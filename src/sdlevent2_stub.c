@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.3 2002/08/27 09:53:39 oliv__a Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.4 2002/09/04 16:36:56 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -94,6 +94,30 @@ static SDLKey find_sdl_keysym(value mlkey)
   return Int_val(Field(*table, Int_val(mlkey)));
 }
 
+static value value_of_keyevent(SDL_KeyboardEvent keyevt)
+{
+  CAMLparam0();
+  CAMLlocal2(v, r);
+  Uint8 char_code = 0;
+  tag_t tag;
+  r = alloc_small(3, 0);
+  Field(r, 0) = Val_int(keyevt.which) ;
+  Field(r, 1) = Val_int(keyevt.state) ; 
+  /* SDL_PRESSED = 0x01, SDL_RELEASED = 0x00 */
+  Field(r, 2) = find_mlsdl_keysym(keyevt.keysym.sym) ;
+  Field(r, 3) = Val_int(keyevt.keysym.mod) ;
+/*    if(SDL_EnableUNICODE(-1) &&  */
+/*       (keyevt.keysym.unicode & 0xFF00) == 0) */
+/*      char_code = keyevt.keysym.unicode; */
+  if(SDL_EnableUNICODE(-1))
+    char_code = keyevt.keysym.unicode & 0x00FF ;
+  Field(r, 4) = Val_int(char_code);
+  tag = keyevt.state == SDL_PRESSED ? 1 : 2 ;
+  v = alloc_small(1, tag);
+  Field(v, 0) = r;
+  CAMLreturn(v);
+} 
+
 static value value_of_SDLEvent(SDL_Event evt)
 {
   CAMLparam0();
@@ -110,15 +134,7 @@ static value value_of_SDLEvent(SDL_Event evt)
     break ;
   case SDL_KEYDOWN :
   case SDL_KEYUP :
-    r = alloc_small(3, 0);
-    Field(r, 0) = Val_int(evt.key.which) ;
-    Field(r, 1) = Val_int(evt.key.state) ; 
-    /* SDL_PRESSED = 0x01, SDL_RELEASED = 0x00 */
-    Field(r, 2) = find_mlsdl_keysym(evt.key.keysym.sym) ;
-    Field(r, 3) = Val_int(evt.key.keysym.mod) ;
-    tag = evt.key.state == SDL_PRESSED ? 1 : 2 ;
-    v = alloc_small(1, tag);
-    Field(v, 0) = r ;
+    v = value_of_keyevent(evt.key);
     break ;
   case SDL_MOUSEMOTION :
     t = value_of_mousebutton_state(evt.motion.state);

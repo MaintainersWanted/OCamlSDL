@@ -305,6 +305,11 @@ external _name : int -> string
 let name key = 
   _name (int_of_key key)
 
+external enable_unicode : bool -> unit
+    = "ml_SDL_EnableUNICODE"
+external query_unicode : unit -> bool
+    = "ml_SDL_QueryUNICODE"
+
 external disable_key_repeat : unit -> unit
     = "ml_SDL_DisableKeyRepeat"
 external enable_key_repeat : ?delay:int -> ?interval:int -> unit -> unit
