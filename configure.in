@@ -2,7 +2,7 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.33 2004/02/04 12:00:22 oliv__a Exp $
+dnl $Id: configure.in,v 1.34 2004/03/11 10:38:07 oliv__a Exp $
 
 dnl begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -18,6 +18,7 @@ if test -z "$CFLAGS" ; then
    CFLAGS="-g -O"
 fi
 AC_PROG_CC
+AC_OBJEXT
 AC_PROG_RANLIB
 AC_FUNC_ALLOCA
 AC_C_INLINE
