@@ -1,3 +1,22 @@
+2000-01-11  Frederic Brunel  <brunel@mail.dotcom.fr>
+
+	* NEW: Added a BUGS file for reporting bugs.
+
+	* Makefile.in: Added the sdlevent module for building.
+
+2000-01-09  Frederic Brunel  <brunel@mail.dotcom.fr>
+
+	* sdl_stub.c: Initialization and shut down of all stubs added.
+
+	* NEW: All stubs can now initialize their internal datas on
+	startup (see all .h). This is usefull for the sdlevent stub.
+
+	* NEW: new module : sdlevent for managing user input events
+	
+	* TODO: Add more comments in sdlvideo.mli.
+
+	* sdlvideo.mli, sdlvideo.ml, sdlvideo_stub.c: get_video_info() function added.
+
 2000-01-04  Frederic Brunel  <brunel@emi.u-bordeaux.fr>
 
 	* TODO: To finalize the Autoconf, Automake installation.
