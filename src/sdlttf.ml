@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.2 2000/01/31 20:09:06 smkl Exp $ *)
+(* $Id: sdlttf.ml,v 1.3 2000/02/08 00:00:42 fbrunel Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -25,7 +25,11 @@
 exception SDLttf_exception of string
 let _ = Callback.register_exception "SDLttf_exception" (SDLttf_exception "Any string")
 
+(* Types *)
+
 type font
+
+(* Native C external functions *)
 
 external open_font : string -> int -> font = "sdlttf_open_font"
 external close_font : font -> unit = "sdlttf_close_font"
@@ -41,6 +45,8 @@ let make_glyph font col str =
   let conv = Sdlvideo.surface_display_format text in
   Sdlvideo.surface_free text;
   conv
+
+(* ML functions *)
 
 let make_printer font col =
   (* make a memo array *)

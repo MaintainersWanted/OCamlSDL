@@ -17,13 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlloader.mli,v 1.2 2000/01/20 17:50:34 smkl Exp $ *)
+(* $Id: sdlloader.mli,v 1.3 2000/02/07 23:55:27 fbrunel Exp $ *)
 
 (* Exception *)
 
 exception SDLloader_exception of string
 
 (* Load a PPM picture *)
+
 val load_ppm : string -> Sdlvideo.surface
 val load_ppm_pixels : string -> string * int * int
 

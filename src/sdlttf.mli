@@ -17,20 +17,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.2 2000/01/31 20:09:06 smkl Exp $ *)
+(* $Id: sdlttf.mli,v 1.3 2000/02/08 00:01:26 fbrunel Exp $ *)
 
-(* Define a new exception for TTF errors and register 
-   it to be callable from C code. *)
+(* Exception *)
 
 exception SDLttf_exception of string
 
+(* Type *)
+
 type font
+
+(* Operations *)
 
 val open_font : string -> int -> font
 val close_font : font -> unit
 val font_height : font -> int
-val render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface
+val render_text : font -> string -> (int * int * int) -> (int * int * int) -> Sdlvideo.surface
 
-(* return a function to print strings, and another to clean up printer *)
-val make_printer : font -> (int*int*int) ->
+(* Return a function to print strings, and another to clean up printer *)
+val make_printer : font -> (int * int * int) ->
   (Sdlvideo.surface -> int -> int -> string -> unit) * (unit -> unit)

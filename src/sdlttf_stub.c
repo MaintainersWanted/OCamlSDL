@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.2 2000/01/31 20:09:06 smkl Exp $ */
+/* $Id: sdlttf_stub.c,v 1.3 2000/02/08 00:02:09 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -29,11 +29,19 @@
 #include <SDL.h>
 #include "SDL_ttf.h"
 
+/*
+ * Raise an OCaml exception with a message
+ */
+
 static void
 sdlttf_raise_exception (char *msg)
 {
    raise_with_string(*caml_named_value("SDLttf_exception"), msg);
 }
+
+/*
+ * Stub initialization
+ */
 
 void
 sdlttf_stub_init(void)
@@ -45,11 +53,19 @@ sdlttf_stub_init(void)
    }
 }
 
+/*
+ * Stub shutdown
+ */
+
 void
 sdlttf_stub_kill(void)
 {
    TTF_Quit();
 }
+
+/*
+ * OCaml/C conversion functions
+ */
 
 value
 sdlttf_open_font(value file, value ptsize)

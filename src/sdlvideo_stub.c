@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.8 2000/01/31 20:09:06 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.9 2000/02/08 00:04:30 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -57,6 +57,7 @@ sdlvideo_raise_exception (char *msg)
 {
   raise_with_string(*caml_named_value("SDLvideo_exception"), msg);
 }
+
 /*
  * Stub initialization
  */
@@ -348,6 +349,7 @@ sdlvideo_empty_surface(value width, value height)
    int w, h;
    w = Int_val(width);
    h = Int_val(height);
+
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 24,
 			       0x0000000ff, 0x0000ff00, 0x00ff0000, 0);
 
@@ -365,6 +367,7 @@ sdlvideo_surface_from_rawrgb(value raw, value width, value height)
    int w, h, i;
    w = Int_val(width);
    h = Int_val(height);
+
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 24,
 			       0x0000000ff, 0x0000ff00, 0x00ff0000, 0);
    
@@ -391,10 +394,10 @@ sdlvideo_surface_from_rawrgba(value raw, value width, value height)
    int w, h, i;
    w = Int_val(width);
    h = Int_val(height);
+
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 32,
 			       0x000000ff, 0x0000ff00, 0x00ff0000,
 			       0xff000000);
-
    if (surf == NULL)
      sdlvideo_raise_exception(SDL_GetError());
 
@@ -417,9 +420,6 @@ sdlvideo_surface_set_pixel(value ml_surf, value x, value y,
    char *location;
    SDL_Surface *surf = SDL_SURFACE(ml_surf);
 
-   if (surf->pixels == NULL)
-     sdlvideo_raise_exception("surface_set_pixel");
-
    location = surf->pixels +
               surf->pitch * Int_val(y) +
               surf->format->BytesPerPixel * Int_val(x);
@@ -437,9 +437,6 @@ sdlvideo_surface_get_pixel(value ml_surf, value x, value y)
    CAMLlocal1(ret);
    char *location;
    SDL_Surface *surf = SDL_SURFACE(ml_surf);
-
-   if (surf->pixels == NULL)
-     sdlvideo_raise_exception("surface_get_pixel");
 
    ret = alloc_tuple(3);
    location = surf->pixels +
