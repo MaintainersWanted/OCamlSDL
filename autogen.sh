@@ -1,5 +1,5 @@
 #!/bin/sh
 #
-aclocal -I /usr/local/share/aclocal -I ac
+aclocal -I ac
 autoconf
 
