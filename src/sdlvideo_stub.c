@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.13 2000/07/06 13:51:13 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.14 2000/07/19 09:04:15 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -143,7 +143,7 @@ sdlvideo_set_display_mode (value width, value height, value bpp)
 {
   SDL_Surface *surf;
   int depth = Int_val(bpp);
-  
+
   /* Modes not implemented */
   if (depth != 0 && depth < 15) {
     sdlvideo_raise_exception("Bit depth not implemented!");
@@ -508,6 +508,15 @@ sdlvideo_blit_raw_buffer(value screen, value buffer, value size)
    SDL_UnlockSurface(scr);
    return Val_unit;
 }
+
+value sdlvideo_show_cursor(value vtoggle)
+{
+  int toggle = Bool_val(vtoggle);
+
+  SDL_ShowCursor(toggle);
+  return Val_unit;
+}
+  
 
 /* UNSTESTED */
 value

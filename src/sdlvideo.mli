@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.10 2000/07/06 13:44:00 xtrm Exp $ *)
+(* $Id: sdlvideo.mli,v 1.11 2000/07/19 09:04:15 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -98,6 +98,7 @@ val wm_iconify_window : unit -> unit;;
 (* TO DO: val wm_get_caption : string -> string -> unit ;; *)
 (* TO DO: val wm_set_icon : surface -> int ;; *)
 
+val show_cursor : bool -> unit;;
 
 (* UNTESTED *)
 val must_lock : surface -> bool;;
