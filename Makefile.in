@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.8 2000/01/31 20:09:06 smkl Exp $
+# $Id: Makefile.in,v 1.9 2000/02/27 22:49:09 fbrunel Exp $
 
 CC = 		@CC@ 
 CFLAGS =	@CFLAGS@ -Wall # -g -pg #-O3 -pipe -pedantic -m486 
@@ -30,7 +30,9 @@ OMLFLAGS =	-unsafe -inline 10 #-ccopt -pg -p
 
 CLIBS =		@LIBS@ @MATHLIB@
 MLLIBS =	-cclib "$(CLIBS)" 
-LIBDIR =
+
+BIN_DIR =	bin
+LIB_DIR =	lib
 
 C_OBJS = 	sdl_stub.o sdlcdrom_stub.o sdltimer_stub.o sdlvideo_stub.o\
 		sdlevent_stub.o sdlloader_stub.o sdlttf_stub.o sdlmixer_stub.o
@@ -44,13 +46,16 @@ OPT_OBJS=	sdl.cmx sdlcdrom.cmx sdltimer.cmx \
 OBJS =		$(C_OBJS) $(ML_OBJS)
 OOBJS =		$(C_OBJS) $(OPT_OBJS)
 
-TOPLEVEL = 	toplevel
-RUNTIME = 	sdlrun
-LIBRARY = 	sdl.cma
-OLIBRARY = 	sdl.cmxa
-CLIBRARY = 	libsdl.a
+TOPLEVEL = 	$(BIN_DIR)/toplevel
+RUNTIME = 	$(BIN_DIR)sdlrun
+LIBRARY = 	$(LIB_DIR)/sdl.cma
+OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
+CLIBRARY = 	$(LIB_DIR)/libstub.a
 
-all: $(TOPLEVEL)
+all: bin libs
+
+bin: $(TOPLEVEL)
+libs: $(LIBRARY) $(OLIBRARY) $(CLIBRARY)
 
 $(TOPLEVEL): $(OBJS)
 	$(CAMLTOP) -custom -o $@ $(OBJS) $(MLLIBS)
@@ -62,7 +67,7 @@ $(RUNTIME): $(OBJS)
 $(LIBRARY): $(CLIBRARY) $(ML_OBJS)
 	$(CAMLC) -linkall -a -o $(LIBRARY) $(ML_OBJS)
 
-$(OLIBRARY): $(CLIBRARY) $(OPT_OBJS)
+$(OLIBRARY): $(LIBRARY) $(OPT_OBJS)
 	$(CAMLOPT) -linkall -a -o $(OLIBRARY) $(OPT_OBJS)
 
 $(CLIBRARY): $(C_OBJS)
@@ -87,9 +92,13 @@ $(CLIBRARY): $(C_OBJS)
 distclean:
 	rm -f $(TOPLEVEL) $(RUNTIME) *.o *~ *.cm[iox] .depend
 	rm -f config.status config.cache config.log Makefile
+	rm -f $(BIN_DIR)/*
+	rm -f $(LIB_DIR)/*a
 
 clean:
 	rm -f *.o *~ *.cm[iox] .depend
+	rm -f $(BIN_DIR)/*
+	rm -f $(LIB_DIR)/*a
 
 depend:
 	$(CAMLDEP) *.mli *.ml > .depend
