@@ -37,10 +37,7 @@ let check_file_and_play_it f =
 	while playing_music()
 	do
 	  Sdltimer.delay 10;
-	done;
-	Printf.printf "Freeying Music\n";
-	flush stdout;
-	free_music m; 	
+	done
     end;;
 
 List.iter check_file_and_play_it (List.tl (Array.to_list Sys.argv));;
