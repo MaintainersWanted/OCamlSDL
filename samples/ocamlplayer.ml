@@ -17,7 +17,7 @@ then
 init [`EVERYTHING];;
 
 try 
-  open_audio ~freq:44100 ~format:AUDIO_FORMAT_S16 STEREO;
+  open_audio ~freq:44100 AUDIO_FORMAT_S16 STEREO;
   Printf.printf "audio device initialised\n";
   flush stdout;
 with _ ->
