@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.ml,v 1.4 2001/10/22 22:47:28 xtrm Exp $ *)
+(* $Id: sdlevent.ml,v 1.5 2001/10/23 09:26:43 xtrm Exp $ *)
 
 (* Define a new exception for event errors and register 
    it to be callable from C code. *)
@@ -314,7 +314,7 @@ let char_of_key = function
   | KEY_RETURN -> '\n'
   | KEY_SPACE -> ' '
   | KEY_EXCLAIM -> '!'
-(*  | KEY_QUOTEDBL -> '"' *)
+  | KEY_QUOTEDBL -> '"'
   | KEY_HASH -> '#'
   | KEY_DOLLAR -> '$'
   | KEY_AMPERSAND -> '&'
@@ -376,4 +376,20 @@ let char_of_key = function
   | KEY_x -> 'x'
   | KEY_y -> 'y'
   | KEY_z -> 'z'
+  | KEY_KP0 -> '0'
+  | KEY_KP1 -> '1'
+  | KEY_KP2 -> '2'
+  | KEY_KP3 -> '3'
+  | KEY_KP4 -> '4'
+  | KEY_KP5 -> '5'
+  | KEY_KP6 -> '6'
+  | KEY_KP7 -> '7'
+  | KEY_KP8 -> '8'
+  | KEY_KP9 -> '9'
+  | KEY_KP_PERIOD -> '.'
+  | KEY_KP_DIVIDE -> '/'
+  | KEY_KP_MULTIPLY -> '*'
+  | KEY_KP_MINUS -> '-'
+  | KEY_KP_PLUS -> '+'
+  | KEY_KP_EQUALS -> '='
   | _ -> raise (Invalid_argument "char_of_key")
