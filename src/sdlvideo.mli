@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(** $Id: sdlvideo.mli,v 1.23 2002/07/24 19:03:57 xtrm Exp $ *)
+(** $Id: sdlvideo.mli,v 1.24 2002/08/08 15:42:14 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -89,13 +89,13 @@ type common_video_flag = [
 (*1 Operations on display *)
 
 (** returns information about the video hardware *)
-val get_video_info : unit -> video_info;;
+val get_video_info : unit -> video_info
 
 (** returns the current display surface *)
-val get_display_surface : unit -> surface;;
+val get_display_surface : unit -> surface
 
 (** Set up a video mode with the specified width, height and bits-per-pixel.*)
-val set_display_mode : width:int -> height:int -> bpp:int -> surface;; 
+val set_display_mode : width:int -> height:int -> bpp:int -> surface 
 
 (** Check to see if a particular video mode is supported. *)
 val video_mode_ok : width:int -> height:int -> bpp:int -> video_flag list -> bool
@@ -111,7 +111,7 @@ external create_rgb_surface : common_video_flag list ->
 (* [create_rgb_surface flags width height bpp rmask gmask bmask amask] *)
 
 (** obsolete must use set_video_mode *)
-val set_opengl_mode : int -> int -> int -> surface;; 
+val set_opengl_mode : int -> int -> int -> surface 
 
 (** Maps an RGB triple to an opaque pixel value for a given pixel format *)
 val map_rgb : surface -> color -> int32
@@ -127,34 +127,34 @@ val map_rgb : surface -> color -> int32
   On hardware that doesn't support double-buffering, this is equivalent to 
   calling [update_rect get_display_surface() RectMax]  
 *)
-val flip : surface -> unit;;
+val flip : surface -> unit
 
 (** Makes sure the given area is updated on the given screen. *)
-val update_rect : surface -> rect -> unit;;
+val update_rect : surface -> rect -> unit
 
 (*1 Operations on surfaces *)
 
-val surface_free : surface -> unit;;
+val surface_free : surface -> unit
 
 (** Loads a surface from a named Windows BMP file.
   
   Returns the new [surface], or raise [SDLvideo_exception] 
   if there was an error *)
-val surface_loadBMP : string -> surface;;
+val surface_loadBMP : string -> surface
 
 (** Saves tthe [surface] as a Windows BMP file named file. *)
-val surface_saveBMP : surface -> string -> unit;;
+val surface_saveBMP : surface -> string -> unit
 
 (*1 Accessors *)
 
 (** return the width of the given surface *)
-val surface_width : surface -> int;;
+val surface_width : surface -> int
 
 (** return the height of the given surface *)
-val surface_height : surface -> int;;
+val surface_height : surface -> int
 
 (** return a rectangular area corresponding of the given surface *)
-val surface_rect : surface -> rect;;
+val surface_rect : surface -> rect
       
 (* Grabbed in ocamlsdl-0.3 made by Jean-Christophe FILLIATRE *)
 (** return the bits per pixel of the given surface *)
@@ -170,69 +170,69 @@ val surface_bmask : surface -> int
 val surface_amask : surface -> int
 
 (** performs a fast fill of the given rectangle with 'color' *)
-val surface_fill_rect : surface -> rect -> color -> surface;;
+val surface_fill_rect : surface -> rect -> color -> surface
 
 (**  performs a fast blit from the source surface to the destination surface. *)
-val surface_blit : surface -> rect -> surface -> rect -> unit;;
+val surface_blit : surface -> rect -> surface -> rect -> unit
 
 (** sets the alpha value for the entire surface, as opposed to using the alpha component of each pixel *)
-val surface_set_alpha : surface -> float -> surface;;
+val surface_set_alpha : surface -> float -> surface
 
 (** sets the color key (transparent pixel) in a blittable surface *)
-val surface_set_colorkey : surface -> color option -> unit;;
+val surface_set_colorkey : surface -> color option -> unit
 
 (** takes a surface and copies it to a new surface of the pixel format and 
     colors of the video framebuffer, suitable for fast blitting onto 
     the display surface.*)
-val surface_display_format : surface -> surface;;
+val surface_display_format : surface -> surface
 
-val surface_from_pixels : pixels -> surface;;
-val surface_set_pixel : surface -> int -> int -> color -> unit;;
-val surface_get_pixel : surface -> int -> int -> color;;
+val surface_from_pixels : pixels -> surface
+val surface_set_pixel : surface -> int -> int -> color -> unit
+val surface_get_pixel : surface -> int -> int -> color
 
-val unsafe_blit_buffer : surface -> string -> int -> unit;;
+val unsafe_blit_buffer : surface -> string -> int -> unit
 
 (*1 Operations on colors *)
 
 (** converts list of int in color type *)
-val color_of_int : (int * int * int) -> color;;
+val color_of_int : (int * int * int) -> color
 
 (** converts list of float in color type *)
-val color_of_float : (float * float * float) -> color;;
+val color_of_float : (float * float * float) -> color
 
 (** convert color type in list of int *)
-val rgb_vector_of_color : color -> (int * int * int);;
+val rgb_vector_of_color : color -> (int * int * int)
 
 (*1 Window manager interaction *)
 
 (** return if we can talk to a window manager *)
-val wm_available : unit -> bool;;
+val wm_available : unit -> bool
 
 (**  sets the title and icon text of the display window *) 
-val wm_set_caption : string -> string -> unit;;
+val wm_set_caption : string -> string -> unit
 
 (** iconifies the window*)
-val wm_iconify_window : unit -> unit;;
+val wm_iconify_window : unit -> unit
 
-(* TO FIX: val wm_toggle_fullscreen : surface -> int ;; *)
-(* TO DO: val wm_get_caption : string -> string -> unit ;; *)
-(* TO DO: val wm_set_icon : surface -> int ;; *)
+(* TO FIX: val wm_toggle_fullscreen : surface -> int  *)
+(* TO DO: val wm_get_caption : string -> string -> unit  *)
+(* TO DO: val wm_set_icon : surface -> int  *)
 
-val show_cursor : bool -> unit;;
+val show_cursor : bool -> unit
 
 (* UNTESTED *)
 
 (** [obsolete] do not use *)
-val must_lock : surface -> bool;;
+val must_lock : surface -> bool
 
 (** [obsolete] do not use *)
-val lock_surface : surface -> unit;;
+val lock_surface : surface -> unit
 
 (** [obsolete] do not use *)
-val unlock_surface : surface -> unit;; 
+val unlock_surface : surface -> unit 
 
-val surface_pixel_data : surface -> pixel_data;;
-val gl_swap_buffers : unit -> unit;;
+val surface_pixel_data : surface -> pixel_data
+val gl_swap_buffers : unit -> unit
 
 
 
