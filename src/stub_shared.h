@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: stub_shared.h,v 1.2 2002/04/24 15:13:06 xtrm Exp $ */
+/* $Id: stub_shared.h,v 1.3 2002/04/25 16:43:53 xtrm Exp $ */
 
 #ifndef __STUB_SHARED_H__
 #define __STUB_SHARED_H__
@@ -33,5 +33,12 @@
 /* Simple surfaces (not finalized) */
 #define ML_SURFACE(surface) (value)surface
 #define SDL_SURFACE(surface) ((SDL_Surface *)surface)
+
+#define SDL_COLOR_FROM_VALUE(ml_color, c_color)\
+(&(c_color))->r = Int_val(Field((ml_color),0));\
+(&(c_color))->g = Int_val(Field((ml_color),1));\
+(&(c_color))->b = Int_val(Field((ml_color),2));
+
+
 
 #endif /* __STUB_SHARED_H__ */
