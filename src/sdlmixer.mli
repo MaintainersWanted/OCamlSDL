@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.9 2002/08/08 12:35:53 oliv__a Exp $ *)
+(* $Id: sdlmixer.mli,v 1.10 2002/08/14 14:07:43 oliv__a Exp $ *)
 
 (** Simple multi-channel audio mixer *)
 
@@ -43,10 +43,9 @@ type format =
 
 type channels = MONO | STEREO
 
-external open_audio : 
+val open_audio : 
   ?freq:int -> ?format:format -> ?chunksize:int -> ?channels:channels 
      -> unit -> unit
-    = "sdlmixer_open_audio"
 (** [open_audio frequency format chunksize channels ()] opens the mixer
     with a certain audio format.  
    - frequency could be 8000 11025 22050 44100 ; defaults to 22050
@@ -55,7 +54,7 @@ external open_audio :
    - channels defaults to STEREO
  *)
 
-external close_audio : unit -> unit = "sdlmixer_close_audio"
+val close_audio : unit -> unit
 (** Close the mixer, halting all playing audio *)
 
 type specs =
@@ -63,7 +62,7 @@ type specs =
     format    : format;
     channels  : channels }
 
-external query_specs : unit -> specs = "sdlmixer_query_specs"
+val query_specs : unit -> specs
 (** Find out what the actual audio device parameters are. 
     @raise SDLmixer_exception if the audio has not been opened
  *)
@@ -150,11 +149,6 @@ external fadeout_channel : channel -> float -> unit = "sdlmixer_fadeout_channel"
   The ms parameter indicates the number of seconds the fading
   will take.
  *)
-
-external set_channel_finished : (channel -> unit) -> unit = "sdlmixer_set_channel_finished"
-(** Add your own callback when a channel has finished playing. *)
-
-external unset_channel_finished : unit -> unit = "sdlmixer_unset_channel_finished"
 
 external playing_channel : channel -> bool = "sdlmixer_playing"
 external num_playing_channel : unit -> int = "sdlmixer_numplaying"
@@ -279,12 +273,6 @@ external fadeout_music : float -> unit = "sdlmixer_fadeout_music"
   The ms parameter indicates the number of seconds the fading
   will take.
 *)
-
-external set_music_finished   : (unit -> unit) -> unit = "sdlmixer_set_music_finished"
-(** Add your own callback when the music has finished playing.
-    This callback is only called if the music finishes naturally. *)
-
-external unset_music_finished : unit -> unit = "sdlmixer_unset_music_finished"
 
 external music_type : music option -> music_kind = "sdlmixer_get_music_type"
 (** Find out the music format of a mixer music, or the currently

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.ml,v 1.8 2002/08/05 10:43:54 oliv__a Exp $ *)
+(* $Id: sdlmixer.ml,v 1.9 2002/08/14 14:07:42 oliv__a Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -81,16 +81,6 @@ external set_music_cmd : string -> unit = "sdlmixer_set_music_cmd"
 external unset_music_cmd : unit -> unit = "sdlmixer_unset_music_cmd"
 external free_chunk : chunk -> unit = "sdlmixer_free_chunk"
 external free_music : music -> unit = "sdlmixer_free_music"
-
-(* Hooks *)
-
-(* external set_postmix : (string -> unit) -> unit = "sdlmixer_set_postmix"*)
-(* external set_music   : (int -> string) -> unit = "sdlmixer_set_music"*)
-(* external unset_music : unit -> unit ="sdlmixer_unset_music"*)
-external set_channel_finished : (channel -> unit) -> unit = "sdlmixer_set_channel_finished"
-external unset_channel_finished : unit -> unit = "sdlmixer_unset_channel_finished"
-external set_music_finished   : (unit -> unit) -> unit = "sdlmixer_set_music_finished"
-external unset_music_finished : unit -> unit = "sdlmixer_unset_music_finished"
 
 (* Groups and channels *)
 let all_channels  = -1

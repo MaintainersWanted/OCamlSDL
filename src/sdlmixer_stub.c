@@ -17,15 +17,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.18 2002/08/06 13:17:02 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.19 2002/08/14 14:07:43 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
+
 #include <stdio.h>
 #include <string.h>
+#include <error.h>
 
 #include <SDL.h>
 #include <SDL_mixer.h>
@@ -33,11 +35,6 @@
 
 #include "common.h"
 #include "sdlmixer_stub.h"
-
-static value cb_channel_finished = Val_unit;
-static value cb_music_finished = Val_unit;
-/*  static value cb_postmix = Val_unit; */
-/*  static value cb_music = Val_unit; */
 
 /*
  * Raise an OCaml exception with a message
@@ -49,6 +46,8 @@ sdlmixer_raise_exception (char *msg)
   static value *mixer_exn = NULL;
   if(! mixer_exn)
     mixer_exn = caml_named_value("SDLmixer_exception");
+  if(! mixer_exn)
+    error(-1, 0, "exception not registered.");
   raise_with_string(*mixer_exn, msg);
 }
 
@@ -59,10 +58,6 @@ sdlmixer_raise_exception (char *msg)
 void
 sdlmixer_stub_init()
 {
-  register_global_root(&cb_channel_finished);
-  register_global_root(&cb_music_finished);
-  /*  register_global_root(&cb_postmix); */
-  /*  register_global_root(&cb_music); */
 }
 
 /*
@@ -72,10 +67,6 @@ sdlmixer_stub_init()
 void
 sdlmixer_stub_kill()
 {
-  remove_global_root(&cb_channel_finished);
-  remove_global_root(&cb_music_finished);
-  /*  remove_global_root(&cb_postmix); */
-  /*  remove_global_root(&cb_music); */
 }
 
 /*
@@ -178,7 +169,7 @@ sdlmixer_loadWAV(value fname)
   Mix_Chunk *chunk;
   chunk = Mix_LoadWAV(String_val(fname));
 
-  if (chunk == NULL) 
+  if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());
 
   return ML_CHUNK(chunk);
@@ -261,115 +252,6 @@ sdlmixer_free_music(value chunk)
 {
   Mix_FreeMusic(SDL_MUS(chunk));
   SDL_MUS(chunk) = NULL;
-  return Val_unit;
-}
-
-/* The 2 following hooks are disbled for now :
-   we should use bigarrays for this */
-
-/*  static void */
-/*  sdlmixer_data_hook(void *udata, Uint8 *stream, int len) */
-/*  { */
-/*    value closure; */
-/*    value arg_string = alloc_string(len); */
-/*    memcpy(Bp_val(arg_string), stream, len); */
-/*    closure = *(value *)udata; */
-/*    if (closure != Val_unit) */
-/*      callback(closure, arg_string); */
-/*  } */
-
-/*  static void */
-/*  sdlmixer_music_hook(void *udata, Uint8 *stream, int len) */
-/*  { */
-/*    value closure= *(value *)udata; */
-/*    value str = callback_exn(closure, Val_int(len)); */
-/*    if(Is_exception_result(str)){ */
-/*      fprintf(stderr, "callback raised an exeption\n"); */
-/*      goto abort; */
-/*    } */
-/*    if(string_length(str) != len){ */
-/*      fprintf(stderr, "callback returned string of wrong size\n"); */
-/*      goto abort; */
-/*    } */
-/*    memcpy(stream, String_val(str), len); */
-/*    return; */
-
-/*   abort: */
-/*    fflush(stderr); */
-/*    abort(); */
-/*  } */
-
-static void
-sdlmixer_channel_finished_hook(int channel)
-{
-  if (cb_channel_finished != Val_unit)
-    callback(cb_channel_finished, Val_int(channel));
-}
-
-static void
-sdlmixer_music_finished_hook(void)
-{
-  if (cb_music_finished != Val_unit)
-    callback(cb_music_finished, Val_unit);
-}
-
-/*  value */
-/*  sdlmixer_set_postmix(value cb) */
-/*  { */
-/*    cb_postmix = cb; */
-/*    Mix_SetPostMix(sdlmixer_data_hook, &cb_postmix); */
-/*    return Val_unit; */
-/*  } */
-
-/*  value */
-/*  sdlmixer_set_music(value cb) */
-/*  { */
-/*    cb_music = cb; */
-/*    Mix_HookMusic(sdlmixer_music_hook, &cb_music); */
-/*    return Val_unit; */
-/*  } */
-
-/*  value */
-/*  sdlmixer_unset_music(value unit) */
-/*  { */
-/*    cb_music = Val_unit; */
-/*    Mix_HookMusic(NULL, NULL); */
-/*    return Val_unit; */
-/*  } */
-
-value
-sdlmixer_set_channel_finished(value cb)
-{
-#if (MIX_MAJOR_VERSION >= 1) && (MIX_MINOR_VERSION >= 2) && (MIX_PATCHLEVEL >= 4)
-  cb_channel_finished = cb;
-  Mix_ChannelFinished(sdlmixer_channel_finished_hook);
-#endif
-  return Val_unit;
-}
-
-value
-sdlmixer_unset_channel_finished(value unit)
-{
-#if (MIX_MAJOR_VERSION >= 1) && (MIX_MINOR_VERSION >= 2) && (MIX_PATCHLEVEL >= 4)
-  cb_channel_finished = Val_unit;
-  Mix_ChannelFinished(NULL);
-#endif
-  return Val_unit;
-}
-
-value
-sdlmixer_set_music_finished(value cb)
-{
-  cb_music_finished = cb;
-  Mix_HookMusicFinished(sdlmixer_music_finished_hook);
-  return Val_unit;
-}
-
-value
-sdlmixer_unset_music_finished(value unit)
-{
-  cb_music_finished = Val_unit;
-  Mix_HookMusicFinished(NULL);
   return Val_unit;
 }
 
