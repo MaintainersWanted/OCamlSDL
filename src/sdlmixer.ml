@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.ml,v 1.10 2002/09/07 01:06:10 oliv__a Exp $ *)
+(* $Id: sdlmixer.ml,v 1.11 2002/09/30 21:01:04 oliv__a Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -79,6 +79,8 @@ external load_music : string -> music = "sdlmixer_loadMUS"
 external music_type : music option -> music_kind = "sdlmixer_get_music_type"
 external set_music_cmd : string -> unit = "sdlmixer_set_music_cmd"
 external unset_music_cmd : unit -> unit = "sdlmixer_unset_music_cmd"
+external free_chunk : chunk -> unit = "sdlmixer_free_chunk"
+external free_music : music -> unit = "sdlmixer_free_music"
 
 (* Groups and channels *)
 let all_channels  = -1
