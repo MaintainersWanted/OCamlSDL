@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.14 2000/06/09 08:01:19 xtrm Exp $
+# $Id: Makefile.in,v 1.15 2000/06/23 09:29:43 xtrm Exp $
 
 CC = 		@CC@ 
 CFLAGS =	@CFLAGS@ @DEFS@ -Wall -D__DEBUG__ # -g -pg #-O3 -pipe -pedantic -m486 
@@ -34,17 +34,22 @@ MLLIBS =	-cclib "$(CLIBS)"
 BIN_DIR =	bin
 LIB_DIR =	lib
 
-C_OBJS = 	sdl_stub.o sdlcdrom_stub.o sdltimer_stub.o sdlvideo_stub.o \
-		sdlevent_stub.o sdlloader_stub.o sdlttf_stub.o sdlmixer_stub.o \
-		stub_shared.o
+#don't put a space behind the last module
+MODULES = 	sdl sdlvideo sdlcdrom sdlevent \
+		sdltimer sdlttf sdlmixer sdlloader
 
-ML_OBJS	=	sdl.cmo sdlcdrom.cmo sdltimer.cmo \
-		sdlvideo.cmo sdlevent.cmo sdlloader.cmo sdlttf.cmo sdlmixer.cmo
+STUB_SRCS = 	$(MODULES:=_stub.c) stub_shared.c
+
+STUB_OBJS =	$(STUB_SRCS:.c=.o)
+
+ML_OBJS	=	$(MODULES:=.cmo)
+
+C_OBJS = 	$(ML_OBJS:.cmo=.o)
 
 OPT_OBJS=	$(ML_OBJS:.cmo=.cmx)
 
-OBJS =		$(C_OBJS) $(ML_OBJS)
-OOBJS =		$(C_OBJS) $(OPT_OBJS)
+OBJS =		$(STUB_OBJS) $(ML_OBJS)
+OOBJS =		$(STUB_OBJS) $(OPT_OBJS)
 
 TOPLEVEL = 	$(BIN_DIR)/toplevel
 RUNTIME = 	$(BIN_DIR)sdlrun
@@ -79,8 +84,8 @@ $(LIBRARY): $(CLIBRARY) $(ML_OBJS)
 $(OLIBRARY): $(LIBRARY) $(OPT_OBJS)
 	$(CAMLOPT) -linkall -a -o $(OLIBRARY) $(OPT_OBJS)
 
-$(CLIBRARY): $(C_OBJS)
-	ar cr $(CLIBRARY) $(C_OBJS)
+$(CLIBRARY): $(STUB_OBJS)
+	ar cr $(CLIBRARY) $(STUB_OBJS)
 	ranlib $(CLIBRARY)
 
 .SUFFIXES: .c .o .ml .mli .cmo .cmi .cmx
@@ -98,13 +103,13 @@ $(CLIBRARY): $(C_OBJS)
 	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
 
 distclean:
-	rm -f *.o *~ *.cm[iox] .depend
+	rm -f $(STUB_OBJS) $(C_OBJS) *~ *.cm[iox] .depend
 	rm -f config.status config.cache config.log Makefile
 	rm -f $(BIN_DIR)/*
 	rm -f $(LIB_DIR)/*a $(LIB_DIR)/*.cm[?x]a
 
 clean:
-	rm -f *.o *~ *.cm[iox] .depend
+	rm -f $(STUB_OBJS) $(C_OBJS) *~ *.cm[iox] .depend
 
 depend:
 	$(CAMLDEP) *.mli *.ml > .depend
