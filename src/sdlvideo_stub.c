@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.20 2001/05/16 16:03:24 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.21 2001/06/11 17:06:58 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -243,10 +243,10 @@ val_video_flag(int flags)
 }
 
 value 
-sdlvideo_video_mode_ok(value vw, value vh, value vbpp, value vf) 
+sdlvideo_video_mode_ok(value width, value height, value vbpp, value vf) 
 {
-  int w = Int_val(vw);
-  int h = Int_val(vh);
+  int w = Int_val(width);
+  int h = Int_val(height);
   int bpp = Int_val(vbpp);
   int flags = video_flag_val(vf);
 
@@ -254,15 +254,31 @@ sdlvideo_video_mode_ok(value vw, value vh, value vbpp, value vf)
 }
 
 value 
-sdlvideo_set_video_mode(value vw, value vh, value vbpp, value vf) 
+sdlvideo_set_video_mode(value width, value height, value vbpp, value vf) 
 {
-  int w = Int_val(vw);
-  int h = Int_val(vh);
+  int w = Int_val(width);
+  int h = Int_val(height);
   int bpp = Int_val(vbpp);
   int flags = video_flag_val(vf);
   SDL_Surface* s;
   
   if ((s = SDL_SetVideoMode(w,h,bpp,flags)) == NULL) 
+    sdlvideo_raise_exception(SDL_GetError());
+
+  return (value) s;
+}
+
+value 
+sdlvideo_create_rgb_surface(value flags, value width, value height, 
+			    value bpp, value rmask, value gmask, 
+			    value bmask, value amask) 
+{
+  SDL_Surface* s;
+  
+  s = SDL_CreateRGBSurface(Int_val(flags), Int_val(width),Int_val(height),
+			   Int_val(bpp), Int_val(rmask), Int_val(gmask), 
+			   Int_val(bmask), Int_val(amask));
+  if (s == NULL) 
     sdlvideo_raise_exception(SDL_GetError());
 
   return (value) s;
