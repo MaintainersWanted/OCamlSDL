@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id */
+/* $Id: sdlevent_stub.c,v 1.2 2000/01/13 00:39:43 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id */
+/* $Id: sdlevent_stub.h,v 1.2 2000/01/13 00:39:56 fbrunel Exp $ */
 
 #ifndef __SDLEVENT_STUB_H__
 #define __SDLEVENT_STUB_H__
