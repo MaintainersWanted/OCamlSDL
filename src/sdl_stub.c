@@ -17,14 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.9 2002/05/30 15:52:13 xtrm Exp $ */
+/* $Id: sdl_stub.c,v 1.10 2002/06/20 13:20:44 oliv__a Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
 
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 
 #include "common.h"
@@ -52,10 +52,10 @@ static void sdl_internal_quit (void)
   sdlevent_stub_kill();
   sdltimer_stub_kill();
   sdlvideo_stub_kill();
-#ifdef HAVE_SDL_SDL_TTF_H
+#ifdef HAVE_SDL_TTF_H
   sdlttf_stub_kill();
 #endif
-#ifdef HAVE_SDL_SDL_MIXER_H
+#ifdef HAVE_SDL_MIXER_H
   sdlmixer_stub_kill();
 #endif
 }
@@ -99,10 +99,10 @@ sdl_init(value vf)
   sdlevent_stub_init();
   sdltimer_stub_init();
   sdlvideo_stub_init();
-#ifdef HAVE_SDL_SDL_TTF_H
+#ifdef HAVE_SDL_TTF_H
   sdlttf_stub_init();
 #endif
-#ifdef HAVE_SDL_SDL_MIXER_H
+#ifdef HAVE_SDL_MIXER_H
   sdlmixer_stub_init();
 #endif
 

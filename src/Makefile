@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.3 2002/06/18 10:15:01 oliv__a Exp $
+# $Id: Makefile,v 1.4 2002/06/20 13:20:44 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -103,7 +103,7 @@ depend: .depend .depend.c
 
 .depend.c : $(STUB_SRCS)
 	@echo "making C deps..."
-	@$(CC) $(CFLAGS) -I $(CAMLLIBDIR) -MM $^ > $@
+	@$(CC) $(CPPFLAGS) -I $(CAMLLIBDIR) -MM $^ > $@
 
 .PHONY: all bin libs clean distclean depend install uninstall
 

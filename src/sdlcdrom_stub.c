@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.7 2000/06/09 14:34:30 xtrm Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.8 2002/06/20 13:20:44 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -25,7 +25,7 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <stdio.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include "sdlcdrom_stub.h"
 
 /*

@@ -2,7 +2,7 @@ dnl ******
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.16 2002/06/04 23:10:36 oliv__a Exp $
+dnl $Id: configure.in,v 1.17 2002/06/20 13:20:44 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -14,6 +14,9 @@ AC_CONFIG_AUX_DIR(./support)
 # need support/mkinstalldirs
 
 dnl -*- Check for programs -*-
+if test -z "$CFLAGS" ; then
+   CFLAGS="-g -O -Wall -Wno-unused"
+fi
 AC_PROG_CC
 AC_PROG_INSTALL
 
@@ -80,7 +83,7 @@ LIBS="$LIBS $SDL_LIBS"
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 
 dnl Checking SDL headers
-AC_CHECK_HEADER(SDL/SDL.h,, AC_MSG_ERROR(Cannot find headers of SDL.h.))
+AC_CHECK_HEADER(SDL.h,, AC_MSG_ERROR(Cannot find headers of SDL.h.))
 
 dnl  cmdline options 
 AC_ARG_ENABLE(sdl_ttf,
@@ -94,7 +97,7 @@ AC_SUBST(PARTS)
 dnl -*- Checking for lib SDL_ttf -*-
 if test x"$sdl_ttf" = x"yes"
 then
-  AC_CHECK_HEADERS(SDL/SDL_ttf.h, have_sdl_ttf="true", have_sdl_ttf="false")
+  AC_CHECK_HEADERS(SDL_ttf.h, have_sdl_ttf="true", have_sdl_ttf="false")
   if test "$have_sdl_ttf" = true;
   then
     AC_CHECK_LIB(SDL_ttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
@@ -113,7 +116,7 @@ fi
 dnl -*- Checking for lib SDL_image -*-
 if test x"$sdl_image" = x"yes"
 then
-  AC_CHECK_HEADERS(SDL/SDL_image.h, 
+  AC_CHECK_HEADERS(SDL_image.h, 
                    have_sdl_image="true",
 		   have_sdl_image="false")
   if test "$have_sdl_image" = true;
@@ -134,7 +137,7 @@ fi
 dnl -*- Checking for lib SDL_mixer -*-
 if test x"$sdl_mixer" = x"yes"
 then 
-  AC_CHECK_HEADERS(SDL/SDL_mixer.h, 
+  AC_CHECK_HEADERS(SDL_mixer.h, 
 	           have_sdl_mixer="true", 
 		   have_sdl_mixer="false")
   if test "$have_sdl_mixer" = true;

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.28 2002/05/30 15:52:13 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.29 2002/06/20 13:20:44 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 
 #include "common.h"

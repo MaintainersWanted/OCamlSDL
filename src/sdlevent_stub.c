@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.12 2002/05/27 11:47:26 xtrm Exp $ */
+/* $Id: sdlevent_stub.c,v 1.13 2002/06/20 13:20:44 oliv__a Exp $ */
 
 #include <assert.h>
 #include <caml/alloc.h>
@@ -26,7 +26,7 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <stdio.h>
-#include <SDL/SDL.h>
+#include <SDL.h>
 #include "sdlevent_stub.h"
 
 /*

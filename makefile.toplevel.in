@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.toplevel.in,v 1.5 2002/06/18 10:15:00 oliv__a Exp $
+# $Id: makefile.toplevel.in,v 1.6 2002/06/20 13:20:44 oliv__a Exp $
 
 PREFIX =        @prefix@
 CAMLLIBDIR =    @OCAMLLIBDIR@
@@ -31,7 +31,8 @@ INSTALL_DATA = 	@INSTALL_DATA@
 PARTS = @PARTS@
 
 CC =            @CC@
-CFLAGS =	@CPPFLAGS@ @CFLAGS@ @DEFS@ -Wall -Wno-unused -D__DEBUG__
+CPPFLAGS =	@CPPFLAGS@ @DEFS@
+CFLAGS =	@CFLAGS@
 CAMLC =		@OCAMLC@
 CAMLOPT =	@OCAMLOPT@
 CAMLTOP =	@OCAMLMKTOP@
@@ -57,4 +58,4 @@ DESTDIR =
 	$(CAMLC) -c $(MLFLAGS) $<
 
 %.o : %.c
-	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
+	$(CAMLC) -c -ccopt "$(CPPFLAGS) $(CFLAGS)" $<

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.11 2002/05/21 23:05:58 xtrm Exp $ */
+/* $Id: sdlttf_stub.c,v 1.12 2002/06/20 13:20:44 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -26,7 +26,7 @@
 #include <caml/mlvalues.h>
 #include <stdio.h>
 
-#include <SDL/SDL_ttf.h>
+#include <SDL_ttf.h>
 
 
 #include "stub_shared.h"
