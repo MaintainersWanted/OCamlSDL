@@ -1,4 +1,8 @@
-Release 0.5-pre1:
+Release 0.5-pre2:
+
+	* Adding install and uninstall target stuff
+
+Release 0.5-pre1: (no released at sourceforge)
 
 	* bigarray support in sdlvideo module
 	* SDL-1.2, SDL_image-1.2.0, SDL_mixer-1.2.0, SDL_ttf-1.2.2 support
