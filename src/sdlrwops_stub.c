@@ -10,7 +10,7 @@
 
 #define RWOPS_DATA(r) ((r)->hidden.unknown.data1)
 #define CHECK_RWOPS(r) do{             \
-  if(! RWOPS_DATA(r)) {                  \
+  if(! RWOPS_DATA(r)) {                \
     SDL_SetError("closed Sdl.rwops") ; \
     return -1; }                       \
 } while(0)
@@ -46,6 +46,7 @@ static int mlsdl_mem_seek(SDL_RWops *context, int offset, int whence)
   }
   if ( newoff < 0 || newoff > pdata->max )
     return -1;
+  pdata->off = newoff;
   return newoff;
 }
 
