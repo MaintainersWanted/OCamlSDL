@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.7 2002/09/10 12:01:16 oliv__a Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.8 2002/09/25 22:29:05 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -66,7 +66,7 @@ static Uint8 state_of_value(value l)
 {
   Uint8 state = 0;
   while(is_not_nil(l)){
-    state |= Int_val(hd(l));
+    state |= 1 << Int_val(hd(l));
     l = tl(l);
   }
   return state;
@@ -100,7 +100,7 @@ static value value_of_keyevent(SDL_KeyboardEvent keyevt)
   CAMLlocal2(v, r);
   Uint8 char_code = 0;
   tag_t tag;
-  r = alloc_small(3, 0);
+  r = alloc_small(5, 0);
   Field(r, 0) = Val_int(keyevt.which) ;
   Field(r, 1) = Val_int(keyevt.state) ; 
   /* SDL_PRESSED = 0x01, SDL_RELEASED = 0x00 */
@@ -467,8 +467,10 @@ value mlsdlevent_set_state_by_mask(value mask, value state)
   int c_state = ( state == Val_true ? SDL_ENABLE : SDL_DISABLE ) ;
   Uint32 c_mask = Int_val(mask);
   int i;
-  for(i=SDL_NOEVENT + 1; i<SDL_NUMEVENTS; i++)
-    if(SDL_EVENTMASK(i) & c_mask)
-      SDL_EventState(i, c_state);
+  for(i=0; i<SDL_TABLESIZE(evt_type_of_val); i++) {
+    Uint32 evt_mask = SDL_EVENTMASK(evt_type_of_val[i]);
+    if(evt_mask & c_mask)
+      SDL_EventState(evt_mask, c_state);
+  }
   return Val_unit;
 }

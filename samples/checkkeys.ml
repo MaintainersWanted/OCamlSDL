@@ -41,6 +41,7 @@ let main () =
     Sdlevent2.keyboard_event_mask lor
     Sdlevent2.mousebuttonup_mask lor
     Sdlevent2.quit_mask in
+  Sdlevent2.disable_events Sdlevent2.all_events_mask ;
   Sdlevent2.enable_events mask ;
   Sdlkey.enable_unicode true ;
 
