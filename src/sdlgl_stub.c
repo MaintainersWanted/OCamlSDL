@@ -39,8 +39,8 @@ CAMLprim value ml_SDL_GL_GetAttribute(value unit)
   CAMLparam0();
   CAMLlocal2(v, a);
   int i, val;
-  v = nil();
-  for(i=11; i>=0; i--){
+  v = Val_emptylist;
+  for(i=12; i>=0; i--){
     if( SDL_GL_GetAttribute( GL_attr_map[i], &val) < 0)
       CAMLreturn( ( sdlvideo_raise_exception(SDL_GetError()) ,
 		   Val_unit ) ) ;

@@ -16,13 +16,15 @@
 
 value value_of_mousebutton_state(Uint8 state)
 {
-  value v = nil();
-  if(state & SDL_BUTTON_RMASK)
-    v = cons(Val_int(2), v);
-  if(state & SDL_BUTTON_MMASK)
-    v = cons(Val_int(1), v);
-  if(state & SDL_BUTTON_LMASK)
-    v = cons(Val_int(0), v);
+  value v = Val_emptylist;
+  register int i;
+  const int buttons[5] = { 
+    SDL_BUTTON_LEFT, SDL_BUTTON_MIDDLE,
+    SDL_BUTTON_RIGHT, 
+    SDL_BUTTON_WHEELUP, SDL_BUTTON_WHEELDOWN };
+  for(i=4; i>=0; i--)
+    if(state & SDL_BUTTON(buttons[i]))
+      v = cons(Val_int(i), v);
   return v;
 }
 
