@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent2.ml,v 1.3 2002/09/04 16:36:56 oliv__a Exp $ *)
+(* $Id: sdlevent2.ml,v 1.4 2002/09/26 15:59:58 oliv__a Exp $ *)
 
 exception Event_exn of string
 let _ = 
@@ -204,11 +204,6 @@ external poll : unit -> event option = "mlsdlevent_poll"
 external wait       : unit -> unit = "mlsdlevent_wait"
 external wait_event : unit -> event = "mlsdlevent_wait_event"
 
-let rec wait_delay ?mask delay =
-  match pump () ; get ?mask 1 with
-  | [] -> Sdltimer.delay delay ; wait_delay ?mask delay
-  | evt :: _ -> evt
-
 (* SDL_PushEvent ? *)
 
 (* SDL_SetEventFilter *)
@@ -225,6 +220,32 @@ let enable_events mask =
 
 let disable_events mask =
   set_state_by_mask mask false
+
+external get_enabled_events : unit -> event_mask = "mlsdlevent_get_enabled"
+
+let of_mask mask = 
+  List.fold_left
+    (fun acc (evt_t, m) ->
+      if mask land m <> 0
+      then evt_t :: acc 
+      else acc )
+    [] [ ( ACTIVE_EVENT, active_mask ) ;
+	 ( KEYDOWN_EVENT, keydown_mask ) ;
+	 ( KEYUP_EVENT, keyup_mask ) ;
+	 ( MOUSEMOTION_EVENT, mousemotion_mask ) ;
+	 ( MOUSEBUTTONDOWN_EVENT, mousebuttondown_mask ) ;
+	 ( MOUSEBUTTONUP_EVENT, mousebuttonup_mask ) ;
+	 ( JOYAXISMOTION_EVENT, joyaxismotion_mask ) ;
+	 ( JOYBALL_EVENT, joyballmotion_mask ) ;
+	 ( JOYHAT_EVENT, joyhatmotion_mask ) ;
+	 ( JOYBUTTONDOWN_EVENT, joybuttondown_mask ) ;
+	 ( JOYBUTTONUP_EVENT, joybuttonup_mask ) ;
+	 ( QUIT_EVENT, quit_mask ) ;
+	 ( SYSWM_EVENT, syswmevent_mask ) ;
+	 ( RESIZE_EVENT, videoresize_mask ) ;
+	 ( EXPOSE_EVENT, videoexpose_mask ) ;
+	 ( USER_EVENT, userevent_mask ) ; ]
+
 
 let link_me = 
   (* I need Sdlkey so that keysyms lookup tables are 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.9 2002/09/25 23:04:11 oliv__a Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.10 2002/09/26 15:59:58 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -473,4 +473,16 @@ value mlsdlevent_set_state_by_mask(value mask, value state)
       SDL_EventState(type, c_state);
   }
   return Val_unit;
+}
+
+value mlsdlevent_get_enabled(value unit)
+{
+  Uint32 mask = 0;
+  register int i;
+  for(i=0; i<SDL_TABLESIZE(evt_type_of_val); i++) {
+    Uint8 type = evt_type_of_val[i];
+    if(SDL_EventState(type, SDL_QUERY))
+      mask |= SDL_EVENTMASK(type);
+  }
+  return Val_int(mask);
 }

@@ -17,9 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent2.mli,v 1.3 2002/09/04 16:36:56 oliv__a Exp $ *)
+(* $Id: sdlevent2.mli,v 1.4 2002/09/26 15:59:58 oliv__a Exp $ *)
 
-
 exception Event_exn of string
 
 type active_state = 
@@ -166,12 +165,15 @@ val poll : unit -> event option
 
 external wait : unit -> unit = "mlsdlevent_wait"
 val wait_event : unit -> event
-val wait_delay : ?mask:event_mask -> int  -> event
 
 external get_state : event_kind -> bool = "mlsdlevent_get_state"
 external set_state : bool -> event_kind -> unit = "mlsdlevent_set_state"
 
 val enable_events  : event_mask -> unit
 val disable_events : event_mask -> unit
+
+external get_enabled_events : unit -> event_mask = "mlsdlevent_get_enabled"
+
+val of_mask : event_mask -> event_kind list
 
 val link_me : unit
