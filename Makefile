@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.8 2002/08/08 16:32:14 xtrm Exp $
+# $Id: Makefile,v 1.9 2002/10/02 07:19:18 xtrm Exp $
 
 all:
 	$(MAKE) -C src
@@ -49,7 +49,7 @@ uninstall:
 
 makefile.toplevel : configure ; $(error "please run ./configure")
 configure : configure.in
-	autoconf
+	./autogen.sh
 -include makefile.toplevel
 
 .PHONY: all test clean distclean install uninstall
