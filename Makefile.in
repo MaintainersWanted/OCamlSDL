@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.18 2001/04/03 21:15:07 xtrm Exp $
+# $Id: Makefile.in,v 1.19 2001/04/24 19:46:25 xtrm Exp $
 
 all:
 	@(cd src && make)
@@ -25,6 +25,7 @@ all:
 
 clean:
 	@(cd src && make clean)
+	@(cd lib && make clean)
 	@(cd samples && make clean)
 
 distclean:
