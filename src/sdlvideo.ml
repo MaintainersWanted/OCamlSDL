@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.6 2000/01/19 23:58:57 fbrunel Exp $ *)
+(* $Id: sdlvideo.ml,v 1.7 2000/01/20 17:50:34 smkl Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -32,9 +32,10 @@ type rect =
   | Rect of int * int * int * int
 
 type pixels =
-    Pixels of string * int * int
-  | APixels of string * int * int
-  | RGBPixels of (int * int * int) array array
+   Pixels of string * int * int
+ | APixels of string * int * int
+ | RGBPixels of (int * int * int) array array
+ | Buffer of int * int
 
 type surface
 type pixel_format
@@ -77,6 +78,8 @@ external wm_available : unit -> bool = "sdlvideo_wm_available";;
 
 external surface_set_colorkey : surface -> color option -> unit = "sdlvideo_surface_set_colorkey";;
 external surface_display_format : surface -> surface = "sdlvideo_surface_display_format";;
+
+external empty_surface : int -> int -> surface = "sdlvideo_empty_surface";;
 external surface_from_rawrgb : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgb";;
 external surface_from_rawrgba : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgba";;
 
@@ -89,9 +92,7 @@ let surface_rect surf =
   Rect(0, 0, surface_width surf, surface_height surf);;
 
 let surface_from_pixels = function
-    Pixels (str, w, h) -> surface_from_rawrgb str w h
-  | APixels (str, w, h) -> surface_from_rawrgba str w h
-  | RGBPixels mat ->
+    RGBPixels mat ->
       let w = Array.length mat and h = Array.length mat.(0) in
       let str = String.create (w*h*3) in
       for i = 0 to w - 1 do
@@ -104,3 +105,6 @@ let surface_from_pixels = function
       done;
       surface_from_rawrgb str w h
 
+  | Pixels (str, w, h) -> surface_from_rawrgb str w h
+  | APixels (str, w, h) -> surface_from_rawrgba str w h
+  | Buffer (w, h) -> empty_surface w h

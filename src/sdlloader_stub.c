@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.2 2000/01/19 23:58:02 fbrunel Exp $ */
+/* $Id: sdlloader_stub.c,v 1.3 2000/01/20 17:50:34 smkl Exp $ */
 
 #include <png.h>
 #include <caml/alloc.h>
@@ -27,11 +27,34 @@
 #include <caml/mlvalues.h>
 #include <stdio.h>
 #include <SDL.h>
+#include <SDL_image.h>
 
 static void
 sdlloader_raise_exception (char *msg)
 {
    raise_with_string(*caml_named_value("SDLloader_exception"), msg);
+}
+
+value
+sdlloader_load_image(value file)
+{
+   SDL_PixelFormat format;
+   SDL_Surface *converted;
+   SDL_Surface *surf;
+   surf = IMG_Load_RW(SDL_RWFromFile(&Byte(file,0), "rb"), 1);
+   if (surf == NULL) sdlloader_raise_exception(SDL_GetError());
+     memset(&format, 0, sizeof(format));
+   format.BytesPerPixel = 3;
+   format.BitsPerPixel = 24;
+   format.Rmask = 0x000000ff;
+   format.Gmask = 0x0000ff00;
+   format.Bmask = 0x00ff0000;
+   converted = SDL_ConvertSurface(surf, &format, SDL_SWSURFACE);
+   if (converted == NULL) {
+      sdlloader_raise_exception(SDL_GetError());
+   }
+   SDL_FreeSurface(surf);
+   return (value)converted;
 }
 
 value
@@ -100,6 +123,7 @@ sdlloader_load_png(value file_name)
    /* then convert to SDL surface */
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 24,
 			       0x000000ff, 0x0000ff00, 0x00ff0000, 0x0);
+   if (surf == NULL) sdlloader_raise_exception(SDL_GetError());
    {
      char *src, *dest;
      int i;
@@ -185,6 +209,7 @@ sdlloader_load_png_with_alpha(value file_name)
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
 			       0x000000ff, 0x0000ff00, 0x00ff0000,
 			       0xff000000);
+   if (surf == NULL) sdlloader_raise_exception(SDL_GetError());
    {
      void *src, *dest;
      int i;

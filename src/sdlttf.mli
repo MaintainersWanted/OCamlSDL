@@ -17,18 +17,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlloader.mli,v 1.2 2000/01/20 17:50:34 smkl Exp $ *)
+(* $Id: sdlttf.mli,v 1.1 2000/01/20 17:50:34 smkl Exp $ *)
 
-(* Exception *)
+(* Define a new exception for TTF errors and register 
+   it to be callable from C code. *)
 
-exception SDLloader_exception of string
+exception SDLttf_exception of string
 
-(* Load a PPM picture *)
-val load_ppm : string -> Sdlvideo.surface
-val load_ppm_pixels : string -> string * int * int
+type font
 
-val load_image : string -> Sdlvideo.surface
+val init : unit -> unit
+val quit : unit -> unit
+val open_font : string -> int -> font
+val close_font : font -> unit
+val font_height : font -> int
+val render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface
 
-val load_png : string -> Sdlvideo.surface
-val load_png_with_alpha : string -> Sdlvideo.surface
-
+(* return a function to print strings, and another to clean up printer *)
+val make_printer : font -> (int*int*int) ->
+  (Sdlvideo.surface -> int -> int -> string -> unit) * (unit -> unit)

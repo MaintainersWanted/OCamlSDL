@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.6 2000/01/20 00:00:39 fbrunel Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.7 2000/01/20 17:50:34 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -339,6 +339,22 @@ sdlvideo_surface_display_format(value surface)
      sdlvideo_raise_exception(SDL_GetError());
    
    return ML_SURFACE(res);
+}
+
+value
+sdlvideo_empty_surface(value width, value height)
+{
+   SDL_Surface *surf;
+   int w, h;
+   w = Int_val(width);
+   h = Int_val(height);
+   surf = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 24,
+			       0x0000000ff, 0x0000ff00, 0x00ff0000, 0);
+
+   if (surf == NULL)
+     sdlvideo_raise_exception(SDL_GetError());
+
+   return ML_SURFACE(surf);
 }
 
 value

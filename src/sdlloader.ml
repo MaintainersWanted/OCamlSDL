@@ -17,18 +17,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlloader.ml,v 1.2 2000/01/19 23:56:57 fbrunel Exp $ *)
+(* $Id: sdlloader.ml,v 1.3 2000/01/20 17:50:34 smkl Exp $ *)
 
-(* Define a new exception for PNG errors and register 
+(* Define a new exception for loader errors and register 
    it to be callable from C code. *)
 
 exception SDLloader_exception of string
 let _ = Callback.register_exception "SDLloader_exception" (SDLloader_exception "Any string")
 
+external load_image : string -> Sdlvideo.surface = "sdlloader_load_image";;
 external load_png : string -> Sdlvideo.surface = "sdlloader_load_png";;
 external load_png_with_alpha : string -> Sdlvideo.surface = "sdlloader_load_png_with_alpha";;
 
-let load_ppm str =
+let load_ppm_pixels str =
   try
     let chn = open_in_bin str in
     let _ = input_line chn in
@@ -44,10 +45,13 @@ let load_ppm str =
     let buffer = String.create (w * h * 3) in
     really_input chn buffer 0 (w * h * 3);
     close_in chn;
-    Sdlvideo.surface_from_pixels (Sdlvideo.Pixels (buffer, w, h))
+    (buffer, w, h)
   with a ->
     begin
       prerr_string ("Bad file: " ^ str ^ "\n");
       raise a
     end
 
+let load_ppm str =
+  let (buffer, w, h) = load_ppm_pixels str in
+  Sdlvideo.surface_from_pixels (Sdlvideo.Pixels (buffer, w, h))

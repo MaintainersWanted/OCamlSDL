@@ -1,3 +1,13 @@
+2000-01-20  Sami Mäkelä  <sajuma@utu.fi>
+
+	* NEW (sdlttf): Interface to SDL_ttf and a fast string drawing function
+
+	* sdlloader_stub.c: Added sdlloader_load_image
+
+	* sdlvideo_stub.c: Added a function to create uninitialized surfaces
+
+	* sdlvideo.mli, sdlvideo.ml: Added Buffer case for pixels type
+
 2000-01-19  Frederic Brunel  <brunel@mail.dotcom.fr>
 
 	* sdlloader_stub.c: Renamed functions prefixe from sdlpng_ to sdlloader_
