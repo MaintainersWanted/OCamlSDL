@@ -1,4 +1,4 @@
-/* $Id: sdlkey_stub.c,v 1.1 2002/08/21 20:02:54 oliv__a Exp $ */
+/* $Id: sdlkey_stub.c,v 1.2 2002/08/23 09:52:23 xtrm Exp $ */
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -32,9 +32,8 @@ value ml_SDL_EnableKeyRepeat(value odelay, value ointerval, value unit)
 value ml_SDL_GetKeyState(value unit)
 {
   int len;
-  long llen;
   Uint8 *data = SDL_GetKeyState(&len);
-  llen = len;
+  long llen = len;
   value v = alloc_bigarray(BIGARRAY_UINT8 | 
 			   BIGARRAY_C_LAYOUT | 
 			   BIGARRAY_EXTERNAL, 1, data, &llen);
