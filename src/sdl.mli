@@ -17,30 +17,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.2 2001/04/24 19:39:28 xtrm Exp $ *)
+(* $Id: sdl.mli,v 1.3 2001/05/27 18:01:49 xtrm Exp $ *)
 
-(* Exception *)
+(*d Exception *)
 exception SDL_init_exception of string
 
-(* Init flag type *)
+(*d Init flag type *)
 
 type init_flag =
-  | TIMER
-  | AUDIO
-  | VIDEO
-  | CDROM
-  | JOYSTICK
-  | NOPARACHUTE        (* Don't catch fatal signals *)
-  | EVENTTHREAD
-  | EVERYTHING
+  | TIMER (*d init flag for the timer subsystem. *)
+  | AUDIO (*d init flag for the audio subsystem. *)
+  | VIDEO (*d init flag for the video subsystem. *)
+  | CDROM (*d init flag for the cdrom subsystem. *)
+  | JOYSTICK (*d init flag for the joystick subsystem. *)
+  | NOPARACHUTE  (*d Don't catch fatal signals *)
+  | EVENTTHREAD 
+  | EVERYTHING (*d init flag for initialize all subsystems *)
 
-(* Initialize the SDL library *)
+(*1 Main functions *)
 val init : init_flag list -> unit
+(*d
+  Initialize the SDL library. This should be called before all other 
+  SDL functions. 
+  The flags parameter specifies what part(s) of SDL to initialize.
+*)
 
-(* Initialize the SDL library with automatic call the the sql_quit
- * function at normal program termination
- *)
 val init_with_auto_clean : init_flag list -> unit;;
+(*d 
+  Initialize the SDL library with automatic call the the [quit]
+  function at normal program termination
+*)
 
-(* Shut down the SDL library *)
 val quit : unit -> unit;;
+(*d 
+  [quit] shuts down all SDL subsystems and frees the resources allocated 
+  to them. This should always be called before you exit. 
+*)
