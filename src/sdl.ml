@@ -17,9 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.ml,v 1.1 2000/01/02 01:32:24 fbrunel Exp $ *)
+(* $Id: sdl.ml,v 1.2 2000/05/10 12:35:20 xtrm Exp $ *)
 
-(* Define a new exception for CD-ROM errors and register 
+(* Define a new exception for Sdl initialization errors and register 
    it to be callable from C code. *)
 
 exception SDL_init_exception of string
