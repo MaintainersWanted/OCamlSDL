@@ -2,7 +2,7 @@ dnl ****** -*- m4 -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.25 2002/09/24 22:34:54 oliv__a Exp $
+dnl $Id: configure.in,v 1.26 2002/10/01 23:04:18 xtrm Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -10,9 +10,6 @@ AC_PREFIX_DEFAULT(/usr/local)
 
 AC_CONFIG_AUX_DIR(./support)
 AC_CONFIG_HEADER(src/config.h)
-# need support/install-sh
-# need support/missing
-# need support/mkinstalldirs
 
 dnl -*- Check for programs -*-
 if test -z "$CFLAGS" ; then
@@ -24,6 +21,21 @@ if test "$ac_cv_c_inline" != no ; then
   AC_DEFINE(HAVE_INLINE)
 fi
 AC_PROG_INSTALL
+
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
+case "$target" in
+    *mingw32* | *beos* )
+        ;;
+    alpha*-*-linux*)
+        CFLAGS="$CFLAGS -mcpu=ev4 -Wa,-mall"
+        ;;
+    *)
+        LIBS="$LIBS -lm"
+        ;;
+esac
+
 
 #  Check for OCaml programs 
 AC_CHECK_PROG(OCAMLC,ocamlc,ocamlc)
@@ -64,23 +76,14 @@ fi
 AC_SUBST(OCAMLSDLDIR)
 
 dnl -*- Check for libraries -*-
-dnl  Figure out which math library to use 
-case "$target" in
-    *mingw32* | *beos* )
-        ;;
-    *)
-        LIBS="$LIBS -lm"
-        ;;
-esac
 
 dnl  Check for SDL libraries 
-AC_CHECK_PROG(SDL_CONFIG,sdl-config,sdl-config)
-if test -z "$SDL_CONFIG" ; then
-        AC_MSG_ERROR(Cannot find sdl-config.)
-else
-        SDL_CFLAGS=`$SDL_CONFIG --cflags`
-        SDL_LIBS=`$SDL_CONFIG --libs`
-fi
+SDL_VERSION=1.2.0
+AM_PATH_SDL($SDL_VERSION,
+            :,
+    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+)
+
 LIBS="$LIBS $SDL_LIBS"
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 
@@ -99,12 +102,16 @@ AC_SUBST(PARTS)
 dnl -*- Checking for lib SDL_ttf -*-
 if test x"$sdl_ttf" = x"yes"
 then
-  AC_CHECK_HEADERS(SDL_ttf.h, have_sdl_ttf="true", have_sdl_ttf="false")
-  if test "$have_sdl_ttf" = true;
-  then
+  AC_CHECK_HEADERS(SDL_ttf.h, have_sdl_ttf=true, have_sdl_ttf=false)
+  AC_CHECK_HEADERS(SDL/SDL_ttf.h, 
+   	have_have_sdl_ttf=true
+   	have_have_sdl_ttf=false)
+  if test "$have_sdl_ttf" = true || test "$have_have_sdl_ttf" = true;
+  then 
     AC_CHECK_LIB(SDL_ttf, TTF_OpenFontIndex, ttf2_ok=yes, ttf2_ok=no)
     if test "$ttf2_ok" = no;
     then
+      AC_MSG_WARN(There is a new release of SDL_ttf, why not try it?)
       AC_CHECK_LIB(SDL_ttf, TTF_OpenFont, ttf_ok=yes, ttf_ok=no)
       if test "$ttf_ok" = no;
       then
@@ -130,12 +137,20 @@ then
 		   have_sdl_image="false")
   if test "$have_sdl_image" = true;
   then
-    AC_CHECK_LIB(SDL_image, IMG_Load_RW, image_ok=yes, image_ok=no)
+    AC_CHECK_LIB(SDL_image, IMG_ReadXPMFromArray, image_ok=yes, image_ok=no)
     if test "$image_ok" = no; 
     then 
-      AC_MSG_ERROR(Cannot find SDL_image library.)
+      AC_CHECK_LIB(SDL_image, IMG_Load_RW, imageold_ok=yes, imageold_ok=no)
+      if test "$imageold_ok" = no; 
+      then 
+        AC_MSG_ERROR(Cannot find SDL_image library.)
+      else
+        PARTS="$PARTS loader"
+	AC_DEFINE(IMAGE_RELEASE, 1)
+      fi
     else
-      PARTS="$PARTS loader"
+        PARTS="$PARTS loader"
+	AC_DEFINE(IMAGE_RELEASE, 2)
     fi
   else
     sdl_image=no
