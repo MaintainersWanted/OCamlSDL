@@ -6,8 +6,23 @@
 #include "common.h"
 #include "sdlvideo2_stub.h"
 
+#if ( __STDC_VERSION__ != 199901L )
+
+static SDL_Surface *SDL_SURFACE(value v)
+{
+        struct ml_sdl_surf_data *cb_data;
+        cb_data = (Tag_val(v) == 0) ?
+     Data_custom_val(Field(v, 0)) : Data_custom_val(v);
+        return cb_data->s;
+}
+    
+#endif
+
+
 ML_2(SDL_WM_SetCaption, String_val, String_val, Unit)
 
+
+  
 value ml_SDL_WM_GetCaption(value unit)
 {
   CAMLparam0();

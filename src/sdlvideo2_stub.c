@@ -26,6 +26,19 @@ static void error(int status, int errnum, const char *format, ...)
 
 #include "sdlvideo2_stub.h"
 
+#if ( __STDC_VERSION__ != 199901L )
+
+static SDL_Surface *SDL_SURFACE(value v)
+{
+     struct ml_sdl_surf_data *cb_data;
+     cb_data = (Tag_val(v) == 0) ?
+     Data_custom_val(Field(v, 0)) : Data_custom_val(v);
+     return cb_data->s;
+}
+
+#endif
+
+
 /* ************************************************** */
 /* memory management : custom blocks & co. */
 /* ************************************************** */
