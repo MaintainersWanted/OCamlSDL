@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdltimer_stub.c,v 1.4 2000/07/19 09:04:52 xtrm Exp $ */
+/* $Id: sdltimer_stub.c,v 1.5 2002/06/04 23:09:01 oliv__a Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
@@ -59,5 +59,4 @@ value sdltimer_get_ticks(value u)
 {
   return Val_int(SDL_GetTicks());
 }
-  
-  
+ 
