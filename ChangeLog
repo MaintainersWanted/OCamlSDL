@@ -1,0 +1,10 @@
+2000-01-04  Frederic Brunel  <brunel@emi.u-bordeaux.fr>
+
+	* TODO: To finalize the Autoconf, Automake installation.
+
+	* INSTALL: Explains how to use configure.
+
+	* NEWS: Now the distribution is using configure to complete 
+	programs and libs paths in the Makefile.
+	
+
