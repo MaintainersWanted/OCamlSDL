@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.c,v 1.6 2002/07/31 09:49:19 oliv__a Exp $ */
+/* $Id: common.c,v 1.7 2002/08/21 18:09:42 oliv__a Exp $ */
 
 
 #include <caml/mlvalues.h>
@@ -44,6 +44,15 @@ value cons(value x,value l)
   CAMLreturn (m);
 }
 
+int list_length(value l)
+{  
+  int len = 0;
+  while(is_not_nil(l)){
+    len++;
+    l = tl(l);
+  }
+  return len;
+}
 
 /* 
    Polymorphic variants <-> C ints conversion
@@ -80,4 +89,14 @@ value abstract_ptr(void *p)
   value v = alloc_small(1, Abstract_tag);
   Field(v, 0) = Val_bp(p);
   return v;
+}
+
+
+value Val_some(value v)
+{
+  CAMLparam1(v);
+  CAMLlocal1(r);
+  r = alloc_small(r, 0);
+  Field(r, 0) = v;
+  CAMLreturn(r);
 }

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.7 2002/08/08 12:34:35 oliv__a Exp $ */
+/* $Id: common.h,v 1.8 2002/08/21 18:09:42 oliv__a Exp $ */
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
@@ -38,6 +38,7 @@ extern value cons(value x,value l);
 #define is_not_nil Is_block
 #define hd(v)      Field((v), 0)
 #define tl(v)      Field((v) ,1)
+extern int list_length(value l);
 
 
 /* 
@@ -59,6 +60,7 @@ extern value abstract_ptr(void *);
    Optional arguments
 */
 #define Val_none Val_unit
+extern value Val_some(value v) ;
 #define Unopt(v) Field((v), 0)
 #define Opt_arg(v, conv, def) (Is_block(v) ? conv(Field((v),0)) : (def))
 
@@ -72,6 +74,8 @@ CAMLprim value ml_##cname (value unit) { return conv (cname ()); }
 CAMLprim value ml_##cname (value arg1) { return conv (cname (conv1 (arg1))); }
 #define ML_1_name(mlname, cname, conv1, conv) \
 CAMLprim value mlname (value arg1) { return conv (cname (conv1 (arg1))); }
+#define ML_2(cname, conv1, conv2, conv) \
+CAMLprim value ml_##cname (value arg1, value arg2) { return conv (cname (conv1 (arg1), conv2 (arg2))); }
 
 
 #endif /* __COMMON_H__ */
