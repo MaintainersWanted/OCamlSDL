@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.11 2002/10/04 21:26:27 oliv__a Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.12 2002/10/12 15:17:39 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -428,7 +428,11 @@ value mlsdlevent_poll(value unit)
 
 value mlsdlevent_wait(value unit)
 {
-  if(! SDL_WaitEvent(NULL))
+  int status;
+  enter_blocking_section();
+  status = SDL_WaitEvent(NULL);
+  leave_blocking_section();
+  if(! status)
     raise_event_exn(SDL_GetError());
   return Val_unit;
 }
@@ -436,7 +440,11 @@ value mlsdlevent_wait(value unit)
 value mlsdlevent_wait_event(value unit)
 {
   SDL_Event evt;
-  if(! SDL_WaitEvent(&evt))
+  int status;
+  enter_blocking_section();
+  status = SDL_WaitEvent(&evt);
+  leave_blocking_section();
+  if(! status)
     raise_event_exn(SDL_GetError());
   return value_of_SDLEvent(evt);
 }

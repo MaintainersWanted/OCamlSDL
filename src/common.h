@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.8 2002/08/21 18:09:42 oliv__a Exp $ */
+/* $Id: common.h,v 1.9 2002/10/12 15:17:39 oliv__a Exp $ */
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
@@ -76,6 +76,12 @@ CAMLprim value ml_##cname (value arg1) { return conv (cname (conv1 (arg1))); }
 CAMLprim value mlname (value arg1) { return conv (cname (conv1 (arg1))); }
 #define ML_2(cname, conv1, conv2, conv) \
 CAMLprim value ml_##cname (value arg1, value arg2) { return conv (cname (conv1 (arg1), conv2 (arg2))); }
+
+/*
+ * MT stuff
+ */
+void enter_blocking_section(void);
+void leave_blocking_section(void);
 
 
 #endif /* __COMMON_H__ */

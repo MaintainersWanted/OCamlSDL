@@ -17,19 +17,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdltimer_stub.c,v 1.8 2002/09/24 22:34:54 oliv__a Exp $ */
+/* $Id: sdltimer_stub.c,v 1.9 2002/10/12 15:17:39 oliv__a Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
 #include <SDL.h>
 
+#include "common.h"
+
 /*
  * OCaml/C conversion functions
  */
-
-void enter_blocking_section(void);
-void leave_blocking_section(void);
 
 value
 sdltimer_delay (value ms)
