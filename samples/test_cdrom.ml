@@ -37,10 +37,10 @@ for id = 0 to (numbers_of_drives - 1 ) do
     if (!flag_track == 1) 
     then
       let current_track = (cd_current_track cdrom)
-      and (m,s) = (cd_track_offset cdrom)
+      and (m,s) = (cd_track_current_time cdrom)
       in
 	printf "Currently playing track %d, %2d:%2d\n" 
-	  (track_of_int current_track) m s;
+	  (track_get_number current_track) m s;
     cd_close cdrom 
 done 
 
