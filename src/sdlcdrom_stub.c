@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.3 2000/01/13 17:45:10 smkl Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.4 2000/01/14 00:50:32 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -225,7 +225,7 @@ sdlcdrom_track_length (value track)
   
   FRAMES_TO_MSF(tr->length, &min, &sec, &frame);
 
-  result = alloc(2, 0);
+  result = alloc_tuple(2);
   Store_field(result, 0, Val_int(min));
   Store_field(result, 1, Val_int(sec));
 
