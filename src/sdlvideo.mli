@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(** $Id: sdlvideo.mli,v 1.24 2002/08/08 15:42:14 xtrm Exp $ *)
+(** $Id: sdlvideo.mli,v 1.25 2002/08/28 13:45:56 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -106,7 +106,7 @@ val set_video_mode : int -> int -> int -> video_flag list -> surface
 (** Allocate and free an RGB surface (must be called after set_video_mode) *)
 external create_rgb_surface : common_video_flag list -> 
   width:int -> height:int -> bpp:int -> 
-    rmask:int -> gmask:int -> bmask:int -> amask:int -> unit
+    rmask:int -> gmask:int -> bmask:int -> amask:int -> surface
 	= "sdlvideo_create_rgb_surface_bc" "sdlvideo_create_rgb_surface"
 (* [create_rgb_surface flags width height bpp rmask gmask bmask amask] *)
 

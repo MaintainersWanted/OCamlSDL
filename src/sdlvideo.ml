@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.25 2002/08/08 15:42:14 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.26 2002/08/28 13:45:56 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -89,7 +89,7 @@ type common_video_flag = [
   | `SRCALPHA ] 
 external create_rgb_surface : common_video_flag list -> 
   width:int -> height:int -> bpp:int -> 
-    rmask:int -> gmask:int -> bmask:int -> amask:int -> unit
+    rmask:int -> gmask:int -> bmask:int -> amask:int -> surface
 	= "sdlvideo_create_rgb_surface_bc" "sdlvideo_create_rgb_surface"
 
 external set_opengl_mode : int -> int -> int -> surface = "sdlvideo_set_opengl_mode"
