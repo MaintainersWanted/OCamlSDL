@@ -193,13 +193,13 @@ static value val_video_flag(Uint32 flags)
 /*
  * Palette stuff
  */
-value ml_sdl_surface_use_palette(value s)
+CAMLprim value ml_sdl_surface_use_palette(value s)
 {
   SDL_Surface *surf = SDL_SURFACE(s);
   return Val_bool(surf->format->palette != NULL);
 }
 
-value ml_sdl_palette_ncolors(value surf)
+CAMLprim value ml_sdl_palette_ncolors(value surf)
 {
   SDL_Surface *s = SDL_SURFACE(surf);
   SDL_Palette *p = s->format->palette;
@@ -208,7 +208,7 @@ value ml_sdl_palette_ncolors(value surf)
   return Val_int(p->ncolors);
 }
 
-value ml_sdl_palette_get_color(value surf, value n)
+CAMLprim value ml_sdl_palette_get_color(value surf, value n)
 {
   SDL_Surface *s = SDL_SURFACE(surf);
   SDL_Palette *p = s->format->palette;
@@ -227,8 +227,8 @@ value ml_sdl_palette_get_color(value surf, value n)
   return v;
 }
 
-value ml_SDL_SetPalette(value surf, value flags, 
-			value ofirstcolor, value c_arr)
+CAMLprim value ml_SDL_SetPalette(value surf, value flags, 
+				 value ofirstcolor, value c_arr)
 {
   SDL_Surface *s = SDL_SURFACE(surf);
   SDL_Palette *p = s->format->palette;
@@ -274,7 +274,7 @@ value ml_SDL_SetPalette(value surf, value flags,
  * Video modes-related functions
  */
 
-value ml_SDL_GetVideoInfo(value unit)
+CAMLprim value ml_SDL_GetVideoInfo(value unit)
 {
   value result;
   const SDL_VideoInfo *info = SDL_GetVideoInfo();
@@ -292,13 +292,13 @@ value ml_SDL_GetVideoInfo(value unit)
   return result;
 }
 
-value ml_SDL_GetVideoInfo_format(value unit)
+CAMLprim value ml_SDL_GetVideoInfo_format(value unit)
 {
   const SDL_VideoInfo *info = SDL_GetVideoInfo();
   return value_of_PixelFormat(info->vfmt);
 }
 
-value ml_SDL_VideoDriverName(value unit)
+CAMLprim value ml_SDL_VideoDriverName(value unit)
 {
   char buff[64];
   if(! SDL_VideoDriverName(buff, 64))
@@ -306,7 +306,7 @@ value ml_SDL_VideoDriverName(value unit)
   return copy_string(buff);
 }
 
-value ml_SDL_ListModes(value obpp, value flag_list)
+CAMLprim value ml_SDL_ListModes(value obpp, value flag_list)
 {
   Uint8 bpp = Opt_arg(obpp, Int_val, 0);
   SDL_Rect **modes;
@@ -338,13 +338,13 @@ value ml_SDL_ListModes(value obpp, value flag_list)
   }
 }
 
-value ml_SDL_VideoModeOK(value w, value h, value bpp, value flags)
+CAMLprim value ml_SDL_VideoModeOK(value w, value h, value bpp, value flags)
 {
   return Val_int(SDL_VideoModeOK(Int_val(w), Int_val(h), 
 				 Int_val(bpp), video_flag_val(flags)));
 }
 
-value ml_sdl_surface_info(value s)
+CAMLprim value ml_sdl_surface_info(value s)
 {
   CAMLparam0();
   CAMLlocal3(f, r, v);
@@ -363,13 +363,13 @@ value ml_sdl_surface_info(value s)
   CAMLreturn(v);
 }
 
-value ml_sdl_surface_info_format(value s)
+CAMLprim value ml_sdl_surface_info_format(value s)
 {
   SDL_Surface *surf = SDL_SURFACE(s);
   return value_of_PixelFormat(surf->format);
 }
 
-value ml_SDL_GetVideoSurface(value unit)
+CAMLprim value ml_SDL_GetVideoSurface(value unit)
 {
   SDL_Surface *s = SDL_GetVideoSurface();
   if( !s)
@@ -378,7 +378,7 @@ value ml_SDL_GetVideoSurface(value unit)
   return Val_SDLSurface(s, 0, Val_unit);
 }
 
-value ml_SDL_SetVideoMode(value w, value h, value obpp, value flags)
+CAMLprim value ml_SDL_SetVideoMode(value w, value h, value obpp, value flags)
 {
   int bpp = Opt_arg(obpp, Int_val, 0);
   SDL_Surface *s = SDL_SetVideoMode(Int_val(w), Int_val(h), 
@@ -391,7 +391,7 @@ value ml_SDL_SetVideoMode(value w, value h, value obpp, value flags)
 
 
 
-value ml_SDL_UpdateRect(value orect, value screen)
+CAMLprim value ml_SDL_UpdateRect(value orect, value screen)
 {
   SDL_Rect r = {0, 0, 0, 0};
   if(orect != Val_none)
@@ -400,7 +400,7 @@ value ml_SDL_UpdateRect(value orect, value screen)
   return Val_unit;
 }
 
-value ml_SDL_UpdateRects(value rectl, value screen)
+CAMLprim value ml_SDL_UpdateRects(value rectl, value screen)
 {
   int len = list_length(rectl);
   register int i;
@@ -420,14 +420,14 @@ value ml_SDL_UpdateRects(value rectl, value screen)
   return Val_unit;
 }
 
-value ml_SDL_Flip(value screen)
+CAMLprim value ml_SDL_Flip(value screen)
 {
   if(SDL_Flip(SDL_SURFACE(screen)) < 0)
     sdlvideo_raise_exception(SDL_GetError());
   return Val_unit;
 }
 
-value ml_SDL_SetGamma(value rg, value gg, value bg)
+CAMLprim value ml_SDL_SetGamma(value rg, value gg, value bg)
 {
   if(SDL_SetGamma(Double_val(rg), Double_val(gg), Double_val(bg)) < 0)
     sdlvideo_raise_exception(SDL_GetError());
@@ -440,7 +440,7 @@ value ml_SDL_SetGamma(value rg, value gg, value bg)
 /*
  * Pixels conversions
  */
-value ml_SDL_MapRGB(value surf, value alpha, value color)
+CAMLprim value ml_SDL_MapRGB(value surf, value alpha, value color)
 {
   Uint32 p;
   SDL_Color c;
@@ -453,7 +453,7 @@ value ml_SDL_MapRGB(value surf, value alpha, value color)
   return copy_int32(p);
 }
 
-value ml_SDL_GetRGB(value surf, value pixel)
+CAMLprim value ml_SDL_GetRGB(value surf, value pixel)
 {
   Uint32 p = Int32_val(pixel);
   SDL_Surface *s = SDL_SURFACE(surf);
@@ -467,7 +467,7 @@ value ml_SDL_GetRGB(value surf, value pixel)
   return v;
 }
 
-value ml_SDL_GetRGBA(value surf, value pixel)
+CAMLprim value ml_SDL_GetRGBA(value surf, value pixel)
 {
   Uint32 p = Int32_val(pixel);
   SDL_Surface *s = SDL_SURFACE(surf);
@@ -491,9 +491,9 @@ value ml_SDL_GetRGBA(value surf, value pixel)
 /*
  * Surface-related functions
  */
-value ml_SDL_CreateRGBSurface(value videoflags, value w, value h,
-			      value depth, value rmask, value gmask,
-			      value bmask, value amask)
+CAMLprim value ml_SDL_CreateRGBSurface(value videoflags, value w, value h,
+				       value depth, value rmask, value gmask,
+				       value bmask, value amask)
 {
   SDL_Surface *s = SDL_CreateRGBSurface(video_flag_val(videoflags), 
 					Int_val(w), Int_val(h), 
@@ -505,14 +505,14 @@ value ml_SDL_CreateRGBSurface(value videoflags, value w, value h,
   return ML_SURFACE(s);
 }
 
-value ml_SDL_CreateRGBSurface_bc(value *argv, int argc)
+CAMLprim value ml_SDL_CreateRGBSurface_bc(value *argv, int argc)
 {
   return ml_SDL_CreateRGBSurface(argv[0], argv[1], argv[2], argv[3],
 				 argv[4], argv[5], argv[6], argv[7]);
 }
 
-value ml_SDL_CreateRGBSurface_format(value surf, value videoflags, 
-				     value w, value h)
+CAMLprim value ml_SDL_CreateRGBSurface_format(value surf, value videoflags, 
+					      value w, value h)
 {
   SDL_PixelFormat *fmt = SDL_SURFACE(surf)->format;
   SDL_Surface *s = SDL_CreateRGBSurface(video_flag_val(videoflags), 
@@ -525,10 +525,10 @@ value ml_SDL_CreateRGBSurface_format(value surf, value videoflags,
   return ML_SURFACE(s);
 }
 
-value ml_SDL_CreateRGBSurfaceFrom(value pixels, value w, value h,
-				  value depth, value pitch,
-				  value rmask, value gmask,
-				  value bmask, value amask)
+CAMLprim value ml_SDL_CreateRGBSurfaceFrom(value pixels, value w, value h,
+					   value depth, value pitch,
+					   value rmask, value gmask,
+					   value bmask, value amask)
 {
   struct caml_bigarray *barr = Bigarray_val(pixels);
   SDL_Surface *s = SDL_CreateRGBSurfaceFrom(barr->data, Int_val(w),
@@ -539,19 +539,19 @@ value ml_SDL_CreateRGBSurfaceFrom(value pixels, value w, value h,
   return Val_SDLSurface(s, 1, pixels);
 }
 
-value ml_SDL_CreateRGBSurfaceFrom_bc(value *argv, int argc)
+CAMLprim value ml_SDL_CreateRGBSurfaceFrom_bc(value *argv, int argc)
 {
   return ml_SDL_CreateRGBSurfaceFrom(argv[0], argv[1], argv[2], 
 				     argv[3], argv[4], argv[5], 
 				     argv[6], argv[7], argv[8]);
 }
 
-value ml_SDL_MustLock(value s)
+CAMLprim value ml_SDL_MustLock(value s)
 {
   return Val_bool(SDL_MUSTLOCK(SDL_SURFACE(s)));
 }
 
-value ml_SDL_LockSurface(value s)
+CAMLprim value ml_SDL_LockSurface(value s)
 {
   if(SDL_LockSurface(SDL_SURFACE(s)) < 0)
     sdlvideo_raise_exception(SDL_GetError());
@@ -563,7 +563,7 @@ ML_1(SDL_UnlockSurface, SDL_SURFACE, Unit)
 /*
  * BMP images loader
  */
-value ml_SDL_LoadBMP(value fname)
+CAMLprim value ml_SDL_LoadBMP(value fname)
 {
   SDL_Surface *s = SDL_LoadBMP(String_val(fname));
   if(! s)
@@ -571,7 +571,7 @@ value ml_SDL_LoadBMP(value fname)
   return ML_SURFACE(s);
 }
 
-value ml_SDL_SaveBMP(value surf, value fname)
+CAMLprim value ml_SDL_SaveBMP(value surf, value fname)
 {
   if(SDL_SaveBMP(SDL_SURFACE(surf), String_val(fname)) < 0)
     sdlvideo_raise_exception(SDL_GetError());
@@ -582,14 +582,14 @@ value ml_SDL_SaveBMP(value surf, value fname)
 /*
  * colorkey / alpha / cliprect
  */
-value ml_SDL_unset_color_key(value surf)
+CAMLprim value ml_SDL_unset_color_key(value surf)
 {
   if(SDL_SetColorKey(SDL_SURFACE(surf), 0, 0) < 0)
     sdlvideo_raise_exception(SDL_GetError());
   return Val_unit;
 }
 
-value ml_SDL_SetColorKey(value surf, value orle, value key)
+CAMLprim value ml_SDL_SetColorKey(value surf, value orle, value key)
 {
   Uint32 flags = SDL_SRCCOLORKEY;
   int rle = Opt_arg(orle, Bool_val, 0);
@@ -600,20 +600,20 @@ value ml_SDL_SetColorKey(value surf, value orle, value key)
   return Val_unit;
 }
 
-value ml_SDL_get_color_key(value s)
+CAMLprim value ml_SDL_get_color_key(value s)
 {
   SDL_Surface *surf = SDL_SURFACE(s);
   return copy_int32(surf->format->colorkey);
 }
 
-value ml_SDL_unset_alpha(value surf)
+CAMLprim value ml_SDL_unset_alpha(value surf)
 {
   if(SDL_SetAlpha(SDL_SURFACE(surf), 0, 0) < 0)
     sdlvideo_raise_exception(SDL_GetError());
   return Val_unit;
 }
 
-value ml_SDL_SetAlpha(value surf, value orle, value alpha)
+CAMLprim value ml_SDL_SetAlpha(value surf, value orle, value alpha)
 {
   Uint32 flags = SDL_SRCALPHA;
   int rle = Opt_arg(orle, Bool_val, 0);
@@ -624,26 +624,26 @@ value ml_SDL_SetAlpha(value surf, value orle, value alpha)
   return Val_unit;
 }
 
-value ml_SDL_get_alpha(value s)
+CAMLprim value ml_SDL_get_alpha(value s)
 {
   SDL_Surface *surf = SDL_SURFACE(s);
   return Val_int(surf->format->alpha);
 }
 
-value ml_SDL_UnsetClipRect(value surf)
+CAMLprim value ml_SDL_UnsetClipRect(value surf)
 {
   SDL_SetClipRect(SDL_SURFACE(surf), NULL);
   return Val_unit;
 }
 
-value ml_SDL_SetClipRect(value surf, value r)
+CAMLprim value ml_SDL_SetClipRect(value surf, value r)
 {
   SDL_Rect rect;
   SDLRect_of_value(&rect, r);
   return Val_bool(SDL_SetClipRect(SDL_SURFACE(surf), &rect));
 }
 
-value ml_SDL_GetClipRect(value s)
+CAMLprim value ml_SDL_GetClipRect(value s)
 {
   SDL_Rect r;
   SDL_GetClipRect(SDL_SURFACE(s), &r);
@@ -655,8 +655,8 @@ value ml_SDL_GetClipRect(value s)
  * surface blittinf and conversion
  */
 
-value ml_SDL_BlitSurface(value src_s, value osrc_r, 
-			 value dst_s, value odst_r, value unit)
+CAMLprim value ml_SDL_BlitSurface(value src_s, value osrc_r, 
+				  value dst_s, value odst_r, value unit)
 {
   SDL_Rect tmp_src_r, tmp_dst_r, *src_r, *dst_r;
   if(osrc_r == Val_none)
@@ -683,7 +683,7 @@ value ml_SDL_BlitSurface(value src_s, value osrc_r,
   return Val_unit;
 }
 
-value ml_SDL_FillRect(value odst_r, value dst_s, value pixel)
+CAMLprim value ml_SDL_FillRect(value odst_r, value dst_s, value pixel)
 {
   SDL_Rect tmp_r, *r;
   if(odst_r == Val_none) 
@@ -699,7 +699,7 @@ value ml_SDL_FillRect(value odst_r, value dst_s, value pixel)
   return Val_unit;
 }
 
-value ml_SDL_DisplayFormat(value oalpha, value surf)
+CAMLprim value ml_SDL_DisplayFormat(value oalpha, value surf)
 {
   SDL_Surface *s;
   int alpha = Opt_arg(oalpha, Bool_val, 0);
@@ -712,7 +712,7 @@ value ml_SDL_DisplayFormat(value oalpha, value surf)
   return ML_SURFACE(s);
 }
 
-value ml_bigarray_pixels(value s, value mlBpp)
+CAMLprim value ml_bigarray_pixels(value s, value mlBpp)
 {
   SDL_Surface *surf = SDL_SURFACE(s);
   Uint8 Bpp = Int_val(mlBpp);
@@ -757,7 +757,7 @@ static const SDL_GLattr GL_attr_map[12] = {
   SDL_GL_ACCUM_RED_SIZE, SDL_GL_ACCUM_GREEN_SIZE,
   SDL_GL_ACCUM_BLUE_SIZE, SDL_GL_ACCUM_ALPHA_SIZE, };
 
-value ml_SDL_GL_SetAttribute(value attrl)
+CAMLprim value ml_SDL_GL_SetAttribute(value attrl)
 {
   while( is_not_nil(attrl) ){
     value attr = hd(attrl);
@@ -768,7 +768,7 @@ value ml_SDL_GL_SetAttribute(value attrl)
   return Val_unit;
 }
 
-value ml_SDL_GL_GetAttribute(value unit)
+CAMLprim value ml_SDL_GL_GetAttribute(value unit)
 {
   CAMLparam0();
   CAMLlocal2(v, a);
@@ -835,7 +835,7 @@ void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
     }
 }
 
-value ml_SDL_get_pixel(value surf, value x, value y)
+CAMLprim value ml_SDL_get_pixel(value surf, value x, value y)
 {
   SDL_Surface *s = SDL_SURFACE(surf);
   Uint32 pixel = getpixel(s, Int_val(x), Int_val(y));
@@ -849,7 +849,7 @@ value ml_SDL_get_pixel(value surf, value x, value y)
   return v;
 }
 
-value ml_SDL_put_pixel(value surf, value x, value y, value color)
+CAMLprim value ml_SDL_put_pixel(value surf, value x, value y, value color)
 {
   SDL_Surface *s = SDL_SURFACE(surf);
   Uint32 pixel;

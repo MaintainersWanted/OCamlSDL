@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.21 2002/11/06 23:05:36 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.22 2002/11/21 11:01:17 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -86,7 +86,7 @@ sdlttf_raise_exception (char *msg)
  * SDL_ttf initialization
  */
 
-value
+CAMLprim value
 sdlttf_init(value unit)
 {
    int error;
@@ -101,7 +101,7 @@ sdlttf_init(value unit)
  * SDL_ttf shutdown
  */
 
-value
+CAMLprim value
 sdlttf_kill(value unit)
 {
    TTF_Quit();
@@ -112,7 +112,7 @@ sdlttf_kill(value unit)
  * OCaml/C conversion functions
  */
 
-value
+CAMLprim value
 sdlttf_open_font(value file, value index, value ptsize)
 {
   int c_index = Opt_arg(index, Int_val, 0);
@@ -130,32 +130,32 @@ sdlttf_open_font(value file, value index, value ptsize)
   return ML_FONT(font);
 }
 
-value
+CAMLprim value
 sdlttf_get_font_style(value font)
 {
   return Val_int(TTF_GetFontStyle(SDL_FONT(font)));
 }
 
-value
+CAMLprim value
 sdlttf_set_font_style(value font, value style)
 {
   TTF_SetFontStyle(SDL_FONT(font), Int_val(style));
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdlttf_font_height(value font)
 {
    return Val_int(TTF_FontHeight(SDL_FONT(font)));
 }
 
-value
+CAMLprim value
 sdlttf_font_ascent(value font)
 {
    return Val_int(TTF_FontAscent(SDL_FONT(font)));
 }
 
-value
+CAMLprim value
 sdlttf_font_descent(value font)
 {
    return Val_int(TTF_FontDescent(SDL_FONT(font)));
@@ -174,7 +174,7 @@ CAMLprim value ml_TTF_FontFaceFamilyName(value arg1) { failwith("not implemented
 CAMLprim value ml_TTF_FontFaceStyleName(value arg1) { failwith("not implemented"); return Val_unit;}
 #endif
 
-value
+CAMLprim value
 sdlttf_size_text(value font, value text)
 {
   int w, h;
@@ -187,7 +187,7 @@ sdlttf_size_text(value font, value text)
   return v;
 }
 
-value
+CAMLprim value
 sdlttf_render_text_solid(value font, value text, value fg) 
 {
    SDL_Color sfg;
@@ -203,7 +203,7 @@ sdlttf_render_text_solid(value font, value text, value fg)
    return ML_SURFACE(surf);
 }
 
-value
+CAMLprim value
 sdlttf_render_glyph_solid(value font, value ch, value fg) 
 {
    SDL_Color sfg;
@@ -220,7 +220,7 @@ sdlttf_render_glyph_solid(value font, value ch, value fg)
 
 }
 
-value
+CAMLprim value
 sdlttf_render_text_shaded(value font, value text, value fg, value bg) 
 {
    SDL_Color sfg;
@@ -238,7 +238,7 @@ sdlttf_render_text_shaded(value font, value text, value fg, value bg)
    return ML_SURFACE(surf);
 }
 
-value
+CAMLprim value
 sdlttf_render_glyph_shaded(value font, value ch, value fg, value bg) 
 {
    SDL_Color sfg;
@@ -256,7 +256,7 @@ sdlttf_render_glyph_shaded(value font, value ch, value fg, value bg)
    return ML_SURFACE(surf);
 }
 
-value
+CAMLprim value
 sdlttf_render_text_blended(value font, value text, value fg) 
 {
    SDL_Color sfg;
@@ -272,7 +272,7 @@ sdlttf_render_text_blended(value font, value text, value fg)
    return ML_SURFACE(surf);
 }
 
-value
+CAMLprim value
 sdlttf_render_glyph_blended(value font, value ch, value fg) 
 {
    SDL_Color sfg;
@@ -288,7 +288,7 @@ sdlttf_render_glyph_blended(value font, value ch, value fg)
    return ML_SURFACE(surf);
 }
 
-value
+CAMLprim value
 sdlttf_glyph_metrics(value fnt, value chr)
 {
    int minx;

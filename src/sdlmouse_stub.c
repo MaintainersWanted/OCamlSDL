@@ -26,7 +26,7 @@ value value_of_mousebutton_state(Uint8 state)
   return v;
 }
 
-value mlsdlevent_get_mouse_state(value orelative, value unit)
+CAMLprim value mlsdlevent_get_mouse_state(value orelative, value unit)
 {
   CAMLparam0();
   CAMLlocal2(s, v);
@@ -52,7 +52,7 @@ ML_2(SDL_WarpMouse, Int_val, Int_val, Unit)
  * Cursors
  */
 
-value ml_SDL_CreateCursor(value data, value mask, value hot_x, value hot_y)
+CAMLprim value ml_SDL_CreateCursor(value data, value mask, value hot_x, value hot_y)
 {
   struct caml_bigarray *b_data = Bigarray_val(data);
   struct caml_bigarray *b_mask = Bigarray_val(mask);
@@ -79,7 +79,7 @@ value ml_SDL_CreateCursor(value data, value mask, value hot_x, value hot_y)
 
 #define MLSDL_CURSOR(v) ((SDL_Cursor *)Field(Field((v), 0), 0))
 
-value ml_SDL_FreeCursor(value c)
+CAMLprim value ml_SDL_FreeCursor(value c)
 {
   SDL_FreeCursor( MLSDL_CURSOR(c) );
   MLSDL_CURSOR(c) = NULL;
@@ -91,12 +91,12 @@ value ml_SDL_FreeCursor(value c)
 ML_1(SDL_SetCursor, MLSDL_CURSOR, Unit)
 ML_1(SDL_ShowCursor, Bool_val, Unit)
 
-value ml_SDL_ShowCursor_query(value unit)
+CAMLprim value ml_SDL_ShowCursor_query(value unit)
 {
   return Val_bool(SDL_ShowCursor(-1));
 }
 
-value ml_SDL_GetCursor(value unit)
+CAMLprim value ml_SDL_GetCursor(value unit)
 {
   CAMLparam0();
   CAMLlocal2(v, r);  
@@ -109,7 +109,7 @@ value ml_SDL_GetCursor(value unit)
   CAMLreturn(r);
 }
 
-value ml_SDL_Cursor_data(value cursor)
+CAMLprim value ml_SDL_Cursor_data(value cursor)
 {
   CAMLparam0();
   CAMLlocal3(v, b_data, b_mask);

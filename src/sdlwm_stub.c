@@ -8,7 +8,7 @@
 
 ML_2(SDL_WM_SetCaption, String_val, String_val, Unit)
   
-value ml_SDL_WM_GetCaption(value unit)
+CAMLprim value ml_SDL_WM_GetCaption(value unit)
 {
   CAMLparam0();
   CAMLlocal3(v, s1, s2);
@@ -24,7 +24,7 @@ value ml_SDL_WM_GetCaption(value unit)
   CAMLreturn(v);
 }
 
-value ml_SDL_WM_SetIcon(value surf)
+CAMLprim value ml_SDL_WM_SetIcon(value surf)
 {
   SDL_WM_SetIcon(SDL_SURFACE(surf), NULL);
   return Val_unit;
@@ -32,19 +32,19 @@ value ml_SDL_WM_SetIcon(value surf)
 
 ML_0(SDL_WM_IconifyWindow, Val_bool)
 
-value ml_SDL_WM_ToggleFullScreen(value unit)
+CAMLprim value ml_SDL_WM_ToggleFullScreen(value unit)
 {
   return Val_bool(SDL_WM_ToggleFullScreen(SDL_GetVideoSurface()));
 }
 
-value ml_SDL_WM_GrabInput(value grabmode)
+CAMLprim value ml_SDL_WM_GrabInput(value grabmode)
 {
   SDL_GrabMode mode = Bool_val(grabmode) ? SDL_GRAB_ON : SDL_GRAB_OFF ;
   SDL_WM_GrabInput(mode);
   return Val_unit;
 }
 
-value ml_SDL_WM_GetGrabInput(value unit)
+CAMLprim value ml_SDL_WM_GetGrabInput(value unit)
 {
   return Val_bool(SDL_WM_GrabInput(SDL_GRAB_QUERY));
 }

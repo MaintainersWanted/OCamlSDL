@@ -22,7 +22,7 @@ static inline SDL_Surface *SDL_SURFACE(value v)
 #endif
 
 #ifndef HAVE_INLINE
-static void SDLColor_of_value(SDL_Color *c, value v);
+extern void SDLColor_of_value(SDL_Color *c, value v);
 #else
 static inline void SDLColor_of_value(SDL_Color *c, value v)
 {

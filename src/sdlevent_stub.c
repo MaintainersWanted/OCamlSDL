@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.16 2002/11/06 23:05:33 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.17 2002/11/21 11:01:15 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -57,7 +57,7 @@ static value value_of_active_state(Uint8 state)
   return v;
 }
 
-value mlsdlevent_get_app_state(value unit)
+CAMLprim value mlsdlevent_get_app_state(value unit)
 {
   return value_of_active_state( SDL_GetAppState() );
 }
@@ -318,7 +318,7 @@ static SDL_Event SDLEvent_of_value(value e)
   return evt;  /* silence compiler */
 }
 
-value mlsdlevent_peek(value omask, value num)
+CAMLprim value mlsdlevent_peek(value omask, value num)
 {
   int n = Int_val(num);
   int m;
@@ -351,7 +351,7 @@ value mlsdlevent_peek(value omask, value num)
   }
 }
 
-value mlsdlevent_get(value omask, value num)
+CAMLprim value mlsdlevent_get(value omask, value num)
 {
   int n = Int_val(num);
   int m;
@@ -384,7 +384,7 @@ value mlsdlevent_get(value omask, value num)
   }
 }
 
-value mlsdlevent_add(value elist)
+CAMLprim value mlsdlevent_add(value elist)
 {
   int len = list_length(elist);
 #ifdef __GNUC__
@@ -411,12 +411,12 @@ value mlsdlevent_add(value elist)
    return Val_unit;
 }
 
-value mlsdlevent_has_event(value unit)
+CAMLprim value mlsdlevent_has_event(value unit)
 {
   return Val_bool(SDL_PollEvent(NULL));
 }
 
-value mlsdlevent_poll(value unit)
+CAMLprim value mlsdlevent_poll(value unit)
 {
   SDL_Event evt;
   value v = Val_none;
@@ -426,7 +426,7 @@ value mlsdlevent_poll(value unit)
 }
 
 
-value mlsdlevent_wait(value unit)
+CAMLprim value mlsdlevent_wait(value unit)
 {
   int status;
   enter_blocking_section();
@@ -437,7 +437,7 @@ value mlsdlevent_wait(value unit)
   return Val_unit;
 }
 
-value mlsdlevent_wait_event(value unit)
+CAMLprim value mlsdlevent_wait_event(value unit)
 {
   SDL_Event evt;
   int status;
@@ -456,20 +456,20 @@ static const Uint8 evt_type_of_val [] = {
   SDL_JOYBUTTONDOWN, SDL_JOYBUTTONUP, SDL_QUIT, SDL_SYSWMEVENT,
   SDL_VIDEORESIZE, SDL_VIDEOEXPOSE, SDL_USEREVENT, } ;
 
-value mlsdlevent_get_state(value evt_v)
+CAMLprim value mlsdlevent_get_state(value evt_v)
 {
   return Val_bool( SDL_EventState( evt_type_of_val[ Int_val(evt_v) ], 
 				   SDL_QUERY) );
 }
 
-value mlsdlevent_set_state(value state, value evt_v)
+CAMLprim value mlsdlevent_set_state(value state, value evt_v)
 {
   int c_state = ( state == Val_true ? SDL_ENABLE : SDL_DISABLE ) ;
   SDL_EventState( evt_type_of_val[ Int_val(evt_v) ], c_state);
   return Val_unit;
 }
 
-value mlsdlevent_set_state_by_mask(value mask, value state)
+CAMLprim value mlsdlevent_set_state_by_mask(value mask, value state)
 {
   int c_state = ( state == Val_true ? SDL_ENABLE : SDL_DISABLE ) ;
   Uint32 c_mask = Int_val(mask);
@@ -482,7 +482,7 @@ value mlsdlevent_set_state_by_mask(value mask, value state)
   return Val_unit;
 }
 
-value mlsdlevent_get_enabled(value unit)
+CAMLprim value mlsdlevent_get_enabled(value unit)
 {
   Uint32 mask = 0;
   register int i;

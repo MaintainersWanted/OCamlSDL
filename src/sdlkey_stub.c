@@ -1,4 +1,4 @@
-/* $Id: sdlkey_stub.c,v 1.4 2002/09/04 16:36:56 oliv__a Exp $ */
+/* $Id: sdlkey_stub.c,v 1.5 2002/11/21 11:01:16 oliv__a Exp $ */
 
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
@@ -10,18 +10,18 @@
 
 #include "common.h"
 
-value ml_SDL_GetKeyName(value key)
+CAMLprim value ml_SDL_GetKeyName(value key)
 {
   return copy_string(SDL_GetKeyName(Int_val(key)));
 }
 
-value ml_SDL_DisableKeyRepeat(value unit)
+CAMLprim value ml_SDL_DisableKeyRepeat(value unit)
 {
   SDL_EnableKeyRepeat(0, 0);
   return Val_unit;
 }
 
-value ml_SDL_EnableKeyRepeat(value odelay, value ointerval, value unit)
+CAMLprim value ml_SDL_EnableKeyRepeat(value odelay, value ointerval, value unit)
 {
   int delay    = Opt_arg(odelay, Int_val, SDL_DEFAULT_REPEAT_DELAY);
   int interval = Opt_arg(ointerval, Int_val, SDL_DEFAULT_REPEAT_INTERVAL);
@@ -29,7 +29,7 @@ value ml_SDL_EnableKeyRepeat(value odelay, value ointerval, value unit)
   return Val_unit;
 }
 
-value ml_SDL_GetKeyState(value unit)
+CAMLprim value ml_SDL_GetKeyState(value unit)
 {
   int len;
   Uint8 *data = SDL_GetKeyState(&len);
@@ -43,7 +43,7 @@ value ml_SDL_GetKeyState(value unit)
 ML_0(SDL_GetModState, Val_int)
 ML_1(SDL_SetModState, Int_val, Unit)
 
-value ml_sdl_key_pressed(value ksym)
+CAMLprim value ml_sdl_key_pressed(value ksym)
 {
   int len;
   Uint8 *keystate = SDL_GetKeyState(&len);
@@ -51,7 +51,7 @@ value ml_sdl_key_pressed(value ksym)
 }
 
 ML_1(SDL_EnableUNICODE, Bool_val, Unit)
-value ml_SDL_QueryUNICODE(value unit)
+CAMLprim value ml_SDL_QueryUNICODE(value unit)
 {
   return Val_bool(SDL_EnableUNICODE(-1));
 }

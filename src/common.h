@@ -17,10 +17,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.9 2002/10/12 15:17:39 oliv__a Exp $ */
+/* $Id: common.h,v 1.10 2002/11/21 11:01:18 oliv__a Exp $ */
 
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#ifndef _COMMON_H_
+#define _COMMON_H_
 
 #include <caml/mlvalues.h>
 
@@ -84,4 +84,4 @@ void enter_blocking_section(void);
 void leave_blocking_section(void);
 
 
-#endif /* __COMMON_H__ */
+#endif /* _COMMON_H_ */

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.14 2002/11/06 23:05:28 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.15 2002/11/21 11:01:14 oliv__a Exp $ */
 
 #include <caml/callback.h>
 #include <caml/alloc.h>
@@ -68,7 +68,7 @@ static int init_flag_val(value flag_list)
  * OCaml/C conversion functions
  */
 
-value 
+CAMLprim value 
 sdl_init(value auto_clean, value vf) 
 {
   int flags = init_flag_val(vf);
@@ -84,14 +84,14 @@ sdl_init(value auto_clean, value vf)
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdl_quit (value unit)
 {
   sdl_internal_quit();
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdl_init_subsystem (value vf)
 {
   int flags = init_flag_val(vf);
@@ -101,7 +101,7 @@ sdl_init_subsystem (value vf)
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdl_quit_subsystem (value vf)
 {
   int flags = init_flag_val(vf);
@@ -109,7 +109,7 @@ sdl_quit_subsystem (value vf)
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdl_was_init (value unit)
 {
   Uint32 flags = SDL_WasInit(0);
@@ -122,7 +122,7 @@ sdl_was_init (value unit)
   return l;
 }
 
-value
+CAMLprim value
 sdl_version (value unit)
 {
   const SDL_version *v;

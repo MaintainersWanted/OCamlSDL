@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdljoystick_stub.c,v 1.2 2002/08/24 22:40:08 oliv__a Exp $ */
+/* $Id: sdljoystick_stub.c,v 1.3 2002/11/21 11:01:16 oliv__a Exp $ */
 
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
@@ -47,7 +47,7 @@ static void mlsdljoystick_raise_exception (char *msg)
 ML_0(SDL_NumJoysticks, Val_int)
 ML_1(SDL_JoystickName, Int_val, copy_string)
 
-value
+CAMLprim value
 ml_SDL_JoystickOpen(value index)
 {
   SDL_Joystick *j = SDL_JoystickOpen(Int_val(index));
@@ -66,7 +66,7 @@ ML_1(SDL_JoystickNumButtons, SDLJoystick_val, Val_int)
 ML_0(SDL_JoystickUpdate, Unit)
 
 ML_1_name(ml_SDL_JoystickSetEventState, SDL_JoystickEventState, Bool_val, Unit)
-value ml_SDL_JoystickGetEventState(value unit)
+CAMLprim value ml_SDL_JoystickGetEventState(value unit)
 {
   return Val_bool(SDL_JoystickEventState(SDL_QUERY));
 }
@@ -75,7 +75,7 @@ ML_2(SDL_JoystickGetAxis,   SDLJoystick_val, Int_val, Val_int)
 ML_2(SDL_JoystickGetHat,    SDLJoystick_val, Int_val, Val_int);
 ML_2(SDL_JoystickGetButton, SDLJoystick_val, Int_val, Val_bool);
 
-value ml_SDL_JoystickGetBall(value j, value ball)
+CAMLprim value ml_SDL_JoystickGetBall(value j, value ball)
 {
   int dx, dy;
   value v;

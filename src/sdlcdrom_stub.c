@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.12 2002/09/24 22:34:54 oliv__a Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.13 2002/11/21 11:01:14 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -65,8 +65,8 @@ sdlcdrom_raise_nocd ()
  * OCaml/C conversion functions
  */
 
-value
-sdlcdrom_get_num_drives (void)
+CAMLprim value
+sdlcdrom_get_num_drives (value unit)
 {
   int num_of_drives = SDL_CDNumDrives();
 
@@ -77,7 +77,7 @@ sdlcdrom_get_num_drives (void)
   return Val_int(num_of_drives);
 }
 
-value
+CAMLprim value
 sdlcdrom_drive_name (value num_drive)
 {
   const char *name = SDL_CDName(Int_val(num_drive));
@@ -87,7 +87,7 @@ sdlcdrom_drive_name (value num_drive)
   return copy_string((char *)name);
 }
 
-value
+CAMLprim value
 sdlcdrom_open (value num_drive)
 {
   SDL_CD *cdrom = SDL_CDOpen(Int_val(num_drive));
@@ -99,7 +99,7 @@ sdlcdrom_open (value num_drive)
   return Val_CDROM(cdrom);
 }
 
-value
+CAMLprim value
 sdlcdrom_close (value cdrom)
 {
   SDL_CDClose(CDROM_val(cdrom));
@@ -107,10 +107,10 @@ sdlcdrom_close (value cdrom)
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdlcdrom_play_tracks (value cdrom, value start_track,
-		      value start_frame, int ntracks,
-		      int nframes)
+		      value start_frame, value ntracks,
+		      value nframes)
 {
   SDL_CD *cd = CDROM_val(cdrom);
   
@@ -124,7 +124,7 @@ sdlcdrom_play_tracks (value cdrom, value start_track,
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdlcdrom_pause (value cdrom)
 {
   if (SDL_CDPause(CDROM_val(cdrom)) < 0) {
@@ -134,7 +134,7 @@ sdlcdrom_pause (value cdrom)
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdlcdrom_resume (value cdrom)
 {
   if (SDL_CDResume(CDROM_val(cdrom)) < 0) {
@@ -144,7 +144,7 @@ sdlcdrom_resume (value cdrom)
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdlcdrom_stop (value cdrom)
 {
   if (SDL_CDStop(CDROM_val(cdrom)) < 0) {
@@ -154,7 +154,7 @@ sdlcdrom_stop (value cdrom)
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdlcdrom_eject (value cdrom)
 {
   if (SDL_CDEject(CDROM_val(cdrom)) < 0) {
@@ -164,7 +164,7 @@ sdlcdrom_eject (value cdrom)
   return Val_unit;
 }
 
-value
+CAMLprim value
 sdlcdrom_status (value cdrom)
 {
   int v=0;
@@ -178,7 +178,7 @@ sdlcdrom_status (value cdrom)
   return Val_int(v);
 }
 
-value 
+CAMLprim value 
 sdlcdrom_info(value cdrom)
 {
   SDL_CD *cd = CDROM_val(cdrom);
