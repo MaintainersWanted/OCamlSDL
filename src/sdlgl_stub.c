@@ -50,8 +50,14 @@ CAMLprim value ml_SDL_GL_GetAttribute(value unit)
   CAMLreturn(v);
 }
 
-#include "ml_raw.h"
+/* LablGL interaction : the following defines come from LablGL 0.98 */
 #define MLTAG_ubyte	Val_int(520420861)
+#define SIZE_RAW 5
+#define Kind_raw(raw) (Field(raw,0))
+#define Base_raw(raw) (Field(raw,1))
+#define Offset_raw(raw) (Field(raw,2))
+#define Size_raw(raw) (Field(raw,3))
+#define Static_raw(raw) (Field(raw,4))
 
 CAMLprim value ml_SDL_GL_to_raw(value s)
 {
