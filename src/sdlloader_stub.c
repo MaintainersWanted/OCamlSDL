@@ -17,9 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.7 2002/07/13 17:13:07 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.8 2002/09/09 15:51:29 smkl Exp $ */
 
-#include <png.h>
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
@@ -61,6 +60,10 @@ sdlloader_load_image(value file)
    SDL_FreeSurface(surf);
    return ML_SURFACE(converted);
 }
+
+#ifdef FOOFOO
+
+#include <png.h>
 
 value
 sdlloader_load_png(value file_name)
@@ -234,3 +237,4 @@ sdlloader_load_png_with_alpha(value file_name)
    return ML_SURFACE(surf);
 }
 
+#endif
