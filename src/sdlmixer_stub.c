@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.27 2002/09/30 21:01:04 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.28 2002/10/06 15:23:44 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -87,7 +87,7 @@ sdlmixer_open_audio(value frequency, value format,
     AUDIO_U16SYS, AUDIO_S16SYS, } ;
   int ret, mstr, c_format;
   int c_frequency = Opt_arg(frequency, Int_val, MIX_DEFAULT_FREQUENCY);
-  int c_chunksize = Opt_arg(chunksize, Int_val, 4096);
+  int c_chunksize = Opt_arg(chunksize, Int_val, 1024);
 
   if(channels == Val_none)
     mstr = MIX_DEFAULT_CHANNELS;
