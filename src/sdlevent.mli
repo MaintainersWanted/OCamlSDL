@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.6 2001/06/11 17:07:39 xtrm Exp $ *)
+(* $Id: sdlevent.mli,v 1.7 2001/10/22 22:47:28 xtrm Exp $ *)
 
 (*d Exception *)
 
@@ -324,3 +324,5 @@ val set_mouse_position : int -> int -> unit
 
 val start_event_loop : unit -> unit
 val exit_event_loop : unit -> unit
+
+val char_of_key : key -> char
