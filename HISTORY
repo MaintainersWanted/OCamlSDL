@@ -1,3 +1,8 @@
+Release 0.5-pre3:
+
+	* Adding documentation directory
+	* new function char_of_key in Sdlevent module
+
 Release 0.5-pre2:
 
 	* Adding install and uninstall target stuff
@@ -12,4 +17,4 @@ Release 0.5-pre1: (no released at sourceforge)
 	* works with ocaml-3.01
 
 Release 0.4:
-The initial was arbitrary numbered 0.4.
+	* The initial was arbitrary numbered 0.4.
