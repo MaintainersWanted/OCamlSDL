@@ -1,19 +1,25 @@
-For the next release 0.5:
+TODO: Next release 0.5:
 
-* Complete the documentation english (high)
+[ ] Complete the documentation english (high)
 
-* Do more samples and tests (medium)
-* Add labels (medium)
-* Write a FAQ (medium) 
+[ ] Do more samples and tests (medium)
+[ ] Add labels (medium)
+[ ] Write a FAQ (medium) 
 
-* LibSDL1.2 full support
+[ ] LibSDL1.2 full support
 
-Actually done:
+[X] Clean up the directories by creating more subdirectories (high)
+     - doc/
+     - samples/
+     - tests/
+     - src/
 
-* Clean up the directories by creating more subdirectories (high)
-  - doc/
-  - samples/
-  - tests/
-  - src/
+[X] Add a new module for the games (medium)
 
-* Add a new module for the games (medium)
+--
+Legend
+
+[ ] - Not completed
+[~] - Partially completed 
+[X] - Done
+
