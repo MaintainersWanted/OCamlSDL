@@ -1,4 +1,4 @@
-(* $Id: ocamlsdl_logo2.ml,v 1.2 2002/09/04 16:34:53 oliv__a Exp $ *)
+(* $Id: ocamlsdl_logo2.ml,v 1.3 2002/09/07 00:22:24 oliv__a Exp $ *)
 
 
 let create_fade_surface w h =
@@ -31,7 +31,7 @@ let main () =
   let screen = Sdlvideo2.set_video_mode ~w ~h [] in
   let logo' = Sdlvideo2.display_format logo in
 
-  (* wm_set_caption "OCamlSDL logo" "OCamlSDL icon";*)
+  Sdlwm.set_caption "OCamlSDL logo" "OCamlSDL icon" ;
   Sdlvideo2.blit_surface ~src:logo' ~dst:screen () ;
   Sdlvideo2.flip screen;
   Sdltimer.delay 1000 ;
