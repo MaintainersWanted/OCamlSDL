@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader2_stub.c,v 1.1 2002/09/12 16:54:04 oliv__a Exp $ */
+/* $Id: sdlloader2_stub.c,v 1.2 2002/10/01 23:00:05 xtrm Exp $ */
 
 #include <string.h>
 
@@ -55,8 +55,10 @@ value ml_IMG_Load(value file)
   return ML_SURFACE(s);
 }
 
+
 value ml_IMG_ReadXPMFromArray(value string_arr)
 {
+#if (IMAGE_RELEASE == 2)
   int len = Bosize_val(string_arr);
 #ifdef __GNUC__
   char *xpm[len+1];
@@ -73,4 +75,11 @@ value ml_IMG_ReadXPMFromArray(value string_arr)
   if(! s)
     sdlloader_raise_exception(IMG_GetError());
   return ML_SURFACE(s);
+#else
+    sdlloader_raise_exception("not supported");
+#endif
 }
+
+
+
+
