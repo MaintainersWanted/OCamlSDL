@@ -1,4 +1,10 @@
 
+2001-04-24  Luc Mazardo  <l.mazardo@free.fr>
+
+	* CHANGE : now the main init function Sdl.init is called 
+	with list of init flags.
+
+	
 2001-04-23  Luc Mazardo  <l.mazardo@free.fr>
 
 	* CHANGE (*): major changes in the repository
