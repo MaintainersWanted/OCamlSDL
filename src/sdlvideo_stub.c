@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.25 2002/04/29 19:24:27 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.26 2002/04/30 16:06:01 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -72,19 +72,6 @@ convert_color (value color, unsigned char *r, unsigned char *g,
     *b = (unsigned char)(Double_val(Field(color, 2)) * 255);
   }
 }
-
-/*
- * Make a SDL color matching the surface pixel format
- */
-
-/*  static int
- *  map_rgb_color (value surface, value color)
- *  {
- *    unsigned char r, g, b;
- *  
- *    convert_color(color, &r, &g, &b);
- *    return SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b);
- *  } */
 
 /*
  * Raise an OCaml exception with a message
@@ -162,7 +149,7 @@ sdlvideo_set_display_mode (value width, value height, value bpp)
   surf = SDL_SetVideoMode(Int_val(width),
 			  Int_val(height),
 			  Int_val(bpp),
-			  SDL_HWSURFACE | SDL_DOUBLEBUF);
+			  SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_FULLSCREEN);
 
   if (surf == NULL) {
     sdlvideo_raise_exception(SDL_GetError());
@@ -176,30 +163,32 @@ sdlvideo_set_display_mode (value width, value height, value bpp)
 /* video flags */
 
 /*  common_video_flag  */
-#define SWSURFACE_tag 0     /* Surface is in system memory */
-#define HWSURFACE_tag 1     /* Surface is in video memory */
-#define SRCCOLORKEY_tag 2   /* Blit uses a source color key */
-#define SRCALPHA_tag 3      /* Blit uses source alpha blending */
+#define SWSURFACE_tag 1     /* Surface is in system memory */
+#define HWSURFACE_tag 3     /* Surface is in video memory */
+#define SRCCOLORKEY_tag 5   /* Blit uses a source color key */
+#define SRCALPHA_tag 7      /* Blit uses source alpha blending */
 
 /*  ext_video_flag  */
-#define ASYNCBLIT_tag 4     /* Enables the use of asynchronous to the display surface */
-#define ANYFORMAT_tag 5     /* Allow any video pixel format */
-#define HWPALETTE_tag 6     /* Give SDL exclusive palette access */
-#define DOUBLEBUF_tag 7     /* Set up double-buffered video mode */
-#define FULLSCREEN_tag 8    /* Surface is a full screen display */
-#define OPENGL_tag 9        /* OpenGL rendering */
-#define OPENGLBLIT_tag 10   /* */
-#define RESIZABLE_tag 11    /* Create a resizable window */
-#define NOFRAME_tag 12      /* Frame without titlebar */
+#define ASYNCBLIT_tag 1001     /* Enables the use of asynchronous to the display surface */
+#define ANYFORMAT_tag 1003     /* Allow any video pixel format */
+#define HWPALETTE_tag 1005     /* Give SDL exclusive palette access */
+#define DOUBLEBUF_tag 1007     /* Set up double-buffered video mode */
+#define FULLSCREEN_tag 1009    /* Surface is a full screen display */
+#define OPENGL_tag 1011        /* OpenGL rendering */
+#define OPENGLBLIT_tag 1013   /* */
+#define RESIZABLE_tag 1015    /* Create a resizable window */
+#define NOFRAME_tag 1017      /* Frame without titlebar */
 
 int 
 video_flag_val(value flag_list)
 {
   int flag = 0;
   value l = flag_list;
+
   while (is_not_nil(l))
     {
-      switch (Int_val(hd(l)))
+      int tg = 1000 * Tag_val(hd(l)) + Field(hd(l), 0);
+      switch (tg)
 	{
 	case SWSURFACE_tag   : flag |= SDL_SWSURFACE   ; break;
 	case HWSURFACE_tag   : flag |= SDL_HWSURFACE   ; break;
@@ -316,7 +305,7 @@ sdlvideo_map_rgb(value surface, value color)
   unsigned char r, g, b;
 
   convert_color(color, &r, &g, &b);
-  return Val_int(SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b));
+  return SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b);
 }
 
 value
@@ -652,9 +641,18 @@ sdlvideo_surface_set_pixel(value ml_surf, value x, value y,
    location = surf->pixels +
               surf->pitch * Int_val(y) +
               surf->format->BytesPerPixel * Int_val(x);
-   location[0] = r;
-   location[1] = g;
-   location[2] = b;
+   /* location[0] = r; */
+   /* location[1] = g; */
+   /* location[2] = b; */
+
+   if(surf->format->BytesPerPixel > 2) {
+     location[0] = r;
+     location[1] = g;
+     location[2] = b;
+   } else {
+     location[0] = (b>>3) | (((g>>2) & 0x7) << 5);
+     location[1] = (g >> 5) | ((r>>3) << 3);
+   }
 
    return Val_unit;
 }
@@ -671,9 +669,23 @@ sdlvideo_surface_get_pixel(value ml_surf, value x, value y)
    location = surf->pixels +
               surf->pitch * Int_val(y) +
               surf->format->BytesPerPixel * Int_val(x);
-   Field(ret, 0) = Val_int(location[0]);
-   Field(ret, 1) = Val_int(location[1]);
-   Field(ret, 2) = Val_int(location[2]);
+   /* Field(ret, 0) = Val_int(location[0]); */
+   /* Field(ret, 1) = Val_int(location[1]); */
+   /* Field(ret, 2) = Val_int(location[2]); */
+
+   if(surf->format->BytesPerPixel > 2) {
+     Field(ret, 0) = Val_int(location[0]);
+     Field(ret, 1) = Val_int(location[1]);
+     Field(ret, 2) = Val_int(location[2]);
+   } else {
+     Field(ret, 0) = Val_int(location[1] & 0xf8);
+     Field(ret, 1) = Val_int(
+			     ((location[1] & 0x07)<<5)
+			     |
+			     (((location[0] & 0xe0))>>3)
+			     );
+     Field(ret, 2) = Val_int((location[0] & 0x1f)<<3);
+   }
 
    CAMLreturn(ret);
 }
