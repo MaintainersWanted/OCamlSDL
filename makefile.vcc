@@ -1,0 +1,62 @@
+# -*- makefile -*-
+#
+# OCamlSDL - An ML interface to the SDL library
+# Copyright (C) 1999  Frederic Brunel
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+# $Id: makefile.vcc,v 1.1 2002/09/09 15:09:53 smkl Exp $
+
+PREFIX =        /usr/local
+CAMLLIBDIR =    /usr/local/lib/ocaml
+OCAMLSDLDIR =   $(CAMLLIBDIR)/sdl
+BINDIR =        $(PREFIX)/bin
+
+INSTALL = 	/usr/bin/install -c
+INSTALL_DATA = 	${INSTALL} -m 644
+
+PARTS = ttf loader mixer
+
+CC =            cl
+CPPFLAGS =	 -I/usr/include/SDL -D_REENTRANT  -DHAVE_SDL_TTF_H=1 -DHAVE_SDL_IMAGE_H=1 -DHAVE_SDL_MIXER_H=1 
+CFLAGS =	-g -O -Wall -Wno-unused -DTTF_RELEASE=1
+CAMLC =		ocamlc
+CAMLOPT =	ocamlopt
+CAMLTOP =	ocamlmktop
+CAMLDEP =	ocamldep
+CAMLMKLIB =     ocamlmklib
+CAMLDOC = 	ocamldoc
+
+MLFLAGS  =
+OMLFLAGS =	-unsafe -inline 10
+
+LIBS      =	 -Lf:/sdl -lSDL -lpthread -lSDL_ttf -lSDL_image -lSDL_mixer -lpng -lz -lm
+CLIBS     =	$(addprefix -cclib ,$(filter -l%,$(LIBS)))
+MLLDFLAGS =	$(addprefix -ccopt ,$(filter-out -l%,$(LIBS)))
+
+DESTDIR =
+
+%.cmo : %.ml
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.cmx : %.ml
+	$(CAMLOPT) -c $(OMLFLAGS) $<
+
+%.cmi : %.mli
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.o : %.c
+	$(CAMLC) -c -ccopt "$(CPPFLAGS) $(CFLAGS)" $<
