@@ -17,9 +17,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.3 2002/06/04 23:10:36 oliv__a Exp $
+# $Id: Makefile,v 1.4 2002/06/11 17:10:37 xtrm Exp $
 
 all:
+        $(MAKE) -C src depend
 	$(MAKE) -C src
 
 test: all
