@@ -1,0 +1,80 @@
+dnl OCamlSdl autoconf input
+
+
+dnl begin
+AC_INIT(sdl.ml)
+
+AC_CONFIG_AUX_DIR(./support)
+# need support/install-sh
+# need support/missing
+# need support/mkinstalldirs
+
+dnl Check for programs
+
+AC_PROG_CC
+
+dnl Check for compiler environment
+
+AC_C_CONST
+
+# Check for OCaml programs
+AC_PATH_PROG(OCAMLC,ocamlc,no)
+if test "$OCAMLC" = no ; then
+	AC_MSG_ERROR(Cannot find ocamlc.)
+fi
+AC_PATH_PROG(OCAMLOPT,ocamlopt,no)
+if test "$OCAMLOPT" = no ; then
+	AC_MSG_ERROR(Cannot find ocamlopt.)
+fi
+AC_PATH_PROG(OCAMLMKTOP,ocamlmktop,no)
+if test "$OCAMLMKTOP" = no ; then
+	AC_MSG_ERROR(Cannot find ocamlmktop.)
+fi
+AC_PATH_PROG(OCAMLDEP,ocamldep,no)
+if test "$OCAMLC" = no ; then
+	AC_MSG_ERROR(Cannot find ocamldep.)
+fi
+
+AC_SUBST(OCAMLC)
+AC_SUBST(OCAMLOPT)
+AC_SUBST(OCAMLMKTOP)
+AC_SUBST(OCAMLDEP)
+
+dnl Check for SDL
+
+AC_PATH_PROG(SDL_CONFIG,sdl-config,no)
+if test "$SDL_CONFIG" = no ; then
+        AC_MSG_ERROR(Cannot find sdl-config.)
+else
+        SDL_CFLAGS=`$SDL_CONFIG --cflags`
+        SDL_LIBS=`$SDL_CONFIG --libs`
+fi
+
+CFLAGS="$CFLAGS $SDL_CFLAGS"
+LIBS="$LIBS $SDL_LIBS"
+
+dnl Check for libraries
+
+dnl Figure out which math library to use
+case "$target" in
+    *-*-mingw32*)
+        MATHLIB=""
+        ;;
+    *-*-beos*)
+        MATHLIB=""
+        ;;
+    *)
+        MATHLIB="-lm"
+        ;;
+esac
+AC_SUBST(MATHLIB)
+
+dnl Check for header files
+dnl Check for typedefs
+dnl Check for structures
+dnl Check for compiler characteristics
+dnl Check for library functions
+dnl Check for system services
+
+# Finally create all the generated files
+AC_OUTPUT(Makefile)
