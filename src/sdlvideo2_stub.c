@@ -20,9 +20,11 @@
 /* ************************************************** */
 static void ml_SDL_FreeSurface(value s)
 {
-  SDL_Surface *surf = SDL_SURFACE(s);
-  if(Tag_val(s) == 0 || Field(s, 1))
-    SDL_FreeSurface(surf);
+  struct ml_sdl_surf_data *cb_data;
+  cb_data = (Tag_val(s) == 0) ? 
+    Data_custom_val(Field(s, 0)) : Data_custom_val(s);
+  if(cb_data->freeable)
+    SDL_FreeSurface(cb_data->s);
 }
 
 static int ml_SDL_surf_compare(value v1, value v2)
