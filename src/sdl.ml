@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.ml,v 1.5 2002/07/30 18:32:50 oliv__a Exp $ *)
+(* $Id: sdl.ml,v 1.6 2002/08/08 12:32:32 oliv__a Exp $ *)
 
 (* Define a new exception for Sdl initialization errors and register 
    it to be callable from C code. *)
@@ -31,20 +31,23 @@ let _ =
 
 (* Initialization. *)
 
-type init_flag = [
-  | `TIMER
-  | `AUDIO
-  | `VIDEO
-  | `CDROM
-  | `JOYSTICK
-  | `NOPARACHUTE   (* Don't catch fatal signals *)
-  | `EVENTTHREAD   (* Not supported on all OS's *)
-  | `EVERYTHING
-  ] 
+type subsystem = [
+  | `TIMER        (** init flag for the timer subsystem *)
+  | `AUDIO        (** init flag for the audio subsystem *)
+  | `VIDEO        (** init flag for the video subsystem *)
+  | `CDROM        (** init flag for the cdrom subsystem *)
+  | `JOYSTICK     (** init flag for the joystick subsystem *)
+]
 
-external init : init_flag list -> unit = "sdl_init";;
-external init_with_auto_clean : init_flag list -> unit = "sdl_init_with_auto_clean";;
-external quit : unit -> unit = "sdl_quit";;
+external init : ?auto_clean:bool -> 
+  [< subsystem | `NOPARACHUTE | `EVENTTHREAD | `EVERYTHING ] list -> 
+  unit = "sdl_init"
+external init_subsystem : subsystem list -> unit = "sdl_init_subsystem"
+
+external was_init : unit -> subsystem list = "sdl_was_init"
+
+external quit : unit -> unit = "sdl_quit"
+external quit_subsystem : subsystem list -> unit = "sdl_quit_subsystem"
 
 type version = {
     major : int ;

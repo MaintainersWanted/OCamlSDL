@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.5 2002/07/30 18:32:50 oliv__a Exp $ *)
+(* $Id: sdl.mli,v 1.6 2002/08/08 12:32:32 oliv__a Exp $ *)
 
 (** This module contains functions for initialising/quitting the library *)
 
@@ -27,38 +27,37 @@ exception SDL_init_exception of string
 (** {1 Main functions} *)
 
 (** Initialization flag type *)
-type init_flag = [
+type subsystem = [
   | `TIMER        (** init flag for the timer subsystem *)
   | `AUDIO        (** init flag for the audio subsystem *)
   | `VIDEO        (** init flag for the video subsystem *)
   | `CDROM        (** init flag for the cdrom subsystem *)
   | `JOYSTICK     (** init flag for the joystick subsystem *)
-  | `NOPARACHUTE  (** Don't catch fatal signals *)
-  | `EVENTTHREAD 
-  | `EVERYTHING   (** same as `TIMER + `AUDIO + `VIDEO + `CDROM + `JOYSTICK *)
-  ] 
+]
 
-external init : init_flag list -> unit
-    = "sdl_init"
-(**
-  Initialize the SDL library. This should be called before all other 
-  SDL functions. 
-  The flags parameter specifies what part(s) of SDL to initialize.
+external init : 
+  ?auto_clean:bool -> 
+  [< subsystem | `NOPARACHUTE | `EVENTTHREAD | `EVERYTHING ] list -> 
+  unit = "sdl_init"
+(** Initialize the SDL library. This should be called before all other 
+   SDL functions. 
+   The flags parameter specifies what part(s) of SDL to initialize.
+ - `NOPARACHUTE : Don't catch fatal signals
+ - `EVENTTHREAD : Automatically pump events in a separate threads
+ - `EVERYTHING  : initialize all subsystems
 *)
+external init_subsystem : subsystem list -> unit = "sdl_init_subsystem"
 
-external init_with_auto_clean : init_flag list -> unit
-    = "sdl_init_with_auto_clean"
-(** 
-  Initialize the SDL library with automatic call to the {! Sdl.quit}
-  function at normal program termination
-*)
+external was_init : unit -> subsystem list = "sdl_was_init"
 
-external quit : unit -> unit
-    = "sdl_quit"
+external quit : unit -> unit = "sdl_quit"
 (** 
   [quit] shuts down all SDL subsystems and frees the resources allocated 
   to them. This should always be called before you exit. 
 *)
+
+external quit_subsystem : subsystem list -> unit = "sdl_quit_subsystem"
+
 
 (** {1 Versioning information} *)
 
