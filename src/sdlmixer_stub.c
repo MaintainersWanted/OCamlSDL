@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.23 2002/09/09 17:06:28 smkl Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.24 2002/09/09 17:11:37 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -106,7 +106,7 @@ static struct custom_operations music_chunk_ops = {
   custom_serialize_default, custom_deserialize_default 
 };
 
-static inline value ML_CHUNK(Mix_Chunk *c)
+static ___inline value ML_CHUNK(Mix_Chunk *c)
 {
   Mix_Chunk **chk;
   value v = alloc_custom(&mixer_chunk_ops, sizeof(*chk),
@@ -116,7 +116,7 @@ static inline value ML_CHUNK(Mix_Chunk *c)
   return v;
 }
 
-static inline value ML_MUS(Mix_Music *c)
+static ___inline value ML_MUS(Mix_Music *c)
 {
   Mix_Music **mus;
   value v =alloc_custom(&music_chunk_ops, 
