@@ -1,0 +1,406 @@
+                  --------------------------------------------
+                  HOW  TO  GET  OCAMLSDL  TO  WORK  IN  CYGWIN
+                      Document creation date: 2001-12-30
+                  --------------------------------------------
+
+Some things to keep in mind:
+
+1. THIS DOCUMENT IS A WORK IN PROGRESS.
+
+   I am not an expert on Cygwin, nor am I an expert on *nix development.
+   When I wrote these instructions, I wanted to get OCamlSDL up and running
+   as quickly as possible, so this solution isn't the "best" one.  What I
+   mean by that is I didn't try to find the "proper" way to do things - if
+   it worked, I was okay with it.
+
+2. IF YOU KNOW OF A "BETTER" WAY TO DO THINGS, LET ME KNOW!
+
+   If you know why something wasn't working originally (and therefore,
+   this document had to be written) let me know.  If we can fix the
+   original problem, rather than hacking out a solution, that's a better
+   plan.
+
+   If you contribute any information, I will add it to this document and it
+   will help others.
+
+3. IF ANY OF THE INSTRUCTIONS AREN'T CLEAR, LET ME KNOW!
+
+   Let me know and I will expand on the instructions.  Right now I'm
+   assuming you know where to download the appropriate software, and I'm
+   assuming you have basic *nix and text editing skills.  If this is not
+   the case, let me know.
+  
+4. THIS DOCUMENT IS WRITTEN START TO FINISH AS IF YOU ALREADY HAVE
+   CYGWIN INSTALLED.
+
+   If you have previously installed Cygwin, I can't guarantee that the
+   following will work.  Why?  Because there's no guarantee that you use
+   the same versions of the software and source files that I used, files
+   in your Cygwin installation might be in a different place, etc.
+
+   If the following doesn't work, and you don't use your Cygwin
+   installation for anything else, you may want to start from scratch.
+
+5. FOLLOW THESE INSTRUCTIONS AT YOUR OWN RISK.
+
+   I disclaim any responsibility for any kind of damages.  These
+   instructions worked for me, but they might not work for you.
+
+6. I MAY HAVE OMITTED SOME STEPS FROM THESE INSTRUCTIONS.
+
+   At some point, Windows may pop up a box saying that it can't find a
+   specific DLL, and then it will list the directories where it looked.
+   You can fix this by finding the correct DLL file and copying it into
+   one of those directories.  If I forgot anything else, let me know and
+   I'll fix it.
+
+
+YOU CAN CONTACT THE AUTHOR AT: WALTERGR@AOL.COM
+
+--------
+CONTENTS
+--------
+
+1. Installing Cygwin
+2. Installing X Windows
+3. Installing gcc "Extras"
+4. Compile OCAML 3.02
+5. Compile SDL 1.2.3
+6. Compile FREETYPE 1.3.1
+7. Compile SDL_TTF 1.2.2
+8. Compile SDL_MIXER 1.2.1
+9. Compile SDL_IMAGE 1.2.1
+10. Compile OCAMLSDL 0.5-PRE2
+
+
+--------------------
+1. INSTALLING CYGWIN
+--------------------
+
+If you skipped the notes at the beginning of this document, please
+go back and read them now.
+
+Install Cygwin with the following packages:
+
+admin    - none
+archive  - none
+base     - all packages
+database - none
+devel    - autoconf, autoconf-devel, autoconf-stable, automake,
+           automake-devel, automake-stable, binutils, gcc, make,
+           mingw-runtime, mktemp
+doc      - man
+editors  - none
+games    - none
+graphics - jpeg, libpng, opengl, tiff
+interpret- gawk, m4, perl
+libs     - jpeg, libncurses5, libncurses6, libpng, mingw-runtime,
+           ncurses, opengl, tcltk, termcap, tiff, w32api, zlib
+mail     - none
+math     - none
+net      - none
+shells   - ash, bash, sh-utils
+text     - groff, les
+utils    - bzip2
+web      - none
+
+How you install it at this point is up to you, but I'd recommend the
+following
+
+1. Perform "download from internet" on with the above packages
+2. Run the configurator again.  Install from a local directory.  When
+   specifying "local package directory" choose the directory that
+   contains the "contrib" and "latest" subdirectories.
+3. The Cygwin installer will detect that some of the packages you
+   downloaded are there, but it won't detect all of them.  Be sure to
+   double check which packages are going to be installed, and
+   that you're not installing them as source.
+
+-----------------------
+2. INSTALLING X WINDOWS
+-----------------------
+
+NOTE: When running any commands in this document, make sure you run them
+      from within the Cygwin shell.
+
+A note about installing X Windows: SDL doesn't need X Windows, nor does
+OCamlSDL.  OCaml's native graphics routines _do_ use X Windows (if I
+understand things correctly.)  If you aren't going to be using OCaml's
+native graphics routines and are only going to be using SDL or OCamlSDL,
+you probably don't need to install X Windows completely.  However, OCaml
+needs X Window's .h files to compile.  Those files are in Xprog.tgz.  You
+might be able to get away with just installing the header files in the
+correct directories.  I haven't tried this - I just installed X Windows
+completely.  Therefore, that's what we'll do in this step.
+
+
+1. Download the following:  (there's a link to the XFree86 downloads
+   on the Cygwin home page: http://www.cygwin.com)
+
+   Xinstall.sh
+   startup-scripts.tgz
+   Xbin.tgz
+   Xdoc.tgz
+   Xetc.tgz
+   Xfenc.tgz
+   Xfnts.tgz
+   extract.exe.bz2
+   Xlib.tgz
+   Xman.tgz
+   Xxserv.tgz
+   Xprog.tgz
+
+2. Follow the instructions from
+   http://cygwin.com/xfree/docs/ug/cygwin-xfree-installing.html
+   
+   Notes for step 5 in the above web-page:
+
+   When the installer asks, "Do you want to install Xprog.tgz (programmer
+   support)? (y/n) [y]" press enter.
+
+   When it asks "Do you wish to have the new xterm terminfo entries
+   installed now (y/n)? [n]" say yes.
+
+   "Do you wish to have this link installed (y/n)? [n]" say yes.
+
+   Finish up the XFree86 installation instructions.
+
+3. You can remove the files you copied into /tmp now.
+4. Copy the the directory /usr/X11R6/include/X11 to /usr/include
+
+--------------------------
+3. INSTALLING GCC "EXTRAS"
+--------------------------
+
+1. Download egcs-1.1.2-mingw-extra.tar.gz
+2. Uncompress it into a temporary directory.
+3. Copy the contents of the "lib" directory that was created into /lib/mingw
+4. Search for all instances of the file _G_config.h in your Cygwin
+   installation (c:\cygwin if you used the default) and replace those
+   with /lib/mingw/_G_config.h
+5. Copy all of /usr/include/g++-3 and subdirectories into
+   /usr/include/mingw (Why?  The latter appears to be on the search path
+   but not the former.  You should probably just add /usr/include/g++-3
+   to the search path.)
+6. You may remove the files you created in step 2 of this section.
+
+---------------------
+4. COMPILE OCAML 3.02
+---------------------
+
+Go into the directory where you uncompressed the OCaml 3.02 sources.
+
+1. run the following command:
+
+   ./configure -bindir /bin -libdir /lib -mandir /usr/man/man1 \
+   -tkdefs "-I/usr/include/tcl.h -I/usr/include/tk.h"
+
+2. type "make world"
+3. type "make opt"
+4. type "make opt.opt"
+5. type "umask 022"
+6. type "make install"
+
+--------------------
+5. COMPILE SDL 1.2.3
+--------------------
+
+Go into the directory where you uncompressed the SDL 1.2.3 sources.
+
+(When you run ./configure, it looks for the DirectX library and headers,
+as well as nasm.  It builds fine without them, so I didn't install them.)
+
+1. type "./configure"
+2. type "make"
+3. type "make install"
+4. Edit /usr/local/bin/sdl-config and search for the FIRST line that
+   contains "echo $libdirs".  (There are 2 of those lines in the file...)  
+5. On the same line, put
+   -lcrtdll -lmoldname -lmsvcrt -lmsvcrt20 -lmsvcrt40
+   right before -lmno-cygwin.
+6. Find the second line that contains "echo $libdirs" and put the same
+   text as in step 5 right before -lmno-cygwin
+7. Save sdl-config
+8. Copy /usr/local/lib/sdl.dll to /usr/local/bin
+9. type "cd test"
+10. type "./configure"
+11. type "make"
+12. type "./testwin"
+13. Rejoice.  (For some reason, the program exits before I think it
+    should, but I can't remember why I think it shouldn't end exit so
+    quickly.  I've also installed SDL on a much slower Linux machine, so
+    maybe when I ran it on that computer it just waited longer before
+    exiting.  I can't remember, so I don't know if this is a problem or not.)
+
+-------------------------
+6. COMPILE FREETYPE 1.3.1
+-------------------------
+
+Go into the directory where you uncompressed the Freetype 1.3.1 sources.
+
+1. type "./configure"
+2. type "make"
+3. For some reason "make install" doesn't appear to work properly, so
+   copy the contents of 
+   /home/Administrator/freetype-1.3.1/lib/.libs
+   into
+   /usr/local/lib
+
+------------------------
+7. COMPILE SDL_TTF 1.2.2
+------------------------
+
+IMPORTANT NOTE: The readme file in SDL_ttf 1.2.2 says it's a wrapper for
+Freetype 1.2, but we installed Freetype 1.3.1.  This might be a problem.
+Let's try anyway.
+
+Go into the directory where you uncompressed the SDL_TTF 1.2.2 sources.
+
+1. type "./configure"
+2. Copy /home/Administrator/freetype-1.3.1/lib/*.h to /usr/local/include
+3. Copy /lib/mingw/* to /usr/local/lib
+4. make
+5. make install
+6. NOTE: showfont.exe dies!!!!  This is not good.
+
+--------------------------
+8. COMPILE SDL_MIXER 1.2.1
+--------------------------
+
+Go into the directory where you uncompressed the SDL_mixer 1.2.1 sources.
+
+(NOTE: You may want to install Ogg Vorbis and smpeg before compiling
+SDL_mixer.  I didn't do so.)
+
+1. type "./configure"  (This will complain a bit about not finding Ogg
+   Vorbis and smpeg, if you don't have it installed.)
+2. type "make"
+3. type "make install"
+4. You can run the playwave.exe and playmus.exe samples in the .libs
+   directory if you'd like.
+
+--------------------------
+9. COMPILE SDL_IMAGE 1.2.1
+--------------------------
+
+Go into the directory where you uncompressed the OCaml 3.02 sources.
+
+1. type "./configure"
+2. type "make"
+3. type "make install"
+4. "make test" fails (I didn't bother to figure out why)
+5. You can run the showimage.exe sample in the .libs directory if you'd
+   like.
+
+-----------------------------
+10. COMPILE OCAMLSDL 0.5-PRE2
+-----------------------------
+
+Go into the directory where you uncompressed the OCamlSDL 0.5-pre2
+sources.
+
+Okay: let me describe to you the problem I was having for this step.
+
+Apparently when you use "ocamlmktop.exe" to create a new toplevel, and
+link in the libraries we've been using previously for Windows
+compatibility (-lcoldname -lcrtdll -lmoldname -lmsvcrt -lmsvcrt20
+-lmsvcrt40) it will create a new toplevel fine, but if you try running
+it, it will die immediately with an access violation.
+
+The same thing happens when you try to compile the sample programs that
+come with OCamlSDL: they will die immediately.
+
+So the solution is to NOT link with those libraries.  Unfortunately, you
+then have to hack the source files a bit.  I'm not sure if there are
+other libraries you can link with instead so that this problem won't happen.
+
+So when you try to make OCamlSDL, you'll get the following errors:
+
+sdlevent_stub.o: In function `find_key_index':
+/home/Administrator/OCamlSDL-20011229/src/sdlevent_stub.c:325: undefined referen
+ce to `_assert'
+stub_shared.o: In function `finalize_surface':
+/home/Administrator/OCamlSDL-20011229/src/stub_shared.c:29: undefined reference
+to `_imp___iob'
+collect2: ld returned 1 exit status
+Error while building custom runtime system
+
+
+The solution is to edit src/stub_shared.c, and change
+
+ fprintf(stderr, "Freeing surface: %p\n",
+	  SDL_FINAL_SURFACE(final_surface));
+
+to
+ /*fprintf(stderr, "Freeing surface: %p\n",*/
+	  SDL_FINAL_SURFACE(final_surface); /*);*/
+
+
+And in sdlevent_stub.c, change the line that says
+
+      assert(0);
+to
+      exit(-1);
+
+
+Additionally, if you try to make OCamlSDL, in /lib/caml/fail.h, the
+compiler can't find the definition of sigjmp_buf, which is declared in
+/usr/include/machine/setjmp.h:
+
+typedef int sigjmp_buf[_JBLEN+2];
+
+So edit /lib/caml/fail.h, and insert the above typedef line right before
+the line in fail.h that reads
+
+struct longjmp_buffer {
+ 
+
+Okay, now back to the instructions.
+
+1. Edit the file "configure" and remove all references to -lm
+   (Apparently Cygwin doesn't have a proper math library, and it will
+   die when it tries to link with it.  I guess OCamlSDL doesn't need
+   the math library, though, because it works fine without it.)
+2. Type "./configure"
+3. Type "make".  make will then die.  This is to be expected.
+4. Type "cd src" and then run the following command:
+
+/usr/bin/ocamlmktop -custom -o ../lib/toplevel.exe bigarray.cma \
+sdl_stub.o sdlvideo_stub.o sdlcdrom_stub.o sdlevent_stub.o \
+sdltimer_stub.o sdlttf_stub.o sdlmixer_stub.o sdlloader_stub.o \
+stub_shared.o common.o sdl.cmo sdlvideo.cmo sdlcdrom.cmo sdlevent.cmo \
+sdltimer.cmo sdlttf.cmo sdlmixer.cmo sdlloader.cmo \
+-cclib "-L/usr/local/lib  -lttf -lSDL_ttf -lSDL -lpng -lz -lSDL_image -lSDL_mixer"
+
+   Then copy SDL*.dll in /usr/local/lib to /usr/local/bin
+
+5. Type "../lib/toplevel.exe" to make sure the toplevel is working.
+   (Type #quit;; to exit the toplevel.)
+6. Type "cd .."
+7. Type "make"
+8. Make dies.  This is to be expected.
+9. Type "cd samples"
+10. Run the following command:
+
+/usr/bin/ocamlopt bigarray.cmxa -cclib \
+"-L/usr/local/lib -lttf -lSDL -lpng -lz -lSDL_ttf -lSDL_image -lSDL_mixer" \
+-cclib "-L../lib/ -lstub" -o test_cdrom ../lib/libstub.a ../lib/sdl.cmxa \
+test_cdrom.cmx
+
+11. Type "./test_cdrom.exe" to test the CD-ROM example.
+12. Type "make".  Make will die again.  This is fine.
+13. Run the following command:
+
+/usr/bin/ocamlopt bigarray.cmxa -cclib \
+"-L/usr/local/lib -lttf -lSDL -lpng -lz -lSDL_ttf -lSDL_image -lSDL_mixer" \
+-cclib "-L../lib/ -lstub" -o example ../lib/libstub.a ../lib/sdl.cmxa \
+example.cmx
+
+14. Type "./example.exe" to test the graphics example.
+
+That's it!!  You're finished!!  Again, if you encountered any problems
+or you know of a better solution, please write to me at waltergr@aol.com
+
+
+Copyright (C) 2001 by Walter Rader.
+All rights reserved.
