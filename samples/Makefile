@@ -17,60 +17,39 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.2 2002/08/13 14:46:45 xtrm Exp $
+# $Id: Makefile,v 1.3 2002/08/26 12:31:43 oliv__a Exp $
 
 
 include ../makefile.toplevel
 
-LIB_DIR =	../src
+LIB_DIR = ../src
 
 MLFLAGS  += -w s -I $(LIB_DIR)
 OMLFLAGS += -w s -I $(LIB_DIR)
 
-LIBRARY = 	$(LIB_DIR)/sdl.cma
-OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
-CLIBRARY = 	$(LIB_DIR)/libsdlstub.a
+SAMPLES = test_cdrom example ocamlplayer event_loop \
+          testalpha testjoystick
 
-SAMPLES = test_cdrom example ocamlplayer event_loop
+all: $(addsuffix .test,$(SAMPLES))
+opt: $(addsuffix .opt,$(SAMPLES))
 
+%.test : %.cmo
+	$(CAMLC) -o $@ -I $(LIB_DIR) bigarray.cma sdl.cma $<
 
-all: $(SAMPLES)
-
-test_cdrom: test_cdrom.cmx $(CLIBRARY) $(OLIBRARY)
+%.opt : %.cmx
 	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
-
-example: example.cmx $(CLIBRARY) $(OLIBRARY)
-	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
-
-ocamlplayer: ocamlplayer.cmx $(CLIBRARY) $(OLIBRARY)
-	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
-
-event_loop: event_loop.cmx $(CLIBRARY) $(OLIBRARY)
-	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
-
-%.cmo : %.ml
-	$(CAMLC) -c $(MLFLAGS) $<
-
-%.cmx : %.ml
-	$(CAMLOPT) -c $(OMLFLAGS) $<
-
-%.cmi : %.mli
-	$(CAMLC) -c $(MLFLAGS) $<
-
-%.o : %.c
-	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
 
 distclean: clean
 	rm -f .depend *~
 
 clean:
-	rm -f *.cm* *.[oa] *.so $(SAMPLES)
+	rm -f *.cm* *.[oa] *.so *.opt *.test
 
 depend: .depend
 
 .depend: $(ML_SRCS) $(MLI)
 	@$(CAMLDEP) $^ > $@
 
-.PHONY: all clean distclean depend
+.PHONY: all opt clean distclean depend
 
 -include .depend
