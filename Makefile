@@ -17,10 +17,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.4 2002/06/11 17:10:37 xtrm Exp $
+# $Id: Makefile,v 1.5 2002/06/14 09:15:44 xtrm Exp $
 
 all:
-        $(MAKE) -C src depend
+	$(MAKE) -C src depend
 	$(MAKE) -C src
 
 test: all
