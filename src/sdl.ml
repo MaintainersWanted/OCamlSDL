@@ -17,13 +17,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.ml,v 1.4 2002/05/30 16:13:38 xtrm Exp $ *)
+(* $Id: sdl.ml,v 1.5 2002/07/30 18:32:50 oliv__a Exp $ *)
 
 (* Define a new exception for Sdl initialization errors and register 
    it to be callable from C code. *)
 
 exception SDL_init_exception of string
-let _ = Callback.register_exception "SDL_init_exception" (SDL_init_exception "Any string")
+let _ = 
+  Callback.register_exception 
+    "SDL_init_exception" (SDL_init_exception "Any string")
 
 (* Native C external functions *)
 
@@ -43,3 +45,16 @@ type init_flag = [
 external init : init_flag list -> unit = "sdl_init";;
 external init_with_auto_clean : init_flag list -> unit = "sdl_init_with_auto_clean";;
 external quit : unit -> unit = "sdl_quit";;
+
+type version = {
+    major : int ;
+    minor : int ;
+    patch : int ;
+  } 
+
+external version : unit -> version = "sdl_version"
+
+let string_of_version v =
+  String.concat "." 
+    (List.map string_of_int 
+       [ v.major; v.minor; v.patch ])

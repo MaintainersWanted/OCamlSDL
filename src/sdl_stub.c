@@ -17,9 +17,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.10 2002/06/20 13:20:44 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.11 2002/07/30 18:32:50 oliv__a Exp $ */
 
 #include <caml/callback.h>
+#include <caml/alloc.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
 
@@ -119,10 +120,22 @@ sdl_init_with_auto_clean (value vf)
 }
 
 value
-sdl_quit (void)
+sdl_quit (value unit)
 {
   sdl_internal_quit();
   return Val_unit;
 }
 
 
+value
+sdl_version (value unit)
+{
+  const SDL_version *v;
+  value r;
+  v = SDL_Linked_Version();
+  r = alloc_small(3, 0);
+  Field(r, 0) = Val_int(v->major);
+  Field(r, 1) = Val_int(v->minor);
+  Field(r, 2) = Val_int(v->patch);
+  return r;
+}

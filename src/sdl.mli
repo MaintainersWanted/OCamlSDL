@@ -17,40 +17,58 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.4 2002/05/30 16:13:38 xtrm Exp $ *)
+(* $Id: sdl.mli,v 1.5 2002/07/30 18:32:50 oliv__a Exp $ *)
 
-(*d Exception *)
+(** This module contains functions for initialising/quitting the library *)
+
 exception SDL_init_exception of string
+(** Exception for repporting errors during initialization *)
 
-(*d Init flag type *)
+(** {1 Main functions} *)
 
+(** Initialization flag type *)
 type init_flag = [
-  | `TIMER (*d init flag for the timer subsystem. *)
-  | `AUDIO (*d init flag for the audio subsystem. *)
-  | `VIDEO (*d init flag for the video subsystem. *)
-  | `CDROM (*d init flag for the cdrom subsystem. *)
-  | `JOYSTICK (*d init flag for the joystick subsystem. *)
-  | `NOPARACHUTE  (*d Don't catch fatal signals *)
+  | `TIMER        (** init flag for the timer subsystem *)
+  | `AUDIO        (** init flag for the audio subsystem *)
+  | `VIDEO        (** init flag for the video subsystem *)
+  | `CDROM        (** init flag for the cdrom subsystem *)
+  | `JOYSTICK     (** init flag for the joystick subsystem *)
+  | `NOPARACHUTE  (** Don't catch fatal signals *)
   | `EVENTTHREAD 
-  | `EVERYTHING (*d init flag for initialize all subsystems *)
+  | `EVERYTHING   (** same as `TIMER + `AUDIO + `VIDEO + `CDROM + `JOYSTICK *)
   ] 
 
-(*1 Main functions *)
-val init : init_flag list -> unit
-(*d
+external init : init_flag list -> unit
+    = "sdl_init"
+(**
   Initialize the SDL library. This should be called before all other 
   SDL functions. 
   The flags parameter specifies what part(s) of SDL to initialize.
 *)
 
-val init_with_auto_clean : init_flag list -> unit;;
-(*d 
-  Initialize the SDL library with automatic call the the [quit]
+external init_with_auto_clean : init_flag list -> unit
+    = "sdl_init_with_auto_clean"
+(** 
+  Initialize the SDL library with automatic call to the {! Sdl.quit}
   function at normal program termination
 *)
 
-val quit : unit -> unit;;
-(*d 
+external quit : unit -> unit
+    = "sdl_quit"
+(** 
   [quit] shuts down all SDL subsystems and frees the resources allocated 
   to them. This should always be called before you exit. 
 *)
+
+(** {1 Versioning information} *)
+
+type version = {
+    major : int ;
+    minor : int ;
+    patch : int ;
+  } 
+
+external version : unit -> version = "sdl_version"
+(** version of the SDL library *)
+
+val string_of_version : version -> string
