@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.12 2000/05/30 16:43:02 xtrm Exp $
+# $Id: Makefile.in,v 1.13 2000/06/02 15:42:41 xtrm Exp $
 
 CC = 		@CC@ 
 CFLAGS =	@CFLAGS@ @DEFS@ -Wall -D__DEBUG__ # -g -pg #-O3 -pipe -pedantic -m486 
@@ -62,8 +62,9 @@ bin: $(TOPLEVEL)
 libs: $(LIBRARY) $(OLIBRARY) $(CLIBRARY)
 test: $(TEST)
 
-$(TEST): $(CLIBRARY) $(OPT_OBJS) $(TEST_OBJS)
+$(TEST): $(CLIBRARY) $(OLIBRARY) $(TEST_OBJS)
 	$(CAMLOPT) $(MLLIBS) -cclib "-Llib/ -lstub" -o $@ $?
+#$(OLIBRARY) $(TEST_OBJS)
 
 $(TOPLEVEL): $(OBJS)
 	$(CAMLTOP) -custom -o $@ $(OBJS) $(MLLIBS)
@@ -73,7 +74,7 @@ $(RUNTIME): $(OBJS)
 	$(OBJS) $(MLLIBS) -cclib -lunix -cclib -lthreads
 
 $(LIBRARY): $(CLIBRARY) $(ML_OBJS)
-	$(CAMLC) -linkall -a -o $(LIBRARY) $(ML_OBJS)
+	$(CAMLC) -linkall -a -o $(LIBRARY) $(ML_OBJS) $(MLLIBS) -cclib -lstub
 
 $(OLIBRARY): $(LIBRARY) $(OPT_OBJS)
 	$(CAMLOPT) -linkall -a -o $(OLIBRARY) $(OPT_OBJS)
@@ -100,7 +101,7 @@ distclean:
 	rm -f *.o *~ *.cm[iox] .depend
 	rm -f config.status config.cache config.log Makefile
 	rm -f $(BIN_DIR)/*
-	rm -f $(LIB_DIR)/*a
+	rm -f $(LIB_DIR)/*a $(LIB_DIR)/*.cm[?x]a
 
 clean:
 	rm -f *.o *~ *.cm[iox] .depend
