@@ -2,7 +2,7 @@ dnl ****** -*- m4 -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.26 2002/10/01 23:04:18 xtrm Exp $
+dnl $Id: configure.in,v 1.27 2002/10/03 23:06:51 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -24,18 +24,6 @@ AC_PROG_INSTALL
 
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-
-case "$target" in
-    *mingw32* | *beos* )
-        ;;
-    alpha*-*-linux*)
-        CFLAGS="$CFLAGS -mcpu=ev4 -Wa,-mall"
-        ;;
-    *)
-        LIBS="$LIBS -lm"
-        ;;
-esac
-
 
 #  Check for OCaml programs 
 AC_CHECK_PROG(OCAMLC,ocamlc,ocamlc)
@@ -103,10 +91,7 @@ dnl -*- Checking for lib SDL_ttf -*-
 if test x"$sdl_ttf" = x"yes"
 then
   AC_CHECK_HEADERS(SDL_ttf.h, have_sdl_ttf=true, have_sdl_ttf=false)
-  AC_CHECK_HEADERS(SDL/SDL_ttf.h, 
-   	have_have_sdl_ttf=true
-   	have_have_sdl_ttf=false)
-  if test "$have_sdl_ttf" = true || test "$have_have_sdl_ttf" = true;
+  if test "$have_sdl_ttf" = true ;
   then 
     AC_CHECK_LIB(SDL_ttf, TTF_OpenFontIndex, ttf2_ok=yes, ttf2_ok=no)
     if test "$ttf2_ok" = no;
