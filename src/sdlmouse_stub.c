@@ -133,7 +133,7 @@ CAMLprim value ml_SDL_Cursor_data(value cursor)
 				 c->area.h,
 				 c->area.w / 8);
   }
-  v = alloc_small(4, 0);
+  v = alloc_small(6, 0);
   Field(v, 0) = b_data;
   Field(v, 1) = b_mask;
   Field(v, 2) = Val_int(c->area.w);
