@@ -3,6 +3,8 @@
 #include <error.h>
 #else
 
+#include <stdio.h>
+
 static void error(int status, int errnum, const char *format, ...)
 {
    fprintf(stderr,format);
@@ -745,8 +747,8 @@ value ml_SDL_GL_GetAttribute(value unit)
 {
   CAMLparam0();
   CAMLlocal2(v, a);
-  v = nil();
   int i, val;
+  v = nil();
   for(i=11; i>=0; i--){
     if( SDL_GL_GetAttribute( GL_attr_map[i], &val) < 0)
       CAMLreturn( ( sdlvideo_raise_exception(SDL_GetError()) ,
