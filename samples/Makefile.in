@@ -1,0 +1,88 @@
+#
+# OCamlSDL - An ML interface to the SDL library
+# Copyright (C) 1999  Frederic Brunel
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+# $Id: Makefile.in,v 1.1 2001/04/03 21:15:09 xtrm Exp $
+
+
+CLIBS =		@LIBS@ @MATHLIB@
+MLLIBS =	-cclib "$(CLIBS)"
+
+BIN_DIR =	../bin
+LIB_DIR =	../lib
+
+ML_LIBS =	-I $(LIB_DIR)
+OML_LIBS =	-I $(LIB_DIR)
+
+ML_OBJS	=	$(MODULES:=.cmo)
+
+C_OBJS = 	$(ML_OBJS:.cmo=.o)
+
+OPT_OBJS=	$(ML_OBJS:.cmo=.cmx)
+
+OBJS =		$(STUB_OBJS) $(ML_OBJS)
+OOBJS =		$(STUB_OBJS) $(OPT_OBJS)
+
+LIBRARY = 	$(LIB_DIR)/sdl.cma
+OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
+CLIBRARY = 	$(LIB_DIR)/libstub.a
+
+TEST_OBJS = test_cdrom.cmx
+EXAMPLE_OBJS = example.cmx
+
+SAMPLES = test_cdrom example
+
+
+all: $(SAMPLES)
+
+
+test_cdrom: $(CLIBRARY) $(OLIBRARY) $(TEST_OBJS)
+	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -cclib "-L../lib/ -lstub" -o $@ $^
+
+example: $(CLIBRARY) $(OLIBRARY) $(EXAMPLE_OBJS)
+	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -cclib "-L../lib/ -lstub" -o $@ $^
+
+
+.SUFFIXES: .c .o .ml .mli .cmo .cmi .cmx
+
+%.cmo : %.ml
+	$(CAMLC) -c $(MLFLAGS) $(ML_LIBS) $<
+
+%.cmx : %.ml
+	$(CAMLOPT) -c $(OMLFLAGS) $(OML_LIBS) $<
+
+%.cmi : %.mli
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.o : %.c
+	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
+
+distclean: clean
+	@rm -f Makefile
+
+clean:
+	@rm -f $(SAMPLES) *.o *~ *.cm[iox] .depend
+
+depend:
+	$(CAMLDEP) *.mli *.ml > .depend
+
+.depend: 
+	$(CAMLDEP) *.mli *.ml > .depend
+
+include ../makefile.toplevel
+include .depend

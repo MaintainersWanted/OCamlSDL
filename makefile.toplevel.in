@@ -17,26 +17,20 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.18 2001/04/03 21:15:07 xtrm Exp $
+# $Id: makefile.toplevel.in,v 1.1 2001/04/03 21:15:07 xtrm Exp $
 
-all:
-	@(cd src && make)
-	@(cd samples && make)
+PREFIX =	@prefix@
+INSTALL = 	@INSTALL@
+INSTALL_DATA = 	$(INSTALL) -m 644
+CP	=	@CP@
 
-clean:
-	@(cd src && make clean)
-	@(cd samples && make clean)
 
-distclean:
-	@(cd src && make distclean)
-	@(cd samples && make distclean)
-	@(cd lib && make distclean)
-	@rm -f config.cache config.log config.status Makefile makefile.toplevel
+CC = 		@CC@ 
+CFLAGS =	@CFLAGS@ @DEFS@ -Wall -D__DEBUG__ # -g -pg #-O3 -pipe -pedantic -m486 
+CAMLC =		@OCAMLC@
+CAMLOPT =	@OCAMLOPT@
+CAMLTOP =	@OCAMLMKTOP@
+CAMLDEP =	@OCAMLDEP@
+MLFLAGS =
+OMLFLAGS =	-unsafe -inline 10 #-ccopt -pg -p
 
-install:
-	@(cd lib && make install)
-
-uninstall:
-	@(cd lib && make uninstall)
-
-include makefile.toplevel

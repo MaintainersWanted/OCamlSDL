@@ -1,0 +1,113 @@
+#
+# OCamlSDL - An ML interface to the SDL library
+# Copyright (C) 1999  Frederic Brunel
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+# $Id: Makefile.in,v 1.1 2001/04/03 21:15:10 xtrm Exp $
+
+
+CLIBS =		@LIBS@ @MATHLIB@
+MLLIBS =	-cclib "$(CLIBS)"
+
+BIN_DIR =	../bin
+LIB_DIR =	../lib
+
+#don't put a space behind the last module
+MODULES = 	sdl sdlvideo sdlcdrom sdlevent \
+		sdltimer sdlttf sdlmixer sdlloader
+
+STUB_SRCS = 	$(MODULES:=_stub.c) stub_shared.c
+
+STUB_OBJS =	$(STUB_SRCS:.c=.o)
+
+ML_OBJS	=	$(MODULES:=.cmo)
+
+CMI	=	$(MODULES:=.cmi)
+
+MLI	=	$(MODULES:=.mli)
+
+C_OBJS = 	$(ML_OBJS:.cmo=.o)
+
+OPT_OBJS=	$(ML_OBJS:.cmo=.cmx)
+
+OBJS =		$(STUB_OBJS) $(ML_OBJS)
+OOBJS =		$(STUB_OBJS) $(OPT_OBJS)
+
+TOPLEVEL = 	$(BIN_DIR)/toplevel
+RUNTIME = 	$(BIN_DIR)/sdlrun
+LIBRARY = 	$(LIB_DIR)/sdl.cma
+OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
+CLIBRARY = 	$(LIB_DIR)/libstub.a
+
+all: bin libs instlocal
+
+bin: $(TOPLEVEL)
+libs: $(LIBRARY) $(OLIBRARY) $(CLIBRARY) 
+test: $(TEST)
+
+$(TOPLEVEL): $(OBJS)
+	$(CAMLTOP) -custom -o $@ bigarray.cma $(OBJS) $(MLLIBS)
+
+$(RUNTIME): $(OBJS)
+	$(CAMLC) -thread -custom -make_runtime -o $@ unix.cma threads.cma \
+	bigarray.cma\
+	$(OBJS) $(MLLIBS) -cclib -lunix -cclib -lthreads
+
+$(LIBRARY): $(CLIBRARY) $(ML_OBJS)
+	$(CAMLC) -linkall -a -o $(LIBRARY) $(ML_OBJS) $(MLLIBS) -cclib -lstub
+
+$(OLIBRARY): $(LIBRARY) $(OPT_OBJS)
+	$(CAMLOPT) -linkall -a -o $(OLIBRARY) $(OPT_OBJS) -cclib -lstub\
+	-ccopt "-lSDL -lSDL_ttf -lSDL_mixer -lpng -lSDL_image" 
+
+$(CLIBRARY): $(STUB_OBJS)
+	@ar cr $(CLIBRARY) $(STUB_OBJS)
+	@ranlib $(CLIBRARY)
+
+instlocal: $(CMI) $(MLI)
+	$(CP) $? $(LIB_DIR)
+
+.SUFFIXES: .c .o .ml .mli .cmo .cmi .cmx
+
+%.cmo : %.ml
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.cmx : %.ml
+	$(CAMLOPT) -c $(OMLFLAGS) $<
+
+%.cmi : %.mli
+	$(CAMLC) -c $(MLFLAGS) $<
+
+%.o : %.c
+	$(CAMLC) -c -ccopt "$(CFLAGS)" $<
+
+distclean:
+	@rm -f $(CMI) $(C_OBJS) *~ *.cm[iox] .depend
+	@rm -f $(STUB_OBJS) $(C_OBJS) *~ *.cm[iox] .depend
+	@rm -f Makefile
+
+clean:
+	@rm -f $(STUB_OBJS) $(C_OBJS) *~ *.cm[iox] .depend
+
+depend:
+	$(CAMLDEP) *.mli *.ml > .depend
+
+.depend: 
+	$(CAMLDEP) *.mli *.ml > .depend
+
+include ../makefile.toplevel
+include .depend

@@ -17,26 +17,24 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.18 2001/04/03 21:15:07 xtrm Exp $
+# $Id: Makefile.in,v 1.1 2001/04/03 21:15:08 xtrm Exp $
 
-all:
-	@(cd src && make)
-	@(cd samples && make)
-
-clean:
-	@(cd src && make clean)
-	@(cd samples && make clean)
-
-distclean:
-	@(cd src && make distclean)
-	@(cd samples && make distclean)
-	@(cd lib && make distclean)
-	@rm -f config.cache config.log config.status Makefile makefile.toplevel
+INSTALL_DIR=@prefix@/lib/ocaml/sdl
 
 install:
-	@(cd lib && make install)
+	@mkdir -p @prefix@
+	@mkdir -p $(INSTALL_DIR)
+	@cp *.mli *.cm[ia] *.cmx[a] *.a $(INSTALL_DIR)
 
 uninstall:
-	@(cd lib && make uninstall)
+	@rm $(INSTALL_DIR)/*.mli 
+	@rm $(INSTALL_DIR)/*.cm[ia] 
+	@rm $(INSTALL_DIR)/*.cmx[a] 
+	@rm $(INSTALL_DIR)/*.a 
 
-include makefile.toplevel
+distclean:
+	@rm -f *~ *.mli *.cm[ia] *.cmx[a] *.a
+	@rm -f Makefile
+
+include ../makefile.toplevel
+
