@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.5 2000/01/17 18:34:02 smkl Exp $ *)
+(* $Id: sdlvideo.ml,v 1.6 2000/01/19 23:58:57 fbrunel Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -27,12 +27,14 @@ let _ = Callback.register_exception "SDLvideo_exception" (SDLvideo_exception "An
 
 (* Types *)
 
-type rect = Rect of int * int * int * int
+type rect = 
+    RectMax
+  | Rect of int * int * int * int
 
 type pixels =
-   Pixels of string * int * int
- | APixels of string * int * int
- | RGBPixels of (int * int * int) array array
+    Pixels of string * int * int
+  | APixels of string * int * int
+  | RGBPixels of (int * int * int) array array
 
 type surface
 type pixel_format
@@ -88,17 +90,17 @@ let surface_rect surf =
 
 let surface_from_pixels = function
     Pixels (str, w, h) -> surface_from_rawrgb str w h
-  | RGBPixels mat ->
-    let w = Array.length mat and h = Array.length mat.(0) in
-    let str = String.create (w*h*3) in
-    for i = 0 to w - 1 do
-      for j = 0 to h - 1 do
-        let (r,g,b) = mat.(i).(j) in
-	str.[(i+j*w)*3+0] <- Char.chr r;
-	str.[(i+j*w)*3+1] <- Char.chr g;
-	str.[(i+j*w)*3+2] <- Char.chr b;
-      done
-    done;
-    surface_from_rawrgb str w h
   | APixels (str, w, h) -> surface_from_rawrgba str w h
+  | RGBPixels mat ->
+      let w = Array.length mat and h = Array.length mat.(0) in
+      let str = String.create (w*h*3) in
+      for i = 0 to w - 1 do
+      	for j = 0 to h - 1 do
+          let (r,g,b) = mat.(i).(j) in
+	  str.[(i+j*w)*3+0] <- Char.chr r;
+	  str.[(i+j*w)*3+1] <- Char.chr g;
+	  str.[(i+j*w)*3+2] <- Char.chr b;
+      	done
+      done;
+      surface_from_rawrgb str w h
 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.5 2000/01/17 18:34:02 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.6 2000/01/20 00:00:39 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -46,6 +46,8 @@
 	sdl_rect.w = Int_val(Field(ml_rect, 2));	\
 	sdl_rect.h = Int_val(Field(ml_rect, 3));
 
+#define MLRECT_IS_MAX(ml_rect) (Int_val(ml_rect) == 0)
+
 /*
  * Raise an OCaml exception with a message
  */
@@ -55,7 +57,6 @@ sdlvideo_raise_exception (char *msg)
 {
   raise_with_string(*caml_named_value("SDLvideo_exception"), msg);
 }
-
 /*
  * Stub initialization
  */
@@ -147,8 +148,13 @@ sdlvideo_update_rect (value surface, value rect)
   SDL_Surface *surf = SDL_SURFACE(surface);
   SDL_Rect sdl_rect;
 
-  MLRECT_TO_SDLRECT(rect, sdl_rect);
-  SDL_UpdateRects(surf, 1, &sdl_rect);
+  if (MLRECT_IS_MAX(rect)) {
+    SDL_UpdateRect(surf, 0, 0, 0, 0);
+  }
+  else {
+    MLRECT_TO_SDLRECT(rect, sdl_rect);
+    SDL_UpdateRects(surf, 1, &sdl_rect);
+  }
   
   return Val_unit;
 }
@@ -170,17 +176,20 @@ sdlvideo_surface_loadBMP (value path)
   if (surf == NULL) {
     sdlvideo_raise_exception(SDL_GetError());
   }
+
   memset(&format, 0, sizeof(format)); 
   format.BytesPerPixel = 3;
   format.BitsPerPixel = 24;
   format.Rmask = 0x000000ff;
   format.Gmask = 0x0000ff00;
   format.Bmask = 0x00ff0000;
+  
   converted = SDL_ConvertSurface(surf, &format, SDL_SWSURFACE);
   if (converted == NULL) {
     sdlvideo_raise_exception(SDL_GetError());
   }
   SDL_FreeSurface(surf);
+  
   return ML_SURFACE(converted);
 }
 
@@ -216,10 +225,18 @@ value
 sdlvideo_surface_fill_rect (value surface, value rect, value color)
 {
   SDL_Rect sdl_rect;
-
-  MLRECT_TO_SDLRECT(rect, sdl_rect);
-
-  if (SDL_FillRect(SDL_SURFACE(surface), &sdl_rect, Int_val(color)) < 0) {
+  int res;
+  
+  if (MLRECT_IS_MAX(rect)) {
+    res = SDL_FillRect(SDL_SURFACE(surface), NULL, Int_val(color));
+  }
+  else {
+    MLRECT_TO_SDLRECT(rect, sdl_rect);
+    res = SDL_FillRect(SDL_SURFACE(surface), &sdl_rect,
+		       Int_val(color));
+  }
+    
+  if (res < 0) {
     sdlvideo_raise_exception(SDL_GetError());
   }
 
@@ -231,16 +248,26 @@ sdlvideo_surface_blit (value surface_src, value rect_src,
 		       value surface_dst, value rect_dst)
 {
   SDL_Surface *src;
-  SDL_Rect srcrect;
   SDL_Surface *dst;
-  SDL_Rect dstrect;
-
+  SDL_Rect src_conv_rect;
+  SDL_Rect dst_conv_rect;
+  SDL_Rect *src_sdl_rect = NULL;
+  SDL_Rect *dst_sdl_rect = NULL;
+  
   src = SDL_SURFACE(surface_src);
-  MLRECT_TO_SDLRECT(rect_src, srcrect);
   dst = SDL_SURFACE(surface_dst);
-  MLRECT_TO_SDLRECT(rect_dst, dstrect);
 
-  if (SDL_BlitSurface(src, &srcrect, dst, &dstrect) < 0) {
+  if (!MLRECT_IS_MAX(rect_src)) {
+    MLRECT_TO_SDLRECT(rect_src, src_conv_rect);
+    src_sdl_rect = &src_conv_rect;
+  }
+
+  if (!MLRECT_IS_MAX(rect_dst)) {
+    MLRECT_TO_SDLRECT(rect_dst, dst_conv_rect);
+    dst_sdl_rect = &dst_conv_rect;
+  }
+
+  if (SDL_BlitSurface(src, src_sdl_rect, dst, dst_sdl_rect) < 0) {
     sdlvideo_raise_exception(SDL_GetError());
   }
   
@@ -296,8 +323,9 @@ sdlvideo_surface_set_colorkey(value surface, value key)
 			   Int_val(Field(key, 0)));
    }
    
-   if (res < 0)
+   if (res < 0) {
      sdlvideo_raise_exception(SDL_GetError());
+   }
    
    return Val_unit;
 }

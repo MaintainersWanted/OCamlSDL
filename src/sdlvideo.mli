@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.4 2000/01/17 18:34:02 smkl Exp $ *)
+(* $Id: sdlvideo.mli,v 1.5 2000/01/19 23:59:16 fbrunel Exp $ *)
 
 (* Exception *)
 
@@ -25,12 +25,14 @@ exception SDLvideo_exception of string
 
 (* Types *)
 
-type rect = Rect of int * int * int * int
+type rect = 
+    RectMax
+  | Rect of int * int * int * int
 
 type pixels =
-   Pixels of string * int * int
- | APixels of string * int * int
- | RGBPixels of (int * int * int) array array
+    Pixels of string * int * int
+  | APixels of string * int * int
+  | RGBPixels of (int * int * int) array array
 
 type surface
 type pixel_format
