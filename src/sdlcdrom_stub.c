@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.1 2000/01/02 01:32:28 fbrunel Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.1.1.1 2000/01/02 01:32:28 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>

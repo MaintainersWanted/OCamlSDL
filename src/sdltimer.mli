@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdltimer.mli,v 1.1 2000/01/02 01:32:35 fbrunel Exp $ *)
+(* $Id: sdltimer.mli,v 1.1.1.1 2000/01/02 01:32:35 fbrunel Exp $ *)
 
 (* Wait a specified number of milliseconds before returning *)
 val delay : int -> unit;;

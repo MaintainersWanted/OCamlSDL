@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.1 2000/01/02 01:32:24 fbrunel Exp $
+# $Id: Makefile,v 1.1.1.1 2000/01/02 01:32:24 fbrunel Exp $
 
 CC = 		gcc
 CFLAGS =	-Wall -O3 -pipe -pedantic -m486 

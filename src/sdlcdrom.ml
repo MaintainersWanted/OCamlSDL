@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.ml,v 1.1 2000/01/02 01:32:27 fbrunel Exp $ *)
+(* $Id: sdlcdrom.ml,v 1.1.1.1 2000/01/02 01:32:27 fbrunel Exp $ *)
 
 (* Define a new exception for CD-ROM errors and register 
    it to be callable from C code. *)

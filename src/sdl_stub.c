@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.1 2000/01/02 01:32:25 fbrunel Exp $ */
+/* $Id: sdl_stub.c,v 1.1.1.1 2000/01/02 01:32:25 fbrunel Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
