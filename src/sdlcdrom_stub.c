@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.10 2002/08/09 13:40:40 oliv__a Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.11 2002/08/23 07:15:20 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -204,9 +204,11 @@ sdlcdrom_info(value cdrom)
 {
   SDL_CD *cd = CDROM_val(cdrom);
   CDstatus status = SDL_CDStatus(cd);
+
   switch( SDL_CDStatus(cd) ) {
   case CD_TRAYEMPTY : sdlcdrom_raise_nocd ();
   case CD_ERROR     : sdlcdrom_raise_exception(SDL_GetError());
+  default: break;
   } 
   { 
     CAMLparam0();
