@@ -17,14 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.c,v 1.3 2002/05/30 15:52:13 xtrm Exp $ */
+/* $Id: common.c,v 1.4 2002/06/04 23:02:36 oliv__a Exp $ */
 
 
 #include <caml/mlvalues.h>
 #include <caml/memory.h>
 #include <caml/alloc.h>
-/*  #include <caml/fail.h>
- *  #include <caml/callback.h> */
+#include <caml/fail.h>
+/*  #include <caml/callback.h> */
 
 /*
 
