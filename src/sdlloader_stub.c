@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.3 2000/01/20 17:50:34 smkl Exp $ */
+/* $Id: sdlloader_stub.c,v 1.4 2000/05/05 09:45:56 xtrm Exp $ */
 
 #include <png.h>
 #include <caml/alloc.h>
@@ -26,8 +26,8 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <stdio.h>
-#include <SDL.h>
-#include <SDL_image.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 
 static void
 sdlloader_raise_exception (char *msg)

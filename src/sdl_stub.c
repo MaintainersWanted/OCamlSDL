@@ -17,12 +17,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.3 2000/01/31 20:09:06 smkl Exp $ */
+/* $Id: sdl_stub.c,v 1.4 2000/05/05 09:45:56 xtrm Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "sdlcdrom_stub.h"
 #include "sdlevent_stub.h"
 #include "sdltimer_stub.h"

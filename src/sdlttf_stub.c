@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.4 2000/03/05 17:01:35 smkl Exp $ */
+/* $Id: sdlttf_stub.c,v 1.5 2000/05/05 09:45:56 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -25,9 +25,17 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <stdio.h>
+
+#ifdef HAVE_FREETYPE_H
 #include <freetype.h>
-#include <SDL.h>
-#include <SDL_ttf.h>
+#endif
+
+#ifdef HAVE_FREETYPE_FREETYPE_H
+#include <freetype/freetype.h>
+#endif
+
+#include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 
 /*
  * Raise an OCaml exception with a message

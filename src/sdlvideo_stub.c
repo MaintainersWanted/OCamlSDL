@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.10 2000/03/05 15:21:52 fbrunel Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.11 2000/05/05 09:45:56 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -25,7 +25,7 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <stdio.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "stub_shared.h"
 #include "sdlvideo_stub.h"
 

@@ -17,12 +17,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdltimer_stub.c,v 1.2 2000/01/12 00:51:02 fbrunel Exp $ */
+/* $Id: sdltimer_stub.c,v 1.3 2000/05/05 09:45:56 xtrm Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 /*
  * Stub initialization
