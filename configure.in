@@ -2,7 +2,7 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.36 2004/07/26 00:41:21 oliv__a Exp $
+dnl $Id: configure.in,v 1.37 2005/01/30 22:31:44 oliv__a Exp $
 
 dnl begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -51,6 +51,11 @@ AM_PATH_SDL($SDL_VERSION, :,
     AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
+case $target in
+ *-apple-darwin*) PLATFORM=Apple ;;
+esac
+
+LIBS="$LIBS $SDL_LIBS"
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 
 # cmdline options 

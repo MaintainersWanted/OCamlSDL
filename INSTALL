@@ -22,37 +22,3 @@ extra libraries, if available (sdlmixer.cma, sdlttf.cma, sdlloader.cma).
 This will install libraries using findlib if available or in the OCAMLSDLDIR
 directory (defaults to CAMLLIBDIR/sdl).
 For packagers, there's a DESTDIR makefile variable.
-
-
-Using
-=====
-
-OCamlSDL uses the Bigarray module (distributed with OCaml), so you
-always need to link it when linking a program using OCamlSDL. Example:
-
-  $ ocamlc -c -I /path/to/sdl my_prog.ml
-  $ ocamlc -o my_prog -I /path/to/sdl bigarray.cma sdl.cma sdlttf.cma my_prog.cmo
-
-If you installed OCamlSDL with findlib, it can be a bit easier
-(findlib takes care of the dependences):
-
-  $ ocamlfind ocamlc -c -package sdlttf my_prog.ml
-  $ ocamlfind ocamlc -o my_prog -package sdlttf -linkpkg my_prog.cmo
-
-
-Toplevel
-========
-
-You can build a custom toplevel including OCamlSDL libraries with:
-
-  $ ocamlmktop -o ocamlsdl -I /path/to/ocamlsdl -custom bigarray.cma sdl.cma ...
-
-If you use OCaml >= 3.04, the static toplevel is not really necessary
-since you can dynamically load OCamlSDL in the toplevel:
-
- $ ocaml
-         Objective Caml version 3.04
-
- # #load "bigarray.cma" ;;
- # #load "sdl.cma" ;;
- #

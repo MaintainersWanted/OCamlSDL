@@ -1,3 +1,13 @@
+2005-01-30  oliv__a
+
+	* src/sdl_stubs.c: add a main(), for MacOSX (thanks go to Daniel
+	Bünzli)
+	* Makefile, src/Makefile, makefile.config.gcc.in: adapt build
+	system 
+	* META, INSTALL, README, README.macosx, NEWS : add documentation
+	for the MacOSX build, remove duplicate info in INSTALL and README,
+	make a realease.
+
 2003-04-18 12:13  oliv__a
 
 	* src/: sdlgl_stub.c (1.6), sdlmouse_stub.c (1.5): FIX: compile

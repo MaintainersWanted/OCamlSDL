@@ -17,7 +17,7 @@ dnl
 dnl   OCAMLMKTOP    
 dnl   OCAMLMKLIB    
 dnl   OCAMLDOC
-AC_DEFUN(AC_PROG_OCAML,
+AC_DEFUN([AC_PROG_OCAML],
 [dnl
 # checking for ocamlc
 AC_CHECK_PROG(OCAMLC,ocamlc,ocamlc,AC_MSG_ERROR(Cannot find ocamlc.))
@@ -94,7 +94,7 @@ dnl
 dnl macro AC_PROG_OCAML_TOOLS will check OCamllex and OCamlyacc :
 dnl   OCAMLLEX      "ocamllex" or "ocamllex.opt" if present
 dnl   OCAMLYACC     "ocamlyac"
-AC_DEFUN(AC_PROG_OCAML_TOOLS,
+AC_DEFUN([AC_PROG_OCAML_TOOLS],
 [dnl
 # checking for ocamllex and ocamlyacc
 AC_CHECK_PROG(OCAMLLEX,ocamllex,ocamllex)
@@ -114,7 +114,7 @@ dnl
 dnl
 dnl
 dnl AC_PROG_CAMLP4 checks for Camlp4
-AC_DEFUN(AC_PROG_CAMLP4,
+AC_DEFUN([AC_PROG_CAMLP4],
 [dnl
 AC_REQUIRE([AC_PROG_OCAML])
 # checking for camlp4
@@ -135,7 +135,7 @@ dnl
 dnl
 dnl macro AC_PROG_FINDLIB will check for the presence of
 dnl   ocamlfind if configure is called with --with-findlib
-AC_DEFUN(AC_PROG_FINDLIB,
+AC_DEFUN([AC_PROG_FINDLIB],
 [dnl
 AC_ARG_WITH(findlib,[  --with-findlib	  use findlib package system],
   use_findlib="$withval",use_findlib="yes")
@@ -152,7 +152,7 @@ dnl
 dnl
 dnl AC_CHECK_OCAML_PKG checks wether a findlib package is present
 dnl   defines pkg_name to name
-AC_DEFUN(AC_CHECK_OCAML_PKG,
+AC_DEFUN([AC_CHECK_OCAML_PKG],
 [dnl
 AC_REQUIRE([AC_PROG_FINDLIB])
 if test "$use_findlib" ; then 
@@ -170,7 +170,7 @@ dnl
 dnl
 dnl
 dnl AC_ARG_OCAML_INSTALLDIR adds a --with-installdir option
-AC_DEFUN(AC_ARG_OCAML_INSTALLDIR,
+AC_DEFUN([AC_ARG_OCAML_INSTALLDIR],
 [dnl
 AC_ARG_WITH(installdir,[  --with-installdir=DIR	  specify installation directory],INSTALLDIR="$withval")
 if test -z "$INSTALLDIR" ; then
@@ -188,7 +188,7 @@ dnl 1 -> name (for printing)
 dnl 2 -> env var name
 dnl 3 -> module to check
 dnl 4 -> default dirs
-AC_DEFUN(AC_CHECK_OCAML_MODULE,
+AC_DEFUN([AC_CHECK_OCAML_MODULE],
 [dnl
 AC_MSG_CHECKING($1 directory)
 cat > conftest.ml <<EOF

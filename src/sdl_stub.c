@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.18 2003/11/16 14:26:38 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.19 2005/01/30 22:31:44 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -154,3 +154,13 @@ CAMLprim value sdl_putenv(value name, value val)
   if (putenv(s) == -1) raise_out_of_memory();
   return Val_unit;
 }
+
+
+/* main entry point, used on MacOs X */
+#ifdef __APPLE__
+int main (int argc, char **argv)
+{
+  caml_main (argv);
+  return 0;
+}
+#endif

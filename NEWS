@@ -1,3 +1,7 @@
+Release 0.7.2:
+	* support for MacOSX (thanks to Daniel Bünzli and Francesco
+          Zappa Nardelli for testing) 
+
 Release 0.7.1:
 	* add missing doc/ directory in the tarball
 	* add a small AWK script, xpm_to_ml for embedding XPM files in 

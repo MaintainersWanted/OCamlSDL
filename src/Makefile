@@ -1,4 +1,4 @@
-VERSION := 0.7.1
+VERSION := 0.7.2
 
 include ../makefile.platform
 include ../makefile.config.$(OCAML_C_BACKEND)
@@ -65,8 +65,14 @@ install : all $(INSTALL_TARGETS)
 install-byte:
 	$(INSTALL) -d $(INSTALL_DIR)
 	$(INSTALL_DATA) *.cma lib*.$(A) *.cmi *.mli $(INSTALL_DIR)
+ifeq ($(PLATFORM),Apple)
+	$(RANLIB) $(INSTALL_DIR)/lib*.$(A)
+endif
 install-opt:
 	$(INSTALL_DATA) *.cmxa sdl*.$(A) *.cmx $(INSTALL_DIR)
+ifeq ($(PLATFORM),Apple)
+	$(RANLIB) $(INSTALL_DIR)/sdl*.$(A)
+endif
 install-dll:
 	$(INSTALL) -d $(DESTDIR)$(OCAMLLIBDIR)/stublibs
 	$(INSTALL) dll*.so $(DESTDIR)$(OCAMLLIBDIR)/stublibs
@@ -77,6 +83,9 @@ install-findlib :
           *.cma lib*.$(A) *.cmi *.mli \
           $(if $(OCAMLOPT),*.cmxa sdl*.$(A) *.cmx) \
           $(if $(OCAMLMKLIB),dll*.so)
+ifeq ($(PLATFORM),Apple)
+	$(RANLIB) $$($(OCAMLFIND) printconf destdir)/*.$(A)
+endif
 else
 install-findlib : ; $(error "findlib is not installed")
 endif

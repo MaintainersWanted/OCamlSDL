@@ -18,7 +18,7 @@ Requirements
 ============
 
 OCamlSDL needs the following software and libraries:
-	OCaml		http://www.ocaml.org/  (3.07, 3.06 may work)
+	OCaml		http://www.ocaml.org/  (3.08.x or 3.07, 3.06 may work)
 	SDL		http://www.libsdl.org/ (1.2.x)
 
 and optionally:
@@ -34,13 +34,18 @@ Using
 
 See the INSTALL file for information on how to compile and install the library.
 
-The library use the Bigarray module to interface with C so programs
-using OCamlSDL must also be linked with bigarray, e.g.:
-	ocamlc -o my_prog -I /path/to/ocamlsdl bigarray.cma sdl.cma my_prog.ml
+The library use the Bigarray module (distributed with OCaml), to
+interface with C so programs using OCamlSDL must also be linked with
+bigarray. Example :
+
+ $ ocamlc -c -I /path/to/ocamlsdl my_prog.ml
+ $ ocamlc -o my_prog -I /path/to/ocamlsdl bigarray.cma sdl.cma sdttf.cma my_prog.cmo
 
 If OCamlSDL was installed using findlib, the package manager will take
 care of that:
-	ocamlfind ocamlc -o my_prog -package sdl -linkpkg my_prog.ml
+
+ $ ocamlfind ocamlc -c -package sdlttf -linkpkg my_prog.ml
+ $ ocamlfind ocamlc -o my_prog -package sdlttf -linkpkg my_prog.cmo
 
 
 Documentation
@@ -52,6 +57,24 @@ You can browse the ocaml API documentation at:
 You can find SDL documentation on the SDL website:
 	http://www.libsdl.org/
 	http://sdldoc.csn.ul.ie/
+
+
+Toplevel
+========
+
+You can build a custom toplevel including OCamlSDL libraries with:
+
+  $ ocamlmktop -o ocamlsdl -I /path/to/ocamlsdl -custom bigarray.cma sdl.cma ...
+
+If you use OCaml >= 3.04, the static toplevel is not really necessary
+since you can dynamically load OCamlSDL in the toplevel:
+
+ $ ocaml
+         Objective Caml version 3.04
+
+ # #load "bigarray.cma" ;;
+ # #load "sdl.cma" ;;
+ #
 
 
 Feedback

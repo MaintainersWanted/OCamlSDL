@@ -1,0 +1,77 @@
+Using
+=====
+
+1. Native code. Same as in the INSTALL/README.
+
+2. Byte code.
+You cannot use dynamic linking of stub code. This stub code must be
+statically linked into a custom runtime. 
+
+ $ ocamlc -I +sdl -c my_prog.ml
+ $ ocamlc -I +sdl -custom -o my_prog bigarray.cma sdl.cma my_prog.cmo
+
+3. Top-level
+Here again you cannot use dynamic linking, you need to build a custom 
+top level.
+
+ $ ocamlmktop -I +sdl -custom -o ocamlsdl bigarray.cma sdl.cma ...
+ $ ./ocamlsdl -I +sdl
+
+Note that in (2) and (3), if dynamic linking is used, the result is 
+that a bunch of errors is printed on stdout and the process is aborted 
+(but it doesn't segfault).
+
+
+Explanation
+===========
+
+To use sdl on macos x you need to define a SDL_main() function [1] 
+because sdl needs its own main() to register the application with the 
+window system. So at runtime, your executable starts by executing the 
+library's main which then calls your SDL_main() function.
+
+In C this is done transparently via the preprocessor. What you do is 
+that you define your own main() in a file in which SDL.h is included. 
+SDL.h will rename your main() to SDL_main() (via a #define). At link 
+time you then need to link against one more lib, libSDLmain which has 
+the real main(). As said before, this function just register your app 
+with the window system and then calls your own main() renamed to 
+SDL_main() (note that using sdl-config --libs at link time 
+automatically adds -lSDLmain on macos x).
+
+So what I did is just to include the following code in sdl_stub.c
+
+[...]
+#ifdef __APPLE__
+int main(int argc, char **argv)
+{
+   caml_main(argv);
+   return 0;
+}
+#endif
+[...]
+
+__APPLE__ is only defined when you use gcc on macos x. This means that 
+finally in libsdlstub.a, the symbol _SDL_main will be defined with the 
+above implementation (the symbol main above is replaced by SDL_main 
+because of the inclusion of SDL.h). Now how does that work ? There are 
+two cases to consider, native code and byte code compilation.
+
+a. Native code.
+When we will link, the _main of libSDLmain will become the entry point, 
+this will register the app with the window system and then call 
+_SDL_main of libsdlstub which will start the caml system via caml_main.
+
+b. Byte code.
+As I understand it, here the problem is that ocamlrun has his own _main 
+and it will not use libSDLmain's _main. So the only solution I found is 
+to link in -custom mode which statically links in the C primitives and 
+apparently the _main of libSDLmain is then used when I start the 
+executable. This main will then call _SDL_main of libsdlstub and start 
+the ocaml system. For the toplevel it is the same, you need to create a 
+custom toplevel.
+
+[1] <http://www.libsdl.org/faq.php?action=listentries&category=7#55>
+
+-- 
+Daniel Bünzli
