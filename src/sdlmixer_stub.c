@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.22 2002/09/09 16:55:49 smkl Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.23 2002/09/09 17:06:28 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -28,7 +28,19 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#ifdef __GNUC__
 #include <error.h>
+#else
+
+#include <stdio.h>
+
+static void error(int status, int errnum, const char *format, ...)
+{
+      fprintf(stderr,format);
+}
+
+#endif
 
 #include <SDL.h>
 #include <SDL_mixer.h>

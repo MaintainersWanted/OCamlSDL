@@ -250,13 +250,27 @@ value ml_SDL_SetPalette(value surf, value flags,
   int firstcolor = Opt_arg(ofirstcolor, Int_val, 0);
   int c_flags;
   int n = Wosize_val(c_arr);
-  SDL_Color color[n];
   int i, status;
-  
+#if ( __STDC_VERSION__ == 199901L )
+  SDL_Color color[n];
+#else
+  SDL_Color *color = calloc(sizeof(SDL_Color), n);
+#endif
+
   if(! p)
-    invalid_argument("surface not palettized");
+     {
+#if ( __STDC_VERSION__ != 199901L )
+        free(color);
+#endif
+	invalid_argument("surface not palettized");
+     }
   if(firstcolor + n > p->ncolors || firstcolor < 0)
-    invalid_argument("out of bounds palette access");
+     {
+#if ( __STDC_VERSION__ != 199901L )
+         free(color);
+#endif
+	invalid_argument("out of bounds palette access");
+     }
 
   for(i=0; i< n; i++)
     SDLColor_of_value(&color[i], Field(c_arr, i));
@@ -266,6 +280,9 @@ value ml_SDL_SetPalette(value surf, value flags,
     c_flags = Int_val(Unopt(flags)) +1 ;
 
   status = SDL_SetPalette(s, c_flags, color, ofirstcolor, n);
+#if ( __STDC_VERSION__ != 199901L )
+         free(color);
+#endif
   return Val_bool(status);
 }
   
@@ -403,13 +420,20 @@ value ml_SDL_UpdateRect(value orect, value screen)
 value ml_SDL_UpdateRects(value rectl, value screen)
 {
   int len = list_length(rectl);
-  SDL_Rect r[len];
   register int i;
+#if ( __STDC_VERSION__ == 199901L )
+  SDL_Rect r[len];
+#else
+  SDL_Rect *r = calloc(sizeof(SDL_Rect), len);
+#endif
   for(i=0; i<len; i++){
     SDLRect_of_value(&r[i], hd(rectl));
     rectl = tl(rectl);
   }
   SDL_UpdateRects(SDL_SURFACE(screen), len, r);
+#if ( __STDC_VERSION__ != 199901L )
+  free(r);
+#endif
   return Val_unit;
 }
 
