@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.10 2002/08/14 14:07:43 oliv__a Exp $ *)
+(* $Id: sdlmixer.mli,v 1.11 2002/09/07 01:06:10 oliv__a Exp $ *)
 
 (** Simple multi-channel audio mixer *)
 
@@ -80,9 +80,6 @@ external load_string : string -> chunk = "sdlmixer_load_string"
 external volume_chunk   : chunk -> float = "sdlmixer_volume_chunk"
 external setvolume_chunk : chunk -> float -> unit = "sdlmixer_setvolume_chunk"
 
-external free_chunk : chunk -> unit = "sdlmixer_free_chunk"
-(** Free an audio chunk previously loaded *)
-
 (** {1 Channels} *)
 
 type channel = int
@@ -103,7 +100,7 @@ external allocate_channels : int -> int = "sdlmixer_allocate_channels"
 external play_channel : 
   ?channel:channel -> ?loops:int -> ?ticks:float -> chunk -> unit
   = "sdlmixer_play_channel_timed"
-(** [play_channel channel chunck loops ticks] Play an audio chunk.
+(** [play_channel channel loops ticks chunk ] Play an audio chunk.
   @param channel channel to play on. If not specified, play on the
   first free channel.  
   @param loops number of times to play the chunk. If [-1], loop
@@ -234,9 +231,6 @@ type music_kind =
 
 external load_music : string -> music = "sdlmixer_loadMUS"
 (** Load a music file (.mod .s3m .it .xm .ogg) *)
-
-external free_music : music -> unit = "sdlmixer_free_music"
-(** Free music previously loaded *)
 
 external play_music : ?loops:int -> music -> unit = "sdlmixer_play_music"
 (** Play a music chunk.

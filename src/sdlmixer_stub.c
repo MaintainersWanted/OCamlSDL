@@ -17,13 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.20 2002/08/24 21:01:38 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.21 2002/09/07 01:06:10 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
+#include <caml/custom.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -35,6 +36,77 @@
 
 #include "common.h"
 #include "sdlmixer_stub.h"
+
+/*
+ * memory management (custom locks)
+ */
+#define SDL_CHUNK(v) (* (Mix_Chunk **)Data_custom_val(v))
+#define SDL_MUS(v) (* (Mix_Music **)Data_custom_val(v))
+
+static void sdlmixer_free_chunk(value chunk)
+{
+  Mix_FreeChunk(SDL_CHUNK(chunk));
+}
+
+static int ml_Mix_Chunk_compare(value v1, value v2)
+{
+  Mix_Chunk *s1 = SDL_CHUNK(v1);
+  Mix_Chunk *s2 = SDL_CHUNK(v2);
+  if(s1 == s2) return 0;
+  if(s1 < s2) return -1; 
+  else return 1;
+}
+
+static struct custom_operations mixer_chunk_ops = {
+  "sdlmixerchunk",
+  &sdlmixer_free_chunk,
+  &ml_Mix_Chunk_compare,
+  custom_hash_default, 
+  custom_serialize_default, 
+  custom_deserialize_default 
+};
+
+static void sdlmixer_free_mus(value chunk)
+{
+  Mix_FreeMusic(SDL_MUS(chunk));
+}
+
+static int ml_Mix_Music_compare(value v1, value v2)
+{
+  Mix_Music *s1 = SDL_MUS(v1);
+  Mix_Music *s2 = SDL_MUS(v2);
+  if(s1 == s2) return 0;
+  if(s1 < s2) return -1; 
+  else return 1;
+}
+
+static struct custom_operations music_chunk_ops = {
+  "sdlmixerchunk",
+  &sdlmixer_free_mus,
+  &ml_Mix_Music_compare,
+  custom_hash_default, 
+  custom_serialize_default, custom_deserialize_default 
+};
+
+static inline value ML_CHUNK(Mix_Chunk *c)
+{
+  Mix_Chunk **chk;
+  value v = alloc_custom(&mixer_chunk_ops, sizeof(*chk),
+			 c->alen, 1000000);
+  chk = Data_custom_val(v);
+  *chk = c;
+  return v;
+}
+
+static inline value ML_MUS(Mix_Music *c)
+{
+  Mix_Music **mus;
+  value v =alloc_custom(&music_chunk_ops, 
+			sizeof(*mus), 0, 1);
+  mus = Data_custom_val(v);
+  *mus = c;
+  return v;
+}
 
 /*
  * Raise an OCaml exception with a message
@@ -136,32 +208,29 @@ sdlmixer_version(value unit)
 value
 sdlmixer_query_specs(value unit)
 {
-  int freq, chan, ret;
+  int freq, chan, ret, ml_format;
+  value query;
   Uint16 form;
 
   ret = Mix_QuerySpec(&freq, &form, &chan);
   if(ret == 0)
     sdlmixer_raise_exception(Mix_GetError());
-  {
-    CAMLparam0();
-    CAMLlocal2(result, query);
-    int ml_format = 0;
-    switch (form) {
-    case AUDIO_U8:     ml_format = 0; break;
-    case AUDIO_S8:     ml_format = 1; break;
-    case AUDIO_U16LSB: ml_format = 2; break;
-    case AUDIO_S16LSB: ml_format = 3; break;
-    case AUDIO_U16MSB: ml_format = 4; break;
-    case AUDIO_S16MSB: ml_format = 5; break;
-    }
-    query  = alloc_small(3, 0);
-    Field(query, 0) = Val_int(freq);
-    Field(query, 1) = Val_int(ml_format);
-    Field(query, 2) = Val_int(chan-1);
-    result = alloc_small(1, 0);
-    Field(result, 0) = query;
-    CAMLreturn(result);      
+
+  switch (form) {
+  case AUDIO_U8:     ml_format = 0; break;
+  case AUDIO_S8:     ml_format = 1; break;
+  case AUDIO_U16LSB: ml_format = 2; break;
+  case AUDIO_S16LSB: ml_format = 3; break;
+  case AUDIO_U16MSB: ml_format = 4; break;
+  case AUDIO_S16MSB: ml_format = 5; break;
+  default: 
+    abort();
   }
+  query  = alloc_small(3, 0);
+  Field(query, 0) = Val_int(freq);
+  Field(query, 1) = Val_int(ml_format);
+  Field(query, 2) = Val_int(chan-1);
+  return query;
 }
 
 value
@@ -237,22 +306,6 @@ value
 sdlmixer_unset_music_cmd(value unit)
 {
   Mix_SetMusicCMD(NULL);
-  return Val_unit;
-}
-
-value
-sdlmixer_free_chunk(value chunk)
-{
-  Mix_FreeChunk(SDL_CHUNK(chunk));
-  SDL_CHUNK(chunk) = NULL;
-  return Val_unit;
-}
-
-value
-sdlmixer_free_music(value chunk)
-{
-  Mix_FreeMusic(SDL_MUS(chunk));
-  SDL_MUS(chunk) = NULL;
   return Val_unit;
 }
 
