@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.19 2002/11/15 01:43:47 oliv__a Exp $
+# $Id: Makefile,v 1.20 2002/11/28 15:18:42 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -42,11 +42,15 @@ TOPLEVEL = 	toplevel
 LIBRARY = 	sdl.cma
 OLIBRARY = 	sdl.cmxa sdl.a
 
-all: libs 
+all:: libs 
 
 ifdef CYGWIN
-libs:: libmlsdl_main.a
+libs:: libmlsdl_main.a dllmlsdl_main.dll dllsdlstub.dll
 libmlsdl_main.a : mlsdl_main.o
+dllmlsdl_main.dll : mlsdl_main.do
+dllsdlstub.dll : $(STUB_OBJS:%.o=%.do) $(CAMLLIBDIR)/dllbigarray.a
+else
+all:: bin
 endif	
 
 bin:  $(TOPLEVEL)
@@ -68,8 +72,8 @@ $(TOPLEVEL): $(LIBRARY) $(CLIBRARY) $(PARTS:%=sdl%.cma)
 
 install:: all
 	$(INSTALL) -d $(INSTALL_DIR)
-	$(INSTALL) $(TOPLEVEL) $(INSTALL_DIR)
-	$(INSTALL_DATA) *.cma lib*stub.a *.cmi *.mli $(INSTALL_DIR)
+	test -f $(TOPLEVEL) && $(INSTALL) $(TOPLEVEL) $(INSTALL_DIR) || :
+	$(INSTALL_DATA) *.cma lib*.a *.cmi *.mli $(INSTALL_DIR)
 
 ifdef CAMLOPT
 libs :: $(OLIBRARY) $(PARTS:%=sdl%.cmxa)
@@ -158,7 +162,7 @@ distclean: clean
 	rm -f config.h .depend .depend.c *~
 
 clean:
-	rm -f *.cm* *.[oa] *.so $(TOPLEVEL)
+	rm -f *.cm* *.[oa] *.so *.do $(TOPLEVEL)
 
 depend: .depend .depend.c
 
@@ -166,7 +170,7 @@ depend: .depend .depend.c
 	@echo "making deps..."
 	@$(CAMLDEP) $^ > $@
 
-.depend.c : $(wildcard *.c)
+.depend.c : $(STUB_SRCS)
 	@echo "making C deps..."
 	@$(CC) $(CPPFLAGS) -I $(CAMLLIBDIR) -MM $^ > $@
 
