@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.16 2002/08/05 10:43:54 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.17 2002/08/05 22:45:51 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -124,13 +124,22 @@ sdlmixer_version(value unit)
 {
   const SDL_version *v;
   value r;
-  v = Mix_Linked_Version();
+
   r = alloc_small(3, 0);
+
+#ifdef MIX_VERSION
+  v = Mix_Linked_Version();
   Field(r, 0) = Val_int(v->major);
   Field(r, 1) = Val_int(v->minor);
   Field(r, 2) = Val_int(v->patch);
+#else
+  Field(r, 0) = Val_int(1);
+  Field(r, 1) = Val_int(2);
+  Field(r, 2) = Val_int(0);
+#endif
   return r;
 }
+
 
 value
 sdlmixer_query_specs(value unit)
@@ -199,11 +208,14 @@ sdlmixer_load_string(value data)
   return ML_CHUNK(chunk);
 }
 
+
 value
 sdlmixer_get_music_type(value music)
 {
   Mix_Music *mus = Opt_arg(music, SDL_MUS, NULL);
   value v = Val_int(0);
+
+#if (MIX_MAJOR_VERSION >= 1) && (MIX_MINOR_VERSION >= 2) && (MIX_PATCHLEVEL >= 4)
   switch(Mix_GetMusicType(mus)) {
   case MUS_NONE : v = Val_int(0); break;
   case MUS_CMD  : v = Val_int(1); break;
@@ -213,8 +225,12 @@ sdlmixer_get_music_type(value music)
   case MUS_OGG  : v = Val_int(5); break;
   case MUS_MP3  : v = Val_int(6); break;
   }
+#else 
+  v = Val_int(0);
+#endif
   return v;
 }
+
 
 value 
 sdlmixer_set_music_cmd(value command)
@@ -324,16 +340,20 @@ sdlmixer_music_finished_hook(void)
 value
 sdlmixer_set_channel_finished(value cb)
 {
+#if (MIX_MAJOR_VERSION >= 1) && (MIX_MINOR_VERSION >= 2) && (MIX_PATCHLEVEL >= 4)
   cb_channel_finished = cb;
   Mix_ChannelFinished(sdlmixer_channel_finished_hook);
+#endif
   return Val_unit;
 }
 
 value
 sdlmixer_unset_channel_finished(value unit)
 {
+#if (MIX_MAJOR_VERSION >= 1) && (MIX_MINOR_VERSION >= 2) && (MIX_PATCHLEVEL >= 4)
   cb_channel_finished = Val_unit;
   Mix_ChannelFinished(NULL);
+#endif
   return Val_unit;
 }
 

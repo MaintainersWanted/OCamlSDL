@@ -1,3 +1,7 @@
+2002-08-05 Luc Mazardo <luc@mazardo.com>
+	* CHANGE (sdlmixer_stub.c) add preprocessor directives 
+	  for older of SDL_mixer version 
+
 2002-08-05  Olivier Andrieu  <oliv__a@users.sourceforge.net>
 
 	* CHANGE (sdlmixer.ml*) 
