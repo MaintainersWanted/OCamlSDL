@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.12 2002/09/30 21:01:04 oliv__a Exp $ *)
+(* $Id: sdlmixer.mli,v 1.13 2003/01/05 11:23:53 oliv__a Exp $ *)
 
 (** Simple multi-channel audio mixer *)
 
@@ -25,7 +25,7 @@ exception SDLmixer_exception of string
 (** Exception used to report errors *)
 
 
-(** {1 General API} *)
+(** {3 General API} *)
 
 external version : unit -> Sdl.version ="sdlmixer_version"
 (** Get the version of the dynamically linked SDL_mixer library *)
@@ -67,7 +67,7 @@ val query_specs : unit -> specs
     @raise SDLmixer_exception if the audio has not been opened
  *)
 
-(** {1 Samples} *)
+(** {3 Samples} *)
 
 type chunk
 
@@ -83,7 +83,7 @@ external setvolume_chunk : chunk -> float -> unit = "sdlmixer_setvolume_chunk"
 external free_chunk : chunk -> unit = "sdlmixer_free_chunk"
 (** Free an audio chunk previously loaded *)
 
-(** {1 Channels} *)
+(** {3 Channels} *)
 
 type channel = int
 
@@ -165,7 +165,7 @@ external fading_channel : channel -> fade_status = "sdlmixer_fading_channel"
 (** Query the fading status of a channel *)
 
 
-(** {1 Groups} *)
+(** {3 Groups} *)
 
 type group = int
 
@@ -218,7 +218,7 @@ external fadeout_group : group -> float -> unit = "sdlmixer_fadeout_group"
 external halt_group : group -> unit = "sdlmixer_halt_group"
 
 
-(** {1 Music} *)
+(** {3 Music} *)
 
 type music
 

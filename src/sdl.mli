@@ -17,14 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.7 2002/08/21 18:26:31 oliv__a Exp $ *)
+(* $Id: sdl.mli,v 1.8 2003/01/05 11:23:53 oliv__a Exp $ *)
 
-(** This module contains functions for initialising/quitting the library *)
+(** This module contains functions for initializing/quitting the library *)
 
 exception SDL_init_exception of string
-(** Exception for repporting errors during initialization *)
+(** Exception for reporting errors during initialization *)
 
-(** {1 Main functions} *)
+(** {3 Main functions} *)
 
 (** Initialization flag type *)
 type subsystem = [
@@ -59,7 +59,7 @@ external quit : unit -> unit = "sdl_quit"
 external quit_subsystem : subsystem list -> unit = "sdl_quit_subsystem"
 
 
-(** {1 Versioning information} *)
+(** {3 Versioning information} *)
 
 type version = {
     major : int ;

@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.21 2002/12/11 23:11:36 oliv__a Exp $
+# $Id: Makefile,v 1.22 2003/01/05 11:23:53 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -56,12 +56,13 @@ bin:  $(TOPLEVEL)
 libs:: $(LIBRARY) $(CLIBRARY) $(PARTS:%=sdl%.cma) $(PARTS:%=libsdl%stub.a)
 
 ifdef CAMLDOC
+LABLGLINC = $(if $(LABLGLDIR),-I $(LABLGLDIR))
 doc : ../doc/html/index.html ../doc/ocamlsdl.texi
 ../doc/html/index.html : $(CMI)
 	mkdir -p ../doc/html
-	$(CAMLDOC) -d ../doc/html -html -v -t ocamlsdl $(MLI)
+	$(CAMLDOC) -d ../doc/html -html -v -t ocamlsdl $(LABLGLINC) $(MLI)
 ../doc/ocamlsdl.texi : $(CMI)
-	$(CAMLDOC) -d ../doc -texi -v -o $@ -t ocamlsdl $(MLI)
+	$(CAMLDOC) -d ../doc -texi -v -o $@ -t ocamlsdl $(LABLGLINC) $(MLI)
 else
 doc : ; $(error "you need ocamldoc to generate the documentation")
 endif
@@ -82,6 +83,7 @@ install ::
 endif
 
 sdlgl.cmo : MLFLAGS+=  -I $(LABLGLDIR)
+sdlgl.cmi : MLFLAGS+=  -I $(LABLGLDIR)
 sdlgl.cmx : OMLFLAGS+= -I $(LABLGLDIR)
 
 ifdef CAMLMKLIB

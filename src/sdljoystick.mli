@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdljoystick.mli,v 1.2 2002/08/24 22:40:08 oliv__a Exp $ *)
+(* $Id: sdljoystick.mli,v 1.3 2003/01/05 11:23:53 oliv__a Exp $ *)
 
 (** Module for SDL joystick event handling *)
 
@@ -65,7 +65,7 @@ external num_hats : t -> int = "ml_SDL_JoystickNumHats"
 (** Get the number of buttons on a joystick *)
 external num_buttons : t -> int = "ml_SDL_JoystickNumButtons"
 
-(** {1 Joystick state } *)
+(** {3 Joystick state } *)
 
 (** Update the current state of the open joysticks.
    This is called automatically by the event loop if any joystick

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.mli,v 1.10 2002/08/09 13:40:40 oliv__a Exp $ *)
+(* $Id: sdlcdrom.mli,v 1.11 2003/01/05 11:23:53 oliv__a Exp $ *)
 
 (** This module provides CD-ROM handling *)
 
@@ -27,7 +27,7 @@ exception SDLcdrom_exception of string
 exception Trayempty
 (** Exception to report that thre's no cd in the drive *)
 
-(** {1 Types} *)
+(** {3 Types} *)
 
 type cdrom_drive
 (** abstract type for handling cdrom *)
@@ -58,7 +58,7 @@ type cdrom_info = {
     tracks     : track array ;
   }
 
-(** {1 General API} *)
+(** {3 General API} *)
  
 (** An SDLcdrom_exception is raised on errors *)
 
@@ -71,7 +71,7 @@ external drive_name : int -> string = "sdlcdrom_drive_name"
   [drive] is the index of the drive. Drive indices start to 0 and end 
   at [get_num_drives()-1].*)
 
-(** {1 CD-ROM drive handling} *)
+(** {3 CD-ROM drive handling} *)
 
 external cd_open : int -> cdrom_drive = "sdlcdrom_open"
 (** [cd_open drive] open a CD-ROM drive for access *)
@@ -86,7 +86,7 @@ external cd_info : cdrom_drive -> cdrom_info = "sdlcdrom_info"
 (** @return the table of contents of the CD and current play position 
    @raise Trayempty if there's no cd in the drive *)
 
-(** {1 Playing audio tracks } *)
+(** {3 Playing audio tracks } *)
 
 val msf_of_frames : int -> int * int * int
 val frames_of_msf : int * int * int -> int

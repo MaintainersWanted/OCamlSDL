@@ -1,6 +1,6 @@
 (** Mouse event handling and cursors *)
 
-(** {1 Mouse state} *)
+(** {3 Mouse state} *)
 
 type button = 
   | BUTTON_LEFT
@@ -18,7 +18,7 @@ external warp : int -> int -> unit
 (** Set the position of the mouse cursor (generates a mouse motion event) *)
 
 
-(** {1 Cursors } *)
+(** {3 Cursors } *)
 
 open Bigarray
 

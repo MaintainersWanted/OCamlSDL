@@ -17,14 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.12 2003/01/04 01:37:08 oliv__a Exp $ *)
+(* $Id: sdlevent.mli,v 1.13 2003/01/05 11:23:53 oliv__a Exp $ *)
 
 (** SDL event handling *)
 
 exception Event_exn of string
 (** The exception used for reporting events-related errors. *)
 
-(** {1 Application focus} *)
+(** {3 Application focus} *)
 
 (** The available application states *)
 type active_state = 
@@ -38,7 +38,7 @@ type active_state =
 external get_app_state : unit -> active_state list =
    "mlsdlevent_get_app_state"
 
-(** {1 Events datatypes} *)
+(** {3 Events datatypes} *)
 
 (** Application visibility event record *)
 type active_event = {
@@ -133,7 +133,7 @@ type event =
 val string_of_event : event -> string
 (** Returns a short string descriptive of the event type, for debugging *)
 
-(** {1 Event masks } *)
+(** {3 Event masks } *)
 
 type event_mask = int
 
@@ -183,7 +183,7 @@ type event_kind =
 val make_mask : event_kind list -> event_mask
 val of_mask   : event_mask -> event_kind list
 
-(** {1 Enabling/Disabling event collecting} *)
+(** {3 Enabling/Disabling event collecting} *)
 
 val enable_events  : event_mask -> unit
 (** Specified events are collected and added to the event queue (when
@@ -202,7 +202,7 @@ external set_state : bool -> event_kind -> unit = "mlsdlevent_set_state"
 (** Set the reporting state of one individual event type. *)
 
 
-(** {1 Handling events} *)
+(** {3 Handling events} *)
 
 val pump : unit -> unit
 (** Pumps the event loop, gathering events from the input devices.
@@ -236,7 +236,7 @@ external get  : ?mask:event_mask -> int -> event list = "mlsdlevent_get"
 external add : event list -> unit = "mlsdlevent_add"
 (** Add events to the back of the event queue. *)
 
-(** {1 Old event-handling interface } *)
+(** {3 Old event-handling interface } *)
 
 (** Callback-based event handling.
    @deprecated this interface was used in version of ocamlsdl < 0.6
@@ -244,7 +244,7 @@ external add : event list -> unit = "mlsdlevent_add"
 module Old : 
   sig
 
-  (** {2 Definition of the event callbacks} *)
+  (** {4 Definition of the event callbacks} *)
 
   (** Keyboard event called with the activated key, its state and the
    coordinates of the mouse pointer *)
@@ -264,7 +264,7 @@ module Old :
 
   type resize_event_func = int -> int -> unit
 
-  (** {2 Functions for setting the current event callbacks} *)
+  (** {4 Functions for setting the current event callbacks} *)
 
   val set_keyboard_event_func : keyboard_event_func -> unit
   val set_mouse_event_func : mouse_event_func -> unit
@@ -272,7 +272,7 @@ module Old :
   val set_idle_event_func : idle_event_func -> unit
   val set_resize_event_func : resize_event_func -> unit
 
-  (** {2 Event loop} *)
+  (** {4 Event loop} *)
 
   val start_event_loop : unit -> unit
   val exit_event_loop : unit -> unit

@@ -1,3 +1,6 @@
+
+(** LablGL interaction *)
+
 external swap_buffers : unit -> unit
     = "ml_SDL_GL_SwapBuffers"
 

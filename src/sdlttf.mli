@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.14 2003/01/03 20:16:33 oliv__a Exp $ *)
+(* $Id: sdlttf.mli,v 1.15 2003/01/05 11:23:53 oliv__a Exp $ *)
 
 (** This module provides TTF (TrueType Font) support *)
 
@@ -30,7 +30,7 @@ val init : unit -> unit
 (** Quits the system *)
 external quit : unit -> unit = "sdlttf_kill"
 
-(** {1 General operations on font datatype} *)
+(** {3 General operations on font datatype} *)
 
 type font
 (** abstract font datatype *)
@@ -57,7 +57,7 @@ external get_font_style : font -> font_style list = "sdlttf_get_font_style"
 
 external set_font_style : font -> font_style list -> unit = "sdlttf_set_font_style"
 
-(** {1 Font information } *)
+(** {3 Font information } *)
 
 external font_height : font -> int = "sdlttf_font_height"
 (** @return the total height(int) of the font (usually equal to point size) *)
@@ -84,7 +84,7 @@ external is_fixed_width : font -> bool = "ml_TTF_FontFaceIsFixedWidth"
 external family_name : font -> string = "ml_TTF_FontFaceFamilyName"
 external style_name : font -> string = "ml_TTF_FontFaceStyleName"
 
-(** {1 Text rendering functions} *)
+(** {3 Text rendering functions} *)
 
 open Sdlvideo
 
@@ -100,7 +100,7 @@ type render_kind =
   | SHADED  of color * color
   | BLENDED of color
 
-(** {2 Text rendering functions} *)
+(** {4 Text rendering functions} *)
 
 external render_text_solid : font -> string -> 
   fg:color -> surface = "sdlttf_render_text_solid"
@@ -112,7 +112,7 @@ external render_text_blended : font -> string ->
 
 val render_text : font -> render_kind -> string -> surface
 
-(** {2 Glyph rendering functions} *)
+(** {4 Glyph rendering functions} *)
 
 external render_glyph_solid : font -> char -> 
   fg:color -> surface = "sdlttf_render_glyph_solid"

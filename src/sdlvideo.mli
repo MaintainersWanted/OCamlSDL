@@ -19,13 +19,13 @@
 
 (** Module for video manipulations *)
 
-(* $Id: sdlvideo.mli,v 1.29 2002/12/11 23:11:38 oliv__a Exp $ *)
+(* $Id: sdlvideo.mli,v 1.30 2003/01/05 11:23:53 oliv__a Exp $ *)
 
 open Bigarray
 
 exception Video_exn of string
 
-(** {1 Rectangles} *)
+(** {3 Rectangles} *)
 
 type rect = {
     mutable r_x : int ;
@@ -41,7 +41,7 @@ val copy_rect : rect -> rect
 (** @return a copy of the rectangle *)
 
 
-(** {1 Video mode informations} *)
+(** {3 Video mode informations} *)
 
 type pixel_format_info = {
     palette  : bool ;
@@ -152,7 +152,7 @@ external video_mode_ok : w:int -> h:int -> bpp:int -> video_flag list -> int
    emulate the requested bits-per-pixel with a shadow surface. *)
 
 
-(** {1 Surfaces} *)
+(** {3 Surfaces} *)
 
 type surface 
 (** Graphical surface datatype *)
@@ -193,7 +193,7 @@ val surface_bpp    : surface -> int
 (** @return bits-per-pixel for the given [surface] *)
 
 
-(** {1 Video modes-related functions} *)
+(** {3 Video modes-related functions} *)
 
 external get_video_surface : unit -> surface
     = "ml_SDL_GetVideoSurface"
@@ -235,7 +235,7 @@ external flip : surface -> unit
 *)
 
 
-(** {1 Color manipulation} *)
+(** {3 Color manipulation} *)
 
 external set_gamma : r:float -> g:float -> b:float -> unit
     = "ml_SDL_SetGamma"
@@ -257,7 +257,7 @@ val yellow  : color
 val cyan    : color
 val magenta : color
 
-(** {2 Palettes} *)
+(** {4 Palettes} *)
 
 external use_palette : surface -> bool
     = "ml_sdl_surface_use_palette"
@@ -287,7 +287,7 @@ external set_palette : surface ->
    (defaults to 0)
 *)
 
-(** {2 Conversions} *)
+(** {4 Conversions} *)
 
 external map_RGB : surface -> ?alpha:int -> color -> int32
     = "ml_SDL_MapRGB"
@@ -315,7 +315,7 @@ external put_pixel : surface -> x:int -> y:int -> color -> unit
    The surface may have to be locked before access. *)
 
 
-(** {1 Creating RGB surface} *)
+(** {3 Creating RGB surface} *)
 
 external create_RGB_surface : 
   [ `SWSURFACE | `HWSURFACE | `ASYNCBLIT | `SRCCOLORKEY | `SRCALPHA ] list ->
@@ -355,7 +355,7 @@ val create_RGB_surface_from_8 :
 
 
 
-(** {1 Locking/Unlocking surface} *)
+(** {3 Locking/Unlocking surface} *)
 
 
 external must_lock : surface -> bool
@@ -372,7 +372,7 @@ external unlock : surface -> unit
 (** Releases the lock on the given [surface] *)
 
 
-(** {1 Accessing surface pixels} *)
+(** {3 Accessing surface pixels} *)
 
 val pixel_data : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
 
@@ -386,7 +386,7 @@ val pixel_data_32 : surface -> (int32, int32_elt, c_layout) Array1.t
 
 
 
-(** {1 Reading/writing in BMP files} *)
+(** {3 Reading/writing in BMP files} *)
 
 
 external load_BMP : string -> surface
@@ -398,7 +398,7 @@ external save_BMP : surface -> string -> unit
 (** Saves the [surface] as a Windows BMP file named file. *)
 
 
-(** {1 Colorkey and alpha stuff} *)
+(** {3 Colorkey and alpha stuff} *)
 
 external unset_color_key : surface -> unit
     = "ml_SDL_unset_color_key"
@@ -425,7 +425,7 @@ external get_alpha : surface -> int
 
 
 
-(** {1 Clipping} *)
+(** {3 Clipping} *)
 
 
 external unset_clip_rect : surface -> unit
@@ -440,7 +440,7 @@ external get_clip_rect : surface -> rect
     = "ml_SDL_GetClipRect"
 (** @return the clipping rectangle for the destination [surface] in a blit. *)
 
-(** {1 Blitting} *)
+(** {3 Blitting} *)
 
 external blit_surface : 
   src:surface -> ?src_rect:rect -> 

@@ -1,6 +1,6 @@
 (** Keyboard handling and key symbols *)
 
-(** {1 Keysyms } *)
+(** {3 Keysyms } *)
 
 (** Concrete type describing keyboard keys ("keysym") *)
 type t = 
@@ -256,7 +256,7 @@ val name : t -> string
 (** @return a short string describing the key *)
 
 
-(** {1 Keyboard handling } *)
+(** {3 Keyboard handling } *)
 
 external enable_unicode : bool -> unit
     = "ml_SDL_EnableUNICODE"
@@ -288,7 +288,7 @@ val is_key_pressed : t -> bool
 (** Checks wether a key is currently pressed on the keyboard. *)
 
 
-(** {1 Key modifiers } *)
+(** {3 Key modifiers } *)
 
 type mod_state = int
 
