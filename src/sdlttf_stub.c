@@ -17,16 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.16 2002/08/14 14:32:36 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.17 2002/08/26 15:12:20 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
-
 #include <stdio.h>
-#include <error.h>
 
 #include <SDL_ttf.h>
 
@@ -41,11 +39,8 @@ static void
 sdlttf_raise_exception (char *msg)
 {
   static value *ttf_exn = NULL;
-  if(! ttf_exn){
+  if(! ttf_exn)
     ttf_exn = caml_named_value("SDLttf_exception");
-    if(! ttf_exn)
-      error(-1, 0, "exception not registered.");
-  } 
   raise_with_string(*ttf_exn, msg);
 }
 
@@ -81,7 +76,20 @@ value
 sdlttf_open_font(value file, value index, value ptsize)
 {
   int c_index = Opt_arg(index, Int_val, 0);
-  TTF_Font *font = TTF_OpenFontIndex(String_val(file), Int_val(ptsize), c_index);
+  TTF_Font *font=NULL;
+
+#if (TTF_RELEASE == 2) || \
+    ((TTF_MAJOR_VERSION >= 2) && \
+     (TTF_MAJOR_VERSION >= 0) && \
+     (TTF_PATCHLEVEL >= 6))
+
+  font = TTF_OpenFontIndex(String_val(file), Int_val(ptsize), c_index);
+
+#else  /* try to keep compatibility with SDL_ttf v1 */
+
+  font = TTF_OpenFont(String_val(file), Int_val(ptsize));
+#endif
+
   if (font == NULL) {
     sdlttf_raise_exception(TTF_GetError());
   }
@@ -120,10 +128,21 @@ sdlttf_font_descent(value font)
 }
 
 ML_1(TTF_FontLineSkip, SDL_FONT, Val_int)
+#if (TTF_RELEASE == 2) || \
+    ((TTF_MAJOR_VERSION >= 2) && \
+     (TTF_MAJOR_VERSION >= 0) && \
+     (TTF_PATCHLEVEL >= 6))
 ML_1(TTF_FontFaces, SDL_FONT, Val_int)
 ML_1(TTF_FontFaceIsFixedWidth, SDL_FONT, Val_bool)
 ML_1(TTF_FontFaceFamilyName, SDL_FONT, copy_string)
 ML_1(TTF_FontFaceStyleName, SDL_FONT, copy_string)
+#else
+
+CAMLprim value ml_TTF_FontFaces(value arg1) { return Val_int(0);}
+CAMLprim value ml_TTF_FontFaceIsFixedWidth(value arg1) { return Val_true;}
+CAMLprim value ml_TTF_FontFaceFamilyName(value arg1) { return copy_string("not implemented");}
+CAMLprim value ml_TTF_FontFaceStyleName(value arg1) { return copy_string("not implemented");}
+#endif
 
 value
 sdlttf_close_font(value font)
