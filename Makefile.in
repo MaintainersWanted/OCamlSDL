@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.13 2000/06/02 15:42:41 xtrm Exp $
+# $Id: Makefile.in,v 1.14 2000/06/09 08:01:19 xtrm Exp $
 
 CC = 		@CC@ 
 CFLAGS =	@CFLAGS@ @DEFS@ -Wall -D__DEBUG__ # -g -pg #-O3 -pipe -pedantic -m486 
@@ -52,9 +52,9 @@ LIBRARY = 	$(LIB_DIR)/sdl.cma
 OLIBRARY = 	$(LIB_DIR)/sdl.cmxa
 CLIBRARY = 	$(LIB_DIR)/libstub.a
 
-TEST_FILE =  	example.ml
+TEST_FILE =  	test_cdrom.ml #example.ml
 TEST_OBJS = 	$(TEST_FILE:.ml=.cmx)
-TEST = example
+TEST = 		test_cdrom #example
 
 all: bin libs test
 
