@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.16 2001/01/03 13:20:01 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.17 2001/04/24 19:33:19 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -116,7 +116,7 @@ sdlvideo_get_video_info (void)
 {
   CAMLparam0();
   CAMLlocal1(result);
-  SDL_VideoInfo *info = SDL_GetVideoInfo();
+  const SDL_VideoInfo *info = SDL_GetVideoInfo();
 
   result = alloc(10, 0);
   Store_field(result, 0, Val_bool(info->hw_available));
