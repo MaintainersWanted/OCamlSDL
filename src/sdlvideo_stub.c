@@ -32,10 +32,15 @@ extern SDL_Surface *SDL_SURFACE(value v)
 static void ml_SDL_FreeSurface(value s)
 {
   struct ml_sdl_surf_data *cb_data;
+  int call_finalizer = SDL_FALSE;
   cb_data = (Tag_val(s) == 0) ? 
     Data_custom_val(Field(s, 0)) : Data_custom_val(s);
+  if(cb_data->finalizer && cb_data->s->refcount == 1)
+    call_finalizer = SDL_TRUE;
   if(cb_data->freeable)
     SDL_FreeSurface(cb_data->s);
+  if(call_finalizer)
+    cb_data->finalizer(cb_data->finalizer_data);
 }
 
 static int ml_SDL_surf_compare(value v1, value v2)
@@ -56,7 +61,8 @@ static struct custom_operations sdl_surface_ops = {
   custom_deserialize_default 
 };
 
-extern value Val_SDLSurface(SDL_Surface *surf, int freeable, value barr)
+extern value Val_SDLSurface(SDL_Surface *surf, int freeable, value barr, 
+			    sdl_finalizer finalizer, void *finalizer_data)
 {
   CAMLparam1(barr);
   CAMLlocal2(s, v);
@@ -68,6 +74,8 @@ extern value Val_SDLSurface(SDL_Surface *surf, int freeable, value barr)
   cb_data = Data_custom_val(s);
   cb_data->s = surf;
   cb_data->freeable = freeable;
+  cb_data->finalizer = finalizer;
+  cb_data->finalizer_data = finalizer_data;
   if(barr == Val_unit)
     CAMLreturn(s);
   else {
@@ -375,7 +383,7 @@ CAMLprim value ml_SDL_GetVideoSurface(value unit)
   if( !s)
     sdlvideo_raise_exception(SDL_GetError());
 
-  return Val_SDLSurface(s, 0, Val_unit);
+  return Val_SDLSurface(s, 0, Val_unit, NULL, NULL);
 }
 
 CAMLprim value ml_SDL_SetVideoMode(value w, value h, value obpp, value flags)
@@ -386,7 +394,7 @@ CAMLprim value ml_SDL_SetVideoMode(value w, value h, value obpp, value flags)
   if( !s)
     sdlvideo_raise_exception(SDL_GetError());
 
-  return Val_SDLSurface(s, 0, Val_unit);
+  return Val_SDLSurface(s, 0, Val_unit, NULL, NULL);
 }
 
 
@@ -536,7 +544,7 @@ CAMLprim value ml_SDL_CreateRGBSurfaceFrom(value pixels, value w, value h,
 					    Int_val(pitch),
 					    Int32_val(rmask), Int32_val(gmask),
 					    Int32_val(bmask), Int32_val(amask)) ;
-  return Val_SDLSurface(s, 1, pixels);
+  return Val_SDLSurface(s, 1, pixels, NULL, NULL);
 }
 
 CAMLprim value ml_SDL_CreateRGBSurfaceFrom_bc(value *argv, int argc)

@@ -1,11 +1,16 @@
 #include "config.h"
 
-extern value Val_SDLSurface(SDL_Surface *s, int freeable, value barr);
-#define ML_SURFACE(s) Val_SDLSurface((s), 1, Val_unit)
+typedef void (*sdl_finalizer)(void *);
+
+extern value Val_SDLSurface(SDL_Surface *s, int freeable, value barr, 
+			    sdl_finalizer finalizer, void* finalizer_data);
+#define ML_SURFACE(s) Val_SDLSurface((s), 1, Val_unit, NULL, NULL)
 
 struct ml_sdl_surf_data {
   SDL_Surface *s ;
   int freeable;
+  sdl_finalizer finalizer;
+  void *finalizer_data;
 };
 
 
