@@ -35,11 +35,12 @@ let watch_joystick joystick =
   let draw = ref 0 in
   
   let mask = E.joystick_event_mask lor E.quit_mask lor E.keydown_mask in
+  E.disable_events E.all_events_mask ;
   E.enable_events mask ;
 
   (* Loop, getting joystick events! *)
   try while true do
-    begin match Sdlevent2.wait_delay ~mask 30 with
+    begin match Sdlevent2.wait_event () with
     | E.JOYAXISMOTION jae ->
 	Printf.printf "Joystick %d axis %d value: %d\n"
 	  jae.E.jae_which jae.E.jae_axis jae.E.jae_value
