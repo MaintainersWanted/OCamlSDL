@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.14 2002/09/09 18:22:37 smkl Exp $
+# $Id: Makefile,v 1.15 2002/09/09 18:27:33 smkl Exp $
 
 
 include ../makefile.toplevel
@@ -91,10 +91,10 @@ install:: dllsdlstub.so
 
 else
 $(LIBRARY): $(ML_OBJS)
-	$(CAMLC) -o $@ -a -custom $(CLIBS) $(MLLDFLAGS) -cclib -lsdlstub $^
+	$(CAMLC) -o $@ -a -custom  -cclib -lsdlstub $(CLIBS) $(MLLDFLAGS) $^
 
 $(OLIBRARY): $(OPT_OBJS)
-	$(CAMLOPT) -o $@ -a $(CLIBS) $(MLLDFLAGS) -cclib -lsdlstub $^
+	$(CAMLOPT) -o $@ -a $(CLIBS) -cclib -lsdlstub $(MLLDFLAGS) $^
 
 $(CLIBRARY): $(STUB_OBJS)
 	$(CMAKELIB) $^
