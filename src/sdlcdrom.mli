@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.mli,v 1.8 2002/08/08 12:22:22 xtrm Exp $ *)
+(* $Id: sdlcdrom.mli,v 1.9 2002/08/08 15:41:05 xtrm Exp $ *)
 
 (** This module provides cdrom handling *)
 
@@ -53,10 +53,10 @@ type cdrom_track_type =
  
 (* An SDLcdrom_exception is raised on errors *)
 
-external get_num_drives : unit -> int = "sdlcdrom_get_num_drives";;
+external get_num_drives : unit -> int = "sdlcdrom_get_num_drives"
 (** [get_num_drives] returns the number of CD-ROM drives on the system *)
 
-external drive_name : drive:int -> string = "sdlcdrom_drive_name";;
+external drive_name : drive:int -> string = "sdlcdrom_drive_name"
 (** [drive_name drive] returns a human-readable, system-dependent identifier 
   for the CD-ROM. 
   [drive] is the index of the drive. Drive indices start to 0 and end 
@@ -64,62 +64,65 @@ external drive_name : drive:int -> string = "sdlcdrom_drive_name";;
 
 (** {2 cdrom drive handling} *)
 
-external cd_open : int -> cdrom_drive = "sdlcdrom_open";;
+external cd_open : int -> cdrom_drive = "sdlcdrom_open"
 (** [cd_open drive] open a CD-ROM drive for access *)
 
-external cd_close : cdrom_drive -> unit = "sdlcdrom_close";;
+external cd_close : cdrom_drive -> unit = "sdlcdrom_close"
 (** Closes the handle for the cdrom_drive *)
 
-external  cd_status : cdrom_drive -> cdrom_drive_status = "sdlcdrom_status";;
+external  cd_status : cdrom_drive -> cdrom_drive_status = "sdlcdrom_status"
 (** @return the current status of the given drive. *)
 
-external cd_pause : cdrom_drive -> unit = "sdlcdrom_pause";;
+external cd_pause : cdrom_drive -> unit = "sdlcdrom_pause"
 (** Pause play *)
 
-external cd_resume : cdrom_drive -> unit = "sdlcdrom_resume";;
+external cd_resume : cdrom_drive -> unit = "sdlcdrom_resume"
 (** Resume play *)
 
-external cd_stop : cdrom_drive -> unit = "sdlcdrom_stop";;
+external cd_stop : cdrom_drive -> unit = "sdlcdrom_stop"
 (** Stop play *)
 
-external cd_eject : cdrom_drive -> unit = "sdlcdrom_eject";;
+external cd_eject : cdrom_drive -> unit = "sdlcdrom_eject"
 (** Eject CD-ROM *) 
 
 (** {2 Tracks} *)
 
-external cd_play_tracks : cdrom_drive:cdrom_drive -> start_track:int -> 
-  start_frame:int -> num_tracks:int -> num_frames:int -> unit = "sdlcdrom_play_tracks";;
+external cd_play_tracks : cdrom_drive -> start_track:int -> 
+  start_frame:int -> num_tracks:int -> num_frames:int -> unit = "sdlcdrom_play_tracks"
 (** [cd_play_tracks cdrom_drive start_track start_frame num_tracks num_frames] 
   play the given CD with these parameters
-   - start_track : int => the starting track
-   - start_frame : int => the starting frame
-   - ntracks : int     => the number of tracks to play
-   - nframes : int     => the number of frames to play 
+  @param cdrom_drive => the cdrom_drive 
+  @param start_track : int => the starting track
+  @param start_frame : int => the starting frame
+  @param ntracks : int     => the number of tracks to play
+  @param nframes : int     => the number of frames to play 
 *)
 
-val cd_play_track : cdrom_drive:cdrom_drive -> n:int -> unit;;
+val cd_play_track : cdrom_drive -> track:int -> unit
 (** Play the track n on the given cdrom_drive *)
 
-external cd_get_num_tracks : cdrom_drive -> int = "sdlcdrom_get_num_tracks";;
+external cd_get_num_tracks : cdrom_drive -> int = "sdlcdrom_get_num_tracks"
 (** @return the number of tracks *)
 
-external cd_track_num : cdrom_drive:cdrom_drive -> n:int -> cdrom_track = "sdlcdrom_track_num";;(** @return the Nth track *)
+external cd_track_num : cdrom_drive -> track:int -> cdrom_track = "sdlcdrom_track_num"
+(** @return the Nth track *)
 
-val cd_track_list : cdrom_drive -> cdrom_track list;;
+val cd_track_list : cdrom_drive -> cdrom_track list
 (** @return list of track *) 
 
-external track_length : cdrom_track -> int * int = "sdlcdrom_track_length";;
+external track_length : cdrom_track -> int * int = "sdlcdrom_track_length"
 (** @return length (s,ms) of track *)
 
-external track_type : cdrom_track -> cdrom_track_type = "sdlcdrom_track_type";;
+external track_type : cdrom_track -> cdrom_track_type = "sdlcdrom_track_type"
 (** @return type of cdrom_track (TRACK_AUDIO or TRACK_DATA) *)
 
-external cd_track_current_time : cdrom_drive -> int * int = "sdlcdrom_cd_track_current_time" ;;(** @return the minute and seconds elapted *)
+external cd_track_current_time : cdrom_drive -> int * int = "sdlcdrom_cd_track_current_time" 
+(** @return the minute and seconds elapted *)
 
-external cd_current_track : cdrom_drive -> cdrom_track = "sdlcdrom_cd_current_track" ;;
+external cd_current_track : cdrom_drive -> cdrom_track = "sdlcdrom_cd_current_track" 
 (** @return the current track played *)
 
-external track_get_number : cdrom_track -> int = "sdlcdrom_track_get_number" ;;
+external track_get_number : cdrom_track -> int = "sdlcdrom_track_get_number" 
 (** convert cdrom_track type to int *)
 
 
