@@ -14,11 +14,11 @@
 
 #include "sdlvideo2_stub.h"
 
-extern value Val_SDLSurface(SDL_Surface *s, int freeable, value barr)
+extern value Val_SDLSurface(SDL_Surface *surf, int freeable, value barr)
 {
   if(barr == Val_unit) {
     value v = alloc_small(2, Abstract_tag);
-    Field(v, 0) = Val_bp(s);
+    Field(v, 0) = Val_bp(surf);
     Field(v, 1) = freeable;
     return v;
   }
@@ -26,7 +26,7 @@ extern value Val_SDLSurface(SDL_Surface *s, int freeable, value barr)
     CAMLparam1(barr);
     CAMLlocal2(s, v);
     s = alloc_small(1, Abstract_tag);
-    Field(s, 0) = Val_bp(s);
+    Field(s, 0) = Val_bp(surf);
     v = alloc_small(2, 0);
     Field(v, 0) = s;
     Field(v, 1) = barr;
