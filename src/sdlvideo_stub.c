@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.17 2001/04/24 19:33:19 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.18 2001/05/11 09:29:56 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -266,6 +266,36 @@ value
 sdlvideo_surface_height (value surface)
 {
   return Val_int(SDL_SURFACE(surface)->h);
+}
+
+value 
+sdlvideo_surface_bpp(value surface) 
+{
+  return Val_int(SDL_SURFACE(surface)->format->BitsPerPixel);
+}
+
+value 
+sdlvideo_surface_rmask(value surface) 
+{
+  return Val_int(SDL_SURFACE(surface)->format->Rmask);
+}
+
+value 
+sdlvideo_surface_gmask(value surface) 
+{
+  return Val_int(SDL_SURFACE(surface)->format->Gmask);
+}
+
+value 
+sdlvideo_surface_bmask(value surface) 
+{
+  return Val_int(SDL_SURFACE(surface)->format->Bmask);
+}
+
+value 
+sdlvideo_surface_amask(value surface) 
+{
+  return Val_int(SDL_SURFACE(surface)->format->Amask);
 }
 
 value

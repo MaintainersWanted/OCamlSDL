@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.14 2001/01/03 13:20:01 smkl Exp $ *)
+(* $Id: sdlvideo.ml,v 1.15 2001/05/11 09:29:56 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -70,8 +70,15 @@ external update_rect : surface -> rect -> unit = "sdlvideo_update_rect";;
 external surface_free : surface -> unit = "sdlvideo_surface_free";;
 external surface_loadBMP : string -> surface = "sdlvideo_surface_loadBMP";;
 external surface_saveBMP : surface -> string -> unit = "sdlvideo_surface_saveBMP";;
+
 external surface_width : surface -> int = "sdlvideo_surface_width";;
 external surface_height : surface -> int = "sdlvideo_surface_height";;
+external surface_bpp : surface -> int = "sdlvideo_surface_bpp" ;;
+external surface_rmask : surface -> int = "sdlvideo_surface_rmask" ;;
+external surface_gmask : surface -> int = "sdlvideo_surface_gmask" ;;
+external surface_bmask : surface -> int = "sdlvideo_surface_bmask" ;;
+external surface_amask : surface -> int = "sdlvideo_surface_amask" ;;
+
 external surface_fill_rect : surface -> rect -> color -> surface = "sdlvideo_surface_fill_rect";;
 external surface_blit : surface -> rect -> surface -> rect -> unit = "sdlvideo_surface_blit";;
 external surface_set_alpha : surface -> float -> surface = "sdlvideo_surface_set_alpha";;

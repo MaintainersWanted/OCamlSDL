@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.13 2001/01/03 13:20:01 smkl Exp $ *)
+(* $Id: sdlvideo.mli,v 1.14 2001/05/11 09:29:56 xtrm Exp $ *)
 
 (* Exception *)
 
@@ -72,9 +72,19 @@ val update_rect : surface -> rect -> unit;;
 val surface_free : surface -> unit;;
 val surface_loadBMP : string -> surface;;
 val surface_saveBMP : surface -> string -> unit;;
+
+(* Accessors *)
 val surface_width : surface -> int;;
 val surface_height : surface -> int;;
 val surface_rect : surface -> rect;;
+      
+(* Grabbed in ocamlsdl-0.3 made by Jean-Christophe FILLIATRE *)
+val surface_bpp : surface -> int
+val surface_rmask : surface -> int
+val surface_gmask : surface -> int
+val surface_bmask : surface -> int
+val surface_amask : surface -> int
+
 val surface_fill_rect : surface -> rect -> color -> surface;;
 val surface_blit : surface -> rect -> surface -> rect -> unit;;
 val surface_set_alpha : surface -> float -> surface;;
