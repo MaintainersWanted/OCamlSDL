@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.13 2002/07/13 15:19:56 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.14 2002/07/17 13:35:04 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -32,7 +32,7 @@
 
 
 #include "common.h"
-
+#include "sdlmixer_stub.h"
 
 static value arg_string = Val_unit;
 static value music_finished = Val_unit;
@@ -164,46 +164,46 @@ value
 sdlmixer_loadWAV(value fname)
 {
   Mix_Chunk *chunk;
-  chunk = Mix_LoadWAV(&Byte(fname,0));
+  chunk = Mix_LoadWAV(String_val(fname));
   if (chunk == NULL) sdlmixer_raise_exception(Mix_GetError());
-  return (value)chunk;
+  return ML_CHUNK(chunk);
 }
 
 value
 sdlmixer_loadMUS(value fname)
 {
   Mix_Music *chunk;
-  chunk = Mix_LoadMUS(&Byte(fname,0));
+  chunk = Mix_LoadMUS(String_val(fname));
 
   if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());
 
-  return (value)chunk;
+  return ML_MUS(chunk);
 }
 
 value
 sdlmixer_load_string(value data)
 {
   Mix_Chunk *chunk;
-  chunk = Mix_QuickLoad_WAV(&Byte(data,0));
+  chunk = Mix_QuickLoad_WAV(String_val(data));
 
   if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());
 
-  return (value)chunk;
+  return ML_CHUNK(chunk);
 }
 
 value
 sdlmixer_free_chunk(value chunk)
 {
-  Mix_FreeChunk((Mix_Chunk *)chunk);
+  Mix_FreeChunk(SDL_CHUNK(chunk));
   return Val_unit;
 }
 
 value
 sdlmixer_free_music(value chunk)
 {
-  Mix_FreeMusic((Mix_Music *)chunk);
+  Mix_FreeMusic(SDL_MUS(chunk));
   return Val_unit;
 }
 
@@ -293,14 +293,15 @@ sdlmixer_play_channel_timed(value chn, value sound, value loops, value tme)
   int t;
   if (Int_val(tme) == 0) t = -1;
   else t = (int)(1000.0 * Double_val(Field(tme,0)));
-  return Val_int(Mix_PlayChannelTimed(MAGIC_OF_OPTION(chn), (Mix_Chunk *)sound,
+  return Val_int(Mix_PlayChannelTimed(MAGIC_OF_OPTION(chn), 
+				      SDL_CHUNK(sound),
 				      MAGIC_OF_OPTION(loops)-1, t));
 }
 
 value
 sdlmixer_play_music(value music, value loops)
 {
-  return Val_int(Mix_PlayMusic((Mix_Music *)music, MAGIC_OF_OPTION(loops)));
+  return Val_int(Mix_PlayMusic(SDL_MUS(music), MAGIC_OF_OPTION(loops)));
 }
 
 value
@@ -309,7 +310,7 @@ sdlmixer_fadein_music(value music, value loops, value tme)
   int t;
   if (Int_val(tme) == 0) t = -1;
   else t = (int)(1000.0 * Double_val(Field(tme,0)));
-  return Val_int(Mix_FadeInMusic((Mix_Music *)music,
+  return Val_int(Mix_FadeInMusic(SDL_MUS(music),
 				 MAGIC_OF_OPTION(loops),t));
 }
 
@@ -322,7 +323,8 @@ sdlmixer_fadein_channel(value chn, value chunk, value loops, value tme1,
   else t1 = (int)(1000.0 * Double_val(Field(tme1,0)));
   if (Int_val(tme2) == 0) t2 = -1;
   else t2 = (int)(1000.0 * Double_val(Field(tme2,0)));
-  return Val_int(Mix_FadeInChannelTimed(MAGIC_OF_OPTION(chn), (Mix_Chunk *)chunk,
+  return Val_int(Mix_FadeInChannelTimed(MAGIC_OF_OPTION(chn), 
+					SDL_CHUNK(chunk),
 					MAGIC_OF_OPTION(loops)-1, t1, t2));
 }
 
@@ -354,7 +356,7 @@ sdlmixer_setvolume_channel(value chn, value vol)
 value
 sdlmixer_setvolume_chunk(value chunk, value vol)
 {
-  Mix_VolumeChunk((Mix_Chunk *)chunk, (int)(Double_val(vol)*128.0));
+  Mix_VolumeChunk(SDL_CHUNK(chunk), (int)(Double_val(vol)*128.0));
   return Val_unit;
 }
 
