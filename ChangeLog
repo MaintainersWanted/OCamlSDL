@@ -1,3 +1,11 @@
+2002-04-04  Luc Mazardo <luc@mazardo.com>
+
+	* src/sdlevent_stub.c, src/sdlevent.ml*: applying Josh Cogliati 
+	patch about aalib and KEY_UNKNOWN
+
+	* src/sdlttf_stub.c: applying Nathan Whitehead patch about 
+	TTF_RenderText_Shaded
+
 2002-03-26  Luc Mazardo <luc@mazardo.com>
 
 	* samples/example.ml apply patch from josh cogliati 
