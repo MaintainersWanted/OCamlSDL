@@ -48,7 +48,7 @@ let check_file_and_play_it f =
 	  playing := true;
 	  while !playing
 	  do
-	    true;
+	    Sdltimer.delay 10;
 	  done
       end;;
 
