@@ -24,6 +24,13 @@ extern SDL_Surface *SDL_SURFACE(value v)
     Data_custom_val(Field(v, 0)) : Data_custom_val(v);
   return cb_data->s;
 }
+
+extern void SDLColor_of_value(SDL_Color *c, value v)
+{
+  c->r = Int_val(Field(v, 0));
+  c->g = Int_val(Field(v, 1));
+  c->b = Int_val(Field(v, 2));
+}
 #endif
 
 
