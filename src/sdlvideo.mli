@@ -19,7 +19,7 @@
 
 (** Module for video manipulations *)
 
-(* $Id: sdlvideo.mli,v 1.31 2003/01/21 19:12:52 oliv__a Exp $ *)
+(* $Id: sdlvideo.mli,v 1.32 2003/02/24 21:22:46 oliv__a Exp $ *)
 
 open Bigarray
 
@@ -304,16 +304,6 @@ external get_RGBA : surface -> int32 -> color * int
 (** Maps a pixel value into the RGBA components for a given pixel format *
   @return RGB color and alpha value *)
 
-external get_pixel : surface -> x:int -> y:int -> color
-    = "ml_SDL_get_pixel"
-(** Access an individual pixel on a surface and returns is as a [color].
-   The surface may have to be locked before access. *)
-
-external put_pixel : surface -> x:int -> y:int -> color -> unit
-    = "ml_SDL_put_pixel"
-(** Sets an individual pixel on a surface.
-   The surface may have to be locked before access. *)
-
 
 (** {3 Creating RGB surface} *)
 
@@ -385,9 +375,22 @@ val pixel_data_24 : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
 val pixel_data_32 : surface -> (int32, int32_elt, c_layout) Array1.t
 
 
+external get_pixel : surface -> x:int -> y:int -> int32
+    = "ml_SDL_get_pixel"
+external get_pixel_color : surface -> x:int -> y:int -> color
+    = "ml_SDL_get_pixel_color"
+(** Access an individual pixel on a surface and returns is as a [color].
+   The surface may have to be locked before access. *)
+
+external put_pixel : surface -> x:int -> y:int -> int32 -> unit
+    = "ml_SDL_put_pixel"
+external put_pixel_color : surface -> x:int -> y:int -> color -> unit
+    = "ml_SDL_put_pixel_color"
+(** Sets an individual pixel on a surface.
+   The surface may have to be locked before access. *)
+
 
 (** {3 Reading/writing in BMP files} *)
-
 
 external load_BMP : string -> surface
     = "ml_SDL_LoadBMP"

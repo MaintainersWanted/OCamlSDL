@@ -271,7 +271,11 @@ let pixel_data_24 s =
 let pixel_data_32 s =
   (_pixel_data s 4 : (int32, int32_elt, c_layout) Array1.t)
 
-external get_pixel : surface -> x:int -> y:int -> color
+external get_pixel : surface -> x:int -> y:int -> int32
     = "ml_SDL_get_pixel"
-external put_pixel : surface -> x:int -> y:int -> color -> unit
+external put_pixel : surface -> x:int -> y:int -> int32 -> unit
     = "ml_SDL_put_pixel"
+external get_pixel_color : surface -> x:int -> y:int -> color
+    = "ml_SDL_get_pixel_color"
+external put_pixel_color : surface -> x:int -> y:int -> color -> unit
+    = "ml_SDL_put_pixel_color"

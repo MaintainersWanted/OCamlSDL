@@ -807,6 +807,13 @@ CAMLprim value ml_SDL_get_pixel(value surf, value x, value y)
 {
   SDL_Surface *s = SDL_SURFACE(surf);
   Uint32 pixel = getpixel(s, Int_val(x), Int_val(y));
+  return copy_int32(pixel);
+}
+
+CAMLprim value ml_SDL_get_pixel_color(value surf, value x, value y)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  Uint32 pixel = getpixel(s, Int_val(x), Int_val(y));
   Uint8 r,g,b;
   value v;
   SDL_GetRGB(pixel, s->format, &r, &g, &b);
@@ -817,7 +824,15 @@ CAMLprim value ml_SDL_get_pixel(value surf, value x, value y)
   return v;
 }
 
-CAMLprim value ml_SDL_put_pixel(value surf, value x, value y, value color)
+CAMLprim value ml_SDL_put_pixel(value surf, value x, value y, value pix)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  Uint32 pixel = Int32_val(pix);
+  putpixel(s, Int_val(x), Int_val(y), pixel);
+  return Val_unit;
+}
+
+CAMLprim value ml_SDL_put_pixel_color(value surf, value x, value y, value color)
 {
   SDL_Surface *s = SDL_SURFACE(surf);
   Uint32 pixel;
