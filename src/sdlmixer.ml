@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.ml,v 1.5 2000/11/05 01:36:41 smkl Exp $ *)
+(* $Id: sdlmixer.ml,v 1.6 2002/06/07 09:51:39 xtrm Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -48,7 +48,15 @@ type specs =
     format : format;
     channels : int }
 
-external open_audio : int -> format -> channels -> unit = "sdlmixer_open_audio";;
+external open_audio2 : freq:int -> format:format -> channels:channels -> chunksize:int -> unit = "sdlmixer_open_audio";;
+
+let open_audio 
+  ~freq:fq 
+  ~format:ft 
+  ?(chunksize = 4096) 
+  c 
+  = open_audio2 fq ft c chunksize;;
+
 external close_audio : unit -> unit = "sdlmixer_close_audio";;
 external query_specs : unit -> specs option = "sdlmixer_query_specs";;
 
