@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.13 2003/11/16 14:26:38 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.14 2003/11/16 14:40:28 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -28,6 +28,8 @@
 #include "sdlvideo_stub.h"
 #include "sdlrwops_stub.h"
 
+static void
+sdlloader_raise_exception (char *msg) Noreturn;
 static void
 sdlloader_raise_exception (char *msg)
 {

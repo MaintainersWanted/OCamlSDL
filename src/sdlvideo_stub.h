@@ -37,4 +37,4 @@ static inline void SDLColor_of_value(SDL_Color *c, value v)
 }
 #endif
 
-void sdlvideo_raise_exception (char *);
+void sdlvideo_raise_exception (char *) Noreturn;

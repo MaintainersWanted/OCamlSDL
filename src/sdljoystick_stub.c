@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdljoystick_stub.c,v 1.4 2003/11/16 14:26:38 oliv__a Exp $ */
+/* $Id: sdljoystick_stub.c,v 1.5 2003/11/16 14:40:28 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -31,6 +31,7 @@
 #endif
 #define SDLJoystick_val(v)  ((SDL_Joystick *)(Field(v, 0)))
 
+static void mlsdljoystick_raise_exception (char *msg) Noreturn;
 static void mlsdljoystick_raise_exception (char *msg)
 {
   static value *joystick_exn = NULL;

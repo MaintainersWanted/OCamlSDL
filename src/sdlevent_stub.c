@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.19 2003/11/16 14:26:38 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.20 2003/11/16 14:40:28 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -26,6 +26,7 @@
 
 ML_0(SDL_PumpEvents, Unit)
 
+static void raise_event_exn(char *msg) Noreturn;
 static void raise_event_exn(char *msg)
 {
   static value *exn = NULL;

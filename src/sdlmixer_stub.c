@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.32 2003/11/16 14:26:38 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.33 2003/11/16 14:40:28 oliv__a Exp $ */
 
 #include <stdio.h>
 #include <string.h>
@@ -52,6 +52,8 @@
  * Raise an OCaml exception with a message
  */
 
+static void
+sdlmixer_raise_exception (char *msg) Noreturn;
 static void
 sdlmixer_raise_exception (char *msg)
 {
