@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.15 2004/07/26 01:31:45 oliv__a Exp $
+# $Id: Makefile,v 1.16 2004/07/26 09:18:39 oliv__a Exp $
 
 all doc clean install:
 	$(MAKE) -C src $@
@@ -43,7 +43,7 @@ DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README NEWS \
            src/common.c src/common.h src/mlsdl_main.c \
            src/config.h.in src/config.h.msvc \
 	   src/Makefile src/.depend src/.depend_c
-VERSION := 0.7.0
+VERSION := 0.7.1
 
 # hackish targets to build tarballs
 dist : dist-zip dist-tgz
