@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlcdrom_stub.c,v 1.8 2002/06/20 13:20:44 oliv__a Exp $ */
+/* $Id: sdlcdrom_stub.c,v 1.9 2002/07/13 15:19:56 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -42,7 +42,10 @@
 static void
 sdlcdrom_raise_exception (char *msg)
 {
-  raise_with_string(*caml_named_value("SDLcdrom_exception"), msg);
+  static value *cdrom_exn = NULL;
+  if(! cdrom_exn)
+    cdrom_exn = caml_named_value("SDLcdrom_exception");
+  raise_with_string(*cdrom_exn, msg);
 }
 
 /*

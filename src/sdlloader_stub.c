@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.5 2002/06/20 13:20:44 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.6 2002/07/13 15:19:56 oliv__a Exp $ */
 
 #include <png.h>
 #include <caml/alloc.h>
@@ -32,7 +32,10 @@
 static void
 sdlloader_raise_exception (char *msg)
 {
-   raise_with_string(*caml_named_value("SDLloader_exception"), msg);
+  static value *loader_exn = NULL;
+  if(! loader_exn)
+    loader_exn = caml_named_value("SDLloader_exception");
+  raise_with_string(*loader_exn, msg);
 }
 
 value
@@ -71,7 +74,7 @@ sdlloader_load_png(value file_name)
    
    /* open the file and initialize libpng */
    
-   if ((fp = fopen(&Byte(file_name, 0), "rb")) == NULL)
+   if ((fp = fopen(String_val(file_name), "rb")) == NULL)
      sdlloader_raise_exception("Can't open file");
    
    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);

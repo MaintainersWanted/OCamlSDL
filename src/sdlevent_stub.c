@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.13 2002/06/20 13:20:44 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.14 2002/07/13 15:19:56 oliv__a Exp $ */
 
 #include <assert.h>
 #include <caml/alloc.h>
@@ -408,7 +408,10 @@ static void treat_idle_event (void)
 static void
 sdlevent_raise_exception (char *msg)
 {
-  raise_with_string(*caml_named_value("SDLevent_exception"), msg);
+  static value *event_exn = NULL;
+  if(! event_exn)
+    event_exn = caml_named_value("SDLevent_exception");
+  raise_with_string(*event_exn, msg);
 }
 
 /*

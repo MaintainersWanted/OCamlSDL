@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.12 2002/06/26 15:24:55 xtrm Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.13 2002/07/13 15:19:56 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -34,8 +34,8 @@
 #include "common.h"
 
 
-static value arg_string;
-static value music_finished;
+static value arg_string = Val_unit;
+static value music_finished = Val_unit;
 
 /*
  * Conversion macros
@@ -51,7 +51,10 @@ static value music_finished;
 static void
 sdlmixer_raise_exception (char *msg)
 {
-  raise_with_string(*caml_named_value("SDLmixer_exception"), msg);
+  static value *mixer_exn = NULL;
+  if(! mixer_exn)
+    mixer_exn = caml_named_value("SDLmixer_exception");
+  raise_with_string(*mixer_exn, msg);
 }
 
 /*
@@ -208,7 +211,7 @@ void
 sdlmixer_data_hook(void *udata, Uint8 *stream, int len)
 {
   arg_string = alloc_string(len);
-  memcpy(&Byte(arg_string,0), stream, len);
+  memcpy(Bp_val(arg_string), stream, len);
   callback((value)udata, arg_string);
   arg_string = Val_unit;
 }

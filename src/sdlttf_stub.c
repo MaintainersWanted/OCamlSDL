@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.12 2002/06/20 13:20:44 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.13 2002/07/13 15:19:56 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -39,7 +39,10 @@
 static void
 sdlttf_raise_exception (char *msg)
 {
-   raise_with_string(*caml_named_value("SDLttf_exception"), msg);
+  static value *ttf_exn = NULL;
+  if(! ttf_exn)
+    ttf_exn = caml_named_value("SDLttf_exception");
+  raise_with_string(*ttf_exn, msg);
 }
 
 /*

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.29 2002/06/20 13:20:44 oliv__a Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.30 2002/07/13 15:19:56 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -80,7 +80,10 @@ convert_color (value color, unsigned char *r, unsigned char *g,
 static void
 sdlvideo_raise_exception (char *msg)
 {
-  raise_with_string(*caml_named_value("SDLvideo_exception"), msg);
+  static value *video_exn = NULL;
+  if(! video_exn)
+    video_exn = caml_named_value("SDLvideo_exception");
+  raise_with_string(*video_exn, msg);
 }
 
 /*
