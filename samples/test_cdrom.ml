@@ -36,7 +36,7 @@ let _ =
     then
       let info = cd_info cdrom in
       let (m, s, _) = msf_of_frames info.curr_frame in
-      printf "Currently playing track %d, %2d:%2d\n" 
-	info.curr_track m s ;
+      printf "Currently playing track %d, %02d:%02d\n" 
+	(info.curr_track+1) m s ;
       cd_close cdrom 
   done 
