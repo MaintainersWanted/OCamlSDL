@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.5 2002/09/09 16:10:39 smkl Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.6 2002/09/09 16:43:56 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -28,6 +28,9 @@
 #ifdef __GNUC__
 #include <error.h>
 #else
+
+#include <stdio.h>
+
 
 static void error(int status, int errnum, const char *format, ...)
 { 
@@ -331,11 +334,19 @@ value mlsdlevent_peek(value omask, value num)
 {
   int n = Int_val(num);
   int m;
+#if ( __STDC_VERSION__ == 199901L )
   SDL_Event evt[n];
+#else
+  SDL_Event *evt = calloc(sizeof(SDL_Event), n);
+#endif
   Uint32 mask = Opt_arg(omask, Int_val, SDL_ALLEVENTS);
   m = SDL_PeepEvents(evt, n, SDL_PEEKEVENT, mask);
-  if(m < 0)
+  if(m < 0) {
+#if ( __STDC_VERSION__ != 199901L )
+    free(evt);
+#endif
     raise_event_exn(SDL_GetError());
+  }
   {
     int i;
     CAMLparam0();
@@ -345,6 +356,9 @@ value mlsdlevent_peek(value omask, value num)
       value e = value_of_SDLEvent(evt[i]);
       v = cons(e, v);
     }
+#if ( __STDC_VERSION__ != 199901L )
+    free(evt);
+#endif
     CAMLreturn(v);
   }
 }
@@ -353,11 +367,19 @@ value mlsdlevent_get(value omask, value num)
 {
   int n = Int_val(num);
   int m;
+#if ( __STDC_VERSION__ == 199901L )
   SDL_Event evt[n];
+#else
+  SDL_Event *evt = calloc(sizeof(SDL_Event), n);
+#endif
   Uint32 mask = Opt_arg(omask, Int_val, SDL_ALLEVENTS);
   m = SDL_PeepEvents(evt, n, SDL_GETEVENT, mask);
   if(m < 0)
-    raise_event_exn(SDL_GetError());
+     {
+#if ( __STDC_VERSION__ != 199901L )
+    free(evt);
+#endif
+    raise_event_exn(SDL_GetError()); }
   {
     int i;
     CAMLparam0();
@@ -367,6 +389,9 @@ value mlsdlevent_get(value omask, value num)
       value e = value_of_SDLEvent(evt[i]);
       v = cons(e, v);
     }
+#if ( __STDC_VERSION__ != 199901L )
+    free(evt);
+#endif
     CAMLreturn(v);
   }
 }
@@ -374,7 +399,11 @@ value mlsdlevent_get(value omask, value num)
 value mlsdlevent_add(value elist)
 {
   int len = list_length(elist);
+#if ( __STDC_VERSION__ == 199901L )
   SDL_Event evt[len];
+#else
+  SDL_Event *evt = calloc(sizeof(SDL_Event), len);
+#endif
   value l = elist;
   int i=0;
   while(is_not_nil(l)){
@@ -383,8 +412,16 @@ value mlsdlevent_add(value elist)
     i++;
   }
   if(SDL_PeepEvents(evt, len, SDL_ADDEVENT, SDL_ALLEVENTS) < 0)
+     {
+#if ( __STDC_VERSION__ != 199901L )
+    free(evt);
+#endif
     raise_event_exn(SDL_GetError());
-  return Val_unit;
+     }
+#if ( __STDC_VERSION__ != 199901L )
+    free(evt);
+#endif
+   return Val_unit;
 }
 
 value mlsdlevent_has_event(value unit)
