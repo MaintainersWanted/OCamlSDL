@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlloader.ml,v 1.1 2000/01/17 18:36:17 smkl Exp $ *)
+(* $Id: sdlloader.ml,v 1.2 2000/01/19 23:56:57 fbrunel Exp $ *)
 
 (* Define a new exception for PNG errors and register 
    it to be callable from C code. *)
@@ -25,8 +25,8 @@
 exception SDLloader_exception of string
 let _ = Callback.register_exception "SDLloader_exception" (SDLloader_exception "Any string")
 
-external load_png : string -> Sdlvideo.surface = "sdlpng_load_png";;
-external load_png_with_alpha : string -> Sdlvideo.surface = "sdlpng_load_png_with_alpha";;
+external load_png : string -> Sdlvideo.surface = "sdlloader_load_png";;
+external load_png_with_alpha : string -> Sdlvideo.surface = "sdlloader_load_png_with_alpha";;
 
 let load_ppm str =
   try
