@@ -24,11 +24,13 @@ Visit the project's page for additional informations:
 
 OCamlSDL needs the following software and libraries to run:
 
-	 OCaml     |3.04 | www.ocaml.org/
-	 SDL       | 1.2 | www.libsdl.org/
-	 SDL ttf   | 1.0 or 2.0 | www.libsdl.org/projects/SDL_ttf/
-	 SDL mixer | 1.2 | www.libsdl.org/projects/SDL_mixer/
-	 SDL image | 1.2 | www.libsdl.org/projects/SDL_image/
+	 OCaml     |3.04 | http://www.ocaml.org/
+	 SDL       | 1.2 | http://www.libsdl.org/
+
+	 SDL ttf   | 1.0 or 2.0 | http://www.libsdl.org/projects/SDL_ttf/
+	 SDL mixer | 1.2 | http://www.libsdl.org/projects/SDL_mixer/
+	 SDL image | 1.2 | http://www.libsdl.org/projects/SDL_image/
+	 LablGL    | 0.98 | http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
 
 *Documentation
 

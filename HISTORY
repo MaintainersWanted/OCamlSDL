@@ -1,3 +1,7 @@
+Release 0.6.3:
+	* bug fix for SDLRWops
+	* sync with SDL 1.2.5
+
 Release 0.6.2:
 	* interfaced SDLRWops for reading images and sounds from
 	  memory buffers.
