@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.1 2000/01/02 01:32:45 fbrunel Exp $ *)
+(* $Id: sdlvideo.ml,v 1.2 2000/01/12 00:52:52 fbrunel Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -32,8 +32,22 @@ type surface
 type pixel_format
 type color = int
 
+type video_info = {
+    hw_available : bool;	(* Hardware surfaces? *)
+    wm_available : bool;	(* Window manager present? *)
+    blit_hw : bool;		(* Accelerated blits HW -> HW *)
+    blit_hw_color_key : bool;	(* Accelerated blits with color key *)
+    blit_hw_alpha : bool;	(* Accelerated blits with alpha *)
+    blit_sw : bool;		(* Accelerated blits SW -> HW *)
+    blit_sw_color_key : bool;	(* Accelerated blits with color key *)
+    blit_sw_alpha : bool;	(* Accelerated blits with alpha *)
+    blit_fill : bool;		(* Accelerated color fill *)
+    video_mem : int;		(* Total amount of video memory (Ko) *)
+  } 
+
 (* Native C external functions *)
 
+external get_video_info : unit -> video_info = "sdlvideo_get_video_info";;
 external get_display_surface : unit -> surface = "sdlvideo_get_display_surface";;
 external set_display_mode : int -> int -> int -> surface = "sdlvideo_set_display_mode";;
 external flip : surface -> unit = "sdlvideo_flip";;

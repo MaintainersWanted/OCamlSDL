@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.1 2000/01/02 01:32:45 fbrunel Exp $ *)
+(* $Id: sdlvideo.mli,v 1.2 2000/01/12 00:53:10 fbrunel Exp $ *)
 
 (* Exception *)
 
@@ -30,8 +30,22 @@ type surface
 type pixel_format
 type color
 
+type video_info = {
+    hw_available : bool;	(* Hardware surfaces? *)
+    wm_available : bool;	(* Window manager present? *)
+    blit_hw : bool;		(* Accelerated blits HW -> HW *)
+    blit_hw_color_key : bool;	(* Accelerated blits with color key *)
+    blit_hw_alpha : bool;	(* Accelerated blits with alpha *)
+    blit_sw : bool;		(* Accelerated blits SW -> HW *)
+    blit_sw_color_key : bool;	(* Accelerated blits with color key *)
+    blit_sw_alpha : bool;	(* Accelerated blits with alpha *)
+    blit_fill : bool;		(* Accelerated color fill *)
+    video_mem : int;		(* Total amount of video memory (Ko) *)
+  } 
+
 (* Operations on display *)
 
+val get_video_info : unit -> video_info;;
 val get_display_surface : unit -> surface;;
 val set_display_mode : int -> int -> int -> surface;; 
 
