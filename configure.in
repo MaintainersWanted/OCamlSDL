@@ -2,7 +2,7 @@ dnl ****** -*- m4 -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.28 2002/10/07 14:00:25 xtrm Exp $
+dnl $Id: configure.in,v 1.29 2002/11/15 01:43:47 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -25,7 +25,13 @@ AC_PROG_INSTALL
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-#  Check for OCaml programs 
+# Check for cygwin system
+case $target in
+ *-*-cygwin* )  CYGWIN=y ;;
+esac
+AC_SUBST(CYGWIN)
+
+# Check for OCaml programs 
 AC_PROG_OCAML()
 
 dnl -*- where to install the library ? -*-

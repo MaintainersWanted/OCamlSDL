@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.18 2002/11/06 23:05:28 oliv__a Exp $
+# $Id: Makefile,v 1.19 2002/11/15 01:43:47 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -42,7 +42,12 @@ TOPLEVEL = 	toplevel
 LIBRARY = 	sdl.cma
 OLIBRARY = 	sdl.cmxa sdl.a
 
-all: libs bin
+all: libs 
+
+ifdef CYGWIN
+libs:: libmlsdl_main.a
+libmlsdl_main.a : mlsdl_main.o
+endif	
 
 bin:  $(TOPLEVEL)
 libs:: $(LIBRARY) $(CLIBRARY) $(PARTS:%=sdl%.cma) $(PARTS:%=libsdl%stub.a)
@@ -121,10 +126,10 @@ install::
 else
 # does not use ocamlmklib
 $(LIBRARY): $(ML_OBJS)
-$(LIBRARY): LIBS += -lsdlstub
+$(LIBRARY): LIBS = -lsdlstub $(LIBS)
 
 $(OLIBRARY): $(OPT_OBJS)
-$(OLIBRARY): LIBS += -lsdlstub
+$(OLIBRARY): LIBS = -lsdlstub $(LIBS)
 
 $(CLIBRARY): $(STUB_OBJS)
 
