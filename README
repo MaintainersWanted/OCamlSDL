@@ -1,5 +1,6 @@
-OCamlSDL: An interface between OCaml and SDL (Simple DirectMedia Layer)
------------------------------------------------------------------------
+OCamlSDL - An interface between OCaml and SDL
+
+*Overview
 
 The goal of OCamlSDL is to provide access the multimedia hardware
 in the ML programming language with the help of the SDL library.
@@ -8,17 +9,31 @@ level access to audio, keyboard, mouse, and display framebuffer across
 multiple platforms. 
 
 This ML interface might be used to prototype multimedia applications. 
-As soon as possible, I will write some examples.
 
-Follow these links for more infos:
+*Web Resources
 
-OCaml : http://caml.inria.fr/
-SDL   : http://www.devolution.com/~slouken/SDL/
+OCamlSDL is hosted at SourceForge.net: 
 
-SDL ttf: http://www.devolution.com/~slouken/SDL/projects/SDL_ttf/index.html
-SDL mixer: http://www.devolution.com/~slouken/SDL/projects/SDL_mixer/index.html
-SDL image: http://www.devolution.com/~slouken/SDL/projects/SDL_image/index.html
+		   http://ocamlsdl.sourceforge.net/
+
+Visit the projects page for additional informations: 
+
+	     http://www.sourceforge.net/projects/ocamlsdl
+
+*Requirements
+
+OCamlSDL needs the following software and libraries to run:
+
+	 OCaml     |3.0.4| www.ocaml.org/
+	 SDL       | 1.2 | www.libsdl.org/
+	 SDL ttf   | 2.0 | www.libsdl.org/projects/SDL_ttf/
+	 SDL mixer | 1.2 | www.libsdl.org/projects/SDL_mixer/
+	 SDL image | 1.2 | www.libsdl.org/projects/SDL_image/
+
+*Feedback
+
+Report any bugs or suggestions using the project page on
+SourceForge.net.
 
 --
-Frederic Brunel
-brunel@mail.dotcom.fr
+Thank you for using OCamlSDL!
