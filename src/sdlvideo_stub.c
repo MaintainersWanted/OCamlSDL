@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.18 2001/05/11 09:29:56 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.19 2001/05/11 13:58:17 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -25,8 +25,17 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <caml/bigarray.h>
+
+
 #include <stdio.h>
+
+
 #include <SDL/SDL.h>
+
+
+#include "common.h"
+
+
 #include "stub_shared.h"
 #include "sdlvideo_stub.h"
 
@@ -160,6 +169,103 @@ sdlvideo_set_display_mode (value width, value height, value bpp)
   }
 
   return ML_SURFACE(surf);
+}
+
+/* modified the ocamlsdl-0.3/sdl_stub.c made by JFF */
+
+/* video flags */
+
+/*  common_video_flag  */
+#define SWSURFACE_tag 0     /* Surface is in system memory */
+#define HWSURFACE_tag 1     /* Surface is in video memory */
+#define SRCCOLORKEY_tag 2   /* Blit uses a source color key */
+#define SRCALPHA_tag 3      /* Blit uses source alpha blending */
+
+/*  ext_video_flag  */
+#define ASYNCBLIT_tag 4     /* Enables the use of asynchronous to the display surface */
+#define ANYFORMAT_tag 5     /* Allow any video pixel format */
+#define HWPALETTE_tag 6     /* Give SDL exclusive palette access */
+#define DOUBLEBUF_tag 7     /* Set up double-buffered video mode */
+#define FULLSCREEN_tag 8    /* Surface is a full screen display */
+#define OPENGL_tag 9        /* OpenGL rendering */
+#define OPENGLBLIT_tag 10   /* */
+#define RESIZABLE_tag 11    /* Create a resizable window */
+#define NOFRAME_tag 12      /* Frame without titlebar */
+
+int 
+video_flag_val(value flag_list)
+{
+  int flag = 0;
+  value l = flag_list;
+  while (is_not_nil(l))
+    {
+      switch (Int_val(hd(l)))
+	{
+	case SWSURFACE_tag   : flag |= SDL_SWSURFACE   ; break;
+	case HWSURFACE_tag   : flag |= SDL_HWSURFACE   ; break;
+	case SRCCOLORKEY_tag : flag |= SDL_SRCCOLORKEY ; break;
+	case SRCALPHA_tag    : flag |= SDL_SRCALPHA    ; break;
+
+	case ASYNCBLIT_tag   : flag |= SDL_ASYNCBLIT   ; break;
+	case ANYFORMAT_tag   : flag |= SDL_ANYFORMAT   ; break;
+	case HWPALETTE_tag   : flag |= SDL_HWPALETTE   ; break;
+	case DOUBLEBUF_tag   : flag |= SDL_DOUBLEBUF   ; break;
+	case FULLSCREEN_tag  : flag |= SDL_FULLSCREEN  ; break;
+	case OPENGL_tag      : flag |= SDL_OPENGL      ; break;
+	case OPENGLBLIT_tag  : flag |= SDL_OPENGLBLIT  ; break;
+	case RESIZABLE_tag   : flag |= SDL_RESIZABLE   ; break;
+	case NOFRAME_tag    : flag |= SDL_NOFRAME      ; break;
+	}
+      l = tl(l);
+    }
+  return flag;
+}
+
+value 
+val_video_flag(int flags)
+{
+  value l = nil();
+  if (flags & SDL_SWSURFACE)   l = cons(Val_int(SWSURFACE_tag),l);
+  if (flags & SDL_HWSURFACE)   l = cons(Val_int(HWSURFACE_tag),l);
+  if (flags & SDL_SRCCOLORKEY) l = cons(Val_int(SRCCOLORKEY_tag),l);
+  if (flags & SDL_SRCALPHA)    l = cons(Val_int(SRCALPHA_tag),l);
+
+  if (flags & SDL_ASYNCBLIT)   l = cons(Val_int(ASYNCBLIT_tag),l);
+  if (flags & SDL_ANYFORMAT)   l = cons(Val_int(ANYFORMAT_tag),l);
+  if (flags & SDL_HWPALETTE)   l = cons(Val_int(HWPALETTE_tag),l);
+  if (flags & SDL_DOUBLEBUF)   l = cons(Val_int(DOUBLEBUF_tag),l);
+  if (flags & SDL_FULLSCREEN)  l = cons(Val_int(FULLSCREEN_tag),l);
+  if (flags & SDL_OPENGL)      l = cons(Val_int(OPENGL_tag),l);
+  if (flags & SDL_OPENGLBLIT)  l = cons(Val_int(OPENGLBLIT_tag),l);
+  if (flags & SDL_RESIZABLE)   l = cons(Val_int(RESIZABLE_tag),l);
+  if (flags & SDL_NOFRAME)     l = cons(Val_int(SDL_NOFRAME),l);
+  return l;
+}
+
+value 
+sdlvideo_video_mode_ok(value vw, value vh, value vbpp, value vf) 
+{
+  int w = Int_val(vw);
+  int h = Int_val(vh);
+  int bpp = Int_val(vbpp);
+  int flags = video_flag_val(vf);
+
+  return Val_bool(SDL_VideoModeOK(w,h,bpp,flags));
+}
+
+value 
+sdlvideo_set_video_mode(value vw, value vh, value vbpp, value vf) 
+{
+  int w = Int_val(vw);
+  int h = Int_val(vh);
+  int bpp = Int_val(vbpp);
+  int flags = video_flag_val(vf);
+  SDL_Surface* s;
+  
+  if ((s = SDL_SetVideoMode(w,h,bpp,flags)) == NULL) 
+    sdlvideo_raise_exception(SDL_GetError());
+
+  return (value) s;
 }
 
 value

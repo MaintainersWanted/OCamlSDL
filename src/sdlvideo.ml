@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.15 2001/05/11 09:29:56 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.16 2001/05/11 13:58:17 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -58,11 +58,37 @@ type video_info = {
 
 type pixel_data = (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
+type common_video_flag =
+  | SWSURFACE   (* Surface is in system memory *)
+  | HWSURFACE   (* Surface is in video memory *)
+  | SRCCOLORKEY (* Blit uses a source color key *)
+  | SRCALPHA    (* Blit uses source alpha blending *)
+
+type ext_video_flag =
+  | ASYNCBLIT   (* Enables the use of asynchronous to the display surface *)
+  | ANYFORMAT   (* Allow any video pixel format *)
+  | HWPALETTE   (* Give SDL exclusive palette access *)
+  | DOUBLEBUF   (* Set up double-buffered video mode *)
+  | FULLSCREEN  (* Surface is a full screen display *)
+  | OPENGL      (* OpenGL rendering *)
+  | OPENGLBLIT  (* *)
+  | RESIZABLE   (* Create a resizable window *)
+  | NOFRAME     (* Frame without titlebar *)
+
+type video_flag = 
+  | C of common_video_flag 
+  | E of ext_video_flag
+
 (* Native C external functions *)
 
 external get_video_info : unit -> video_info = "sdlvideo_get_video_info";;
 external get_display_surface : unit -> surface = "sdlvideo_get_display_surface";;
 external set_display_mode : int -> int -> int -> surface = "sdlvideo_set_display_mode";;
+
+external video_mode_ok : int -> int -> int -> video_flag list -> bool = "sdlvideo_video_mode_ok"
+external set_video_mode : int -> int -> int -> video_flag list -> surface = "sdlvideo_set_video_mode"
+(* external create_rgb_surface : common_video_flag list -> int -> int -> int -> int -> int -> int -> int = "sdlvideo_create_rgb_surface" *)
+
 external set_opengl_mode : int -> int -> int -> surface = "sdlvideo_set_opengl_mode";;
 external flip : surface -> unit = "sdlvideo_flip";;
 external update_rect : surface -> rect -> unit = "sdlvideo_update_rect";;
