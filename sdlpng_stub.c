@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/* $Id: sdlpng_stub.c,v 1.2 2000/01/14 00:56:14 fbrunel Exp $ */
+
 #include <png.h>
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -44,29 +46,36 @@ sdlpng_load_png(value file_name)
    FILE *fp;
    png_bytep *row_pointers;
    int row;
+   
    /* open the file and initialize libpng */
-   if ((fp = fopen(&Byte(file_name,0), "rb")) == NULL)
+   
+   if ((fp = fopen(&Byte(file_name, 0), "rb")) == NULL)
      sdlpng_raise_exception("Can't open file");
+   
    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+
    if (png_ptr == NULL) {
-	fclose(fp);
-	sdlpng_raise_exception("Cannot initialize libpng reader");
-     }
+     fclose(fp);
+     sdlpng_raise_exception("Cannot initialize libpng reader");
+   }
+   
    info_ptr = png_create_info_struct(png_ptr);
    if (info_ptr == NULL) {
-	fclose(fp);
-	png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
-	sdlpng_raise_exception("Cannot initialize libpng info");
-     }
+     fclose(fp);
+     png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+     sdlpng_raise_exception("Cannot initialize libpng info");
+   }
+   
    /* this is not working */
-   if (setjmp(png_ptr->jmpbuf))
-     {
-	sdlpng_raise_exception("libpng died");
-     }
+   if (setjmp(png_ptr->jmpbuf)) {
+     sdlpng_raise_exception("libpng died");
+   }
+   
    png_init_io(png_ptr, fp);
    png_read_info(png_ptr, info_ptr);
    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
                 &interlace_type, NULL, NULL);
+   
    /* expand everything to RGB */
    png_set_packing(png_ptr);
    png_set_strip_16(png_ptr);
@@ -77,30 +86,36 @@ sdlpng_load_png(value file_name)
    png_set_expand(png_ptr);
    png_set_expand(png_ptr);
    png_read_update_info(png_ptr, info_ptr);
+
    /* finally read it */
    row_pointers = malloc(height*sizeof(png_bytep));
    for (row = 0; row < height; row++) {
-	row_pointers[row] = malloc(png_get_rowbytes(png_ptr, info_ptr));
-     }   
+     row_pointers[row] = malloc(png_get_rowbytes(png_ptr, info_ptr));
+   }
+   
    png_read_image(png_ptr, row_pointers);
    png_read_end(png_ptr, info_ptr);
    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
    fclose(fp);
+   
    /* then convert to SDL surface */
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 24,
 			       0x00ff0000, 0x0000ff00, 0x000000ff, 0x0);
-     {
-	char *src, *dest;
-	int i, j;
-	dest = surf->pixels;
-	for (i = 0; i < height; i++) {
-	     src = row_pointers[i];
-	     memcpy(dest,src,width*3);
-	     dest += surf->pitch;
-	  }
+   {
+     char *src, *dest;
+     int i, j;
+     dest = surf->pixels;
+     for (i = 0; i < height; i++) {
+       src = row_pointers[i];
+       memcpy(dest, src, width * 3);
+       dest += surf->pitch;
      }
-   for (row = 0; row < height; row++) free(row_pointers[row]);
+   }
+   
+   for (row = 0; row < height; row++)
+     free(row_pointers[row]);
    free(row_pointers);
+   
    return (value)surf;
 }
 
@@ -116,25 +131,30 @@ sdlpng_load_png_with_alpha(value file_name)
    FILE *fp;
    png_bytep *row_pointers;
    int row;
+   
    /* open the file and initialize libpng */
-   if ((fp = fopen(&Byte(file_name,0), "rb")) == NULL)
+   if ((fp = fopen(&Byte(file_name, 0), "rb")) == NULL)
      sdlpng_raise_exception("Can't open file");
+   
    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
    if (png_ptr == NULL) {
-	fclose(fp);
-	sdlpng_raise_exception("Cannot initialize libpng reader");
-     }
+     fclose(fp);
+     sdlpng_raise_exception("Cannot initialize libpng reader");
+   }
+   
    info_ptr = png_create_info_struct(png_ptr);
    if (info_ptr == NULL) {
-	fclose(fp);
-	png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
-	sdlpng_raise_exception("Cannot initialize libpng info");
-     }
+     fclose(fp);
+     png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+     sdlpng_raise_exception("Cannot initialize libpng info");
+   }
+   
    if (setjmp(png_ptr->jmpbuf)) {
-	png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
-	fclose(fp);
-	sdlpng_raise_exception("libpng failed");
-     }
+     png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+     fclose(fp);
+     sdlpng_raise_exception("libpng failed");
+   }
+   
    png_init_io(png_ptr, fp);
    png_read_info(png_ptr, info_ptr);
    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
@@ -153,29 +173,36 @@ sdlpng_load_png_with_alpha(value file_name)
    png_read_update_info(png_ptr, info_ptr);
    /* finally read it */
    row_pointers = malloc(height*sizeof(png_bytep));
+
    for (row = 0; row < height; row++) {
-	row_pointers[row] = malloc(png_get_rowbytes(png_ptr, info_ptr));
-     }   
+     row_pointers[row] = malloc(png_get_rowbytes(png_ptr, info_ptr));
+   }
+   
    png_read_image(png_ptr, row_pointers);
    png_read_end(png_ptr, info_ptr);
    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
    fclose(fp);
+   
    /* then convert to SDL surface */
    surf = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
 			       0xff000000, 0x00ff0000, 0x0000ff00,
 			       0x000000ff);
-     {
-	void *src, *dest;
-	int i, j;
-	dest = surf->pixels;
-	for (i = 0; i < height; i++) {
-	     src = row_pointers[i];
-	     memcpy(dest,src,width*4);
-	     dest += surf->pitch;
-	  }
+   {
+     void *src, *dest;
+     int i, j;
+     dest = surf->pixels;
+     
+     for (i = 0; i < height; i++) {
+       src = row_pointers[i];
+       memcpy(dest,src,width*4);
+       dest += surf->pitch;
      }
-   for (row = 0; row < height; row++) free(row_pointers[row]);
+   }
+   
+   for (row = 0; row < height; row++)
+     free(row_pointers[row]);
    free(row_pointers);
+   
    return (value)surf;
 }
 

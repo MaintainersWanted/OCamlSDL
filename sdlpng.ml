@@ -17,6 +17,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
+(* $Id: sdlpng.ml,v 1.2 2000/01/14 00:55:49 fbrunel Exp $ *)
+
 (* Define a new exception for PNG errors and register 
    it to be callable from C code. *)
 

@@ -17,21 +17,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
+(* $Id: sdlppm.ml,v 1.2 2000/01/14 00:57:07 fbrunel Exp $ *)
+
 let load str =
   try
     let chn = open_in_bin str in
     let _ = input_line chn in
     let rec ignore_comments () =
       let ln = input_line chn in
-      if String.length ln < 1 or  ln.[0] = '#' then ignore_comments ()
+      if String.length ln < 1 or ln.[0] = '#' then ignore_comments ()
       else ln in
     let ln = ignore_comments () in
     let l1 = String.index ln ' ' in
     let w = int_of_string (String.sub ln 0 l1) in
-    let h = int_of_string (String.sub ln (l1+1) (String.length ln - l1 - 1)) in
+    let h = int_of_string (String.sub ln (l1 + 1) (String.length ln - l1 - 1)) in
     ignore (input_line chn);
-    let buffer = String.create (w*h*3) in
-    really_input chn buffer 0 (w*h*3);
+    let buffer = String.create (w * h * 3) in
+    really_input chn buffer 0 (w * h * 3);
     close_in chn;
     Sdlvideo.Pixels (buffer, w, h)
   with a ->

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.3 2000/01/13 17:45:10 smkl Exp $ *)
+(* $Id: sdlvideo.ml,v 1.4 2000/01/14 00:58:38 fbrunel Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -83,7 +83,7 @@ let surface_rect surf =
   Rect(0, 0, surface_width surf, surface_height surf);;
 
 let surface_from_pixels = function
- | Pixels (str, w, h) -> surface_from_rawrgb str w h
- | APixels (str, w, h) -> surface_from_rawrgba str w h
+    Pixels (str, w, h) -> surface_from_rawrgb str w h
+  | APixels (str, w, h) -> surface_from_rawrgba str w h
 
 

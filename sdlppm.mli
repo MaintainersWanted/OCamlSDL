@@ -17,8 +17,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* load filename *)
+(* $Id: sdlppm.mli,v 1.2 2000/01/14 00:57:22 fbrunel Exp $ *)
+
+(* Load a PPM picture *)
 val load : string -> Sdlvideo.pixels
-(* save filename pixeldata *)
+
+(* Save pixels to a PPM picture *)
 val save : string -> Sdlvideo.pixels -> unit
 
