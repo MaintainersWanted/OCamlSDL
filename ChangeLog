@@ -1,3 +1,36 @@
+2002-06-07 Luc Mazardo <luc@mazardo.com>
+
+	* CHANGE: (AUTHORS) add olivier in this file
+
+	* CHANGE: (sdlmixer*) change prototype of open_audio now 
+	we use optionnal parameter for chunksize settings
+
+2002-06-05 Olivier Andrieu <oliv__a@users.sourceforge.net>
+
+	* CHANGE: (INSTALL) add some documentation
+
+	* CHANGE: (configure.in, Makefile, 
+		   makefile.toplevel.in, configure 
+		   */Makefile bin/ocamlsdl.in)  
+	rewrite of the Makefiles use ocamlmklib when available
+
+	*  FIX: (common.c) missing include fail.h
+
+2002-05-30 Olivier Andrieu <oliv__a@users.sourceforge.net>
+
+	* FIX: (sdlvideo.mli, sdlvideo.ml) typo fix in create_rbg_surface
+
+2002-05-30  Luc Mazardo <luc@mazardo.com>
+
+        * CHANGE: (src/common.{c,h} src/sdl_stub.c src/sdlvideo_stub.c) 
+        list manipulation hope this is the last. 
+
+        * NEW: (src/sdlinit_flag.{h,c} src/sdlvideo_flag.{c,h}) 
+        varcc utility generated files 
+
+        * CHANGE: (src/sdl.ml src/sdl.mli src/sdlvideo.ml src/sdlvideo.mli)
+        hope it's the last modification of video_flags and init_flags
+
 2002-05-28  Luc Mazardo <luc@mazardo.com>
 
 	* CHANGE: (src/common.{c,h}) list manipulation applying gc patch
