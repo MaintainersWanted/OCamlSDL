@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.9 2002/05/27 11:47:26 xtrm Exp $ *)
+(* $Id: sdlevent.mli,v 1.10 2002/09/02 13:09:42 smkl Exp $ *)
 
 (*d Exception *)
 
@@ -308,6 +308,7 @@ val set_keyboard_event_func : keyboard_event_func -> unit
 val set_mouse_event_func : mouse_event_func -> unit
 val set_mousemotion_event_func : mousemotion_event_func -> unit
 val set_idle_event_func : idle_event_func -> unit
+val set_resize_event_func : (int -> int -> unit) -> unit
 
 (*1 Asynchronous functions for getting status of input devices *)
 

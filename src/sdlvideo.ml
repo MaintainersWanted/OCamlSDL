@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.26 2002/08/28 13:45:56 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.27 2002/09/02 13:09:43 smkl Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -56,7 +56,11 @@ type video_info = {
     video_mem : int;		(* Total amount of video memory (Ko) *)
   } 
 
-type pixel_data = (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
+type pixel_data2 =
+  (int, Bigarray.int8_unsigned_elt, Bigarray.fortran_layout) Bigarray.Array2.t
+
+type pixel_data =
+  (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
 type video_flag = [
   | `SWSURFACE   (* Surface is in system memory *)
@@ -103,6 +107,7 @@ external surface_loadBMP : string -> surface = "sdlvideo_surface_loadBMP"
 external surface_saveBMP : surface -> string -> unit = "sdlvideo_surface_saveBMP"
 
 external surface_width : surface -> int = "sdlvideo_surface_width"
+external surface_pitch : surface -> int = "sdlvideo_surface_pitch"
 external surface_height : surface -> int = "sdlvideo_surface_height"
 external surface_bpp : surface -> int = "sdlvideo_surface_bpp" 
 external surface_rmask : surface -> int = "sdlvideo_surface_rmask" 

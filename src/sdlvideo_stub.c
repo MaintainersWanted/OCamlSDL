@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.33 2002/07/31 18:57:50 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.34 2002/09/02 13:09:43 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -346,6 +346,12 @@ value
 sdlvideo_surface_width (value surface)
 {
   return Val_int(SDL_SURFACE(surface)->w);
+}
+
+value
+sdlvideo_surface_pitch (value surface)
+{
+  return Val_int(SDL_SURFACE(surface)->pitch);
 }
 
 value
@@ -695,7 +701,6 @@ value sdlvideo_unlock_surface(value s)
   return Val_unit;
 }
 
-
 value
 sdlvideo_surface_pixel_data(value surface)
 {
@@ -704,6 +709,25 @@ sdlvideo_surface_pixel_data(value surface)
    dims[0] = surf->h * surf->pitch;
    return alloc_bigarray(BIGARRAY_UINT8 | BIGARRAY_C_LAYOUT,
 			 1, surf->pixels, dims);
+}
+
+/*
+value
+sdlvideo_surface_pixel_data(value surface)
+{
+   SDL_Surface *surf = SDL_SURFACE(surface);
+   return alloc_bigarray_dims(BIGARRAY_UINT8 | BIGARRAY_FORTRAN_LAYOUT,
+			 2, surf->pixels, surf->pitch, surf->h);
+}
+*/
+
+value
+sdlvideo_surface_pixel_data2(value surface)
+{
+   SDL_Surface *surf = SDL_SURFACE(surface);
+   
+   return alloc_bigarray_dims(BIGARRAY_UINT8 | BIGARRAY_FORTRAN_LAYOUT,
+			      2, surf->pixels, surf->pitch, surf->h);
 }
 
 value

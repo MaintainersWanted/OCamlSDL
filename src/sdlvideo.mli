@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(** $Id: sdlvideo.mli,v 1.25 2002/08/28 13:45:56 xtrm Exp $ *)
+(** $Id: sdlvideo.mli,v 1.26 2002/09/02 13:09:43 smkl Exp $ *)
 
 (* Exception *)
 
@@ -61,6 +61,9 @@ type video_info = {
 
 type pixel_data =
   (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
+
+type pixel_data2 =
+  (int, Bigarray.int8_unsigned_elt, Bigarray.fortran_layout) Bigarray.Array2.t
 
 (** differents video flags *)
 type video_flag = [
@@ -231,9 +234,7 @@ val lock_surface : surface -> unit
 (** [obsolete] do not use *)
 val unlock_surface : surface -> unit 
 
+val surface_pitch : surface -> int
 val surface_pixel_data : surface -> pixel_data
 val gl_swap_buffers : unit -> unit
-
-
-
 

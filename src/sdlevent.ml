@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.ml,v 1.7 2002/05/27 11:47:26 xtrm Exp $ *)
+(* $Id: sdlevent.ml,v 1.8 2002/09/02 13:09:42 smkl Exp $ *)
 
 (* Define a new exception for event errors and register 
    it to be callable from C code. *)
@@ -300,6 +300,7 @@ external set_keyboard_event_func : keyboard_event_func -> unit = "sdlevent_set_k
 external set_mouse_event_func : mouse_event_func -> unit = "sdlevent_set_mouse_event_func";;
 external set_mousemotion_event_func : mousemotion_event_func -> unit = "sdlevent_set_mousemotion_event_func";;
 external set_idle_event_func : idle_event_func -> unit = "sdlevent_set_idle_event_func";;
+external set_resize_event_func : (int -> int -> unit) -> unit = "sdlevent_set_resize_event_func";;
 
 external is_key_pressed : key -> bool = "sdlevent_is_key_pressed";;
 external is_button_pressed : button -> bool = "sdlevent_is_button_pressed";;

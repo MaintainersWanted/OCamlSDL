@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.14 2002/07/13 15:19:56 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.15 2002/09/02 13:09:43 smkl Exp $ */
 
 #include <assert.h>
 #include <caml/alloc.h>
@@ -48,6 +48,7 @@ static value keyboard_event_func;
 static value mouse_event_func;
 static value mousemotion_event_func;
 static value idle_event_func;
+static value resize_event_func;
 
 /* This array is used for passing arguments to OCaml callbacks */
 static value func_args[MAX_FUNC_ARGS];
@@ -394,6 +395,14 @@ treat_mousemotion_event (SDL_MouseMotionEvent *event)
   }
 }
 
+static void
+treat_resize_event (SDL_ResizeEvent *event)
+{
+  if (resize_event_func != Val_unit) {
+    callback2(resize_event_func, Val_int(event->w), Val_int(event->h));
+  }
+}
+
 static void treat_idle_event (void)
 {
   if (idle_event_func != Val_unit) {
@@ -428,6 +437,7 @@ sdlevent_stub_init (void)
   register_global_root(&mouse_event_func);
   register_global_root(&mousemotion_event_func);
   register_global_root(&idle_event_func);
+  register_global_root(&resize_event_func);
   
   for(i = 0; i < MAX_FUNC_ARGS; i++) {
     register_global_root(func_args + i);
@@ -466,6 +476,7 @@ sdlevent_stub_kill (void)
   remove_global_root(&mouse_event_func);
   remove_global_root(&mousemotion_event_func);
   remove_global_root(&idle_event_func);
+  remove_global_root(&resize_event_func);
 
   for(i = 0; i < MAX_FUNC_ARGS; i++) {
     remove_global_root(func_args + i);
@@ -501,6 +512,13 @@ value
 sdlevent_set_idle_event_func (value func)
 {
   idle_event_func = func;
+  return Val_unit;
+}
+
+value
+sdlevent_set_resize_event_func (value func)
+{
+  resize_event_func = func;
   return Val_unit;
 }
 
@@ -572,6 +590,10 @@ sdlevent_start_event_loop (void)
 
 	case SDL_MOUSEMOTION:
 	  treat_mousemotion_event(&(event.motion));
+	  break;
+
+	case SDL_VIDEORESIZE:
+	  treat_resize_event(&(event.resize));
 	  break;
 
 	default:
