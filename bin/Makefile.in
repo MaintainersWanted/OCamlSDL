@@ -17,27 +17,22 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.3 2001/05/09 17:02:45 xtrm Exp $
+# $Id: Makefile.in,v 1.1 2001/05/09 17:02:45 xtrm Exp $
 
-INSTALL_DIR=@prefix@/lib/ocaml/sdl
+INST_BIN_DIR=@prefix@/bin
+SCRIPT_TOPLEVEL=ocamlsdl
 
 install:
-	mkdir -p $(INSTALL_DIR)
-	@INSTALL_DATA@ *.mli *.cm[ia] *.cmx[a] *.a $(INSTALL_DIR)
-	@INSTALL@ -m 755 toplevel $(INSTALL_DIR)
+	mkdir -p $(INST_BIN_DIR)
+	$(INSTALL) -m 755 $(SCRIPT_TOPLEVEL) $(INST_BIN_DIR)
 
 uninstall:
-	@rm $(INSTALL_DIR)/*.mli 
-	@rm $(INSTALL_DIR)/*.cm[ia] 
-	@rm $(INSTALL_DIR)/*.cmx[a] 
-	@rm $(INSTALL_DIR)/*.a 
-	@rm $(INSTALL_DIR)/toplevel
+	@rm $(INST_BIN_DIR)/$(SCRIPT_TOPLEVEL)
 
 clean:
-	@rm -f *~ *.mli *.cm[ia] *.cmx[a] *.a toplevel
+	@rm -f $(SCRIPT_TOPLEVEL)
 
 distclean: clean
-	@rm -f Makefile
+	@rm -f Makefile $(SCRIPT_TOPLEVEL)
 
 include ../makefile.toplevel
-
