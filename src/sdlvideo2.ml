@@ -293,3 +293,8 @@ external gl_set_attr : gl_attr list -> unit
 
 external gl_get_attr : unit -> gl_attr list
     = "ml_SDL_GL_GetAttribute"
+
+external get_pixel : surface -> x:int -> y:int -> color
+    = "ml_SDL_get_pixel"
+external put_pixel : surface -> x:int -> y:int -> color -> unit
+    = "ml_SDL_put_pixel"

@@ -19,7 +19,7 @@
 
 (** Module for video manipulations *)
 
-(* $Id: sdlvideo2.mli,v 1.9 2002/10/04 00:07:17 oliv__a Exp $ *)
+(* $Id: sdlvideo2.mli,v 1.10 2002/10/24 00:38:12 oliv__a Exp $ *)
 
 open Bigarray
 
@@ -304,6 +304,15 @@ external get_RGBA : surface -> int32 -> color * int
 (** Maps a pixel value into the RGBA components for a given pixel format *
   @return RGB color and alpha value *)
 
+external get_pixel : surface -> x:int -> y:int -> color
+    = "ml_SDL_get_pixel"
+(** Access an individual pixel on a surface and returns is as a [color].
+   The surface may have to be locked before access. *)
+
+external put_pixel : surface -> x:int -> y:int -> color -> unit
+    = "ml_SDL_put_pixel"
+(** Sets an individual pixel on a surface.
+   The surface may have to be locked before access. *)
 
 
 (** {1 Creating RGB surface} *)

@@ -782,3 +782,78 @@ value ml_SDL_GL_GetAttribute(value unit)
   }
   CAMLreturn(v);
 }
+
+/*
+ * get/put_pixel functions
+ * stolen from http://sdldoc.csn.ul.ie/guidevideo.php
+ */
+
+Uint32 getpixel(SDL_Surface *surface, int x, int y)
+{
+    int bpp = surface->format->BytesPerPixel;
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch(bpp) {
+    case 1: return *p;
+    case 2: return *(Uint16 *)p;
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            return p[0] << 16 | p[1] << 8 | p[2];
+        else
+            return p[0] | p[1] << 8 | p[2] << 16;
+    case 4: return *(Uint32 *)p;
+    default: 
+      return 0;       /* shouldn't happen, but avoids warnings */
+    }
+}
+
+void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
+{
+    int bpp = surface->format->BytesPerPixel;
+    Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch(bpp) {
+    case 1: *p = pixel; 
+      break;
+    case 2: *(Uint16 *)p = pixel;
+      break;
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+            p[0] = (pixel >> 16) & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = pixel & 0xff;
+        } else {
+            p[0] = pixel & 0xff;
+            p[1] = (pixel >> 8) & 0xff;
+            p[2] = (pixel >> 16) & 0xff;
+        }
+        break;
+    case 4: *(Uint32 *)p = pixel;
+      break;
+    }
+}
+
+value ml_SDL_get_pixel(value surf, value x, value y)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  Uint32 pixel = getpixel(s, Int_val(x), Int_val(y));
+  Uint8 r,g,b;
+  value v;
+  SDL_GetRGB(pixel, s->format, &r, &g, &b);
+  v = alloc_small(3, 0);
+  Field(v, 0) = Val_int(r);
+  Field(v, 1) = Val_int(g);
+  Field(v, 2) = Val_int(b);
+  return v;
+}
+
+value ml_SDL_put_pixel(value surf, value x, value y, value color)
+{
+  SDL_Surface *s = SDL_SURFACE(surf);
+  Uint32 pixel;
+  SDL_Color c;
+  SDLColor_of_value(&c, color);
+  pixel = SDL_MapRGB(s->format, c.r, c.g, c.b);
+  putpixel(s, Int_val(x), Int_val(y), pixel);
+  return Val_unit;
+}
