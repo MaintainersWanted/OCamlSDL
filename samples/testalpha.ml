@@ -99,7 +99,6 @@ let load_sprite ~screen filename =
   (* Convert sprite to video format *)
   dbug_msg "## converting to display format" ;
   let sprite' = Sdlvideo2.display_format sprite in
-  Sdlvideo2.free_surface sprite ;
 
   (* Create the background *)
   let { Sdlvideo2.w = w ; Sdlvideo2.h = h } =
@@ -110,7 +109,6 @@ let load_sprite ~screen filename =
 
   (* Convert background to video format *)
   let backing' = Sdlvideo2.display_format backing in
-  Sdlvideo2.free_surface backing ;
 
   let { Sdlvideo2.w = scr_w ; Sdlvideo2.h = scr_h } =
     Sdlvideo2.surface_info screen in
@@ -233,9 +231,7 @@ let main () =
   
   (* Alpha blending doesn't work well at 8-bit color *)
   let video_bpp = 
-    let info_fmt = 
-      Sdlvideo2.pixel_format_info
-	(Sdlvideo2.get_video_info ()).Sdlvideo2.vi_fmt in
+    let info_fmt = Sdlvideo2.get_video_info_format () in
     if info_fmt.Sdlvideo2.bits_pp > 8
     then info_fmt.Sdlvideo2.bits_pp
     else 16
@@ -346,11 +342,6 @@ let main () =
   with Exit -> () 
   end ;
   
-  dbug_msg "## freeing surfaces" ;
-  Sdlvideo2.free_surface light ;
-  Sdlvideo2.free_surface sprite ;
-  Sdlvideo2.free_surface backing ;
-
   if !flashes > 0
   then
     Printf.printf "%d alpha blits, ~%4.4f ms per blit\n"

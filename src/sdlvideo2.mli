@@ -19,7 +19,6 @@ type rect = {
 val rect : x:int -> y:int -> w:int -> h:int -> rect
 val copy_rect : rect -> rect
 
-type pixel_format
 type pixel_format_info = {
     palette  : bool ;
     bits_pp  : int ;
@@ -40,9 +39,6 @@ type pixel_format_info = {
     alpha    : int ;
   } 
 
-external pixel_format_info : pixel_format -> pixel_format_info
-    = "ml_pixelformat_info"
-
 type video_info = {
     hw_available : bool;	(** Hardware surfaces? *)
     wm_available : bool;	(** Window manager present? *)
@@ -54,13 +50,13 @@ type video_info = {
     blit_sw_alpha : bool;	(** Accelerated blits with alpha *)
     blit_fill : bool;		(** Accelerated color fill *)
     video_mem : int;		(** Total amount of video memory (Ko) *)
-    vi_fmt : pixel_format ;
   } 
 
 external get_video_info : unit -> video_info
     = "ml_SDL_GetVideoInfo"
 
-val get_video_info_format : unit -> pixel_format_info
+external get_video_info_format : unit -> pixel_format_info
+    = "ml_SDL_GetVideoInfo_format"
 
 external driver_name : unit -> string
     = "ml_SDL_VideoDriverName"
@@ -130,7 +126,6 @@ type surface_flags = [
 type surface
 type surface_info = {
     flags     : surface_flags list ;
-    fmt       : pixel_format ;
     w         : int ;
     h         : int ;
     pitch     : int ;
@@ -141,8 +136,9 @@ type surface_info = {
 external surface_info : surface -> surface_info
     = "ml_sdl_surface_info"
 
+external surface_format : surface -> pixel_format_info
+    = "ml_sdl_surface_info_format"
 val surface_dims   : surface -> int * int * int
-val surface_format : surface -> pixel_format_info
 val surface_flags  : surface -> surface_flags list
 val surface_bpp    : surface -> int
 
@@ -192,10 +188,10 @@ external create_RGB_surface :
   rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
     = "ml_SDL_CreateRGBSurface_bc" "ml_SDL_CreateRGBSurface"
 
-val create_RGB_surface_format : 
-  surface ->
+external create_RGB_surface_format : surface ->
   [ `SWSURFACE | `HWSURFACE | `ASYNCBLIT | `SRCCOLORKEY | `SRCALPHA ] list ->
   w:int -> h:int -> surface
+    = "ml_SDL_CreateRGBSurface_format"
 
 val create_RGB_surface_from_32 : 
   (int32, int32_elt, c_layout) Array1.t ->
@@ -213,9 +209,6 @@ val create_RGB_surface_from_8 :
   (int, int8_unsigned_elt, c_layout) Array1.t ->
   w:int -> h:int -> pitch:int ->
   rmask:int -> gmask:int -> bmask:int -> amask:int -> surface
-
-external free_surface : surface -> unit
-    = "ml_SDL_FreeSurface"
 
 external must_lock : surface -> bool
     = "ml_SDL_MustLock" "noalloc"

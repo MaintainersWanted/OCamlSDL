@@ -21,7 +21,6 @@ let rect ~x ~y ~w ~h =
 let copy_rect r =
   { r with r_x = r.r_x }
 
-type pixel_format
 type pixel_format_info = {
     palette  : bool ;
     bits_pp  : int ;
@@ -53,7 +52,6 @@ type video_info = {
     blit_sw_alpha : bool;	(** Accelerated blits with alpha *)
     blit_fill : bool;		(** Accelerated color fill *)
     video_mem : int;		(** Total amount of video memory (Ko) *)
-    vi_fmt : pixel_format ;
   } 
 
 type video_flag = [
@@ -70,14 +68,11 @@ type video_flag = [
   | `NOFRAME     (* Frame without titlebar *)
 ] 
 
-external pixel_format_info : pixel_format -> pixel_format_info
-    = "ml_pixelformat_info"
-
 external get_video_info : unit -> video_info
     = "ml_SDL_GetVideoInfo"
 
-let get_video_info_format () = 
-  pixel_format_info (get_video_info ()).vi_fmt
+external get_video_info_format : unit -> pixel_format_info
+    = "ml_SDL_GetVideoInfo_format"
 
 external driver_name : unit -> string
     = "ml_SDL_VideoDriverName"
@@ -105,7 +100,6 @@ type surface_flags = [
 type surface
 type surface_info = {
     flags     : surface_flags list ;
-    fmt       : pixel_format ;
     w         : int ;
     h         : int ;
     pitch     : int ;
@@ -121,8 +115,8 @@ let surface_dims s =
     surface_info s in
   (w, h, pitch)
 
-let surface_format s = 
-  pixel_format_info (surface_info s).fmt
+external surface_format : surface -> pixel_format_info
+    = "ml_sdl_surface_info_format"
 
 let surface_flags s =
   (surface_info s).flags
@@ -174,11 +168,10 @@ external create_RGB_surface :
   rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
     = "ml_SDL_CreateRGBSurface_bc" "ml_SDL_CreateRGBSurface"
 
-let create_RGB_surface_format surface flags ~w ~h =
-  let fmt = surface_format surface in
-  create_RGB_surface flags ~w ~h ~bpp:fmt.bits_pp
-    ~rmask:fmt.rmask ~gmask:fmt.gmask
-    ~bmask:fmt.bmask ~amask:fmt.amask
+external create_RGB_surface_format : surface ->
+  [ `SWSURFACE | `HWSURFACE | `ASYNCBLIT | `SRCCOLORKEY | `SRCALPHA ] list ->
+  w:int -> h:int -> surface
+    = "ml_SDL_CreateRGBSurface_format"
 
 external _create_RGB_surface_from : 
   ('a, 'b, c_layout) Array1.t ->
@@ -200,9 +193,6 @@ let create_RGB_surface_from_8  a ~w ~h ~pitch ~rmask ~gmask ~bmask ~amask =
   _create_RGB_surface_from a ~w ~h ~pitch ~bpp:8
     ~rmask:(Int32.of_int rmask) ~gmask:(Int32.of_int gmask)
     ~bmask:(Int32.of_int bmask) ~amask:(Int32.of_int amask)
-
-external free_surface : surface -> unit
-    = "ml_SDL_FreeSurface"
 
 external must_lock : surface -> bool
     = "ml_SDL_MustLock" "noalloc"
