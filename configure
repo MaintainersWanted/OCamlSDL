@@ -1163,14 +1163,14 @@ if test "$image_ok" = no; then
 fi
 LIBS="$LIBS -lSDL_image"
 
-echo $ac_n "checking for TTF_Init in -lSDLttf""... $ac_c" 1>&6
-echo "configure:1168: checking for TTF_Init in -lSDLttf" >&5
-ac_lib_var=`echo SDLttf'_'TTF_Init | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for TTF_Init in -lSDL_ttf""... $ac_c" 1>&6
+echo "configure:1168: checking for TTF_Init in -lSDL_ttf" >&5
+ac_lib_var=`echo SDL_ttf'_'TTF_Init | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
-LIBS="-lSDLttf  $LIBS"
+LIBS="-lSDL_ttf  $LIBS"
 cat > conftest.$ac_ext <<EOF
 #line 1176 "configure"
 #include "confdefs.h"
@@ -1207,7 +1207,7 @@ fi
 if test "$ttf_ok" = no; then
         { echo "configure: error: Cannot find SDL TTF library." 1>&2; exit 1; }
 fi
-LIBS="$LIBS -lSDLttf"
+LIBS="$LIBS -lSDL_ttf"
 
 echo $ac_n "checking for Mix_OpenAudio in -lSDL_mixer""... $ac_c" 1>&6
 echo "configure:1214: checking for Mix_OpenAudio in -lSDL_mixer" >&5

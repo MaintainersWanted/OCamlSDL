@@ -1,3 +1,8 @@
+2000-02-08  Frederic Brunel  <brunel@mail.dotcom.fr>
+
+	* sdlmixer_stub.c: Fixed bad return types in some functions 
+	(Val_int instead of Int_val).
+
 2000-01-31  Sami Mäkelä  <sajuma@utu.fi>
 
 	* NEW (sdlmixer): Interface to SDLmixer (untested)
