@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.23 2002/07/19 09:16:47 oliv__a Exp $ *)
+(* $Id: sdlvideo.ml,v 1.24 2002/07/24 19:03:57 xtrm Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -77,9 +77,9 @@ type video_flag = [
 
 external get_video_info : unit -> video_info = "sdlvideo_get_video_info";;
 external get_display_surface : unit -> surface = "sdlvideo_get_display_surface";;
-external set_display_mode : height:int -> width:int -> bpp:int -> surface = "sdlvideo_set_display_mode";;
+external set_display_mode : width:int -> height:int -> bpp:int -> surface = "sdlvideo_set_display_mode";;
 
-external video_mode_ok : int -> int -> int -> video_flag list -> bool = "sdlvideo_video_mode_ok"
+external video_mode_ok : width:int -> height:int -> bpp:int -> video_flag list -> bool = "sdlvideo_video_mode_ok"
 external set_video_mode : int -> int -> int -> video_flag list -> surface = "sdlvideo_set_video_mode"
 
 type common_video_flag = [
