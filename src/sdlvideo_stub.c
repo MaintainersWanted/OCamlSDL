@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.19 2001/05/11 13:58:17 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.20 2001/05/16 16:03:24 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -536,7 +536,7 @@ sdlvideo_surface_display_format(value surface)
 
    if (res == NULL)
      sdlvideo_raise_exception(SDL_GetError());
-   
+
    return ML_SURFACE(res);
 }
 

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.5 2000/05/05 09:45:56 xtrm Exp $ */
+/* $Id: sdlttf_stub.c,v 1.6 2001/05/16 16:03:24 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -25,14 +25,6 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 #include <stdio.h>
-
-#ifdef HAVE_FREETYPE_H
-#include <freetype.h>
-#endif
-
-#ifdef HAVE_FREETYPE_FREETYPE_H
-#include <freetype/freetype.h>
-#endif
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
@@ -110,36 +102,30 @@ sdlttf_render_text(value font, value text, value fg, value bg)
    sbg.r = Int_val(Field(bg,0));
    sbg.g = Int_val(Field(bg,1));
    sbg.b = Int_val(Field(bg,2));
-   surf = TTF_RenderText((TTF_Font *)font,&Byte(text,0), sfg, sbg);
+   surf = TTF_RenderText_Solid((TTF_Font *)font,&Byte(text,0), sfg);
+   SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
    }
    return (value)surf;
 }
 
-/* this code directly taken from sdl_ttf library, otherwise it is impossible
- to implement fast text using sdlttf */
-/* The structure used to hold internal font information */
-struct _TTF_Font {
-   TT_Face face;
-   TT_Instance inst;
-   TT_Glyph glyph;
-   TT_CharMap map;
-   TT_Raster_Map scratch;
-};
-
 value
 sdlttf_font_metrics(value fnt, value chr)
 {
-   int index;
-   TT_Glyph_Metrics metrics;
+   int minx;
+   int miny;
+   int maxx;
+   int maxy;
+   int advance;
    int c = Int_val(chr);
+   value result;
    TTF_Font *font = (TTF_Font *)fnt;
-   index = TT_Char_Index(font->map, c);
-   if (!TT_Load_Glyph(font->inst, font->glyph, index, TTLOAD_DEFAULT))
-     {
-	TT_Get_Glyph_Metrics(font->glyph, &metrics);
-	return Val_int(metrics.bearingY/64);
-     }
-   else return Val_int(0);
+   TTF_GlyphMetrics(font, c, &minx, &maxx, &miny, &maxy, &advance);
+   result = alloc(4, 0);
+   Store_field(result, 0, Val_int(minx));
+   Store_field(result, 0, Val_int(maxx));
+   Store_field(result, 0, Val_int(miny));
+   Store_field(result, 0, Val_int(maxy));
+   return result;
 }

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.4 2000/03/05 15:26:51 fbrunel Exp $ *)
+(* $Id: sdlttf.ml,v 1.5 2001/05/16 16:03:24 smkl Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -34,7 +34,7 @@ type font
 external open_font : string -> int -> font = "sdlttf_open_font"
 external close_font : font -> unit = "sdlttf_close_font"
 external font_height : font -> int = "sdlttf_font_height"
-external font_metrics : font -> int -> int = "sdlttf_font_metrics"
+external font_metrics : font -> int -> (int*int*int*int) = "sdlttf_font_metrics"
 external render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface = "sdlttf_render_text"
 
 let make_glyph font col str =
@@ -54,7 +54,8 @@ let make_printer font col =
   done;
   let blaa = Array.make 256 0 in
   for i = 1 to 255 do
-    blaa.(i) <- font_metrics font i
+    let minx, maxx, miny, maxy = font_metrics font i in
+    blaa.(i) <- miny
   done;
   let height = font_height font in
   let free_fonts () =
