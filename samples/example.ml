@@ -1,11 +1,11 @@
-(* $Id: example.ml,v 1.9 2002/03/26 16:30:49 xtrm Exp $ *)
+(* $Id: example.ml,v 1.10 2002/05/27 22:21:32 xtrm Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
 
 init [EVERYTHING];; (* init_with_auto_clean();; *)
 
-let screen = set_video_mode 640 480 16 [C(HWSURFACE);E(FULLSCREEN)];;
+let screen = set_video_mode 640 480 16 [HWSURFACE;FULLSCREEN];;
 let s = "OCamlSDL" ;;
 wm_set_caption s s;;
 
