@@ -216,7 +216,7 @@ external unlock : surface -> unit
 
 external load_BMP : string -> surface
     = "ml_SDL_LoadBMP"
-external save_BMP : string -> surface -> unit
+external save_BMP : surface -> string -> unit
     = "ml_SDL_SaveBMP"
 
 
