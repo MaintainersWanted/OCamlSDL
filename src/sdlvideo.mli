@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.20 2002/05/30 16:13:38 xtrm Exp $ *)
+(* $Id: sdlvideo.mli,v 1.21 2002/05/31 09:57:24 oliv__a Exp $ *)
 
 (* Exception *)
 
@@ -104,7 +104,7 @@ type common_video_flag = [
 external create_rgb_surface : common_video_flag list -> 
   width:int -> height:int -> bpp:int -> 
     rmask:int -> gmask:int -> bmask:int -> amask:int -> unit
-	= "sdlvideo_create_rgb_surface_bc" "sdlvideo_create_rgb_surface_bc"
+	= "sdlvideo_create_rgb_surface_bc" "sdlvideo_create_rgb_surface"
 (* [create_rgb_surface flags width height bpp rmask gmask bmask amask] *)
 
 val set_opengl_mode : int -> int -> int -> surface;; 
