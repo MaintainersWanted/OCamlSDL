@@ -1,2 +1,2 @@
 * To complete the interface of the main modules: video and events
-* To write a better makefile or another make process
+* Build the distribution with Autoconf and Automake.
