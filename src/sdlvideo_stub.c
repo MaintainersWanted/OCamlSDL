@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.31 2002/07/13 17:13:07 oliv__a Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.32 2002/07/19 09:16:47 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -651,13 +651,6 @@ sdlvideo_surface_get_pixel(value ml_surf, value x, value y)
    }
 
    CAMLreturn(ret);
-}
-
-value
-sdlvideo_surface_set_pixel_bytecode(value *argv, int argn)
-{
-  return sdlvideo_surface_set_pixel(argv[0], argv[1], argv[2],
-				    argv[3]);
 }
 
 value

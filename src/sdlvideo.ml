@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.22 2002/07/13 17:06:31 oliv__a Exp $ *)
+(* $Id: sdlvideo.ml,v 1.23 2002/07/19 09:16:47 oliv__a Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -129,7 +129,7 @@ external empty_surface : int -> int -> surface = "sdlvideo_empty_surface";;
 external surface_from_rawrgb : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgb";;
 external surface_from_rawrgba : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgba";;
 
-external surface_set_pixel : surface -> int -> int -> color -> unit = "sdlvideo_surface_set_pixel_bytecode" "sdlvideo_surface_set_pixel";;
+external surface_set_pixel : surface -> int -> int -> color -> unit = "sdlvideo_surface_set_pixel";;
 external surface_get_pixel : surface -> int -> int -> color = "sdlvideo_surface_get_pixel";;
 
 external unsafe_blit_buffer : surface -> string -> int -> unit = "sdlvideo_blit_raw_buffer";;
