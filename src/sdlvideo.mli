@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.11 2000/07/19 09:04:15 xtrm Exp $ *)
+(* $Id: sdlvideo.mli,v 1.12 2000/09/04 17:52:12 smkl Exp $ *)
 
 (* Exception *)
 
@@ -53,6 +53,9 @@ type video_info = {
     blit_fill : bool;		(* Accelerated color fill *)
     video_mem : int;		(* Total amount of video memory (Ko) *)
   } 
+
+type pixel_data =
+  (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
 (* Operations on display *)
 
@@ -104,6 +107,7 @@ val show_cursor : bool -> unit;;
 val must_lock : surface -> bool;;
 val lock_surface : surface -> unit;;
 val unlock_surface : surface -> unit;; 
+val surface_pixel_data : surface -> pixel_data;;
 
 (* DO NOT USE. EXPERIMENTAL *)
 

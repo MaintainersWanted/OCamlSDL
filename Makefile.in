@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.15 2000/06/23 09:29:43 xtrm Exp $
+# $Id: Makefile.in,v 1.16 2000/09/04 17:52:12 smkl Exp $
 
 CC = 		@CC@ 
 CFLAGS =	@CFLAGS@ @DEFS@ -Wall -D__DEBUG__ # -g -pg #-O3 -pipe -pedantic -m486 
@@ -29,7 +29,7 @@ MLFLAGS =
 OMLFLAGS =	-unsafe -inline 10 #-ccopt -pg -p
 
 CLIBS =		@LIBS@ @MATHLIB@
-MLLIBS =	-cclib "$(CLIBS)" 
+MLLIBS =	-cclib "$(CLIBS)"
 
 BIN_DIR =	bin
 LIB_DIR =	lib
@@ -68,14 +68,15 @@ libs: $(LIBRARY) $(OLIBRARY) $(CLIBRARY)
 test: $(TEST)
 
 $(TEST): $(CLIBRARY) $(OLIBRARY) $(TEST_OBJS)
-	$(CAMLOPT) $(MLLIBS) -cclib "-Llib/ -lstub" -o $@ $?
+	$(CAMLOPT) bigarray.cmxa $(MLLIBS) -cclib "-Llib/ -lstub" -o $@ $?
 #$(OLIBRARY) $(TEST_OBJS)
 
 $(TOPLEVEL): $(OBJS)
-	$(CAMLTOP) -custom -o $@ $(OBJS) $(MLLIBS)
+	$(CAMLTOP) -custom -o $@ bigarray.cma $(OBJS) $(MLLIBS)
 
 $(RUNTIME): $(OBJS)
 	$(CAMLC) -thread -custom -make_runtime -o $@ unix.cma threads.cma \
+	bigarray.cma\
 	$(OBJS) $(MLLIBS) -cclib -lunix -cclib -lthreads
 
 $(LIBRARY): $(CLIBRARY) $(ML_OBJS)

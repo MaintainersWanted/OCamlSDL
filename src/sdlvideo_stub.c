@@ -17,13 +17,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.14 2000/07/19 09:04:15 xtrm Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.15 2000/09/04 17:52:12 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
+#include <caml/bigarray.h>
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include "stub_shared.h"
@@ -538,6 +539,16 @@ value sdlvideo_unlock_surface(value s)
   return Val_unit;
 }
 
+
+value
+sdlvideo_surface_pixel_data(value surface)
+{
+   long dims[1];
+   SDL_Surface *surf = SDL_SURFACE(surface);
+   dims[0] = surf->h * surf->pitch;
+   return alloc_bigarray(BIGARRAY_UINT8 | BIGARRAY_C_LAYOUT,
+			 1, surf->pixels, dims);
+}
 
 /* EXPERIMENTAL */
 

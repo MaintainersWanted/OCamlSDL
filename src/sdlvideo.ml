@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.12 2000/07/19 09:04:15 xtrm Exp $ *)
+(* $Id: sdlvideo.ml,v 1.13 2000/09/04 17:52:12 smkl Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -55,6 +55,8 @@ type video_info = {
     blit_fill : bool;		(* Accelerated color fill *)
     video_mem : int;		(* Total amount of video memory (Ko) *)
   } 
+
+type pixel_data = (int, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
 (* Native C external functions *)
 
@@ -98,6 +100,7 @@ external show_cursor : bool -> unit = "sdlvideo_show_cursor";;
 external must_lock : surface -> bool = "sdlvideo_must_lock";;
 external lock_surface : surface -> unit = "sdlvideo_lock_surface";;
 external unlock_surface  : surface -> unit = "sdlvideo_unlock_surface";;
+external surface_pixel_data : surface -> pixel_data = "sdlvideo_surface_pixel_data";;
 
 external surface_final : unit -> surface = "sdlvideo_surface_final";;
 
