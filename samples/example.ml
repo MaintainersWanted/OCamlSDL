@@ -1,4 +1,4 @@
-(* $Id: example.ml,v 1.13 2002/09/24 22:34:54 oliv__a Exp $ *)
+(* $Id: example.ml,v 1.14 2002/09/30 21:19:53 oliv__a Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
@@ -51,7 +51,7 @@ let place_max_icons max delay =
   done;;
 
 let display_text f s fg =
-  let s_text = Sdlttf.render_text_blended f s ~fg in
+  let s_text = Sdlttf.render_text f (`BLENDED fg) s in
   random_placement s_text screen ;;
 
 let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
@@ -77,7 +77,7 @@ let f = Sdlttf.open_font "../fonts/Arial.ttf" 20;;
  display_text f ("Made with "^s)  black ;;
  Sdltimer.delay 5000 ;;
  
- Sdlttf.close_font f ;;
+ (* Sdlttf.close_font f ;; *)
 
  quit();;
 
