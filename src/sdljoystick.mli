@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdljoystick.mli,v 1.1 2002/08/08 12:34:35 oliv__a Exp $ *)
+(* $Id: sdljoystick.mli,v 1.2 2002/08/24 22:40:08 oliv__a Exp $ *)
 
 (** Module for SDL joystick event handling *)
 
@@ -65,6 +65,8 @@ external num_hats : t -> int = "ml_SDL_JoystickNumHats"
 (** Get the number of buttons on a joystick *)
 external num_buttons : t -> int = "ml_SDL_JoystickNumButtons"
 
+(** {1 Joystick state } *)
+
 (** Update the current state of the open joysticks.
    This is called automatically by the event loop if any joystick
    events are enabled. *)
@@ -78,6 +80,27 @@ external update : t -> unit = "ml_SDL_JoystickUpdate"
 
 external set_event_state : bool -> unit = "ml_SDL_JoystickSetEventState"
 external get_event_state : unit -> bool = "ml_SDL_JoystickGetEventState"
+
+type hat_value = int
+
+val hat_centered  : hat_value
+val hat_up        : hat_value
+val hat_right     : hat_value
+val hat_down      : hat_value
+val hat_left      : hat_value
+val hat_rightup   : hat_value
+val hat_rightdown : hat_value
+val hat_leftup    : hat_value
+val hat_leftdown  : hat_value
+
+external get_axis : t -> int -> int
+    = "ml_SDL_JoystickGetAxis"
+external get_hat  : t -> int -> hat_value
+    = "ml_SDL_JoystickGetHat"
+external get_ball : t -> int -> int * int
+    = "ml_SDL_JoystickGetBall"
+external get_button : t -> int -> bool
+    = "ml_SDL_JoystickGetButton"
 
 (** Close a joystick previously opened with {! Sdljoystick.open_joystick} *)
 external close : t -> unit = "ml_SDL_JoystickClose"

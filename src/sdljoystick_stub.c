@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdljoystick_stub.c,v 1.1 2002/08/08 12:34:35 oliv__a Exp $ */
+/* $Id: sdljoystick_stub.c,v 1.2 2002/08/24 22:40:08 oliv__a Exp $ */
 
 #include <caml/mlvalues.h>
 #include <caml/callback.h>
@@ -71,6 +71,19 @@ value ml_SDL_JoystickGetEventState(value unit)
   return Val_bool(SDL_JoystickEventState(SDL_QUERY));
 }
 
-/* TODO: SDL_JoystickGet Axis, Hat, Ball, Button */
+ML_2(SDL_JoystickGetAxis,   SDLJoystick_val, Int_val, Val_int)
+ML_2(SDL_JoystickGetHat,    SDLJoystick_val, Int_val, Val_int);
+ML_2(SDL_JoystickGetButton, SDLJoystick_val, Int_val, Val_bool);
+
+value ml_SDL_JoystickGetBall(value j, value ball)
+{
+  int dx, dy;
+  value v;
+  SDL_JoystickGetBall(SDLJoystick_val(j), Int_val(ball), &dx, &dy);
+  v = alloc_small(2, 0);
+  Field(v, 0) = Val_int(dx);
+  Field(v, 1) = Val_int(dy);
+  return v;
+}
 
 ML_1(SDL_JoystickClose, SDLJoystick_val, Unit)
