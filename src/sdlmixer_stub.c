@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.21 2002/09/07 01:06:10 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.22 2002/09/09 16:55:49 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -37,6 +37,12 @@
 #include "common.h"
 #include "sdlmixer_stub.h"
 
+#if ( __STDC_VERSION__ == 199901L )
+#define ___inline inline
+#else
+#define ___inline
+#endif
+     
 /*
  * memory management (custom locks)
  */

@@ -7,6 +7,8 @@ struct ml_sdl_surf_data {
   int freeable;
 };
 
+#if ( __STDC_VERSION__ == 199901L )
+
 static inline SDL_Surface *SDL_SURFACE(value v)
 {
   struct ml_sdl_surf_data *cb_data;
@@ -14,3 +16,5 @@ static inline SDL_Surface *SDL_SURFACE(value v)
     Data_custom_val(Field(v, 0)) : Data_custom_val(v);
   return cb_data->s;
 }
+
+#endif

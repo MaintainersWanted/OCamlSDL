@@ -107,11 +107,16 @@ static void sdlvideo_raise_exception (char *msg)
   raise_with_string(*video_exn, msg);
 }
 
+#if ( __STDC_VERSION__ == 199901L )
+#define ___inline inline
+#else
+#define ___inline
+#endif
 
 /*
  * some static conversion functions
  */
-static inline void SDLColor_of_value(SDL_Color *c, value v)
+static ___inline void SDLColor_of_value(SDL_Color *c, value v)
 {
   c->r = Int_val(Field(v, 0));
   c->g = Int_val(Field(v, 1));
@@ -128,7 +133,7 @@ static value value_of_Rect(SDL_Rect r)
   return v;
 }
 
-static inline void SDLRect_of_value(SDL_Rect *r, value v)
+static ___inline void SDLRect_of_value(SDL_Rect *r, value v)
 {
   r->x = Int_val(Field(v, 0));
   r->y = Int_val(Field(v, 1));
@@ -136,7 +141,7 @@ static inline void SDLRect_of_value(SDL_Rect *r, value v)
   r->h = Int_val(Field(v, 3));
 }
 
-static inline void update_value_from_SDLRect(value vr, SDL_Rect *r)
+static ___inline void update_value_from_SDLRect(value vr, SDL_Rect *r)
 {
   CAMLparam1(vr);
   Store_field(vr, 0, Val_int(r->x));
