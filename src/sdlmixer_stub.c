@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.28 2002/10/06 15:23:44 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.29 2002/11/11 17:06:19 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -484,7 +484,7 @@ convert_fading_status(Mix_Fading f)
       break;
     }
   
-  return Int_val(conv);
+  return Val_int(conv);
 }
 
 value
