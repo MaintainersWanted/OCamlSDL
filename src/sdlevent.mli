@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.11 2002/11/06 23:05:29 oliv__a Exp $ *)
+(* $Id: sdlevent.mli,v 1.12 2003/01/04 01:37:08 oliv__a Exp $ *)
 
 (** SDL event handling *)
 
@@ -105,7 +105,7 @@ type joyhat_event = {
   } 
 
 (** Joystick button event record *)
-type joybuton_event = {
+type joybutton_event = {
     jbe_which  : int ;            (** The joystick device index *)
     jbe_button : int ;            (** The joystick button index *)
     jbe_state  : switch_state ;   (** PRESSED or RELEASED *)
@@ -122,8 +122,8 @@ type event =
   | JOYAXISMOTION   of joyaxis_event     (** Joystick axis motion *)
   | JOYBALLMOTION   of joyball_event     (** Joystick trackball motion *)
   | JOYHATMOTION    of joyhat_event      (** Joystick hat position change *)
-  | JOYBUTTONDOWN   of joybuton_event    (** Joystick button pressed *)
-  | JOYBUTTONUP     of joybuton_event    (** Joystick button released *)
+  | JOYBUTTONDOWN   of joybutton_event   (** Joystick button pressed *)
+  | JOYBUTTONUP     of joybutton_event   (** Joystick button released *)
   | QUIT                                 (** User-requested quit *)
   | SYSWM                                (** System specific event *)
   | VIDEORESIZE     of int * int         (** User resized video mode *)

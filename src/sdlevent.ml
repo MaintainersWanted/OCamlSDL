@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.ml,v 1.9 2002/11/06 23:05:28 oliv__a Exp $ *)
+(* $Id: sdlevent.ml,v 1.10 2003/01/04 01:37:08 oliv__a Exp $ *)
 
 exception Event_exn of string
 let _ = 
@@ -84,7 +84,7 @@ type joyhat_event = {
     jhe_value : Sdljoystick.hat_value ;
   } 
 
-type joybuton_event = {
+type joybutton_event = {
     jbe_which  : int ;
     jbe_button : int ;
     jbe_state  : switch_state ;
@@ -100,8 +100,8 @@ type event =
   | JOYAXISMOTION   of joyaxis_event
   | JOYBALLMOTION   of joyball_event
   | JOYHATMOTION    of joyhat_event
-  | JOYBUTTONDOWN   of joybuton_event
-  | JOYBUTTONUP     of joybuton_event
+  | JOYBUTTONDOWN   of joybutton_event
+  | JOYBUTTONUP     of joybutton_event
   | QUIT
   | SYSWM
   | VIDEORESIZE     of int * int
