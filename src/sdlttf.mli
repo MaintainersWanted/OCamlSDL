@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.9 2002/08/09 15:39:22 oliv__a Exp $ *)
+(* $Id: sdlttf.mli,v 1.10 2002/08/14 14:32:35 oliv__a Exp $ *)
 
 (** This module provides TTF (TrueType Font) support *)
 
@@ -30,7 +30,7 @@ type font
 
 (** {1 General operations on font datatype} *)
 
-external open_font : string -> ?index:int -> int -> font = "sdlttf_open_font"
+val open_font : string -> ?index:int -> int -> font
 (** open a font file and create a font of the specified point size 
    @return font datatype 
 *)

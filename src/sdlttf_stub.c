@@ -17,14 +17,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.15 2002/08/09 15:39:22 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.16 2002/08/14 14:32:36 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
+
 #include <stdio.h>
+#include <error.h>
 
 #include <SDL_ttf.h>
 
@@ -39,8 +41,11 @@ static void
 sdlttf_raise_exception (char *msg)
 {
   static value *ttf_exn = NULL;
-  if(! ttf_exn)
+  if(! ttf_exn){
     ttf_exn = caml_named_value("SDLttf_exception");
+    if(! ttf_exn)
+      error(-1, 0, "exception not registered.");
+  } 
   raise_with_string(*ttf_exn, msg);
 }
 
