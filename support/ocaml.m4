@@ -7,12 +7,16 @@ dnl defines AC_PROG_OCAML that will check the OCaml compiler
 dnl and set the following variables :
 dnl   OCAMLC        "ocamlc" if present in the path, or a failure
 dnl                 or "ocamlc.opt" if present with same version number as ocamlc
-dnl   OCAMLOPT      "ocamlopt" (or "ocamlopt.opt" if present), or "no"
+dnl   OCAMLOPT      "ocamlopt" (or "ocamlopt.opt" if present), or unset
 dnl   OCAMLBEST     either "byte" if no native compiler was found, 
-dnl                 or "opt" otherwise
+dnl                 "opt" otherwise
 dnl   OCAMLDEP      "ocamldep"
 dnl   OCAMLLIB      the path to the ocaml standard library
 dnl   OCAMLVERSION  the ocaml version number
+dnl
+dnl   OCAMLMKTOP    
+dnl   OCAMLMKLIB    
+dnl   OCAMLDOC
 AC_DEFUN(AC_PROG_OCAML,
 [dnl
 # checking for ocamlc
@@ -67,6 +71,13 @@ AC_CHECK_PROG(OCAMLMKLIB,ocamlmklib,ocamlmklib, AC_MSG_WARN(Cannot find ocamlmkl
 # checking for ocamldoc
 AC_CHECK_PROG(OCAMLDOC,ocamldoc,ocamldoc, AC_MSG_WARN(Cannot find ocamldoc.))
 
+# get the C compiler used by ocamlc
+if test -z "$CC" ; then
+  touch ac_ocaml_tmp.c
+  CC=$(ocamlc -verbose -c ac_ocaml_tmp.c 2>&1 | sed ['s/^+ \([^ ]*\) .*$/\1/'])
+  rm -f ac_ocaml_tmp.c ac_ocaml_tmp.o
+  echo OCaml uses $CC to compile C files
+fi
 
 AC_SUBST(OCAMLC)
 AC_SUBST(OCAMLOPT)
@@ -75,6 +86,7 @@ AC_SUBST(OCAMLBEST)
 AC_SUBST(OCAMLVERSION)
 AC_SUBST(OCAMLLIB)
 AC_SUBST(OCAMLMKLIB)
+AC_SUBST(OCAMLMKTOP)
 AC_SUBST(OCAMLDOC)
 ])
 dnl
@@ -129,7 +141,7 @@ if test "$use_findlib" ; then
 	AC_CHECK_PROG(OCAMLFIND,ocamlfind,ocamlfind,
 	  AC_MSG_ERROR(ocamlfind not found))
 else
-	OCAMLFIND=""
+	unset OCAMLFIND
 fi
 AC_SUBST(OCAMLFIND)
 ])
@@ -137,7 +149,7 @@ dnl
 dnl
 dnl
 dnl AC_CHECK_OCAML_PKG checks wether a findlib package is present
-dnl   defines pkg_name to "yes"
+dnl   defines pkg_name to name
 AC_DEFUN(AC_CHECK_OCAML_PKG,
 [dnl
 AC_REQUIRE([AC_PROG_FINDLIB])
@@ -145,10 +157,10 @@ if test "$use_findlib" ; then
 	AC_MSG_CHECKING(findlib package $1)
 	if $OCAMLFIND query $1 >/dev/null 2>/dev/null; then
 	AC_MSG_RESULT(found)
-	pkg_$1="yes"
+	pkg_$1="$1"
 	else
 	AC_MSG_WARN(not found)
-	pkg_$1="no"
+	unset pkg_$1
 	fi
 fi
 ])

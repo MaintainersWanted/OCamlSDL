@@ -2,14 +2,16 @@ dnl ****** -*- m4 -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.30 2002/12/11 23:13:12 oliv__a Exp $
+dnl $Id: configure.in,v 1.31 2003/02/13 21:22:25 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
-AC_PREFIX_DEFAULT(/usr/local)
 
 AC_CONFIG_AUX_DIR(./support)
 AC_CONFIG_HEADER(src/config.h)
+
+# Check for OCaml programs 
+AC_PROG_OCAML()
 
 dnl -*- Check for programs -*-
 if test -z "$CFLAGS" ; then
@@ -20,19 +22,15 @@ AC_C_INLINE
 if test "$ac_cv_c_inline" != no ; then
   AC_DEFINE(HAVE_INLINE)
 fi
+
 AC_PROG_INSTALL
 
-AC_CANONICAL_HOST
-AC_CANONICAL_TARGET
-
 # Check for cygwin system
-case $target in
+AC_CANONICAL_HOST
+case $host in
  *-*-cygwin* )  CYGWIN=y ;;
 esac
 AC_SUBST(CYGWIN)
-
-# Check for OCaml programs 
-AC_PROG_OCAML()
 
 dnl -*- Checking for lablGL -*-
 AC_ARG_WITH(lablgldir,[  --with-lablgldir=DIR	  specify location of lablgl],LABLGLDIR="$withval")
@@ -75,9 +73,6 @@ AM_PATH_SDL($SDL_VERSION,
 
 LIBS="$LIBS $SDL_LIBS"
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
-
-dnl Checking SDL headers
-AC_CHECK_HEADER(SDL.h,, AC_MSG_ERROR(Cannot find headers of SDL.h.))
 
 dnl  cmdline options 
 AC_ARG_ENABLE(sdl_ttf,
