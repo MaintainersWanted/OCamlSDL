@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.c,v 1.5 2002/07/13 17:13:07 oliv__a Exp $ */
+/* $Id: common.c,v 1.6 2002/07/31 09:49:19 oliv__a Exp $ */
 
 
 #include <caml/mlvalues.h>
@@ -50,7 +50,7 @@ value cons(value x,value l)
 
    taken from LablGTK
 */
-value ml_lookup_from_c (lookup_info *table, int data)
+value mlsdl_lookup_from_c (lookup_info *table, int data)
 {
     int i;
     for (i = table[0].data; i > 0; i--)
@@ -58,7 +58,7 @@ value ml_lookup_from_c (lookup_info *table, int data)
     invalid_argument ("ml_lookup_from_c");
 }
     
-int ml_lookup_to_c (lookup_info *table, value key)
+int mlsdl_lookup_to_c (lookup_info *table, value key)
 {
     int first = 1, last = table[0].data, current;
 

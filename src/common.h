@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.5 2002/07/13 17:13:07 oliv__a Exp $ */
+/* $Id: common.h,v 1.6 2002/07/31 09:49:19 oliv__a Exp $ */
 
 #ifndef __COMMON_H__
 #define __COMMON_H__
@@ -46,8 +46,8 @@ extern value cons(value x,value l);
    taken from LablGTK
 */
 typedef struct { value key; int data; } lookup_info;
-value ml_lookup_from_c (lookup_info *table, int data);
-int ml_lookup_to_c (lookup_info *table, value key);
+value mlsdl_lookup_from_c (lookup_info *table, int data);
+int mlsdl_lookup_to_c (lookup_info *table, value key);
 
 
 /*
@@ -58,6 +58,8 @@ extern value abstract_ptr(void *);
 /*
    Optional arguments
 */
+#define Val_none Val_unit
+#define Unopt(v) Field((v), 0)
 #define Opt_arg(v, conv, def) (Is_block(v) ? conv(Field((v),0)) : (def))
 
 #endif /* __COMMON_H__ */

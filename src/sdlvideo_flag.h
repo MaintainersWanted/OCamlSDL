@@ -14,5 +14,5 @@
 #define MLTAG_NOFRAME	Val_int(-970104788)
 
 extern lookup_info ml_table_video_flag[];
-#define Val_video_flag(data) ml_lookup_from_c (ml_table_video_flag, data)
-#define Video_flag_val(key) ml_lookup_to_c (ml_table_video_flag, key)
+#define Val_video_flag(data) mlsdl_lookup_from_c (ml_table_video_flag, data)
+#define Video_flag_val(key) mlsdl_lookup_to_c (ml_table_video_flag, key)
