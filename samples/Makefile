@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.4 2002/08/28 13:38:14 xtrm Exp $
+# $Id: Makefile,v 1.5 2002/08/28 15:15:57 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -34,7 +34,7 @@ all: $(addsuffix .test,$(SAMPLES))
 opt: $(addsuffix .opt,$(SAMPLES))
 
 %.test : %.cmo
-	$(CAMLC) -o $@ -I $(LIB_DIR) bigarray.cma sdl.cma $<
+	$(CAMLC) -o $@ -I $(LIB_DIR) -dllpath $(LIB_DIR) bigarray.cma sdl.cma $<
 
 %.opt : %.cmx
 	$(CAMLOPT) -o $@ -I $(LIB_DIR) bigarray.cmxa sdl.cmxa $<
