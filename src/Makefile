@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.7 2002/08/08 16:32:14 xtrm Exp $
+# $Id: Makefile,v 1.8 2002/08/09 08:33:18 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -35,7 +35,6 @@ ML_OBJS	=	$(ML_SRCS:.ml=.cmo)
 OPT_OBJS=	$(ML_SRCS:.ml=.cmx)
 MLI	=	$(ML_SRCS:.ml=.mli)
 CMI	=	$(ML_SRCS:.ml=.cmi)
-HTML	=	$(ML_SRCS:.ml=.html)
 
 TOPLEVEL = 	toplevel
 LIBRARY = 	sdl.cma
@@ -43,18 +42,18 @@ OLIBRARY = 	sdl.cmxa
 CLIBRARY = 	libsdlstub.a 
 
 
-CAMLDOCFLAGS=-I . -d ../doc 
-
-
 all: libs bin
 
 bin:  $(TOPLEVEL)
 libs:: $(LIBRARY) $(CLIBRARY) 
 
-doc: all $(HTML)
-
-%.html : %.mli
-	$(CAMLDOC) $(CAMLDOCFLAGS) -html $< 
+ifdef CAMLDOC
+doc : ../doc/index.html
+../doc/index.html : $(MLI)
+	$(CAMLDOC) -d ../doc -html -v -t ocamlsdl $^
+else
+doc : $(error "you need ocamldoc to generate the documentation")
+endif
 
 $(TOPLEVEL): $(LIBRARY) $(CLIBRARY)
 	$(CAMLTOP) -custom -I . -o $@ bigarray.cma $(LIBRARY)
@@ -121,7 +120,7 @@ depend: .depend .depend.c
 	@echo "making C deps..."
 	@$(CC) $(CPPFLAGS) -I $(CAMLLIBDIR) -MM $^ > $@
 
-.PHONY: all bin libs clean distclean depend install uninstall
+.PHONY: all bin doc libs clean distclean depend install uninstall
 
 -include .depend
 -include .depend.c
