@@ -1,5 +1,5 @@
 
-HOWTO use ocamlsdl with the Mingw port of OCaml
+HOWTO use ocamlsdl with the Mingw port of OCaml and the Cygwin environment
 
 
 1. Get Cygwin/Mingw. Get the development packages, namely gcc and gcc-mingw.

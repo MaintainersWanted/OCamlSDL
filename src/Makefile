@@ -1,3 +1,4 @@
+VERSION := 0.7.1
 
 include ../makefile.platform
 include ../makefile.config.$(OCAML_C_BACKEND)
@@ -90,10 +91,10 @@ CMI = $(patsubst %.mli,%.cmi,$(MLI))
 doc : ../doc/html/index.html ../doc/ocamlsdl.texi
 ../doc/html/index.html : $(CMI)
 	mkdir -p ../doc/html
-	$(OCAMLDOC) -d ../doc/html -html -v -t ocamlsdl $(LABLGLINC) $(MLI)
+	$(OCAMLDOC) -d ../doc/html -html -v -t 'OCamlSDL $(VERSION)' $(LABLGLINC) $(MLI)
 ../doc/ocamlsdl.texi : $(CMI)
 	mkdir -p ../doc
-	$(OCAMLDOC) -d ../doc -texi -v -o $@ -t ocamlsdl $(LABLGLINC) $(MLI)
+	$(OCAMLDOC) -d ../doc -texi -v -o $@ -t 'OCamlSDL $(VERSION)' $(LABLGLINC) $(MLI)
 else
 doc : ; $(error "you need ocamldoc to generate the documentation")
 endif
@@ -111,7 +112,7 @@ depend: .depend .depend.c
 ifeq ($(OCAML_C_BACKEND),gcc)
 .depend_c : $(wildcard *.c)
 	@echo "making C deps..."
-	$(CC) $(patsubst -I%,-isystem %,$(CPPFLAGS)) -isystem $(OCAMLLIBDIR) -MM $^ > $@
+	@$(CC) $(patsubst -I%,-isystem %,$(CPPFLAGS)) -isystem $(OCAMLLIBDIR) -MM $^ > $@
 -include .depend_c
 else
 include .depend_c
