@@ -71,26 +71,14 @@ AC_SUBST(MATHLIB)
 
 dnl Check for header files
 
-dnl freetype support..
+dnl -*- png devel support.. -*- 
+AC_CHECK_HEADERS(png.h, have_png="true", have_png="false")
 
+dnl -*- freetype devel support.. -*-
 AC_CHECK_HEADERS(freetype.h, have_freetype="true", have_freetype="false")
-
 if test "$have_freetype" = "false"; then
   AC_CHECK_HEADERS(freetype/freetype.h, have_freetype2="true", 
                     have_freetype2="false")
-fi
-
-
-if test "$have_freetype" = "true" || test "$have_freetype2" = "true" ; then
-AC_CHECK_LIB(SDL_ttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
-fi
-
-if test "$have_freetype" = "true" || test "$have_freetype2" = "true"; then
-  LIBS="$LIBS -lSDL_ttf"
-else
-  echo "WARNING: You don't have FreeType installed."
-  echo "you need FreeType.  Get the latest stable version at: "
-  echo "http://www.freetype.org/download.htm"
 fi
 
 dnl Check for typedefs
@@ -98,12 +86,31 @@ dnl Check for structures
 dnl Check for compiler characteristics
 dnl Check for library functions
 
-AC_CHECK_LIB(png, png_read_image, png_ok=yes, png_ok=no, -lz -lm)
-if test "$png_ok" = no; then
-        AC_MSG_ERROR(Cannot find libpng.)
+dnl -*- png stuff -*-
+if test "$have_png" = "true" ; then
+  AC_CHECK_LIB(png, png_read_image, png_ok=yes, png_ok=no, -lz -lm)
+  if test "$png_ok" = no; then
+  	AC_MSG_ERROR(Cannot find libpng.)
+  fi
+  LIBS="$LIBS -lpng -lz"
+else
+  echo "WARNING: You don't have png developpement support installed."
 fi
-LIBS="$LIBS -lpng -lz"
 
+dnl -*- Freetype stuff -*- 
+if test "$have_freetype" = "true" || test "$have_freetype2" = "true" ; then
+  AC_CHECK_LIB(SDL_ttf, TTF_Init, ttf_ok=yes, ttf_ok=no)
+  if test "$ttf_ok" = no; then
+    AC_MSG_ERROR(Cannot find SDL ttf.)
+  fi
+  LIBS="$LIBS -lSDL_ttf"
+else
+  echo "WARNING: You don't have FreeType installed."
+  echo "you need FreeType.  Get the latest stable version at: "
+  echo "http://www.freetype.org/download.htm"
+fi
+
+dnl -*- sdl Image stuff -*-
 AC_CHECK_LIB(SDL_image, IMG_Load_RW, image_ok=yes, image_ok=no)
 if test "$image_ok" = no; then
         AC_MSG_ERROR(Cannot find SDL image library.)
