@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.6 2001/05/16 16:03:24 smkl Exp $ */
+/* $Id: sdlttf_stub.c,v 1.7 2002/04/04 16:44:29 xtrm Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -102,7 +102,7 @@ sdlttf_render_text(value font, value text, value fg, value bg)
    sbg.r = Int_val(Field(bg,0));
    sbg.g = Int_val(Field(bg,1));
    sbg.b = Int_val(Field(bg,2));
-   surf = TTF_RenderText_Solid((TTF_Font *)font,&Byte(text,0), sfg);
+   surf = TTF_RenderText_Shaded((TTF_Font *)font,&Byte(text,0), sfg, sbg);
    SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
    if (surf == NULL) {
       sdlttf_raise_exception(SDL_GetError());
