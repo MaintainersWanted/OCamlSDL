@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent2.mli,v 1.1 2002/08/26 12:28:34 oliv__a Exp $ *)
+(* $Id: sdlevent2.mli,v 1.2 2002/08/27 09:53:39 oliv__a Exp $ *)
 
 
 exception Event_exn of string
@@ -26,6 +26,9 @@ type active_state =
   | MOUSEFOCUS
   | INPUTFOCUS
   | ACTIVE
+
+external get_app_state : unit -> active_state list
+    = "mlsdlevent_get_app_state"
 
 type active_event = {
     gain     : bool ;
@@ -85,11 +88,6 @@ type joybuton_event = {
     jbe_state  : switch_state ;
   } 
 
-type resize_event = {
-    re_w : int ;
-    re_h : int ;
-  } 
-
 type event = 
   | ACTIVE          of active_event
   | KEYDOWN         of keyboard_event
@@ -104,7 +102,7 @@ type event =
   | JOYBUTTONUP     of joybuton_event
   | QUIT
   | SYSWM
-  | VIDEORESIZE     of resize_event
+  | VIDEORESIZE     of int * int
   | VIDEOEXPOSE
   | USER            of int
 

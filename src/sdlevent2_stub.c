@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent2_stub.c,v 1.2 2002/08/26 16:07:59 xtrm Exp $ */
+/* $Id: sdlevent2_stub.c,v 1.3 2002/08/27 09:53:39 oliv__a Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -186,11 +186,9 @@ static value value_of_SDLEvent(SDL_Event evt)
     v = Val_int(1);
     break;
   case SDL_VIDEORESIZE :
-    r = alloc_small(2, 0);
-    Field(r, 0) = Val_int(evt.resize.w);
-    Field(r, 1) = Val_int(evt.resize.h);
-    v = alloc_small(1, 11);
-    Field(v, 0) = r;
+    v = alloc_small(2, 11);
+    Field(v, 0) = Val_int(evt.resize.w);
+    Field(v, 1) = Val_int(evt.resize.h);
     break;
   case SDL_VIDEOEXPOSE :
     v = Val_int(2);
@@ -199,6 +197,9 @@ static value value_of_SDLEvent(SDL_Event evt)
     v = alloc_small(1, 12);
     Field(v, 0) = Val_int(evt.user.code);
     break;
+  default : 
+    /* unknown event ? -> raise an exception */
+    raise_event_exn("unknown event");
   }
   CAMLreturn(v);
 }
@@ -213,7 +214,7 @@ static SDL_Event SDLEvent_of_value(value e)
     case 1:
       goto invalid;
     case 2:
-      evt.type = SDL_VIDEOEXPOSE; break ;
+      evt.type = SDL_VIDEOEXPOSE; break;
     default:
       abort();
     }
@@ -280,8 +281,8 @@ static SDL_Event SDLEvent_of_value(value e)
       break;
     case 11:
       evt.type = SDL_VIDEORESIZE ;
-      evt.resize.w = Int_val(Field(r, 0));
-      evt.resize.h = Int_val(Field(r, 1));
+      evt.resize.w = Int_val(Field(e, 0));
+      evt.resize.h = Int_val(Field(e, 1));
       break;
     case 12:
       evt.type = SDL_USEREVENT ;
