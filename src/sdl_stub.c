@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.12 2002/08/08 12:32:32 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.13 2002/09/25 09:12:23 oliv__a Exp $ */
 
 #include <caml/callback.h>
 #include <caml/alloc.h>
@@ -28,15 +28,11 @@
 #include <SDL.h>
 
 
+#include "config.h"
 #include "common.h"
 
 
-#include "sdlcdrom_stub.h"
 #include "sdlevent_stub.h"
-#include "sdltimer_stub.h"
-#include "sdlvideo_stub.h"
-#include "sdlttf_stub.h"
-#include "sdlmixer_stub.h"
 
 /*
  * Local functions
@@ -49,16 +45,7 @@ static void sdl_internal_quit (void)
   SDL_Quit();
 
   /* Shut down all stubs */
-  sdlcdrom_stub_kill();
   sdlevent_stub_kill();
-  sdltimer_stub_kill();
-  sdlvideo_stub_kill();
-#ifdef HAVE_SDL_TTF_H
-  sdlttf_stub_kill();
-#endif
-#ifdef HAVE_SDL_MIXER_H
-  sdlmixer_stub_kill();
-#endif
 }
 
 /*
@@ -97,16 +84,7 @@ sdl_init(value auto_clean, value vf)
 		      SDL_GetError());
 
   /* Initialize all stubs */
-  sdlcdrom_stub_init();
   sdlevent_stub_init();
-  sdltimer_stub_init();
-  sdlvideo_stub_init();
-#ifdef HAVE_SDL_TTF_H
-  sdlttf_stub_init();
-#endif
-#ifdef HAVE_SDL_MIXER_H
-  sdlmixer_stub_init();
-#endif
 
   if(clean)
     atexit(sdl_internal_quit);
