@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.8 2000/01/31 20:09:06 smkl Exp $ *)
+(* $Id: sdlvideo.ml,v 1.9 2000/03/05 15:21:52 fbrunel Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -31,15 +31,17 @@ type rect =
     RectMax
   | Rect of int * int * int * int
 
+type color = 
+    IntColor of int * int * int
+  | FloatColor of float * float * float
+
 type pixels =
-   Pixels of string * int * int
- | APixels of string * int * int
- | RGBPixels of (int * int * int) array array
- | Buffer of int * int
+    Pixels of string * int * int
+  | APixels of string * int * int
+  | RGBPixels of color array array
+  | Buffer of int * int
 
 type surface
-type pixel_format
-type color = int
 
 type video_info = {
     hw_available : bool;	(* Hardware surfaces? *)
@@ -67,12 +69,9 @@ external surface_loadBMP : string -> surface = "sdlvideo_surface_loadBMP";;
 external surface_saveBMP : surface -> string -> unit = "sdlvideo_surface_saveBMP";;
 external surface_width : surface -> int = "sdlvideo_surface_width";;
 external surface_height : surface -> int = "sdlvideo_surface_height";;
-external surface_pixel_format : surface -> pixel_format = "sdlvideo_surface_pixel_format";;
 external surface_fill_rect : surface -> rect -> color -> surface = "sdlvideo_surface_fill_rect";;
 external surface_blit : surface -> rect -> surface -> rect -> unit = "sdlvideo_surface_blit";;
 external surface_set_alpha : surface -> float -> surface = "sdlvideo_surface_set_alpha";;
-
-external make_rgb_color : pixel_format -> float -> float -> float -> color = "sdlvideo_make_rgb_color";;
 
 external wm_available : unit -> bool = "sdlvideo_wm_available";;
 
@@ -83,12 +82,41 @@ external empty_surface : int -> int -> surface = "sdlvideo_empty_surface";;
 external surface_from_rawrgb : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgb";;
 external surface_from_rawrgba : string -> int -> int -> surface = "sdlvideo_surface_from_rawrgba";;
 
-external surface_set_pixel : surface -> int -> int -> int -> int -> int -> unit = "sdlvideo_surface_set_pixel_bytecode" "sdlvideo_surface_set_pixel";;
-external surface_get_pixel : surface -> int -> int -> (int * int * int) = "sdlvideo_surface_get_pixel";;
+external surface_set_pixel : surface -> int -> int -> color -> unit = "sdlvideo_surface_set_pixel_bytecode" "sdlvideo_surface_set_pixel";;
+external surface_get_pixel : surface -> int -> int -> color = "sdlvideo_surface_get_pixel";;
 
 external unsafe_blit_buffer : surface -> string -> int -> unit = "sdlvideo_blit_raw_buffer";;
 
+external surface_final : unit -> surface = "sdlvideo_surface_final";;
+
 (* ML functions *)
+
+let bound_int_comp c =
+  if c < 0 then 0
+  else if c > 255 then 255
+  else c;;
+
+let bound_float_comp c =
+  if c < 0.0 then 0.0
+  else if c > 1.0 then 1.0
+  else c;;
+
+let color_of_int (r, g, b) = 
+  IntColor(bound_int_comp r,
+	   bound_int_comp g,
+	   bound_int_comp b);;
+  
+let color_of_float (r, g, b) = 
+  FloatColor(bound_float_comp r,
+	     bound_float_comp g,
+	     bound_float_comp b);;
+
+let rgb_vector_of_color color =
+  match color with
+    IntColor(r, g, b) -> (bound_int_comp r, bound_int_comp g, bound_int_comp b)
+  | FloatColor(r, g, b) -> (bound_int_comp (int_of_float (r *. 255.0)), 
+			    bound_int_comp (int_of_float (g *. 255.0)), 
+			    bound_int_comp (int_of_float (b *. 255.0)));;
 
 let surface_rect surf =
   Rect(0, 0, surface_width surf, surface_height surf);;
@@ -96,14 +124,14 @@ let surface_rect surf =
 let surface_from_pixels = function
     RGBPixels mat ->
       let w = Array.length mat and h = Array.length mat.(0) in
-      let str = String.create (w*h*3) in
+      let str = String.create (w * h * 3) in
       for i = 0 to w - 1 do
       	for j = 0 to h - 1 do
-          let (r,g,b) = mat.(i).(j) in
-	  let ind = (i+j*w) * 3 in
+          let (r,g,b) = rgb_vector_of_color mat.(i).(j) in
+	  let ind = (i + j * w) * 3 in
 	  str.[ind] <- Char.unsafe_chr r;
-	  str.[ind+1] <- Char.unsafe_chr g;
-	  str.[ind+2] <- Char.unsafe_chr b;
+	  str.[ind + 1] <- Char.unsafe_chr g;
+	  str.[ind + 2] <- Char.unsafe_chr b;
       	done
       done;
       surface_from_rawrgb str w h

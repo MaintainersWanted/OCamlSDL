@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.7 2000/01/31 20:09:06 smkl Exp $ *)
+(* $Id: sdlvideo.mli,v 1.8 2000/03/05 15:21:52 fbrunel Exp $ *)
 
 (* Exception *)
 
@@ -29,15 +29,17 @@ type rect =
     RectMax
   | Rect of int * int * int * int
 
+type color = 
+    IntColor of int * int * int
+  | FloatColor of float * float * float
+
 type pixels =
-   Pixels of string * int * int
- | APixels of string * int * int
- | RGBPixels of (int * int * int) array array
- | Buffer of int * int
+    Pixels of string * int * int
+  | APixels of string * int * int
+  | RGBPixels of color array array
+  | Buffer of int * int
 
 type surface
-type pixel_format
-type color
 
 type video_info = {
     hw_available : bool;	(* Hardware surfaces? *)
@@ -69,7 +71,6 @@ val surface_saveBMP : surface -> string -> unit;;
 val surface_width : surface -> int;;
 val surface_height : surface -> int;;
 val surface_rect : surface -> rect;;
-val surface_pixel_format : surface -> pixel_format;;
 val surface_fill_rect : surface -> rect -> color -> surface;;
 val surface_blit : surface -> rect -> surface -> rect -> unit;;
 val surface_set_alpha : surface -> float -> surface;;
@@ -77,15 +78,21 @@ val surface_set_colorkey : surface -> color option -> unit;;
 val surface_display_format : surface -> surface;;
 
 val surface_from_pixels : pixels -> surface;;
-val surface_set_pixel : surface -> int -> int -> int -> int -> int -> unit;;
-val surface_get_pixel : surface -> int -> int -> (int * int * int);;
+val surface_set_pixel : surface -> int -> int -> color -> unit;;
+val surface_get_pixel : surface -> int -> int -> color;;
 
 val unsafe_blit_buffer : surface -> string -> int -> unit;;
 
 (* Operations on colors *)
 
-val make_rgb_color : pixel_format -> float -> float -> float -> color;;
+val color_of_int : (int * int * int) -> color;;
+val color_of_float : (float * float * float) -> color;;
+val rgb_vector_of_color : color -> (int * int * int);;
 
 (* Window manager interaction *)
 
 val wm_available : unit -> bool;;
+
+(* DO NOT USE. EXPERIMENTAL *)
+
+val surface_final : unit -> surface;;

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.9 2000/02/08 00:04:30 fbrunel Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.10 2000/03/05 15:21:52 fbrunel Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -26,19 +26,12 @@
 #include <caml/mlvalues.h>
 #include <stdio.h>
 #include <SDL.h>
+#include "stub_shared.h"
 #include "sdlvideo_stub.h"
 
 /*
  * Conversion macros
  */
-
-#define ML_SURFACE(surface) (value)surface
-#define SDL_SURFACE(surface) ((SDL_Surface *)surface)
-
-#define ML_PIXELFORMAT(pixel_format) (value)pixel_format
-#define SDL_PIXELFORMAT(pixel_format) ((SDL_PixelFormat *)pixel_format)
-
-#define ML_COLOR(color) Val_int(color)
 
 #define MLRECT_TO_SDLRECT(ml_rect, sdl_rect)		\
 	sdl_rect.x = Int_val(Field(ml_rect, 0));	\
@@ -47,6 +40,41 @@
 	sdl_rect.h = Int_val(Field(ml_rect, 3));
 
 #define MLRECT_IS_MAX(ml_rect) (Int_val(ml_rect) == 0)
+
+/*
+ * Convert a color from the ML side into three integers between 0 and 255
+ */
+
+static void
+convert_color (value color, unsigned char *r, unsigned char *g,
+	       unsigned char *b)
+{
+  /* Maybe there is a more general method to identify the right
+     type constructor ? */
+  if (Is_long(Field(color, 0))) {
+    *r = (unsigned char)Int_val(Field(color, 0));
+    *g = (unsigned char)Int_val(Field(color, 1));
+    *b = (unsigned char)Int_val(Field(color, 2));
+  }
+  else {
+    *r = (unsigned char)(Double_val(Field(color, 0)) * 255);
+    *g = (unsigned char)(Double_val(Field(color, 1)) * 255);
+    *b = (unsigned char)(Double_val(Field(color, 2)) * 255);
+  }
+}
+
+/*
+ * Make a SDL color matching the surface pixel format
+ */
+
+static int
+map_rgb_color (value surface, value color)
+{
+  unsigned char r, g, b;
+
+  convert_color(color, &r, &g, &b);
+  return SDL_MapRGB(SDL_SURFACE(surface)->format, r, g, b);
+}
 
 /*
  * Raise an OCaml exception with a message
@@ -118,7 +146,7 @@ sdlvideo_set_display_mode (value width, value height, value bpp)
   
   /* Modes not implemented */
   if (depth != 0 && depth < 15) {
-    sdlvideo_raise_exception("Bit depth not implemented");
+    sdlvideo_raise_exception("Bit depth not implemented!");
   }
 
   surf = SDL_SetVideoMode(Int_val(width),
@@ -217,24 +245,19 @@ sdlvideo_surface_height (value surface)
 }
 
 value
-sdlvideo_surface_pixel_format (value surface)
-{
-  return ML_PIXELFORMAT(SDL_SURFACE(surface)->format);
-}
-
-value
 sdlvideo_surface_fill_rect (value surface, value rect, value color)
 {
   SDL_Rect sdl_rect;
   int res;
   
   if (MLRECT_IS_MAX(rect)) {
-    res = SDL_FillRect(SDL_SURFACE(surface), NULL, Int_val(color));
+    res = SDL_FillRect(SDL_SURFACE(surface), NULL,
+		       map_rgb_color(surface, color));
   }
   else {
     MLRECT_TO_SDLRECT(rect, sdl_rect);
     res = SDL_FillRect(SDL_SURFACE(surface), &sdl_rect,
-		       Int_val(color));
+		       map_rgb_color(surface, color));
   }
     
   if (res < 0) {
@@ -292,19 +315,6 @@ sdlvideo_surface_set_alpha (value surface, value alpha)
 }
 
 value
-sdlvideo_make_rgb_color (value pixel_format, value red, value green, value blue)
-{
-  float r = (float)Double_val(red);
-  float g = (float)Double_val(green);
-  float b = (float)Double_val(blue);
-  
-  return ML_COLOR(SDL_MapRGB(SDL_PIXELFORMAT(pixel_format),
-			     (char)(r * 255),
-			     (char)(g * 255),
-			     (char)(b * 255)));
-}
-
-value
 sdlvideo_wm_available (void)
 {
   return Val_bool(SDL_GetVideoInfo()->wm_available);
@@ -315,13 +325,13 @@ sdlvideo_surface_set_colorkey(value surface, value key)
 {
    int res;
    
-   if (Int_val(key) == 0) {
+   if (key == Val_unit) {
      res = SDL_SetColorKey(SDL_SURFACE(surface), 0, 0);
    }
    else {
      res = SDL_SetColorKey(SDL_SURFACE(surface),
 			   SDL_SRCCOLORKEY | SDL_RLEACCEL,
-			   Int_val(Field(key, 0)));
+			   map_rgb_color(surface, Field(key, 0)));
    }
    
    if (res < 0) {
@@ -415,17 +425,20 @@ sdlvideo_surface_from_rawrgba(value raw, value width, value height)
 
 value
 sdlvideo_surface_set_pixel(value ml_surf, value x, value y,
-			   value r, value g, value b)
+			   value color)
 {
    char *location;
+   unsigned char r, g, b;
    SDL_Surface *surf = SDL_SURFACE(ml_surf);
 
+   convert_color(color, &r, &g, &b);
+   
    location = surf->pixels +
               surf->pitch * Int_val(y) +
               surf->format->BytesPerPixel * Int_val(x);
-   location[0] = Int_val(r);
-   location[1] = Int_val(g);
-   location[2] = Int_val(b);
+   location[0] = r;
+   location[1] = g;
+   location[2] = b;
 
    return Val_unit;
 }
@@ -450,10 +463,10 @@ sdlvideo_surface_get_pixel(value ml_surf, value x, value y)
 }
 
 value
-sdlvideo_surface_set_pixel_bytecode(value * argv, int argn)
+sdlvideo_surface_set_pixel_bytecode(value *argv, int argn)
 {
-   return sdlvideo_surface_set_pixel(argv[0], argv[1], argv[2], argv[3],
-				     argv[4], argv[5]);
+  return sdlvideo_surface_set_pixel(argv[0], argv[1], argv[2],
+				    argv[3]);
 }
 
 value
@@ -468,3 +481,17 @@ sdlvideo_blit_raw_buffer(value screen, value buffer, value size)
    return Val_unit;
 }
 
+/* EXPERIMENTAL */
+
+value
+sdlvideo_surface_final(void)
+{
+  CAMLparam0();
+  CAMLlocal1(ret);
+  static int i = 0;
+
+  ALLOC_FINAL_PTR((long)i, finalize_surface, ret);
+
+  printf("Allocated final: %p %d\n", ret, i++);
+  CAMLreturn(ret);
+}
