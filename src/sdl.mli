@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.6 2002/08/08 12:32:32 oliv__a Exp $ *)
+(* $Id: sdl.mli,v 1.7 2002/08/21 18:26:31 oliv__a Exp $ *)
 
 (** This module contains functions for initialising/quitting the library *)
 
@@ -35,10 +35,10 @@ type subsystem = [
   | `JOYSTICK     (** init flag for the joystick subsystem *)
 ]
 
-external init : 
+val init : 
   ?auto_clean:bool -> 
   [< subsystem | `NOPARACHUTE | `EVENTTHREAD | `EVERYTHING ] list -> 
-  unit = "sdl_init"
+  unit
 (** Initialize the SDL library. This should be called before all other 
    SDL functions. 
    The flags parameter specifies what part(s) of SDL to initialize.
