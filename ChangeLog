@@ -1,3 +1,13 @@
+2002-03-26  Frederic Brunel  <brunel@mail.dotcom.fr>
+
+	* HISTORY: Release 0.5-pre3.
+
+	* COPYING: Renamed from `COPYRIGHT'.
+
+	* AUTHORS (NEW): Main developers.
+
+	* README: Add project informations.
+
 2001-10-23  Luc Mazardo  <l.mazardo@free.fr>
 
 	* CHANGE (src/sdlevent.{ml,mli}) add function char_of_key.
