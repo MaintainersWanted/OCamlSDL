@@ -267,7 +267,7 @@ let main () =
   
   (* Load the sprite *)
   dbug_msg "## loading sprite" ;
-  let (sprite, backing) = load_sprite ~screen "icon.bmp" in
+  let (sprite, backing) = load_sprite ~screen "../images/icon.bmp" in
 
   (* Set a clipping rectangle to clip the outside edge of the screen *)
   begin
