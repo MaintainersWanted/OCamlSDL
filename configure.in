@@ -2,11 +2,11 @@ dnl ******
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.18 2002/07/13 14:20:01 oliv__a Exp $
+dnl $Id: configure.in,v 1.19 2002/07/24 19:06:40 xtrm Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
-AC_PREFIX_DEFAULT(/usr)
+AC_PREFIX_DEFAULT(/usr/local)
 
 AC_CONFIG_AUX_DIR(./support)
 # need support/install-sh
@@ -45,6 +45,11 @@ AC_PATH_PROG(OCAMLMKLIB,ocamlmklib)
 if test -z "$OCAMLMKLIB" ; then
 	AC_MSG_WARN(Cannot find ocamlmklib.)
 fi
+AC_PATH_PROG(OCAMLDOC,ocamldoc)
+if test -z "$OCAMLDOC" ; then
+	AC_MSG_WARN(Cannot find ocamldoc.)
+fi
+OCAMLDOC=true
 
 dnl -*- where to install the library ? -*-
 AC_ARG_WITH(installdir,[  --with-installdir=DIR	  specify installation directory [defaults to +sdl]],OCAMLSDLDIR="$withval")
