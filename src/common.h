@@ -1,4 +1,4 @@
-(*
+/*
  * OCamlSDL - An ML interface to the SDL library
  * Copyright (C) 1999  Frederic Brunel
  *
@@ -15,30 +15,34 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *)
+ */
 
-(* $Id: sdl.ml,v 1.3 2001/04/24 19:39:28 xtrm Exp $ *)
+/* $Id: common.h,v 1.1 2001/04/24 19:39:28 xtrm Exp $ */
 
-(* Define a new exception for Sdl initialization errors and register 
-   it to be callable from C code. *)
+#ifndef __COMMON_H__
+#define __COMMON_H__
 
-exception SDL_init_exception of string
-let _ = Callback.register_exception "SDL_init_exception" (SDL_init_exception "Any string")
+#include <caml/mlvalues.h>
 
-(* Native C external functions *)
+/*
 
-(* Initialization. *)
+  Caml list manipulations
 
-type init_flag =
-  | TIMER
-  | AUDIO
-  | VIDEO
-  | CDROM
-  | JOYSTICK
-  | NOPARACHUTE   (* Don't catch fatal signals *)
-  | EVENTTHREAD   (* Not supported on all OS's *)
-  | EVERYTHING
+  Grabbed in ocamlsdl-0.3/sdl_stub.c 1.8 (2000/09/25)
+  made by Jean-Christophe FILLIATRE 
+*/
 
-external init : init_flag list -> unit = "sdl_init";;
-external init_with_auto_clean : init_flag list -> unit = "sdl_init_with_auto_clean";;
-external quit : unit -> unit = "sdl_quit";;
+extern value nil(void);
+
+extern value cons(value x,value l);
+
+extern int is_nil(value l);
+
+extern int is_not_nil(value l);
+
+extern value hd(value l); 
+
+extern value tl(value l);
+
+
+#endif /* __COMMON_H__ */

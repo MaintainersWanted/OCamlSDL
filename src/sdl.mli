@@ -17,18 +17,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.1 2000/01/02 01:32:25 fbrunel Exp $ *)
+(* $Id: sdl.mli,v 1.2 2001/04/24 19:39:28 xtrm Exp $ *)
 
 (* Exception *)
 exception SDL_init_exception of string
 
+(* Init flag type *)
+
+type init_flag =
+  | TIMER
+  | AUDIO
+  | VIDEO
+  | CDROM
+  | JOYSTICK
+  | NOPARACHUTE        (* Don't catch fatal signals *)
+  | EVENTTHREAD
+  | EVERYTHING
+
 (* Initialize the SDL library *)
-val init : unit -> unit;;
+val init : init_flag list -> unit
 
 (* Initialize the SDL library with automatic call the the sql_quit
  * function at normal program termination
  *)
-val init_with_auto_clean : unit -> unit;;
+val init_with_auto_clean : init_flag list -> unit;;
 
 (* Shut down the SDL library *)
 val quit : unit -> unit;;

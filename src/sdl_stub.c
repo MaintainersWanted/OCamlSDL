@@ -17,12 +17,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.4 2000/05/05 09:45:56 xtrm Exp $ */
+/* $Id: sdl_stub.c,v 1.5 2001/04/24 19:39:28 xtrm Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
 #include <caml/mlvalues.h>
+
+
 #include <SDL/SDL.h>
+
+
+#include "common.h"
+
+
 #include "sdlcdrom_stub.h"
 #include "sdlevent_stub.h"
 #include "sdltimer_stub.h"
@@ -50,16 +57,55 @@ static void sdl_internal_quit (void)
 }
 
 /*
+
+  conversion between OCAMLSDL flags and C SDL flags
+
+*/
+  
+#define TIMER_tag 0
+#define AUDIO_tag 1
+#define VIDEO_tag 2
+#define CDROM_tag 3
+#define JOYSTICK_tag 4
+#define NOPARACHUTE_tag 5       
+#define EVENTTHREAD_tag 6
+#define EVERYTHING_tag 7
+
+static int init_flag_val(value flag_list)
+{
+  int flag = 0;
+  value l = flag_list;
+  while (is_not_nil(l))
+    {
+      switch (Int_val(hd(l)))
+	{
+	case TIMER_tag       : flag |= SDL_INIT_TIMER       ; break;
+	case AUDIO_tag       : flag |= SDL_INIT_AUDIO       ; break;
+	case VIDEO_tag       : flag |= SDL_INIT_VIDEO       ; break;
+	case CDROM_tag       : flag |= SDL_INIT_CDROM       ; break;
+	case JOYSTICK_tag    : flag |= SDL_INIT_JOYSTICK    ; break;
+	case NOPARACHUTE_tag : flag |= SDL_INIT_NOPARACHUTE ; break;
+	case EVENTTHREAD_tag : flag |= SDL_INIT_EVENTTHREAD ; break;
+	case EVERYTHING_tag  : flag |= SDL_INIT_EVERYTHING  ; break;
+	}
+      l = tl(l);
+    }
+  return flag;
+}
+
+
+/*
  * OCaml/C conversion functions
  */
 
-value
-sdl_init (void)
+value 
+sdl_init(value vf) 
 {
-  /* SDL initialization */
-  if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_CDROM | SDL_INIT_TIMER) != 0) {
-    raise_with_string(*caml_named_value("SDL_init_exception"), SDL_GetError());
-  }
+  int flags = init_flag_val(vf);
+
+  if (SDL_Init(flags) < 0) 
+    raise_with_string(*caml_named_value("SDL_init_exception"),
+		      SDL_GetError());
 
   /* Initialize all stubs */
   sdlcdrom_stub_init();
@@ -68,14 +114,14 @@ sdl_init (void)
   sdlvideo_stub_init();
   sdlttf_stub_init();
   sdlmixer_stub_init();
-  
+
   return Val_unit;
 }
 
 value
-sdl_init_with_auto_clean (void)
+sdl_init_with_auto_clean (value vf)
 {
-  sdl_init();
+  sdl_init(vf);
   atexit(sdl_internal_quit);
   
   return Val_unit;
@@ -87,3 +133,5 @@ sdl_quit (void)
   sdl_internal_quit();
   return Val_unit;
 }
+
+
