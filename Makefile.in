@@ -17,30 +17,38 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile.in,v 1.7 2000/01/20 18:05:46 smkl Exp $
+# $Id: Makefile.in,v 1.8 2000/01/31 20:09:06 smkl Exp $
 
 CC = 		@CC@ 
-CFLAGS =	@CFLAGS@ -Wall #-O3 -pipe -pedantic -m486 
+CFLAGS =	@CFLAGS@ -Wall # -g -pg #-O3 -pipe -pedantic -m486 
 CAMLC =		@OCAMLC@
 CAMLOPT =	@OCAMLOPT@
 CAMLTOP =	@OCAMLMKTOP@
 CAMLDEP =	@OCAMLDEP@
 MLFLAGS =
+OMLFLAGS =	-unsafe -inline 10 #-ccopt -pg -p
 
 CLIBS =		@LIBS@ @MATHLIB@
 MLLIBS =	-cclib "$(CLIBS)" 
 LIBDIR =
 
 C_OBJS = 	sdl_stub.o sdlcdrom_stub.o sdltimer_stub.o sdlvideo_stub.o\
-		sdlevent_stub.o sdlloader_stub.o sdlttf_stub.o
+		sdlevent_stub.o sdlloader_stub.o sdlttf_stub.o sdlmixer_stub.o
 
 ML_OBJS	=	sdl.cmo sdlcdrom.cmo sdltimer.cmo \
-		sdlvideo.cmo sdlevent.cmo sdlloader.cmo sdlttf.cmo
+		sdlvideo.cmo sdlevent.cmo sdlloader.cmo sdlttf.cmo sdlmixer.cmo
+
+OPT_OBJS=	sdl.cmx sdlcdrom.cmx sdltimer.cmx \
+		sdlvideo.cmx sdlevent.cmx sdlloader.cmx sdlttf.cmx sdlmixer.cmx
 
 OBJS =		$(C_OBJS) $(ML_OBJS)
+OOBJS =		$(C_OBJS) $(OPT_OBJS)
 
 TOPLEVEL = 	toplevel
 RUNTIME = 	sdlrun
+LIBRARY = 	sdl.cma
+OLIBRARY = 	sdl.cmxa
+CLIBRARY = 	libsdl.a
 
 all: $(TOPLEVEL)
 
@@ -48,14 +56,27 @@ $(TOPLEVEL): $(OBJS)
 	$(CAMLTOP) -custom -o $@ $(OBJS) $(MLLIBS)
 
 $(RUNTIME): $(OBJS)
-	$(CAMLC) -custom -make_runtime -o $@ unix.cma $(OBJS) $(MLLIBS)\
-	 -cclib -lunix
+	$(CAMLC) -thread -custom -make_runtime -o $@ unix.cma threads.cma \
+	$(OBJS) $(MLLIBS) -cclib -lunix -cclib -lthreads
+
+$(LIBRARY): $(CLIBRARY) $(ML_OBJS)
+	$(CAMLC) -linkall -a -o $(LIBRARY) $(ML_OBJS)
+
+$(OLIBRARY): $(CLIBRARY) $(OPT_OBJS)
+	$(CAMLOPT) -linkall -a -o $(OLIBRARY) $(OPT_OBJS)
+
+$(CLIBRARY): $(C_OBJS)
+	ar cr $(CLIBRARY) $(C_OBJS)
+	ranlib $(CLIBRARY)
 
 .SUFFIXES:
 .SUFFIXES: .c .o .ml .mli .cmo .cmi
 
 %.cmo : %.ml
 	$(CAMLC) -c $(MLFLAGS) $<
+
+%.cmx : %.ml
+	$(CAMLOPT) -c $(OMLFLAGS) $<
 
 %.cmi : %.mli
 	$(CAMLC) -c $(MLFLAGS) $<

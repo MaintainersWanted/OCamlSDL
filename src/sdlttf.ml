@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.1 2000/01/20 17:50:34 smkl Exp $ *)
+(* $Id: sdlttf.ml,v 1.2 2000/01/31 20:09:06 smkl Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -27,8 +27,6 @@ let _ = Callback.register_exception "SDLttf_exception" (SDLttf_exception "Any st
 
 type font
 
-external init : unit -> unit = "sdlttf_init"
-external quit : unit -> unit = "sdlttf_quit"
 external open_font : string -> int -> font = "sdlttf_open_font"
 external close_font : font -> unit = "sdlttf_close_font"
 external font_height : font -> int = "sdlttf_font_height"

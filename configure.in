@@ -93,6 +93,12 @@ if test "$ttf_ok" = no; then
 fi
 LIBS="$LIBS -lSDLttf"
 
+AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, mixer_ok=yes, mixer_ok=no)
+if test "$mixer_ok" = no; then
+        AC_MSG_ERROR(Cannot find SDL mixer library.)
+fi
+LIBS="$LIBS -lSDL_mixer"
+
 dnl Check for system services
 
 # Finally create all the generated files

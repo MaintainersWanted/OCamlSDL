@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.7 2000/01/20 17:50:34 smkl Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.8 2000/01/31 20:09:06 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -457,5 +457,17 @@ sdlvideo_surface_set_pixel_bytecode(value * argv, int argn)
 {
    return sdlvideo_surface_set_pixel(argv[0], argv[1], argv[2], argv[3],
 				     argv[4], argv[5]);
+}
+
+value
+sdlvideo_blit_raw_buffer(value screen, value buffer, value size)
+{
+   int ret;
+   SDL_Surface *scr = SDL_SURFACE(screen);
+   ret = SDL_LockSurface(scr);
+   if (ret < 0) sdlvideo_raise_exception(SDL_GetError());
+   memcpy(scr->pixels, &Byte(buffer,0), Int_val(size));
+   SDL_UnlockSurface(scr);
+   return Val_unit;
 }
 

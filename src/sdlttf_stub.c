@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.1 2000/01/20 17:50:34 smkl Exp $ */
+/* $Id: sdlttf_stub.c,v 1.2 2000/01/31 20:09:06 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -35,15 +35,20 @@ sdlttf_raise_exception (char *msg)
    raise_with_string(*caml_named_value("SDLttf_exception"), msg);
 }
 
-value
-sdlttf_init(value unit)
+void
+sdlttf_stub_init(void)
 {
    int error;
    error = TTF_Init();
    if (error) {
       sdlttf_raise_exception(SDL_GetError());
    }
-   return Val_unit;
+}
+
+void
+sdlttf_stub_kill(void)
+{
+   TTF_Quit();
 }
 
 value
@@ -66,13 +71,6 @@ value
 sdlttf_close_font(value font)
 {
    TTF_CloseFont((TTF_Font *)font);
-   return Val_unit;
-}
-
-value
-sdlttf_quit(value unit)
-{
-   TTF_Quit();
    return Val_unit;
 }
 

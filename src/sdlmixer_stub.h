@@ -1,4 +1,4 @@
-(*
+/*
  * OCamlSDL - An ML interface to the SDL library
  * Copyright (C) 1999  Frederic Brunel
  *
@@ -15,22 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *)
+ */
 
-(* $Id: sdlttf.mli,v 1.2 2000/01/31 20:09:06 smkl Exp $ *)
+/* $Id: sdlmixer_stub.h,v 1.1 2000/01/31 20:09:06 smkl Exp $ */
 
-(* Define a new exception for TTF errors and register 
-   it to be callable from C code. *)
+#ifndef __SDLMIXER_STUB_H__
+#define __SDLMIXER_STUB_H__
 
-exception SDLttf_exception of string
+/* Init the stub internal datas */
+extern void sdlmixer_stub_init (void);
 
-type font
+/* Clean the stub internal datas */
+extern void sdlmixer_stub_kill (void);
 
-val open_font : string -> int -> font
-val close_font : font -> unit
-val font_height : font -> int
-val render_text : font -> string -> (int*int*int) -> (int*int*int) -> Sdlvideo.surface
+#endif /* __SDLMIXER_STUB_H__ */
 
-(* return a function to print strings, and another to clean up printer *)
-val make_printer : font -> (int*int*int) ->
-  (Sdlvideo.surface -> int -> int -> string -> unit) * (unit -> unit)

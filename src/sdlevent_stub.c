@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.6 2000/01/20 18:05:46 smkl Exp $ */
+/* $Id: sdlevent_stub.c,v 1.7 2000/01/31 20:09:06 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -61,7 +61,7 @@ treat_keyboard_event (SDL_KeyboardEvent *event)
     int mouse_x;
     int mouse_y;
 
-    printf("%d", event->keysym.sym);
+/*    printf("%d", event->keysym.sym); */
     
     /* Get the mouse position */
     SDL_GetMouseState(&mouse_x, &mouse_y);

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.mli,v 1.6 2000/01/20 17:50:34 smkl Exp $ *)
+(* $Id: sdlvideo.mli,v 1.7 2000/01/31 20:09:06 smkl Exp $ *)
 
 (* Exception *)
 
@@ -79,6 +79,8 @@ val surface_display_format : surface -> surface;;
 val surface_from_pixels : pixels -> surface;;
 val surface_set_pixel : surface -> int -> int -> int -> int -> int -> unit;;
 val surface_get_pixel : surface -> int -> int -> (int * int * int);;
+
+val unsafe_blit_buffer : surface -> string -> int -> unit;;
 
 (* Operations on colors *)
 

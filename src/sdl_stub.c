@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.2 2000/01/12 00:49:24 fbrunel Exp $ */
+/* $Id: sdl_stub.c,v 1.3 2000/01/31 20:09:06 smkl Exp $ */
 
 #include <caml/callback.h>
 #include <caml/fail.h>
@@ -27,6 +27,8 @@
 #include "sdlevent_stub.h"
 #include "sdltimer_stub.h"
 #include "sdlvideo_stub.h"
+#include "sdlttf_stub.h"
+#include "sdlmixer_stub.h"
 
 /*
  * Local functions
@@ -43,6 +45,8 @@ static void sdl_internal_quit (void)
   sdlevent_stub_kill();
   sdltimer_stub_kill();
   sdlvideo_stub_kill();
+  sdlttf_stub_kill();
+  sdlmixer_stub_kill();
 }
 
 /*
@@ -62,6 +66,8 @@ sdl_init (void)
   sdlevent_stub_init();
   sdltimer_stub_init();
   sdlvideo_stub_init();
+  sdlttf_stub_init();
+  sdlmixer_stub_init();
   
   return Val_unit;
 }

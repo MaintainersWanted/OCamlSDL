@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlvideo.ml,v 1.7 2000/01/20 17:50:34 smkl Exp $ *)
+(* $Id: sdlvideo.ml,v 1.8 2000/01/31 20:09:06 smkl Exp $ *)
 
 (* Define a new exception for VIDEO errors and register 
    it to be callable from C code. *)
@@ -86,6 +86,8 @@ external surface_from_rawrgba : string -> int -> int -> surface = "sdlvideo_surf
 external surface_set_pixel : surface -> int -> int -> int -> int -> int -> unit = "sdlvideo_surface_set_pixel_bytecode" "sdlvideo_surface_set_pixel";;
 external surface_get_pixel : surface -> int -> int -> (int * int * int) = "sdlvideo_surface_get_pixel";;
 
+external unsafe_blit_buffer : surface -> string -> int -> unit = "sdlvideo_blit_raw_buffer";;
+
 (* ML functions *)
 
 let surface_rect surf =
@@ -98,13 +100,13 @@ let surface_from_pixels = function
       for i = 0 to w - 1 do
       	for j = 0 to h - 1 do
           let (r,g,b) = mat.(i).(j) in
-	  str.[(i+j*w)*3+0] <- Char.chr r;
-	  str.[(i+j*w)*3+1] <- Char.chr g;
-	  str.[(i+j*w)*3+2] <- Char.chr b;
+	  let ind = (i+j*w) * 3 in
+	  str.[ind] <- Char.unsafe_chr r;
+	  str.[ind+1] <- Char.unsafe_chr g;
+	  str.[ind+2] <- Char.unsafe_chr b;
       	done
       done;
       surface_from_rawrgb str w h
-
   | Pixels (str, w, h) -> surface_from_rawrgb str w h
   | APixels (str, w, h) -> surface_from_rawrgba str w h
   | Buffer (w, h) -> empty_surface w h
