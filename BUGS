@@ -1,2 +1,5 @@
+* problems with Makefile when we rebuilt the test program
+
 * Segmentation fault when trying to set the display mode before
 initializing the SDL.
+

@@ -1,5 +1,9 @@
 2000-05-30  Luc Mazardo  <l.mazardo@free.fr>
 
+	* ADD (Makefile.in): add the target test
+
+	* CHANGES (example.ml): add Sdlttf and Sdltimer stuff.
+
 	* CHANGES (configure.in): Clean the configure script and add
 	detection of png.h
 
