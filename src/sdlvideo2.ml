@@ -76,6 +76,9 @@ external pixel_format_info : pixel_format -> pixel_format_info
 external get_video_info : unit -> video_info
     = "ml_SDL_GetVideoInfo"
 
+let get_video_info_format () = 
+  pixel_format_info (get_video_info ()).vi_fmt
+
 external driver_name : unit -> string
     = "ml_SDL_VideoDriverName"
 
@@ -124,7 +127,7 @@ let surface_format s =
 let surface_flags s =
   (surface_info s).flags
 
-let surface_bpps s = 
+let surface_bpp s = 
   (surface_format s).bits_pp
 
 external use_palette : surface -> bool
@@ -141,7 +144,7 @@ external set_palette : surface -> ?flag:palette_flag -> ?firstcolor:int -> color
 external get_video_surface : unit -> surface
     = "ml_SDL_GetVideoSurface"
 
-external set_video_mode : w:int -> h:int -> bpp:int -> video_flag list -> surface
+external set_video_mode : w:int -> h:int -> ?bpp:int -> video_flag list -> surface
     = "ml_SDL_SetVideoMode"
 
 external update_rect : ?rect:rect -> surface -> unit
@@ -170,6 +173,12 @@ external create_RGB_surface :
   w:int -> h:int -> bpp:int -> 
   rmask:int32 -> gmask:int32 -> bmask:int32 -> amask:int32 -> surface
     = "ml_SDL_CreateRGBSurface_bc" "ml_SDL_CreateRGBSurface"
+
+let create_RGB_surface_format surface flags ~w ~h =
+  let fmt = surface_format surface in
+  create_RGB_surface flags ~w ~h ~bpp:fmt.bits_pp
+    ~rmask:fmt.rmask ~gmask:fmt.gmask
+    ~bmask:fmt.bmask ~amask:fmt.amask
 
 external _create_RGB_surface_from : 
   ('a, 'b, c_layout) Array1.t ->
@@ -212,7 +221,7 @@ external unset_color_key : surface -> unit
     = "ml_SDL_unset_color_key"
 external set_color_key : surface -> ?rle:bool -> int32 -> unit
     = "ml_SDL_SetColorKey"
-external get_color_key : surface -> int32 -> unit
+external get_color_key : surface -> int32
     = "ml_SDL_get_color_key"
 
 external unset_alpha : surface -> unit

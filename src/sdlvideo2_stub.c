@@ -276,10 +276,11 @@ value ml_SDL_GetVideoSurface(value unit)
   return Val_SDLSurface(s, 0, Val_unit);
 }
 
-value ml_SDL_SetVideoMode(value w, value h, value bpp, value flags)
+value ml_SDL_SetVideoMode(value w, value h, value obpp, value flags)
 {
+  int bpp = Opt_arg(obpp, Int_val, 0);
   SDL_Surface *s = SDL_SetVideoMode(Int_val(w), Int_val(h), 
-				    Int_val(bpp), video_flag_val(flags));
+				    bpp, video_flag_val(flags));
   if( !s)
     sdlvideo_raise_exception(SDL_GetError());
 
