@@ -31,3 +31,5 @@ static inline void SDLColor_of_value(SDL_Color *c, value v)
   c->b = Int_val(Field(v, 2));
 }
 #endif
+
+void sdlvideo_raise_exception (char *);

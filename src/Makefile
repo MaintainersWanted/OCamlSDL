@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.20 2002/11/28 15:18:42 oliv__a Exp $
+# $Id: Makefile,v 1.21 2002/12/11 23:11:36 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -25,7 +25,8 @@ include ../makefile.toplevel
 INSTALL_DIR = $(DESTDIR)$(OCAMLSDLDIR)
 
 MODULES = 	sdl sdlcdrom sdltimer sdljoystick \
-	        sdlkey sdlmouse sdlevent sdlvideo sdlwm
+	        sdlkey sdlmouse sdlevent sdlvideo sdlwm \
+                $(if $(LABLGLDIR),sdlgl)
 
 STUB_SRCS = 	$(MODULES:%=%_stub.c) common.c
 STUB_OBJS =	$(STUB_SRCS:.c=$(OBJSUFFIX))
@@ -45,10 +46,8 @@ OLIBRARY = 	sdl.cmxa sdl.a
 all:: libs 
 
 ifdef CYGWIN
-libs:: libmlsdl_main.a dllmlsdl_main.dll dllsdlstub.dll
+libs:: libmlsdl_main.a
 libmlsdl_main.a : mlsdl_main.o
-dllmlsdl_main.dll : mlsdl_main.do
-dllsdlstub.dll : $(STUB_OBJS:%.o=%.do) $(CAMLLIBDIR)/dllbigarray.a
 else
 all:: bin
 endif	
@@ -81,6 +80,9 @@ libs :: $(OLIBRARY) $(PARTS:%=sdl%.cmxa)
 install :: 
 	$(INSTALL_DATA) *.cmxa sdl*.a *.cmx $(INSTALL_DIR)
 endif
+
+sdlgl.cmo : MLFLAGS+=  -I $(LABLGLDIR)
+sdlgl.cmx : OMLFLAGS+= -I $(LABLGLDIR)
 
 ifdef CAMLMKLIB
 # Use ocamlmklib: requires ocaml >= 3.04

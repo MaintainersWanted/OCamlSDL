@@ -2,7 +2,7 @@ dnl ****** -*- m4 -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.29 2002/11/15 01:43:47 oliv__a Exp $
+dnl $Id: configure.in,v 1.30 2002/12/11 23:13:12 oliv__a Exp $
 
 dnl  begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -33,6 +33,29 @@ AC_SUBST(CYGWIN)
 
 # Check for OCaml programs 
 AC_PROG_OCAML()
+
+dnl -*- Checking for lablGL -*-
+AC_ARG_WITH(lablgldir,[  --with-lablgldir=DIR	  specify location of lablgl],LABLGLDIR="$withval")
+AC_MSG_CHECKING(lablGL directory)
+TMPF=conftest.ml
+cat > $TMPF << EOF
+open Gl
+EOF
+_LABLGLDIR=$LABLGLDIR
+unset LABLGLDIR
+for dir in $_LABLGLDIR +lablGL ; do
+  if $OCAMLC -c -I $dir $TMPF >& /dev/null ; then
+    LABLGLDIR="$dir" 
+    break
+  fi
+done
+rm -f $TMPF
+if test -n $LABLGLDIR ; then 
+  AC_MSG_RESULT($LABLGLDIR)
+else
+  AC_MSG_RESULT(not found)
+fi
+AC_SUBST(LABLGLDIR)
 
 dnl -*- where to install the library ? -*-
 AC_ARG_WITH(installdir,[  --with-installdir=DIR	  specify installation directory [defaults to +sdl]],OCAMLSDLDIR="$withval")

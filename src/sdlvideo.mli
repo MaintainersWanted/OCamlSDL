@@ -19,7 +19,7 @@
 
 (** Module for video manipulations *)
 
-(* $Id: sdlvideo.mli,v 1.28 2002/11/06 23:37:36 oliv__a Exp $ *)
+(* $Id: sdlvideo.mli,v 1.29 2002/12/11 23:11:38 oliv__a Exp $ *)
 
 open Bigarray
 
@@ -472,33 +472,3 @@ external display_format : ?alpha:bool -> surface -> surface
    pixel format and colors of the video framebuffer, suitable for fast
    blitting onto the display surface. 
    @param alpha if [true], include an alpha channel in the new surface *)
-
-
-(** {1 OpenGL support functions } *)
-
-
-external gl_swap_buffers : unit -> unit
-    = "ml_SDL_GL_SwapBuffers"
-(** Swap the OpenGL buffers, if double-buffering is supported. *)
-
-type gl_attr =
-  | GL_RED_SIZE of int
-  | GL_GREEN_SIZE of int
-  | GL_BLUE_SIZE of int
-  | GL_ALPHA_SIZE of int
-  | GL_BUFFER_SIZE of int
-  | GL_DOUBLEBUFFER of bool
-  | GL_DEPTH_SIZE of int
-  | GL_STENCIL_SIZE of int
-  | GL_ACCUM_RED_SIZE of int
-  | GL_ACCUM_GREEN_SIZE of int
-  | GL_ACCUM_BLUE_SIZE of int
-  | GL_ACCUM_ALPHA_SIZ of int
-
-external gl_set_attr : gl_attr list -> unit
-    = "ml_SDL_GL_SetAttribute"
-(** Set an attribute of the OpenGL subsystem before intialization. *)
-
-external gl_get_attr : unit -> gl_attr list
-    = "ml_SDL_GL_GetAttribute"
-(** Get an attribute of the OpenGL subsystem from the windowing interface *)
