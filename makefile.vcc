@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: makefile.vcc,v 1.1 2002/09/09 15:09:53 smkl Exp $
+# $Id: makefile.vcc,v 1.2 2002/09/09 15:17:52 smkl Exp $
 
 PREFIX =        /usr/local
 CAMLLIBDIR =    /usr/local/lib/ocaml
@@ -37,7 +37,7 @@ CAMLC =		ocamlc
 CAMLOPT =	ocamlopt
 CAMLTOP =	ocamlmktop
 CAMLDEP =	ocamldep
-CAMLMKLIB =     ocamlmklib
+#CAMLMKLIB =     ocamlmklib
 CAMLDOC = 	ocamldoc
 
 MLFLAGS  =
