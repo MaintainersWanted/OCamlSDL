@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.11 2002/08/26 13:06:35 oliv__a Exp $
+# $Id: Makefile,v 1.12 2002/09/04 17:46:32 oliv__a Exp $
 
 
 include ../makefile.toplevel
@@ -25,7 +25,7 @@ include ../makefile.toplevel
 INSTALL_DIR = $(DESTDIR)$(OCAMLSDLDIR)
 
 MODULES = 	sdl sdlvideo sdlcdrom sdlevent sdltimer sdljoystick \
-	        sdlkey sdlmouse sdlevent2 sdlvideo2 \
+	        sdlkey sdlmouse sdlevent2 sdlvideo2 sdlwm \
                 $(addprefix sdl,$(PARTS))
 
 STUB_SRCS = 	$(addsuffix _stub.c,$(MODULES)) common.c

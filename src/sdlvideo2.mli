@@ -274,6 +274,8 @@ val pixel_data_24 : surface -> (int, int8_unsigned_elt, c_layout) Array1.t
 
 val pixel_data_32 : surface -> (int32, int32_elt, c_layout) Array1.t
 
+(** {1 OpenGL support functions } *)
+
 external gl_swap_buffers : unit -> unit
     = "ml_SDL_GL_SwapBuffers"
 
