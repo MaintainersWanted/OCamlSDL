@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlvideo_stub.c,v 1.32 2002/07/19 09:16:47 oliv__a Exp $ */
+/* $Id: sdlvideo_stub.c,v 1.33 2002/07/31 18:57:50 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -206,7 +206,7 @@ sdlvideo_set_video_mode(value width, value height, value vbpp, value vf)
   int flags = video_flag_val(vf);
   SDL_Surface* s;
   
-  if ((s = SDL_SetVideoMode(w,h,bpp,flags)) == NULL) 
+  if ((s = SDL_SetVideoMode(w,h,bpp,flags)) == NULL)
     sdlvideo_raise_exception(SDL_GetError());
 
   return ML_SURFACE(s);
@@ -678,19 +678,20 @@ value sdlvideo_show_cursor(value vtoggle)
 value
 sdlvideo_must_lock(value s)
 {
-   int b = SDL_MUSTLOCK(((SDL_Surface*) s));
+   int b = SDL_MUSTLOCK(SDL_SURFACE(s));
    return Val_bool(b);
 }
 
 value sdlvideo_lock_surface(value s)
 {
-   if (SDL_LockSurface((SDL_Surface*) s) < 0) sdlvideo_raise_exception(SDL_GetError());
+   if (SDL_LockSurface(SDL_SURFACE(s)) < 0)
+     sdlvideo_raise_exception(SDL_GetError());
    	return Val_unit;
 }
 
 value sdlvideo_unlock_surface(value s)
 {
-  SDL_UnlockSurface((SDL_Surface*) s);
+  SDL_UnlockSurface(SDL_SURFACE(s));
   return Val_unit;
 }
 

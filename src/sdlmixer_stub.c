@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.14 2002/07/17 13:35:04 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.15 2002/07/31 18:57:50 smkl Exp $ */
 
 #include <caml/alloc.h>
 #include <caml/callback.h>
@@ -98,7 +98,7 @@ sdlmixer_open_audio(value frequency, value format,
 
   if (Int_val (channels) == 1) mstr = 2;
 
-  ret = Mix_OpenAudio(Int_val(frequency), c_format, mstr, Int_val(chunksize));
+  ret = Mix_OpenAudio(Int_val(frequency), c_format, mstr, c_chunksize);
 
   if (ret == -1)
     sdlmixer_raise_exception(Mix_GetError());
