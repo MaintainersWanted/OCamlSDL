@@ -27,29 +27,21 @@ with _ ->
 
 (* exceptions must be caught *)
 let check_file_and_play_it f =
-  let queue = Queue.create() in
-  let playing = ref true in
-  let cb_music_finished () = 
-    Printf.printf "Freeying Music\n";
-    flush stdout;
-    free_music (Queue.take queue);
-    playing := false;
-  in
-    if (Sys.file_exists f) 
-    then
-      begin  
-	Printf.printf "Loading music: %s\n" f;
-	flush stdout;
-	let m = load_music f in
+  if (Sys.file_exists f) 
+  then
+    begin  
+      Printf.printf "Loading music: %s\n" f;
+      flush stdout;
+      let m = load_music f in
 	play_music m ;
-	Queue.add m queue;
-	set_music_finished cb_music_finished;
-	playing := true;
-	while !playing
+	while playing_music()
 	do
 	  Sdltimer.delay 10;
-	done
-      end;;
+	done;
+	Printf.printf "Freeying Music\n";
+	flush stdout;
+	free_music m; 	
+    end;;
 
 List.iter check_file_and_play_it (List.tl (Array.to_list Sys.argv));;
 close_audio ();
