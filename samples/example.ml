@@ -1,4 +1,4 @@
-(* $Id: example.ml,v 1.8 2001/06/11 17:16:40 xtrm Exp $ *)
+(* $Id: example.ml,v 1.9 2002/03/26 16:30:49 xtrm Exp $ *)
 
 open Sdl;;
 open Sdlvideo;;
@@ -42,6 +42,7 @@ let random_placement src dst =
     update_rect dst r_smiley;;
     
 let place_max_icons max delay = 
+  surface_set_colorkey icon (Some (Sdlvideo.IntColor(255, 255, 255)));
   for i = 0 to max do
     surface_set_alpha icon (Random.float 1.0);
     random_placement icon screen;
