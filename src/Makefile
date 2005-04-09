@@ -15,6 +15,7 @@ sdl_C_SRC    = common.c sdlrwops_stub.c
 loader_MODULES = sdlloader
 mixer_MODULES  = sdlmixer
 ttf_MODULES    = sdlttf
+gfx_MODULES    = sdlgfx
 
 TARGETS  = sdl.cma $(patsubst %,sdl%.cma,$(PARTS))
 TARGETS += libsdlstub.$(A) $(patsubst %,libsdl%stub.$(A),$(PARTS))
@@ -51,6 +52,13 @@ sdlttf.cmxa : $(call ML_OPT_OBJS,ttf)
 	$(call MKCMXA,sdlttf,sdlttfstub,$^,$(call SYSLIB,SDL_ttf))
 libsdlttfstub.$(A) dllsdlttfstub.so : $(call STUB_OBJS,ttf)
 	$(call MKCLIB,sdlttf,sdlttfstub,$^,$(call SYSLIB,SDL_ttf))
+
+sdlgfx.cma : $(call ML_OBJS,gfx)
+	$(call MKCMA,sdlgfx,sdlgfxstub,$^,$(call SYSLIB,SDL_gfx))
+sdlgfx.cmxa : $(call ML_OPT_OBJS,gfx)
+	$(call MKCMXA,sdlgfx,sdlgfxstub,$^,$(call SYSLIB,SDL_gfx))
+libsdlgfxstub.$(A) dllsdlgfxstub.so : $(call STUB_OBJS,gfx)
+	$(call MKCLIB,sdlgfx,sdlgfxstub,$^,$(call SYSLIB,SDL_gfx))
 
 
 LABLGLINC = $(if $(LABLGLDIR),-I $(LABLGLDIR))

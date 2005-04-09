@@ -2,7 +2,7 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.37 2005/01/30 22:31:44 oliv__a Exp $
+dnl $Id: configure.in,v 1.38 2005/04/09 12:39:53 oliv__a Exp $
 
 dnl begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -68,6 +68,9 @@ AC_ARG_ENABLE(sdl_image,
 AC_ARG_ENABLE(sdl_mixer,
  	      [  --disable-sdl-mixer     without sdl mixer support [default is enabled]],
 	      sdl_mixer=$enableval, sdl_mixer=yes)
+AC_ARG_ENABLE(sdl_gfx,
+ 	      [  --disable-sdl-gfx       without sdl gfx support   [default is enabled]],
+	      sdl_gfx=$enableval, sdl_gfx=yes)
 AC_SUBST(PARTS)
 
 # Checking for lib SDL_ttf
@@ -96,13 +99,13 @@ if test "$sdl_image" = yes ; then
   fi
 fi
 
-# Checking for lib SDL_mixer
-if test "$sdl_mixer" = yes ; then
-  AC_CHECK_HEADERS(SDL_mixer.h, : , sdl_mixer=no)
-  if test "$sdl_mixer" = yes ; then 
-    AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio, :,
-      AC_MSG_ERROR(Cannot find SDL_mixer library.))
-    PARTS="$PARTS mixer"
+# Checking for lib SDL_gfx
+if test "$sdl_gfx" = yes ; then
+  AC_CHECK_HEADERS(SDL_gfxPrimitives.h, : , sdl_gfx=no)
+  if test "$sdl_gfx" = yes ; then 
+    AC_CHECK_LIB(SDL_gfx, pixelColor, :,
+      AC_MSG_ERROR(Cannot find SDL_gfx library.))
+    PARTS="$PARTS gfx"
   fi
 fi
 
@@ -119,5 +122,6 @@ echo "  LablGL	" $lablgl_support
 echo "  SDL_image	" $sdl_image
 echo "  SDL_mixer	" $sdl_mixer
 echo "  SDL_tff	" $sdl_ttf
+echo "  SDL_gfx	" $sdl_gfx
 echo
 echo "Configure finished, type 'make' to build."

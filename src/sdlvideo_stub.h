@@ -37,4 +37,16 @@ static inline void SDLColor_of_value(SDL_Color *c, value v)
 }
 #endif
 
+#ifndef HAVE_INLINE
+extern void SDLRect_of_value(SDL_Rect *r, value v);
+#else
+static inline void SDLRect_of_value(SDL_Rect *r, value v)
+{
+  r->x = Int_val(Field(v, 0));
+  r->y = Int_val(Field(v, 1));
+  r->w = Int_val(Field(v, 2));
+  r->h = Int_val(Field(v, 3));
+}
+#endif
+
 void sdlvideo_raise_exception (char *) Noreturn;
