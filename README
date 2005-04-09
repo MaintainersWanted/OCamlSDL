@@ -25,6 +25,7 @@ and optionally:
 	SDL_ttf		http://www.libsdl.org/projects/SDL_ttf/   (2.x)
 	SDL_mixer	http://www.libsdl.org/projects/SDL_mixer/ (1.2.x)
 	SDL_image	http://www.libsdl.org/projects/SDL_image/ (1.2.x)
+        SDL_gfx         http://www.ferzkopp.net/~aschiffler/Software/SDL_gfx-2.0/
 	LablGL		http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
 	findlib		http://www.ocaml-programming.de/packages/
 
