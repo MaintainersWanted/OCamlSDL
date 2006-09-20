@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.ml,v 1.12 2003/01/03 20:16:33 oliv__a Exp $ *)
+(* $Id: sdlttf.ml,v 1.13 2006/09/20 10:38:49 jboulnois Exp $ *)
 
 (* Define a new exception for TTF errors and register 
    it to be callable from C code. *)
@@ -56,6 +56,9 @@ external style_name : font -> string = "ml_TTF_FontFaceStyleName"
 
 external size_text : font -> string -> int * int = "sdlttf_size_text"
 
+(* UTF8 *)
+external size_utf8 : font -> string -> int * int = "sdlttf_size_utf8"
+
 open Sdlvideo
 
 external render_text_solid : font -> string -> 
@@ -65,6 +68,14 @@ external render_text_shaded : font -> string ->
     = "sdlttf_render_text_shaded"
 external render_text_blended : font -> string -> 
   fg:color -> surface = "sdlttf_render_text_blended"
+
+(* UTF8 *)
+external render_utf8_solid : font -> string -> 
+  fg:color -> surface = "sdlttf_render_utf8_solid"
+external render_utf8_shaded : font -> string -> 
+  fg:color -> bg:color -> surface = "sdlttf_render_utf8_shaded"
+external render_utf8_blended : font -> string -> 
+  fg:color -> surface = "sdlttf_render_utf8_blended"
 
 type render_kind =
   | SOLID   of color

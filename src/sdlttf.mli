@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.15 2003/01/05 11:23:53 oliv__a Exp $ *)
+(* $Id: sdlttf.mli,v 1.16 2006/09/20 10:38:49 jboulnois Exp $ *)
 
 (** This module provides TTF (TrueType Font) support *)
 
@@ -91,6 +91,9 @@ open Sdlvideo
 (** Get the dimensions of a rendered string of text *)
 external size_text : font -> string -> int * int = "sdlttf_size_text"
 
+(* UTF8 *)
+external size_utf8 : font -> string -> int * int = "sdlttf_size_utf8"
+
 (** @return the metrics (minx,maxx,miny,maxy) of a glyph *) 
 external glyph_metrics : font -> char -> int * int * int * int = "sdlttf_glyph_metrics"
 
@@ -109,6 +112,15 @@ external render_text_shaded : font -> string ->
     = "sdlttf_render_text_shaded"
 external render_text_blended : font -> string -> 
   fg:color -> surface = "sdlttf_render_text_blended"
+
+(* UTF8 *)
+external render_utf8_solid : font -> string -> 
+  fg:color -> surface = "sdlttf_render_utf8_solid"
+external render_utf8_shaded : font -> string -> 
+  fg:color -> bg:color -> surface
+    = "sdlttf_render_utf8_shaded"
+external render_utf8_blended : font -> string -> 
+  fg:color -> surface = "sdlttf_render_utf8_blended"
 
 val render_text : font -> render_kind -> string -> surface
 

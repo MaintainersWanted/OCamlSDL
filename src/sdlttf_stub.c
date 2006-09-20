@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.27 2004/07/26 01:31:45 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.28 2006/09/20 10:38:49 jboulnois Exp $ */
 
 #include <SDL_ttf.h>
 
@@ -322,3 +322,70 @@ sdlttf_glyph_metrics(value fnt, value chr)
    Store_field(result, 3, Val_int(maxy));
    return result;
 }
+
+
+/* UTF8 */
+CAMLprim value
+sdlttf_size_utf8(value font, value text)
+{
+  int w, h;
+  value v;
+  if(TTF_SizeUTF8(SDL_FONT(font), String_val(text), &w, &h))
+    sdlttf_raise_exception(TTF_GetError());
+  v = alloc_small(2, 0);
+  Field(v, 0) = Val_int(w);
+  Field(v, 1) = Val_int(h);
+  return v;
+}
+
+CAMLprim value
+sdlttf_render_utf8_solid(value font, value text, value fg) 
+{
+   SDL_Color sfg;
+   SDL_Surface *surf;
+
+   SDLColor_of_value(&sfg, fg);
+
+   surf = TTF_RenderUTF8_Solid(SDL_FONT(font),String_val(text), sfg);
+   SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
+   if (surf == NULL) {
+      sdlttf_raise_exception(TTF_GetError());
+   }
+   return ML_SURFACE(surf);
+}
+
+
+CAMLprim value
+sdlttf_render_utf8_shaded(value font, value text, value fg, value bg) 
+{
+   SDL_Color sfg;
+   SDL_Color sbg;
+   SDL_Surface *surf;
+
+   SDLColor_of_value(&sfg, fg);
+   SDLColor_of_value(&sbg, bg);
+
+   surf = TTF_RenderUTF8_Shaded(SDL_FONT(font),String_val(text), sfg, sbg);
+   SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
+   if (surf == NULL) {
+      sdlttf_raise_exception(TTF_GetError());
+   }
+   return ML_SURFACE(surf);
+}
+
+CAMLprim value
+sdlttf_render_utf8_blended(value font, value text, value fg) 
+{
+   SDL_Color sfg;
+   SDL_Surface *surf;
+
+   SDLColor_of_value(&sfg, fg);
+
+   surf = TTF_RenderUTF8_Blended(SDL_FONT(font),String_val(text), sfg);
+   SDL_SetColorKey(surf, SDL_SRCCOLORKEY|SDL_RLEACCEL, 0);
+   if (surf == NULL) {
+      sdlttf_raise_exception(TTF_GetError());
+   }
+   return ML_SURFACE(surf);
+}
+
