@@ -2,7 +2,7 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.38 2005/04/09 12:39:53 oliv__a Exp $
+dnl $Id: configure.in,v 1.39 2006/09/21 08:11:20 jboulnois Exp $
 
 dnl begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -96,6 +96,16 @@ if test "$sdl_image" = yes ; then
         AC_MSG_ERROR(Cannot find SDL_image library.))	
     ])
     PARTS="$PARTS loader"
+  fi
+fi
+
+# Checking for lib SDL_mixer
+if test "$sdl_mixer" = yes ; then
+  AC_CHECK_HEADERS(SDL_mixer.h, : , sdl_mixer=no)
+  if test "$sdl_mixer" = yes ; then 
+    AC_CHECK_LIB(SDL_mixer, Mix_QuickLoad_WAV, :,
+      AC_MSG_ERROR(Cannot find SDL_mixer library.))
+    PARTS="$PARTS mixer"
   fi
 fi
 
