@@ -22,3 +22,16 @@ package "sdlttf" (
   archive(byte)   = "sdlttf.cma"
   archive(native) = "sdlttf.cmxa"
 )
+
+package "sdlgfx" (
+  require = "sdl"
+  archive(byte) = "sdlgfx.cma"
+  archive(native) = "sdlgfx.cmxa"
+)
+
+package "sdlsvg" (
+  require = "sdl"
+  archive(byte) = "sdlsvg.cma"
+  archive(native) = "sdlsvg.cmxa"
+)
+
