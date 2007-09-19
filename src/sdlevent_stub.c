@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.20 2003/11/16 14:40:28 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.21 2007/09/19 19:28:26 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -360,7 +360,7 @@ CAMLprim value mlsdlevent_get(value omask, value num)
 
 CAMLprim value mlsdlevent_add(value elist)
 {
-  int len = list_length(elist);
+  int len = ocamlsdl_list_length(elist);
   LOCALARRAY(SDL_Event, evt, len);
   value l = elist;
   int i=0;

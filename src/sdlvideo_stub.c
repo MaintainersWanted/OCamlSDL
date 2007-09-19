@@ -394,7 +394,7 @@ CAMLprim value ml_SDL_UpdateRect(value orect, value screen)
 
 CAMLprim value ml_SDL_UpdateRects(value rectl, value screen)
 {
-  int len = list_length(rectl);
+  int len = ocamlsdl_list_length(rectl);
   register int i;
   LOCALARRAY(SDL_Rect, r, len);
   for(i=0; i<len; i++){

@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.c,v 1.9 2004/07/26 00:28:50 oliv__a Exp $ */
+/* $Id: common.c,v 1.10 2007/09/19 19:28:26 oliv__a Exp $ */
 
 
 #include <caml/mlvalues.h>
@@ -44,7 +44,7 @@ value cons(value x,value l)
   CAMLreturn (m);
 }
 
-int list_length(value l)
+int ocamlsdl_list_length(value l)
 {  
   int len = 0;
   while(is_not_nil(l)){

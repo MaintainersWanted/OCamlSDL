@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.15 2007/09/19 19:24:55 oliv__a Exp $ */
+/* $Id: common.h,v 1.16 2007/09/19 19:28:26 oliv__a Exp $ */
 
 #ifndef _COMMON_H_
 #define _COMMON_H_
@@ -47,7 +47,7 @@ extern value cons(value x,value l);
 #define is_not_nil Is_block
 #define hd(v)      Field((v), 0)
 #define tl(v)      Field((v), 1)
-extern int list_length(value l);
+extern int ocamlsdl_list_length(value l);
 
 
 /* 
