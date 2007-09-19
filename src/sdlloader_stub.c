@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.15 2004/02/04 12:00:22 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.16 2007/09/19 19:24:39 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -61,7 +61,7 @@ CAMLprim value ml_IMG_Load_RW(value o_autoclose, value rwops)
   return ML_SURFACE(s);
 }
 
-#if (SDL_IMAGE_VERSION >= 121)
+#if (OCAMLSDL_IMAGE_VERSION >= 121)
 CAMLprim value ml_IMG_ReadXPMFromArray(value string_arr)
 {
   int len = Wosize_val(string_arr);

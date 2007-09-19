@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.28 2006/09/20 10:38:49 jboulnois Exp $ */
+/* $Id: sdlttf_stub.c,v 1.29 2007/09/19 19:24:39 oliv__a Exp $ */
 
 #include <SDL_ttf.h>
 
@@ -113,7 +113,7 @@ sdlttf_open_font(value file, value index, value ptsize)
   int c_index = Opt_arg(index, Int_val, 0);
   TTF_Font *font=NULL;
 
-#if (SDL_TTF_VERSION >= 204)
+#if (OCAMLSDL_TTF_VERSION >= 204)
   font = TTF_OpenFontIndex(String_val(file), Int_val(ptsize), c_index);
 #else  /* try to keep compatibility with SDL_ttf v1 */
   font = TTF_OpenFont(String_val(file), Int_val(ptsize));
@@ -177,7 +177,7 @@ sdlttf_font_descent(value font)
 }
 
 ML_1(TTF_FontLineSkip, SDL_FONT, Val_int)
-#if (SDL_TTF_VERSION >= 204)
+#if (OCAMLSDL_TTF_VERSION >= 204)
 ML_1(TTF_FontFaces, SDL_FONT, Val_int)
 ML_1(TTF_FontFaceIsFixedWidth, SDL_FONT, Val_bool)
 ML_1(TTF_FontFaceFamilyName, SDL_FONT, copy_string)
@@ -187,7 +187,7 @@ Unsupported (TTF_FontFaces)
 Unsupported (TTF_FontFaceIsFixedWidth)
 Unsupported (TTF_FontFaceFamilyName)
 Unsupported (TTF_FontFaceStyleName)
-#endif /* SDL_TTF_VERSION */
+#endif /* OCAMLSDL_TTF_VERSION */
 
 CAMLprim value
 sdlttf_size_text(value font, value text)

@@ -2,7 +2,7 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.39 2006/09/21 08:11:20 jboulnois Exp $
+dnl $Id: configure.in,v 1.40 2007/09/19 19:24:39 oliv__a Exp $
 
 dnl begin configure.in 
 AC_INIT(src/sdl.ml)
@@ -77,9 +77,9 @@ AC_SUBST(PARTS)
 if test "$sdl_ttf" = yes ; then
   AC_CHECK_HEADERS(SDL_ttf.h, : , sdl_ttf=no)
   if test "$sdl_ttf" = yes ; then 
-    AC_CHECK_LIB(SDL_ttf, TTF_OpenFontRW, AC_DEFINE(SDL_TTF_VERSION,206),[
-      AC_CHECK_LIB(SDL_ttf, TTF_OpenFontIndex, AC_DEFINE(SDL_TTF_VERSION,204),[
-        AC_CHECK_LIB(SDL_ttf, TTF_OpenFont, AC_DEFINE(SDL_TTF_VERSION,200),
+    AC_CHECK_LIB(SDL_ttf, TTF_OpenFontRW, AC_DEFINE(OCAMLSDL_TTF_VERSION,206),[
+      AC_CHECK_LIB(SDL_ttf, TTF_OpenFontIndex, AC_DEFINE(OCAMLSDL_TTF_VERSION,204),[
+        AC_CHECK_LIB(SDL_ttf, TTF_OpenFont, AC_DEFINE(OCAMLSDL_TTF_VERSION,200),
         AC_MSG_ERROR(Cannot find SDL_tff library.))
       ])
     ])
@@ -91,8 +91,8 @@ fi
 if test "$sdl_image" = yes ; then
   AC_CHECK_HEADERS(SDL_image.h, : , sdl_image=no)
   if test "$sdl_image" = yes ; then 
-    AC_CHECK_LIB(SDL_image, IMG_ReadXPMFromArray, AC_DEFINE(SDL_IMAGE_VERSION,121),[
-      AC_CHECK_LIB(SDL_image, IMG_Load_RW, AC_DEFINE(SDL_IMAGE_VERSION,120),
+    AC_CHECK_LIB(SDL_image, IMG_ReadXPMFromArray, AC_DEFINE(OCAMLSDL_IMAGE_VERSION,121),[
+      AC_CHECK_LIB(SDL_image, IMG_Load_RW, AC_DEFINE(OCAMLSDL_IMAGE_VERSION,120),
         AC_MSG_ERROR(Cannot find SDL_image library.))	
     ])
     PARTS="$PARTS loader"
