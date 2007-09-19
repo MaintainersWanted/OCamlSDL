@@ -2,6 +2,7 @@ common.o: common.c common.h config.h
 mlsdl_main.o: mlsdl_main.c
 sdlcdrom_stub.o: sdlcdrom_stub.c common.h config.h
 sdlevent_stub.o: sdlevent_stub.c common.h config.h sdlmouse_stub.h
+sdlgfx_stub.o: sdlgfx_stub.c common.h config.h sdlvideo_stub.h
 sdlgl_stub.o: sdlgl_stub.c common.h config.h sdlvideo_stub.h
 sdlinit_flag.o: sdlinit_flag.c
 sdljoystick_stub.o: sdljoystick_stub.c common.h config.h
