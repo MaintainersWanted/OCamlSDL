@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.34 2004/07/26 00:28:49 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.35 2007/09/19 19:24:55 oliv__a Exp $ */
 
 #include <stdio.h>
 #include <string.h>
@@ -196,7 +196,7 @@ CAMLprim value
 sdlmixer_load_string(value data)
 {
   Mix_Chunk *chunk;
-  chunk = Mix_QuickLoad_WAV(String_val(data));
+  chunk = Mix_QuickLoad_WAV(UString_val(data));
 
   if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());

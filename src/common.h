@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.h,v 1.14 2004/07/26 00:28:50 oliv__a Exp $ */
+/* $Id: common.h,v 1.15 2007/09/19 19:24:55 oliv__a Exp $ */
 
 #ifndef _COMMON_H_
 #define _COMMON_H_
@@ -31,6 +31,8 @@
 #include <caml/fail.h>
 #include <caml/bigarray.h>
 #include <caml/custom.h>
+
+#define UString_val(v) ((unsigned char *) Bp_val(v))
 
 /*
   Caml list manipulations
