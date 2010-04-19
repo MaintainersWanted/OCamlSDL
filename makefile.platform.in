@@ -1,10 +1,11 @@
 # -*- makefile -*-
 
+# The ocamlsdl version, from configure.in
+VERSION = @PACKAGE_VERSION@
+
 # The OCaml platform, should be Unix, Win32, Cygwin or Apple
 PLATFORM = @PLATFORM@
 
 # The type of C compiler, either gcc or msvc
 OCAML_C_BACKEND = gcc
 
-# additional options for the C compiler
-CFLAGS =

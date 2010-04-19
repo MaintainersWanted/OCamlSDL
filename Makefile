@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.23 2010/04/19 19:43:40 oliv__a Exp $
+# $Id: Makefile,v 1.24 2010/04/19 21:01:14 oliv__a Exp $
 
 all doc clean install:
 	$(MAKE) -C src $@
@@ -35,9 +35,9 @@ configure : configure.in
 endif
 
 DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README README.macosx NEWS \
-           Makefile META \
+           Makefile META.in \
            configure.in aclocal.m4 configure \
-           makefile.config.gcc.in makefile.config.msvc makefile.rules makefile.platform \
+           makefile.platform.in makefile.config.gcc.in makefile.config.msvc makefile.rules \
            support/install-sh support/ocaml.m4 support/config.sub support/config.guess \
 	   src/sdl*.ml src/sdl*.mli src/sdl*.c src/sdl*.h \
            src/common.c src/common.h src/mlsdl_main.c \
@@ -54,7 +54,7 @@ dist-tgz : ../ocamlsdl-$(VERSION).tar.gz
 ../ocamlsdl-$(VERSION).zip : $(DISTSRC)
 	export DIRNAME=$${PWD##*/} ; \
 	cd .. && mv $$DIRNAME ocamlsdl-$(VERSION) && \
-        zip -9l $(@F) $(addprefix ocamlsdl-$(VERSION)/,$(DISTSRC)) && \
+        zip -9rl $(@F) $(addprefix ocamlsdl-$(VERSION)/,$(DISTSRC)) && \
 	mv ocamlsdl-$(VERSION) $$DIRNAME 
 ../ocamlsdl-$(VERSION).tar.gz : $(DISTSRC)
 	export DIRNAME=$${PWD##*/} ; \

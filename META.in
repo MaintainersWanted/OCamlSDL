@@ -1,6 +1,6 @@
 description = "Bindings for the SDL multimedia library"
 requires    = "bigarray"
-version     = "@VERSION@"
+version     = "@PACKAGE_VERSION@"
 
 archive(byte)   = "sdl.cma"
 archive(native) =" sdl.cmxa"

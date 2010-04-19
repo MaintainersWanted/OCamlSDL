@@ -1,3 +1,11 @@
+Release 0.8.0:
+        * add SDL_gfx bindings (Julien Boulnois)
+        * add UTF8 support in Sdlttf
+        * put the IMG_Load function in a blocking section
+        * rename some C functions to avoid conflicts (with Camlimages)
+        * some compilation/installation fixes for MacOSX
+        * autoconf update and cleanup
+
 Release 0.7.2:
 	* support for MacOSX (thanks to Daniel Bünzli and Francesco
           Zappa Nardelli for testing) 
