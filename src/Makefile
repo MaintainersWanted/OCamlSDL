@@ -90,7 +90,7 @@ install-findlib :
           $(if $(OCAMLOPT),*.cmxa sdl*.$(A) *.cmx) \
           $(if $(OCAMLMKLIB),dll*.so)
 ifeq ($(PLATFORM),Apple)
-	$(RANLIB) $$($(OCAMLFIND) printconf destdir)/*.$(A)
+	$(RANLIB) $$($(OCAMLFIND) printconf destdir)/sdl/*.$(A)
 endif
 else
 install-findlib : ; $(error "findlib is not installed")
