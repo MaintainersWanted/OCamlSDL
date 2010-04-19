@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.22 2010/04/19 20:14:11 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.23 2010/04/19 20:43:33 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -95,18 +95,16 @@ static value value_of_keyevent(SDL_KeyboardEvent keyevt)
   CAMLlocal2(v, r);
   Uint8 char_code = 0;
   tag_t tag;
-  r = alloc_small(5, 0);
+  r = alloc_small(6, 0);
   Field(r, 0) = Val_int(keyevt.which) ;
   Field(r, 1) = Val_int(keyevt.state) ; 
   /* SDL_PRESSED = 0x01, SDL_RELEASED = 0x00 */
   Field(r, 2) = find_mlsdl_keysym(keyevt.keysym.sym) ;
   Field(r, 3) = Val_int(keyevt.keysym.mod) ;
-/*    if(SDL_EnableUNICODE(-1) &&  */
-/*       (keyevt.keysym.unicode & 0xFF00) == 0) */
-/*      char_code = keyevt.keysym.unicode; */
-  if(SDL_EnableUNICODE(-1))
-    char_code = keyevt.keysym.unicode & 0x00FF ;
+  if (SDL_EnableUNICODE(-1) && keyevt.keysym.unicode <= 0xFF)
+    char_code = keyevt.keysym.unicode & 0xFF;
   Field(r, 4) = Val_int(char_code);
+  Field(r, 5) = Val_long(keyevt.keysym.unicode);
   tag = keyevt.state == SDL_PRESSED ? 1 : 2 ;
   v = alloc_small(1, tag);
   Field(v, 0) = r;

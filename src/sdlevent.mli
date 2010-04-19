@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.14 2003/11/11 08:34:55 smkl Exp $ *)
+(* $Id: sdlevent.mli,v 1.15 2010/04/19 20:43:33 oliv__a Exp $ *)
 
 (** SDL event handling *)
 
@@ -57,6 +57,7 @@ type keyboard_event = {
     keysym   : Sdlkey.t ;         (** SDL virtual keysym *)
     keymod   : Sdlkey.mod_state ; (** current key modifiers *)
     keycode  : char ;             (** translated character *)
+    unicode  : int ;
   }
 
 (** Mouse motion event record *)
