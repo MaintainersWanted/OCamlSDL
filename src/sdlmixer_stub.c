@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.35 2007/09/19 19:24:55 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.36 2010/04/19 20:26:20 oliv__a Exp $ */
 
 #include <stdio.h>
 #include <string.h>
@@ -209,7 +209,7 @@ CAMLprim value
 sdlmixer_get_music_type(value music)
 {
   Mix_Music *mus = Opt_arg(music, SDL_MUS, NULL);
-  value v = Val_int(0);
+  value v;
 
 #if (MIX_MAJOR_VERSION >= 1) && (MIX_MINOR_VERSION >= 2) && (MIX_PATCHLEVEL >= 4)
   switch(Mix_GetMusicType(mus)) {
@@ -220,6 +220,8 @@ sdlmixer_get_music_type(value music)
   case MUS_MID  : v = Val_int(4); break;
   case MUS_OGG  : v = Val_int(5); break;
   case MUS_MP3  : v = Val_int(6); break;
+
+  default       : v = Val_int(0); break;
   }
 #else 
   v = Val_int(0);
