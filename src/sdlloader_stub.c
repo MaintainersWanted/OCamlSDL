@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlloader_stub.c,v 1.16 2007/09/19 19:24:39 oliv__a Exp $ */
+/* $Id: sdlloader_stub.c,v 1.17 2010/04/19 20:25:54 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -46,7 +46,12 @@ sdlloader_raise_exception (char *msg)
 
 CAMLprim value ml_IMG_Load(value file)
 {
-  SDL_Surface *s = IMG_Load(String_val(file));
+  SDL_Surface *s;
+  char *fname = strdup(String_val(file));
+  enter_blocking_section();
+  s = IMG_Load(fname);
+  leave_blocking_section();
+  free(fname);
   if(! s)
     sdlloader_raise_exception(IMG_GetError());
   return ML_SURFACE(s);
