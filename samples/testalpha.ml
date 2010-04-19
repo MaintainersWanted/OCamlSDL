@@ -24,7 +24,7 @@ let create_light radius =
 
   let { Sdlvideo.pitch = pitch ;
 	Sdlvideo.w = w ; 
-	Sdlvideo.h = h } as info = Sdlvideo.surface_info light in
+	Sdlvideo.h = h } = Sdlvideo.surface_info light in
 
   (* Fill with a light yellow-orange color *)
   let pixels = Sdlvideo.pixel_data_32 light in
@@ -63,7 +63,7 @@ let create_light radius =
 
 let flashlight ~screen ~light ~x ~y =
   let { Sdlvideo.w = w ; 
-	Sdlvideo.h = h } as info = Sdlvideo.surface_info light in
+	Sdlvideo.h = h } = Sdlvideo.surface_info light in
   let px = x - w / 2 in
   let py = y - h / 2 in
   let rect = Sdlvideo.rect px py w h in
@@ -263,7 +263,7 @@ let main () =
   
   (* Load the sprite *)
   dbug_msg "## loading sprite" ;
-  let (sprite, backing) = load_sprite ~screen "../images/icon.bmp" in
+  let (sprite, backing) = load_sprite ~screen "icon.bmp" in
 
   (* Set a clipping rectangle to clip the outside edge of the screen *)
   begin

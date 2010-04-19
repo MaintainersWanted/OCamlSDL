@@ -1,47 +1,43 @@
-open Sdl;;
-open Sdlmixer;;
+let usage () = 
+  let basename = Filename.basename Sys.argv.(0) in
+  Printf.printf "%s made with OCamlSDL\n\nUsage: %s <input file>\n\n" basename basename ;
+  exit 1
 
 
-let usage() = 
-  let basename = (Filename.basename Sys.argv.(0)) in
-    Printf.printf "%s made with OCamlSDL\n\nUsage: %s <input file>\n\n" basename basename;
-    flush stdout;;
-
-if Array.length Sys.argv <= 1
-then
-  begin
-    usage();
-    exit 0
-  end;;
-
-init [`AUDIO];;
-
-try 
-  open_audio ~freq:44100 () ;
-  Printf.printf "audio device initialised\n";
-  flush stdout;
-with _ ->
-  Printf.printf "%s\n" "could not initialized audio device\n";
-  exit 255;;
+let open_audio () =
+  try 
+    Sdlmixer.open_audio ~freq:44100 () ;
+    print_endline "audio device initialised"
+  with _ ->
+    prerr_endline "could not initialize audio device" ;
+    exit 2
 
 
-(* exceptions must be caught *)
 let check_file_and_play_it f =
-  if (Sys.file_exists f) 
+  if Sys.file_exists f
   then begin  
-    Printf.printf "Loading music: %s\n" f;
-    flush stdout;
-    let m = load_music f in
-    play_music m ;
-    while playing_music() do
-      Sdltimer.delay 10;
+    Printf.printf "Loading music: %s\n%!" f ;
+    let m = Sdlmixer.load_music f in
+    Sdlmixer.play_music m ;
+    while Sdlmixer.playing_music () do
+      Sdltimer.delay 500 ;
     done ;
-    free_music m
+    Sdlmixer.free_music m
   end
-;;
 
-List.iter check_file_and_play_it (List.tl (Array.to_list Sys.argv));;
-close_audio ();
-Printf.printf "closing audio device\n";
-flush stdout;
-quit();;
+
+let main () = 
+  if Array.length Sys.argv <= 1 then usage () ;
+  
+  Sdl.init [`AUDIO] ;
+  open_audio () ;
+
+  for i = 1 to Array.length Sys.argv - 1 do
+    check_file_and_play_it Sys.argv.(i)
+  done ;
+  Sdlmixer.close_audio ();
+  print_endline "closing audio device" ;
+  Sdl.quit ()
+
+let _ = 
+  main ()

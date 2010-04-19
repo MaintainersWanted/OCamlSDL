@@ -1,4 +1,4 @@
-(* $Id: ocamlsdl_logo.ml,v 1.2 2002/11/06 23:02:56 oliv__a Exp $ *)
+(* $Id: ocamlsdl_logo.ml,v 1.3 2010/04/19 19:43:40 oliv__a Exp $ *)
 
 
 let create_fade_surface w h =
@@ -26,7 +26,7 @@ let fade_in tgt =
 
 let main () =
   Sdl.init ~auto_clean:true [ `VIDEO ] ;
-  let logo = Sdlloader.load_image "../images/ocamlsdl.png" in 
+  let logo = Sdlloader.load_image "ocamlsdl.png" in 
   let (w, h, _) = Sdlvideo.surface_dims logo in
   let screen = Sdlvideo.set_video_mode ~w ~h [] in
   let logo' = Sdlvideo.display_format logo in

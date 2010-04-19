@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.13 2006/09/29 14:50:36 jboulnois Exp $
+# $Id: Makefile,v 1.14 2010/04/19 19:43:40 oliv__a Exp $
 
 
 include ../makefile.platform
@@ -40,12 +40,9 @@ endif
 all: $(addsuffix .test,$(SAMPLES))
 opt: $(addsuffix .opt,$(SAMPLES))
 
-event_loop.test event_loop.opt : EXTRA = ttf
-example.test example.opt : EXTRA = ttf loader
 ocamlplayer.test ocamlplayer.opt : EXTRA = mixer
 ocamlsdl_logo.test ocamlsdl_logo.opt : EXTRA = loader
 ocamlsdl_gfx.test ocamlsdl_gfx.opt : EXTRA = loader gfx
-ocamlsdl_logo2.test ocamlsdl_logo2.opt : EXTRA = loader
 showfont.test showfont.opt : EXTRA = ttf
 sdlgears.test sdlgears.opt : MLINC+=-I $(LABLGLDIR)
 

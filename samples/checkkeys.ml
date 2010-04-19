@@ -35,7 +35,7 @@ let print_key { Sdlevent.ke_state = state;
 let main () = 
   Sdl.init ~auto_clean:true [ `VIDEO ] ;
 
-  let screen = Sdlvideo.set_video_mode 640 480 [ `SWSURFACE ] in
+  let _screen = Sdlvideo.set_video_mode 640 480 [ `SWSURFACE ] in
 
   let mask = 
     Sdlevent.keyboard_event_mask lor
