@@ -1,7 +1,7 @@
 # -*- makefile -*-
 
-# The OCaml platform, should be Unix, Win32 or Cygwin
-PLATFORM = Unix
+# The OCaml platform, should be Unix, Win32, Cygwin or Apple
+PLATFORM = @PLATFORM@
 
 # The type of C compiler, either gcc or msvc
 OCAML_C_BACKEND = gcc

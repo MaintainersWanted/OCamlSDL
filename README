@@ -18,16 +18,16 @@ Requirements
 ============
 
 OCamlSDL needs the following software and libraries:
-	OCaml		http://www.ocaml.org/  (3.08.x or 3.07, 3.06 may work)
+	OCaml		http://www.ocaml.org/
 	SDL		http://www.libsdl.org/ (1.2.x)
 
 and optionally:
 	SDL_ttf		http://www.libsdl.org/projects/SDL_ttf/   (2.x)
 	SDL_mixer	http://www.libsdl.org/projects/SDL_mixer/ (1.2.x)
 	SDL_image	http://www.libsdl.org/projects/SDL_image/ (1.2.x)
-        SDL_gfx         http://www.ferzkopp.net/~aschiffler/Software/SDL_gfx-2.0/
+        SDL_gfx         http://www.ferzkopp.net/joomla/software-mainmenu-14/4-ferzkopps-linux-software/19-sdlgfx
 	LablGL		http://wwwfun.kurims.kyoto-u.ac.jp/soft/olabl/lablgl.html
-	findlib		http://www.ocaml-programming.de/packages/
+	findlib		http://projects.camlcity.org/projects/findlib.html
 
 
 Using
@@ -60,7 +60,6 @@ You can browse the ocaml API documentation at:
 
 You can find SDL documentation on the SDL website:
 	http://www.libsdl.org/
-	http://sdldoc.csn.ul.ie/
 
 
 Toplevel

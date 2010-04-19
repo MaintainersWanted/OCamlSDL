@@ -1,6 +1,6 @@
 description = "Bindings for the SDL multimedia library"
 requires    = "bigarray"
-version     = "0.7.2"
+version     = "@VERSION@"
 
 archive(byte)   = "sdl.cma"
 archive(native) =" sdl.cmxa"
@@ -28,10 +28,3 @@ package "sdlgfx" (
   archive(byte) = "sdlgfx.cma"
   archive(native) = "sdlgfx.cmxa"
 )
-
-package "sdlsvg" (
-  require = "sdl"
-  archive(byte) = "sdlsvg.cma"
-  archive(native) = "sdlsvg.cmxa"
-)
-

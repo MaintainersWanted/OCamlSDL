@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.21 2005/01/30 22:49:59 oliv__a Exp $
+# $Id: Makefile,v 1.22 2010/04/19 19:08:58 oliv__a Exp $
 
 all doc clean install:
 	$(MAKE) -C src $@
@@ -45,7 +45,6 @@ DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README README.macosx NEWS \
 	   src/Makefile src/.depend src/.depend_c \
            doc/OCamlMakefile doc/Makefile doc/ocamlsdl.texi doc/ocamlsdl.info doc/ocamlsdl-mingw.txt \
            doc/html xpm_to_ml
-VERSION := 0.7.2
 
 # hackish targets to build tarballs
 dist : dist-zip dist-tgz

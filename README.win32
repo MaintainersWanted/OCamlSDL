@@ -1,5 +1,0 @@
-
-Copy makefile.vcc to makefile.toplevel. 
-Uncomment the line `OCAML_BACKEND = msvc' in makefile.rules . 
-Rename your SDL.dll to libSDL.dll.
-Run GNU make normally. 

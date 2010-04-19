@@ -1,5 +1,3 @@
-VERSION := 0.7.2
-
 include ../makefile.platform
 include ../makefile.config.$(OCAML_C_BACKEND)
 include ../makefile.rules

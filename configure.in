@@ -2,23 +2,23 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.40 2007/09/19 19:24:39 oliv__a Exp $
+dnl $Id: configure.in,v 1.41 2010/04/19 19:08:58 oliv__a Exp $
 
-dnl begin configure.in 
-AC_INIT(src/sdl.ml)
-
+AC_INIT(ocamlsdl, 0.8.0)
 AC_CONFIG_AUX_DIR(./support)
-AC_CONFIG_HEADER(src/config.h)
+AC_CONFIG_HEADERS(src/config.h)
 
 # Check for OCaml programs 
-AC_PROG_OCAML()
-AC_PROG_FINDLIB()
+AC_PROG_OCAML
+AC_PROG_FINDLIB
+if test "$OCAML" = no ; then 
+   AC_MSG_ERROR([Cannot find ocaml])
+fi
 
 # OCaml platform
-AC_MSG_CHECKING(platform)
-echo "print_endline Sys.os_type ;;" > conftest.ml
-PLATFORM=$(ocaml conftest.ml)
-AC_MSG_RESULT($PLATFORM)
+AC_CHECK_OCAML_OS_TYPE
+PLATFORM="$OCAML_OS_TYPE"
+AC_SUBST(PLATFORM)
 
 # Check for programs
 if test -z "$CFLAGS" ; then
@@ -36,11 +36,17 @@ fi
 AC_PROG_INSTALL
 
 # Checking for lablGL
-AC_ARG_WITH(lablgldir,[  --with-lablgldir=DIR	  specify location of lablgl],LABLGLDIR="$withval")
-AC_CHECK_OCAML_MODULE(lablGL,LABLGLDIR,Gl,+lablGL)
+AC_ARG_WITH(lablgldir,
+            [  --with-lablgldir=DIR	  specify location of lablgl],
+            LABLGLDIR="$withval")
+AC_CHECK_OCAML_MODULE(LABLGLDIR,lablGL,Gl,+lablGL)
+if test "$LABLGLDIR" = no ; then unset LABLGLDIR ; fi
 
 # Where to install the library ?
-AC_ARG_WITH(installdir,[  --with-installdir=DIR	  specify installation directory [defaults to +sdl]],OCAMLSDLDIR="$withval", OCAMLSDLDIR="$OCAMLLIB/sdl")
+AC_ARG_WITH(installdir,
+            [  --with-installdir=DIR	  specify installation directory [defaults to +sdl]],
+            OCAMLSDLDIR="$withval",
+            OCAMLSDLDIR="$OCAMLLIB/sdl")
 AC_SUBST(OCAMLSDLDIR)
 
 # Check for libraries
@@ -119,10 +125,9 @@ if test "$sdl_gfx" = yes ; then
   fi
 fi
 
-AC_OUTPUT(makefile.config.gcc)
-
-AC_MSG_NOTICE([updating makefile.platform])
-sed -i -e "s/^PLATFORM.*/PLATFORM = $PLATFORM/" makefile.platform
+# Output configuration files
+AC_CONFIG_FILES([META makefile.platform makefile.config.gcc])
+AC_OUTPUT
 
 # Output the configuration summary
 echo
