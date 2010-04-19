@@ -22,7 +22,7 @@ value value_of_mousebutton_state(Uint8 state)
 
   for(i=SDL_TABLESIZE(buttons)-1; i>=0; i--)
     if(state & SDL_BUTTON(buttons[i]))
-      v = cons(Val_int(i), v);
+      v = mlsdl_cons(Val_int(i), v);
   return v;
 }
 

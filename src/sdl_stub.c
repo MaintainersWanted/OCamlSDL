@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdl_stub.c,v 1.19 2005/01/30 22:31:44 oliv__a Exp $ */
+/* $Id: sdl_stub.c,v 1.20 2010/04/19 20:14:11 oliv__a Exp $ */
 
 #include <string.h>
 
@@ -118,7 +118,7 @@ sdl_was_init (value unit)
   int i;
   for (i = table[0].data; i > 0; i--)
     if (flags & table[i].data && table[i].data != SDL_INIT_EVERYTHING) 
-      l = cons(table[i].key, l);
+      l = mlsdl_cons(table[i].key, l);
   return l;
 }
 
@@ -157,7 +157,10 @@ CAMLprim value sdl_putenv(value name, value val)
 
 
 /* main entry point, used on MacOs X */
-#ifdef __APPLE__
+#if defined(__WIN32__) || \
+    (defined(__MWERKS__) && !defined(__BEOS__)) || \
+    defined(__MACOS__) || defined(__MACOSX__) || \
+    defined(__SYMBIAN32__) || defined(QWS)
 int main (int argc, char **argv)
 {
   caml_main (argv);

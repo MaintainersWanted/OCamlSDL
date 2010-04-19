@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlttf_stub.c,v 1.29 2007/09/19 19:24:39 oliv__a Exp $ */
+/* $Id: sdlttf_stub.c,v 1.30 2010/04/19 20:14:11 oliv__a Exp $ */
 
 #include <SDL_ttf.h>
 
@@ -130,7 +130,7 @@ sdlttf_get_font_style(value font)
 {
   int style = TTF_GetFontStyle(SDL_FONT(font));
   if (style == TTF_STYLE_NORMAL)
-    return cons(Val_int(0), Val_emptylist);
+    return mlsdl_cons(Val_int(0), Val_emptylist);
   else {
     int i;
     const int font_style_table [] = {
@@ -138,7 +138,7 @@ sdlttf_get_font_style(value font)
     value v_style = Val_emptylist;
     for(i=0; i < 3 ; i++)
       if(font_style_table[i] & style) 
-	v_style = cons(Val_int(i+1), v_style);
+	v_style = mlsdl_cons(Val_int(i+1), v_style);
     return v_style;
   }
 }

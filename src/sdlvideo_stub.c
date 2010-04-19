@@ -186,12 +186,12 @@ static value val_video_flag(Uint32 flags)
   for (i = table[0].data; i > 0; i--) {
     lookup_info f = table[i];
     if (f.data != 0 && ((flags & f.data) == f.data))
-      l = cons(f.key, l);
+      l = mlsdl_cons(f.key, l);
   }
 
   /* special case for SDL_SWSURFACE because its value is 0 */
   if ((flags & SDL_HWSURFACE) == 0)
-    l = cons(MLTAG_SWSURFACE, l);
+    l = mlsdl_cons(MLTAG_SWSURFACE, l);
 
   return l;
 }
@@ -322,7 +322,7 @@ CAMLprim value ml_SDL_ListModes(value obpp, value flag_list)
       r = alloc_small(2, 0);
       Field(r, 0) = Val_int(modes[i]->w);
       Field(r, 1) = Val_int(modes[i]->h);
-      l = cons(r, l);
+      l = mlsdl_cons(r, l);
     }
     v = alloc_small(1, 0);
     Field(v, 0) = l;
@@ -394,7 +394,7 @@ CAMLprim value ml_SDL_UpdateRect(value orect, value screen)
 
 CAMLprim value ml_SDL_UpdateRects(value rectl, value screen)
 {
-  int len = ocamlsdl_list_length(rectl);
+  int len = mlsdl_list_length(rectl);
   register int i;
   LOCALARRAY(SDL_Rect, r, len);
   for(i=0; i<len; i++){

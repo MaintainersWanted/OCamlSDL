@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: common.c,v 1.10 2007/09/19 19:28:26 oliv__a Exp $ */
+/* $Id: common.c,v 1.11 2010/04/19 20:14:11 oliv__a Exp $ */
 
 
 #include <caml/mlvalues.h>
@@ -34,7 +34,7 @@
   Grabbed in ocamlsdl-0.3/sdl_stub.c 1.8 (2000/09/25)
   made by Jean-Christophe FILLIATRE 
 */
-value cons(value x,value l)
+value mlsdl_cons(value x,value l)
 {
   CAMLparam2(x,l);
   CAMLlocal1(m);
@@ -44,7 +44,7 @@ value cons(value x,value l)
   CAMLreturn (m);
 }
 
-int ocamlsdl_list_length(value l)
+int mlsdl_list_length(value l)
 {  
   int len = 0;
   while(is_not_nil(l)){

@@ -46,7 +46,7 @@ CAMLprim value ml_SDL_GL_GetAttribute(value unit)
 		   Val_unit ) ) ;
     a = alloc_small(1, i);
     Field(a, 0) = Val_int(val);
-    v = cons(a, v);
+    v = mlsdl_cons(a, v);
   }
   CAMLreturn(v);
 }

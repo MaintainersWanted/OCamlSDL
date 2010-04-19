@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.21 2007/09/19 19:28:26 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.22 2010/04/19 20:14:11 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -44,11 +44,11 @@ static value value_of_active_state(Uint8 state)
 {
   value v = nil();
   if(state & SDL_APPMOUSEFOCUS)
-    v = cons(Val_int(0), v);
+    v = mlsdl_cons(Val_int(0), v);
   if(state & SDL_APPINPUTFOCUS)
-    v = cons(Val_int(1), v);
+    v = mlsdl_cons(Val_int(1), v);
   if(state & SDL_APPACTIVE)
-    v = cons(Val_int(2), v);
+    v = mlsdl_cons(Val_int(2), v);
   return v;
 }
 
@@ -330,7 +330,7 @@ CAMLprim value mlsdlevent_peek(value omask, value num)
     v = nil();
     for(i=m-1; i>=0; i--){
       value e = value_of_SDLEvent(evt[i]);
-      v = cons(e, v);
+      v = mlsdl_cons(e, v);
     }
     CAMLreturn(v);
   }
@@ -352,7 +352,7 @@ CAMLprim value mlsdlevent_get(value omask, value num)
     v = nil();
     for(i=m-1; i>=0; i--){
       value e = value_of_SDLEvent(evt[i]);
-      v = cons(e, v);
+      v = mlsdl_cons(e, v);
     }
     CAMLreturn(v);
   }
@@ -360,7 +360,7 @@ CAMLprim value mlsdlevent_get(value omask, value num)
 
 CAMLprim value mlsdlevent_add(value elist)
 {
-  int len = ocamlsdl_list_length(elist);
+  int len = mlsdl_list_length(elist);
   LOCALARRAY(SDL_Event, evt, len);
   value l = elist;
   int i=0;
