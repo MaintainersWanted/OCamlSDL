@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.23 2010/04/19 20:43:33 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.24 2011/04/10 15:33:52 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -97,8 +97,7 @@ static value value_of_keyevent(SDL_KeyboardEvent keyevt)
   tag_t tag;
   r = alloc_small(6, 0);
   Field(r, 0) = Val_int(keyevt.which) ;
-  Field(r, 1) = Val_int(keyevt.state) ; 
-  /* SDL_PRESSED = 0x01, SDL_RELEASED = 0x00 */
+  Field(r, 1) = keyevt.state == SDL_RELEASED ? Val_int(0) : Val_int(1);
   Field(r, 2) = find_mlsdl_keysym(keyevt.keysym.sym) ;
   Field(r, 3) = Val_int(keyevt.keysym.mod) ;
   if (SDL_EnableUNICODE(-1) && keyevt.keysym.unicode <= 0xFF)
@@ -110,6 +109,18 @@ static value value_of_keyevent(SDL_KeyboardEvent keyevt)
   Field(v, 0) = r;
   CAMLreturn(v);
 } 
+
+static value value_of_mouse_button(Uint8 b)
+{
+  value r;
+  if (SDL_BUTTON_LEFT <= b && b <= SDL_BUTTON_WHEELDOWN)
+    r = Val_int(b);
+  else {
+    r = caml_alloc_small(1, 0);
+    Field(r, 0) = Val_int(b);
+  }
+  return r;
+}
 
 static value value_of_SDLEvent(SDL_Event evt)
 {
@@ -143,10 +154,11 @@ static value value_of_SDLEvent(SDL_Event evt)
     break ;
   case SDL_MOUSEBUTTONDOWN :
   case SDL_MOUSEBUTTONUP :
+    t = value_of_mouse_button(evt.button.button);
     r = alloc_small(5, 0);
     Field(r, 0) = Val_int(evt.button.which);
-    Field(r, 1) = Val_int(evt.button.button - 1);
-    Field(r, 2) = Val_int(evt.button.state);
+    Field(r, 1) = t;
+    Field(r, 2) = evt.button.state == SDL_RELEASED ? Val_int(0) : Val_int(1);
     Field(r, 3) = Val_int(evt.button.x);
     Field(r, 4) = Val_int(evt.button.y);
     tag = evt.button.state == SDL_PRESSED ? 4 : 5;
@@ -183,7 +195,7 @@ static value value_of_SDLEvent(SDL_Event evt)
     r = alloc_small(3, 0);
     Field(r, 0) = Val_int(evt.jbutton.which);
     Field(r, 1) = Val_int(evt.jbutton.button);
-    Field(r, 2) = Val_int(evt.jbutton.state);
+    Field(r, 2) = evt.jbutton.state == SDL_RELEASED ? Val_int(0) : Val_int(1);
     tag = evt.jbutton.state == SDL_PRESSED ? 9 : 10 ;
     v = alloc_small(1, tag);
     Field(v, 0) = r;
@@ -258,7 +270,7 @@ static SDL_Event SDLEvent_of_value(value e)
     case 5:
       evt.type = Tag_val(e) == 4 ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP ;
       evt.button.which  = Int_val(Field(r, 0));
-      evt.button.button = Int_val(Field(r, 1));
+      evt.button.button = Is_long(Field(r, 1)) ? Int_val(Field(r, 1)) : Int_val(Field(Field(r, 1), 0));
       evt.button.state  = Int_val(Field(r, 2));
       evt.button.x      = Int_val(Field(r, 3));
       evt.button.y      = Int_val(Field(r, 4));

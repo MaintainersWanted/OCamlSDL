@@ -6,6 +6,7 @@ type button =
   | BUTTON_RIGHT
   | BUTTON_WHEELUP
   | BUTTON_WHEELDOWN
+  | BUTTON_X of int
 
 external get_state : ?relative:bool -> unit -> int * int * button list
     = "mlsdlevent_get_mouse_state"

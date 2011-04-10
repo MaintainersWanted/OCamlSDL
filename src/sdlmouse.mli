@@ -8,6 +8,8 @@ type button =
   | BUTTON_RIGHT
   | BUTTON_WHEELUP
   | BUTTON_WHEELDOWN
+  | BUTTON_X of int (** BUTTON_X is only seen in a Sdlevent.mousebutton_event,
+                        it is not returned by Sdlmouse.get_state *)
 
 external get_state : ?relative:bool -> unit -> int * int * button list
     = "mlsdlevent_get_mouse_state"
