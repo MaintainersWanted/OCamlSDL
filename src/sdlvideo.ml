@@ -257,8 +257,16 @@ external display_format : ?alpha:bool -> surface -> surface
     = "ml_SDL_DisplayFormat"
 
 
-external _pixel_data : surface -> int -> ('a, 'b, c_layout) Array1.t
+external __pixel_data : surface -> int -> ('a, 'b, c_layout) Array1.t
     = "ml_bigarray_pixels"
+let _pixel_data_final s ba =
+  (* nothing to do, but this ensures
+     that s is kept alive until ba is collected) *)
+  ()
+let _pixel_data surf bpp =
+  let ba = __pixel_data surf bpp in
+  Gc.finalise (_pixel_data_final surf) ba ;
+  ba
 
 let pixel_data s =
   (_pixel_data s 0 : (int, int8_unsigned_elt, c_layout) Array1.t)
