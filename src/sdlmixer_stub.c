@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlmixer_stub.c,v 1.36 2010/04/19 20:26:20 oliv__a Exp $ */
+/* $Id: sdlmixer_stub.c,v 1.37 2011/04/10 12:44:12 oliv__a Exp $ */
 
 #include <stdio.h>
 #include <string.h>
@@ -201,6 +201,20 @@ sdlmixer_load_string(value data)
   if (chunk == NULL)
     sdlmixer_raise_exception(Mix_GetError());
 
+  return ML_CHUNK(chunk);
+}
+
+CAMLprim value
+sdlmixer_load_string_raw(value data)
+{
+  Mix_Chunk *chunk;
+#if (MIX_MAJOR_VERSION >= 1) && (MIX_MINOR_VERSION >= 2) && (MIX_PATCHLEVEL >= 4)
+  chunk = Mix_QuickLoad_RAW(UString_val(data), caml_string_length(data));
+  if (chunk == NULL)
+    sdlmixer_raise_exception(Mix_GetError());
+#else
+  caml_failwith("Mix_QuickLoad_RAW: not supported")
+#endif
   return ML_CHUNK(chunk);
 }
 

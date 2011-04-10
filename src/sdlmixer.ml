@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.ml,v 1.12 2003/02/24 22:55:10 oliv__a Exp $ *)
+(* $Id: sdlmixer.ml,v 1.13 2011/04/10 12:44:12 oliv__a Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -79,6 +79,7 @@ let loadWAV_from_mem buff =
   loadWAV_RW (Sdl.rwops_from_mem buff)
 
 external load_string : string -> chunk = "sdlmixer_load_string"
+external load_string_raw : string -> chunk = "sdlmixer_load_string_raw"
 external load_music : string -> music = "sdlmixer_loadMUS"
 external music_type : music option -> music_kind = "sdlmixer_get_music_type"
 external set_music_cmd : string -> unit = "sdlmixer_set_music_cmd"
