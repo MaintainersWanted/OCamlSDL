@@ -8,7 +8,13 @@
  * GL interaction functions
  */
 
-ML_0(SDL_GL_SwapBuffers, Unit)
+CAMLprim value ml_SDL_GL_SwapBuffers(value unit)
+{
+  enter_blocking_section();
+  SDL_GL_SwapBuffers();
+  leave_blocking_section();
+  return Val_unit;
+}
 
 static const SDL_GLattr GL_attr_map[] = {
   SDL_GL_RED_SIZE, SDL_GL_GREEN_SIZE,
