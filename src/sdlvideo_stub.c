@@ -257,7 +257,7 @@ CAMLprim value ml_SDL_SetPalette(value surf, value flags,
   else
     c_flags = Int_val(Unopt(flags)) +1 ;
 
-  status = SDL_SetPalette(s, c_flags, color, ofirstcolor, n);
+  status = SDL_SetPalette(s, c_flags, color, firstcolor, n);
   return Val_bool(status);
 }
   
