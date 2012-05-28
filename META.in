@@ -24,7 +24,7 @@ package "sdlttf" (
 )
 
 package "sdlgfx" (
-  require = "sdl"
+  requires = "sdl"
   archive(byte) = "sdlgfx.cma"
   archive(native) = "sdlgfx.cmxa"
 )
