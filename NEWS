@@ -1,11 +1,11 @@
-Next release:
+Release 0.9.0:
         * add a variant in Sdlmouse.button for extra mouse buttons
           (seen with mouse events in Sdlevent)
         * ensure that the arrays returned by Sdlvideo.pixel_data keep
           the underlying SDL_surface alive
         * put SDL_GL_SwapBuffers in a blocking section
         * bind the Mix_QuickLoad_RAW function (Sdlmixer.load_string_raw)
-        
+        * fix a typo in META for Sdlgfx 
 
 Release 0.8.0:
         * add SDL_gfx bindings (Julien Boulnois)

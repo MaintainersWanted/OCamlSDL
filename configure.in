@@ -2,9 +2,9 @@ dnl ****** -*- autoconf -*-
 dnl OCamlSdl autoconf input
 dnl ******
 dnl
-dnl $Id: configure.in,v 1.42 2010/04/19 21:01:14 oliv__a Exp $
+dnl $Id: configure.in,v 1.43 2012/05/28 18:39:09 oliv__a Exp $
 
-AC_INIT(ocamlsdl, 0.8.0)
+AC_INIT(ocamlsdl, 0.9.0)
 AC_CONFIG_AUX_DIR(./support)
 AC_CONFIG_HEADERS(src/config.h)
 
