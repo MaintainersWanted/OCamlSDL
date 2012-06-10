@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.24 2011/04/10 15:33:52 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.25 2012/06/10 10:05:28 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -177,7 +177,7 @@ static value value_of_SDLEvent(SDL_Event evt)
     r = alloc_small(4, 0);
     Field(r, 0) = Val_int(evt.jball.which);
     Field(r, 1) = Val_int(evt.jball.ball);
-    Field(r, 3) = Val_int(evt.jball.xrel);
+    Field(r, 2) = Val_int(evt.jball.xrel);
     Field(r, 3) = Val_int(evt.jball.yrel);
     v = alloc_small(1, 7);
     Field(v, 0) = r;
