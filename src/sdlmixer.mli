@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.15 2011/04/10 12:44:12 oliv__a Exp $ *)
+(* $Id: sdlmixer.mli,v 1.16 2012/06/14 16:34:54 oliv__a Exp $ *)
 
 (** Simple multi-channel audio mixer *)
 
@@ -191,7 +191,7 @@ external group_channel : channel -> group -> unit = "sdlmixer_group_channel"
    If group is [default_group], the tag is removed.
 *)
 
-external group_channels : from_c:channel -> to_c:channel -> group -> unit = "sdlmixer_group_channel"
+external group_channels : from_c:channel -> to_c:channel -> group -> unit = "sdlmixer_group_channels"
 (** Same as above but for a range of channels. *)
 
 external group_count : group -> int = "sdlmixer_group_count"
@@ -252,8 +252,9 @@ external fadein_music : ?loops:int -> music -> float -> unit
    fade in music over [ms] seconds, same semantics as the [play_music]
    function *)
 
-external volume_music   : music -> float = "sdlmixer_volume_music"
-external setvolume_music : music -> float -> unit = "sdlmixer_setvolume_music"
+external volume_music   : unit -> float = "sdlmixer_volume_music"
+
+external setvolume_music : float -> unit = "sdlmixer_setvolume_music"
 
 external pause_music   : unit -> unit = "sdlmixer_pause_music"
 

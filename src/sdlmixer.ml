@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.ml,v 1.13 2011/04/10 12:44:12 oliv__a Exp $ *)
+(* $Id: sdlmixer.ml,v 1.14 2012/06/14 16:34:54 oliv__a Exp $ *)
 
 (* Define a new exception for loader errors and register 
    it to be callable from C code. *)
@@ -94,7 +94,7 @@ external allocate_channels : int -> int = "sdlmixer_allocate_channels"
 let num_channels () = allocate_channels ~-1
 external reserve_channels : int -> int = "sdlmixer_reserve_channels"
 external group_channel : channel -> group -> unit = "sdlmixer_group_channel"
-external group_channels : from_c:channel -> to_c:channel -> group -> unit = "sdlmixer_group_channel"
+external group_channels : from_c:channel -> to_c:channel -> group -> unit = "sdlmixer_group_channels"
 external group_available : group -> channel = "sdlmixer_group_available"
 external group_count : group -> int = "sdlmixer_group_count"
 external group_oldest : group -> channel = "sdlmixer_group_oldest"
@@ -113,11 +113,11 @@ let play_sound chunk = ignore (play_channel chunk)
 
 external volume_channel : channel -> float = "sdlmixer_volume_channel"
 external volume_chunk   : chunk -> float = "sdlmixer_volume_chunk"
-external volume_music   : music -> float = "sdlmixer_volume_music"
+external volume_music   : unit -> float = "sdlmixer_volume_music"
 
 external setvolume_channel : channel -> float -> unit = "sdlmixer_setvolume_channel"
 external setvolume_chunk : chunk -> float -> unit = "sdlmixer_setvolume_chunk"
-external setvolume_music : music -> float -> unit = "sdlmixer_setvolume_music"
+external setvolume_music : float -> unit = "sdlmixer_setvolume_music"
 
 (* Stopping playing *)
 
