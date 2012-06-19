@@ -13,12 +13,10 @@ value value_of_mousebutton_state(Uint8 state)
   value v = Val_emptylist;
   int i;
   const int buttons[] = {
-    SDL_BUTTON_LEFT, SDL_BUTTON_MIDDLE,
+    SDL_BUTTON_LEFT, 
+    SDL_BUTTON_MIDDLE,
     SDL_BUTTON_RIGHT, 
-#if SDL_MINOR_VERSION == 2 && SDL_PATCHLEVEL >= 5
-    SDL_BUTTON_WHEELUP, SDL_BUTTON_WHEELDOWN,
-#endif
-};
+  };
 
   for(i=SDL_TABLESIZE(buttons)-1; i>=0; i--)
     if(state & SDL_BUTTON(buttons[i]))

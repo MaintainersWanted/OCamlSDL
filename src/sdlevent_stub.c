@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.25 2012/06/10 10:05:28 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.26 2012/06/19 18:06:41 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -61,7 +61,8 @@ static Uint8 state_of_value(value l)
 {
   Uint8 state = 0;
   while(is_not_nil(l)){
-    state |= 1 << Int_val(hd(l));
+    if (Is_long(hd(l)))
+      state |= 1 << Int_val(hd(l));
     l = tl(l);
   }
   return state;
@@ -114,7 +115,7 @@ static value value_of_mouse_button(Uint8 b)
 {
   value r;
   if (SDL_BUTTON_LEFT <= b && b <= SDL_BUTTON_WHEELDOWN)
-    r = Val_int(b);
+    r = Val_int(b - 1);
   else {
     r = caml_alloc_small(1, 0);
     Field(r, 0) = Val_int(b);
