@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlevent.mli,v 1.15 2010/04/19 20:43:33 oliv__a Exp $ *)
+(* $Id: sdlevent.mli,v 1.16 2012/06/19 18:20:59 oliv__a Exp $ *)
 
 (** SDL event handling *)
 
@@ -35,8 +35,7 @@ type active_state =
 (** This function returns the current state of the application. If
    ACTIVE is set, then the user is able to see your application,
    otherwise it has been iconified or disabled. *)
-external get_app_state : unit -> active_state list =
-   "mlsdlevent_get_app_state"
+val get_app_state : unit -> active_state list
 
 (** {3 Events datatypes} *)
 
@@ -193,13 +192,13 @@ val enable_events  : event_mask -> unit
 val disable_events : event_mask -> unit
 (** Specified events are not collected and won't appear in the event queue. *)
 
-external get_enabled_events : unit -> event_mask = "mlsdlevent_get_enabled"
+val get_enabled_events : unit -> event_mask
 (** The mask of currently reported events. *)
 
-external get_state : event_kind -> bool = "mlsdlevent_get_state"
+val get_state : event_kind -> bool
 (** Query the reporting state of an event type. *)
 
-external set_state : bool -> event_kind -> unit = "mlsdlevent_set_state"
+val set_state : bool -> event_kind -> unit
 (** Set the reporting state of one individual event type. *)
 
 
@@ -214,27 +213,27 @@ val pump : unit -> unit
 val wait_event : unit -> event
 (** Wait indefinitely for the next available event and return it. *)
 
-external wait : unit -> unit = "mlsdlevent_wait"
+val wait : unit -> unit
 (** Wait indefinitely for the next available event but leave it in the
    queue. *)
 
 val poll : unit -> event option
 (** Poll for currently pending events and return one if available. *)
 
-external has_event : unit -> bool = "mlsdlevent_has_event"
+val has_event : unit -> bool
 (** Poll for currently pending events and return [false] if the queue is empty. *)
 
-external peek : ?mask:event_mask -> int -> event list = "mlsdlevent_peek"
+val peek : ?mask:event_mask -> int -> event list
 (** Checks the event queue for messages : up to 'numevents' events at
    the front of the event queue, matching 'mask', will be returned and
    will not be removed from the queue. *)
 
-external get  : ?mask:event_mask -> int -> event list = "mlsdlevent_get"
+val get  : ?mask:event_mask -> int -> event list
 (** Checks the event queue for messages : up to 'numevents' events at
    the front of the event queue, matching 'mask', will be returned and
    will be removed from the queue. *)
 
-external add : event list -> unit = "mlsdlevent_add"
+val add : event list -> unit
 (** Add events to the back of the event queue. *)
 
 (** {3 Old event-handling interface } *)

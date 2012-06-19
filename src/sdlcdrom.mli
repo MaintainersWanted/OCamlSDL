@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.mli,v 1.11 2003/01/05 11:23:53 oliv__a Exp $ *)
+(* $Id: sdlcdrom.mli,v 1.12 2012/06/19 18:20:59 oliv__a Exp $ *)
 
 (** This module provides CD-ROM handling *)
 
@@ -62,10 +62,10 @@ type cdrom_info = {
  
 (** An SDLcdrom_exception is raised on errors *)
 
-external get_num_drives : unit -> int = "sdlcdrom_get_num_drives"
+val get_num_drives : unit -> int
 (** [get_num_drives] returns the number of CD-ROM drives on the system *)
 
-external drive_name : int -> string = "sdlcdrom_drive_name"
+val drive_name : int -> string
 (** [drive_name drive] returns a human-readable, system-dependent identifier 
   for the CD-ROM. 
   [drive] is the index of the drive. Drive indices start to 0 and end 
@@ -73,16 +73,16 @@ external drive_name : int -> string = "sdlcdrom_drive_name"
 
 (** {3 CD-ROM drive handling} *)
 
-external cd_open : int -> cdrom_drive = "sdlcdrom_open"
+val cd_open : int -> cdrom_drive
 (** [cd_open drive] open a CD-ROM drive for access *)
 
-external cd_close : cdrom_drive -> unit = "sdlcdrom_close"
+val cd_close : cdrom_drive -> unit
 (** Closes the handle for the cdrom_drive *)
 
-external cd_status : cdrom_drive -> cdrom_drive_status = "sdlcdrom_status"
+val cd_status : cdrom_drive -> cdrom_drive_status
 (** @return the current status of the given drive. *)
 
-external cd_info : cdrom_drive -> cdrom_info = "sdlcdrom_info"
+val cd_info : cdrom_drive -> cdrom_info
 (** @return the table of contents of the CD and current play position 
    @raise Trayempty if there's no cd in the drive *)
 
@@ -91,8 +91,8 @@ external cd_info : cdrom_drive -> cdrom_info = "sdlcdrom_info"
 val msf_of_frames : int -> int * int * int
 val frames_of_msf : int * int * int -> int
 
-external cd_play_tracks : cdrom_drive -> start_track:int -> 
-  start_frame:int -> num_tracks:int -> num_frames:int -> unit = "sdlcdrom_play_tracks"
+val cd_play_tracks : cdrom_drive -> start_track:int -> 
+  start_frame:int -> num_tracks:int -> num_frames:int -> unit
 (** [cd_play_tracks cdrom_drive start_track start_frame num_tracks num_frames] 
   play the given CD with these parameters
    @param start_track the starting track
@@ -106,14 +106,14 @@ external cd_play_tracks : cdrom_drive -> start_track:int ->
 val cd_play_track : cdrom_drive -> track -> unit
 (** Play the track n on the given cdrom_drive *)
 
-external cd_pause : cdrom_drive -> unit = "sdlcdrom_pause"
+val cd_pause : cdrom_drive -> unit
 (** Pause play *)
 
-external cd_resume : cdrom_drive -> unit = "sdlcdrom_resume"
+val cd_resume : cdrom_drive -> unit
 (** Resume play *)
 
-external cd_stop : cdrom_drive -> unit = "sdlcdrom_stop"
+val cd_stop : cdrom_drive -> unit
 (** Stop play *)
 
-external cd_eject : cdrom_drive -> unit = "sdlcdrom_eject"
+val cd_eject : cdrom_drive -> unit
 (** Eject CD-ROM *) 

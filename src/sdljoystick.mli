@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdljoystick.mli,v 1.3 2003/01/05 11:23:53 oliv__a Exp $ *)
+(* $Id: sdljoystick.mli,v 1.4 2012/06/19 18:20:59 oliv__a Exp $ *)
 
 (** Module for SDL joystick event handling *)
 
@@ -33,44 +33,44 @@ exception SDLjoystick_exception of string
 type t
 
 (** Count the number of joysticks attached to the system *)
-external num_joysticks : unit -> int = "ml_SDL_NumJoysticks"
+val num_joysticks : unit -> int
 
 (** Get the implementation dependent name of a joystick.
    This can be called before any joysticks are opened. *)
-external name : int -> string = "ml_SDL_JoystickName"
+val name : int -> string
 
 (** Open a joystick for use - the index passed as an argument refers to
    the N'th joystick on the system.  This index is the value which will
    identify this joystick in future joystick events. 
    @raise SDLjoystick_exception if an error occurred *)
-external open_joystick : int -> t = "ml_SDL_JoystickOpen"
+val open_joystick : int -> t
 
 (** @return [true] if joystick has been opened *)
-external opened : int -> bool = "ml_SDL_JoystickOpened"
+val opened : int -> bool
 
 (** Get the device index of an opened joystick *)
-external index : t -> int = "ml_SDL_JoystickIndex"
+val index : t -> int
 
 (** Get the number of general axis controls on a joystick *)
-external num_axes : t -> int = "ml_SDL_JoystickNumAxes"
+val num_axes : t -> int
 
 (** Get the number of trackballs on a joystick
    Joystick trackballs have only relative motion events associated
    with them and their state cannot be polled. *)
-external num_balls : t -> int = "ml_SDL_JoystickNumBalls"
+val num_balls : t -> int
 
 (** Get the number of POV hats on a joystick *)
-external num_hats : t -> int = "ml_SDL_JoystickNumHats"
+val num_hats : t -> int
 
 (** Get the number of buttons on a joystick *)
-external num_buttons : t -> int = "ml_SDL_JoystickNumButtons"
+val num_buttons : t -> int
 
 (** {3 Joystick state } *)
 
 (** Update the current state of the open joysticks.
    This is called automatically by the event loop if any joystick
    events are enabled. *)
-external update : t -> unit = "ml_SDL_JoystickUpdate"
+val update : t -> unit
 
 
 (** Enable/disable joystick event polling.
@@ -78,8 +78,8 @@ external update : t -> unit = "ml_SDL_JoystickUpdate"
    yourself and check the state of the joystick when you want joystick
    information. *)
 
-external set_event_state : bool -> unit = "ml_SDL_JoystickSetEventState"
-external get_event_state : unit -> bool = "ml_SDL_JoystickGetEventState"
+val set_event_state : bool -> unit
+val get_event_state : unit -> bool
 
 type hat_value = int
 
@@ -93,14 +93,14 @@ val hat_rightdown : hat_value
 val hat_leftup    : hat_value
 val hat_leftdown  : hat_value
 
-external get_axis : t -> int -> int
-    = "ml_SDL_JoystickGetAxis"
-external get_hat  : t -> int -> hat_value
-    = "ml_SDL_JoystickGetHat"
-external get_ball : t -> int -> int * int
-    = "ml_SDL_JoystickGetBall"
-external get_button : t -> int -> bool
-    = "ml_SDL_JoystickGetButton"
+val get_axis : t -> int -> int
+   
+val get_hat  : t -> int -> hat_value
+   
+val get_ball : t -> int -> int * int
+   
+val get_button : t -> int -> bool
+   
 
 (** Close a joystick previously opened with {! Sdljoystick.open_joystick} *)
-external close : t -> unit = "ml_SDL_JoystickClose"
+val close : t -> unit

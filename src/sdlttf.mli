@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.16 2006/09/20 10:38:49 jboulnois Exp $ *)
+(* $Id: sdlttf.mli,v 1.17 2012/06/19 18:20:59 oliv__a Exp $ *)
 
 (** This module provides TTF (TrueType Font) support *)
 
@@ -28,14 +28,14 @@ exception SDLttf_exception of string
 val init : unit -> unit
 
 (** Quits the system *)
-external quit : unit -> unit = "sdlttf_kill"
+val quit : unit -> unit
 
 (** {3 General operations on font datatype} *)
 
 type font
 (** abstract font datatype *)
 
-external open_font : string -> ?index:int -> int -> font = "sdlttf_open_font"
+val open_font : string -> ?index:int -> int -> font
 (** open a font file and create a font of the specified point size 
    @return font datatype 
 *)
@@ -51,51 +51,51 @@ type font_style =
   | ITALIC
   | UNDERLINE
 
-external get_font_style : font -> font_style list = "sdlttf_get_font_style"
+val get_font_style : font -> font_style list
 (** Retrieve the font style : either [NORMAL] or a combination of 
    [BOLD], [ITALIC] and [UNDERLINE] *)
 
-external set_font_style : font -> font_style list -> unit = "sdlttf_set_font_style"
+val set_font_style : font -> font_style list -> unit
 
 (** {3 Font information } *)
 
-external font_height : font -> int = "sdlttf_font_height"
+val font_height : font -> int
 (** @return the total height(int) of the font (usually equal to point size) *)
 
-external font_ascent : font -> int = "sdlttf_font_ascent"
+val font_ascent : font -> int
 (**
   @return the offset(int) from the baseline to the top of the font
    this is a positive value, relative to the baseline *)
 
-external font_descent : font -> int = "sdlttf_font_descent"
+val font_descent : font -> int
 (**
    @return the offset from the baseline to the bottom of the font
    this is a negative value, relative to the baseline *)
 
-external font_lineskip : font -> int = "ml_TTF_FontLineSkip"
+val font_lineskip : font -> int
 (** Get the recommended spacing between lines of text for this font *)
 
-external font_faces : font -> int = "ml_TTF_FontFaces"
+val font_faces : font -> int
 (** Get the number of faces of the font *)
 
 (** Get some font face attributes, if any *)
 
-external is_fixed_width : font -> bool = "ml_TTF_FontFaceIsFixedWidth"
-external family_name : font -> string = "ml_TTF_FontFaceFamilyName"
-external style_name : font -> string = "ml_TTF_FontFaceStyleName"
+val is_fixed_width : font -> bool
+val family_name : font -> string
+val style_name : font -> string
 
 (** {3 Text rendering functions} *)
 
 open Sdlvideo
 
 (** Get the dimensions of a rendered string of text *)
-external size_text : font -> string -> int * int = "sdlttf_size_text"
+val size_text : font -> string -> int * int
 
 (* UTF8 *)
-external size_utf8 : font -> string -> int * int = "sdlttf_size_utf8"
+val size_utf8 : font -> string -> int * int
 
 (** @return the metrics (minx,maxx,miny,maxy) of a glyph *) 
-external glyph_metrics : font -> char -> int * int * int * int = "sdlttf_glyph_metrics"
+val glyph_metrics : font -> char -> int * int * int * int
 
 (** Variant type for the generic rendering functions *)
 type render_kind =
@@ -105,33 +105,30 @@ type render_kind =
 
 (** {4 Text rendering functions} *)
 
-external render_text_solid : font -> string -> 
-  fg:color -> surface = "sdlttf_render_text_solid"
-external render_text_shaded : font -> string -> 
+val render_text_solid : font -> string -> 
+  fg:color -> surface
+val render_text_shaded : font -> string -> 
   fg:color -> bg:color -> surface
-    = "sdlttf_render_text_shaded"
-external render_text_blended : font -> string -> 
-  fg:color -> surface = "sdlttf_render_text_blended"
+val render_text_blended : font -> string -> 
+  fg:color -> surface
 
 (* UTF8 *)
-external render_utf8_solid : font -> string -> 
-  fg:color -> surface = "sdlttf_render_utf8_solid"
-external render_utf8_shaded : font -> string -> 
+val render_utf8_solid : font -> string -> 
+  fg:color -> surface
+val render_utf8_shaded : font -> string -> 
   fg:color -> bg:color -> surface
-    = "sdlttf_render_utf8_shaded"
-external render_utf8_blended : font -> string -> 
-  fg:color -> surface = "sdlttf_render_utf8_blended"
+val render_utf8_blended : font -> string -> 
+  fg:color -> surface
 
 val render_text : font -> render_kind -> string -> surface
 
 (** {4 Glyph rendering functions} *)
 
-external render_glyph_solid : font -> char -> 
-  fg:color -> surface = "sdlttf_render_glyph_solid"
-external render_glyph_shaded : font -> char -> 
+val render_glyph_solid : font -> char -> 
+  fg:color -> surface
+val render_glyph_shaded : font -> char -> 
   fg:color -> bg:color -> surface
-    = "sdlttf_render_glyph_shaded"
-external render_glyph_blended : font -> char -> 
-  fg:color -> surface = "sdlttf_render_glyph_blended"
+val render_glyph_blended : font -> char -> 
+  fg:color -> surface
 
 val render_glyph : font -> render_kind -> char -> surface

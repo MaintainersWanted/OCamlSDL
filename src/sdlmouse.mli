@@ -11,14 +11,12 @@ type button =
   | BUTTON_X of int (** BUTTON_X is only seen in a Sdlevent.mousebutton_event,
                         it is not returned by Sdlmouse.get_state *)
 
-external get_state : ?relative:bool -> unit -> int * int * button list
-    = "mlsdlevent_get_mouse_state"
+val get_state : ?relative:bool -> unit -> int * int * button list
 (** Retrieve the current state of the mouse : 
    current mouse position and list of pressed buttons 
  @param relative if true returns mouse delta instead of position *)
 
-external warp : int -> int -> unit
-    = "ml_SDL_WarpMouse"
+val warp : int -> int -> unit
 (** Set the position of the mouse cursor (generates a mouse motion event) *)
 
 
@@ -40,11 +38,10 @@ type cursor_data = {
    hot_y : int ; (** the "tip" of the cursor *)
   } 
 
-external make_cursor : 
+val make_cursor : 
   data:(int, int8_unsigned_elt, c_layout) Array2.t ->
   mask:(int, int8_unsigned_elt, c_layout) Array2.t ->
   hot_x:int -> hot_y:int -> cursor
-    = "ml_SDL_CreateCursor"
 (** Create a cursor using the specified data and mask (in MSB format).
 
    The cursor is created in black and white according to the following:
@@ -58,30 +55,24 @@ external make_cursor :
    with {!Sdlmouse.free_cursor}.
 *)
 
-external free_cursor : cursor -> unit
-    = "ml_SDL_FreeCursor"
+val free_cursor : cursor -> unit
 (** Deallocates a cursor. *)
 
-external set_cursor : cursor -> unit
-    = "ml_SDL_SetCursor"
+val set_cursor : cursor -> unit
 (** Set the currently active cursor to the specified one.
    If the cursor is currently visible, the change will be immediately 
    represented on the display. *)
 
-external get_cursor : unit -> cursor
-    = "ml_SDL_GetCursor"
+val get_cursor : unit -> cursor
 (** Returns the currently active cursor. *)
 
-external cursor_visible : unit -> bool
-    = "ml_SDL_ShowCursor_query"
+val cursor_visible : unit -> bool
 (** Tests if cursor is shown on screen *)
 
-external show_cursor : bool -> unit
-    = "ml_SDL_ShowCursor"
+val show_cursor : bool -> unit
 (** Toggle cursor display *)
 
-external cursor_data : cursor -> cursor_data
-    = "ml_SDL_Cursor_data"
+val cursor_data : cursor -> cursor_data
 (** converts an abstract cursor value to concrete cursor data *)
 
 val pprint_cursor : cursor -> unit

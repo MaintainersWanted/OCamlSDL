@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlmixer.mli,v 1.16 2012/06/14 16:34:54 oliv__a Exp $ *)
+(* $Id: sdlmixer.mli,v 1.17 2012/06/19 18:20:59 oliv__a Exp $ *)
 
 (** Simple multi-channel audio mixer *)
 
@@ -27,7 +27,7 @@ exception SDLmixer_exception of string
 
 (** {3 General API} *)
 
-external version : unit -> Sdl.version ="sdlmixer_version"
+val version : unit -> Sdl.version
 (** Get the version of the dynamically linked SDL_mixer library *)
 
 (** Audio format flags *)
@@ -71,20 +71,20 @@ val query_specs : unit -> specs
 
 type chunk
 
-external loadWAV : string -> chunk = "sdlmixer_loadWAV"
+val loadWAV : string -> chunk
 (** Load a wave file *)
 
 val loadWAV_from_mem : string -> chunk
 
-external load_string : string -> chunk = "sdlmixer_load_string"
+val load_string : string -> chunk
 (** Load a wave file of the mixer format from a memory buffer *)
-external load_string_raw : string -> chunk = "sdlmixer_load_string_raw"
+val load_string_raw : string -> chunk
 (** Load raw audio data of the mixer format from a memory buffer *)
 
-external volume_chunk   : chunk -> float = "sdlmixer_volume_chunk"
-external setvolume_chunk : chunk -> float -> unit = "sdlmixer_setvolume_chunk"
+val volume_chunk   : chunk -> float
+val setvolume_chunk : chunk -> float -> unit
 
-external free_chunk : chunk -> unit = "sdlmixer_free_chunk"
+val free_chunk : chunk -> unit
 (** Free an audio chunk previously loaded *)
 
 (** {3 Channels} *)
@@ -97,16 +97,15 @@ val all_channels  : channel
 val num_channels : unit -> int
 (** @return the number of channels currently allocated *)
 
-external allocate_channels : int -> int = "sdlmixer_allocate_channels"
+val allocate_channels : int -> int
 (** Dynamically change the number of channels managed by the mixer.
     If decreasing the number of channels, the upper channels are
     stopped.
     @return the new number of allocated channels
  *)
 
-external play_channel : 
+val play_channel : 
   ?channel:channel -> ?loops:int -> ?ticks:float -> chunk -> unit
-  = "sdlmixer_play_channel_timed"
 (** [play_channel channel loops ticks chunk ] Play an audio chunk.
   @param channel channel to play on. If not specified, play on the
   first free channel.  
@@ -119,45 +118,44 @@ val play_sound : chunk -> unit
 (** Play an audio chunk. Same as above, without the optional
   parameters *)
 
-external fadein_channel : 
+val fadein_channel : 
   ?channel:channel -> ?loops:int -> ?ticks:float -> chunk -> float -> unit
-  = "sdlmixer_fadein_channel"
 (** [fadein_channel channel loops ticks chunck ms] :
    same as [play_channel] but fades in a over [ms] seconds.
 *)
 
-external volume_channel : channel -> float = "sdlmixer_volume_channel"
+val volume_channel : channel -> float
 (** Returns the original volume of a specific channel, chunk or music 
   @return float between 0 and 1. *)
-external setvolume_channel : channel -> float -> unit = "sdlmixer_setvolume_channel"
+val setvolume_channel : channel -> float -> unit
 (** Sets the volume for specified channel or chunk. 
    Volume is a float between 0 and 1. 
    If lower than 0, nothing is done.
    If greater than 1, volume is set to 1 *)
 
-external pause_channel : channel -> unit = "sdlmixer_pause_channel"
-external resume_channel : channel -> unit = "sdlmixer_resume_channel"
+val pause_channel : channel -> unit
+val resume_channel : channel -> unit
 
-external halt_channel : channel -> unit = "sdlmixer_halt_channel"
+val halt_channel : channel -> unit
 
-external expire_channel : channel -> float option -> unit = "sdlmixer_expire_channel"
+val expire_channel : channel -> float option -> unit
 (**  [expire_channel channel ticks]
   Change the expiration delay for a particular channel.
   The sample will stop playing after the 'ticks' seconds have elapsed,
   or remove the expiration if 'ticks' is [None]
 *)
 
-external fadeout_channel : channel -> float -> unit = "sdlmixer_fadeout_channel"
+val fadeout_channel : channel -> float -> unit
 (** [fadeout_channel channel ticks]
   Halt a channel, fading it out progressively till it's silent
   The ms parameter indicates the number of seconds the fading
   will take.
  *)
 
-external playing_channel : channel -> bool = "sdlmixer_playing"
-external num_playing_channel : unit -> int = "sdlmixer_numplaying"
-external paused_channel : channel -> bool = "sdlmixer_paused_channel"
-external num_paused_channel : unit -> int = "sdlmixer_numpaused_channel"
+val playing_channel : channel -> bool
+val num_playing_channel : unit -> int
+val paused_channel : channel -> bool
+val num_paused_channel : unit -> int
 
 (** The different fading types supported *)
 type fade_status =
@@ -165,7 +163,7 @@ type fade_status =
  | FADING_OUT
  | FADING_IN
 
-external fading_channel : channel -> fade_status = "sdlmixer_fading_channel"
+val fading_channel : channel -> fade_status
 (** Query the fading status of a channel *)
 
 
@@ -178,48 +176,48 @@ val default_group : group
    Used to remove a group tag *)
 
 
-external reserve_channels : int -> int = "sdlmixer_reserve_channels"
+val reserve_channels : int -> int
 (** Reserve the first channels (0 -> n-1) for the application,
     i.e. don't allocate them dynamically to the next sample if
     no channel is specified (see {! Sdlmixer.play_channel}).
     @return the number of reserved channels 
 *)
 
-external group_channel : channel -> group -> unit = "sdlmixer_group_channel"
+val group_channel : channel -> group -> unit
 (** Attach a group tag to a channel. A group tag can be assigned to several
    mixer channels, to form groups of channels.  
    If group is [default_group], the tag is removed.
 *)
 
-external group_channels : from_c:channel -> to_c:channel -> group -> unit = "sdlmixer_group_channels"
+val group_channels : from_c:channel -> to_c:channel -> group -> unit
 (** Same as above but for a range of channels. *)
 
-external group_count : group -> int = "sdlmixer_group_count"
+val group_count : group -> int
 (** Returns the number of channels in a group. 
    This is also a subtle way to get the total number of channels 
    when [group] is [default_group].
 *)
 
-external group_available : group -> channel = "sdlmixer_group_available"
+val group_available : group -> channel
 (** Finds the first available [channel] in a [group] of channels 
    @raise Not_found if none are available. 
 *)
 
-external group_oldest : group -> channel = "sdlmixer_group_oldest"
+val group_oldest : group -> channel
 (** Finds the "oldest" sample playing in a [group] of channels *)
 
-external group_newer : group -> channel = "sdlmixer_group_newer"
+val group_newer : group -> channel
 (** Finds the "most recent" (i.e. last) sample playing in a [group] of
    channels *)
 
-external fadeout_group : group -> float -> unit = "sdlmixer_fadeout_group"
+val fadeout_group : group -> float -> unit
 (** [fadeout_group group ticks]
   Halt a group of channel, fading it out progressively till it's silent
   The ms parameter indicates the number of seconds the fading
   will take.
 *)
 
-external halt_group : group -> unit = "sdlmixer_halt_group"
+val halt_group : group -> unit
 
 
 (** {3 Music} *)
@@ -236,56 +234,55 @@ type music_kind =
   | OGG
   | MP3
 
-external load_music : string -> music = "sdlmixer_loadMUS"
+val load_music : string -> music
 (** Load a music file (.mod .s3m .it .xm .ogg) *)
 
-external free_music : music -> unit = "sdlmixer_free_music"
+val free_music : music -> unit
 (** Free music previously loaded *)
 
-external play_music : ?loops:int -> music -> unit = "sdlmixer_play_music"
+val play_music : ?loops:int -> music -> unit
 (** Play a music chunk.
    @param loops number of times to play through the music *)
 
-external fadein_music : ?loops:int -> music -> float -> unit
-  = "sdlmixer_fadein_music"
+val fadein_music : ?loops:int -> music -> float -> unit
 (** [fadein_music chunck loops music ms] :
    fade in music over [ms] seconds, same semantics as the [play_music]
    function *)
 
-external volume_music   : unit -> float = "sdlmixer_volume_music"
+val volume_music   : unit -> float
 
-external setvolume_music : float -> unit = "sdlmixer_setvolume_music"
+val setvolume_music : float -> unit
 
-external pause_music   : unit -> unit = "sdlmixer_pause_music"
+val pause_music   : unit -> unit
 
-external resume_music   : unit -> unit = "sdlmixer_resume_music"
+val resume_music   : unit -> unit
 
-external rewind_music : unit -> unit = "sdlmixer_rewind_music"
+val rewind_music : unit -> unit
 
 
-external set_music_cmd : string -> unit = "sdlmixer_set_music_cmd"
+val set_music_cmd : string -> unit
 (** Stop music and set external music playback command *)
 
-external unset_music_cmd : unit -> unit = "sdlmixer_unset_music_cmd"
+val unset_music_cmd : unit -> unit
 (** Turn off using an external command for music, returning to the
     internal music playing functionality *)
 
-external halt_music : unit -> unit = "sdlmixer_halt_music"
+val halt_music : unit -> unit
 
-external fadeout_music : float -> unit = "sdlmixer_fadeout_music"
+val fadeout_music : float -> unit
 (** [fadeout_music ticks]
   Halt the music, fading it out progressively till it's silent.
   The ms parameter indicates the number of seconds the fading
   will take.
 *)
 
-external music_type : music option -> music_kind = "sdlmixer_get_music_type"
+val music_type : music option -> music_kind
 (** Find out the music format of a mixer music, or the currently
     playing music, if parameter is [None]. *)
 
-external playing_music   : unit -> bool = "sdlmixer_playing_music"
+val playing_music   : unit -> bool
 
-external paused_music   : unit -> bool = "sdlmixer_paused_music"
+val paused_music   : unit -> bool
 
-external fading_music : unit -> fade_status = "sdlmixer_fading_music"
+val fading_music : unit -> fade_status
 (** Query the fading status of a music *)

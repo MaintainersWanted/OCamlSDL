@@ -258,18 +258,17 @@ val name : t -> string
 
 (** {3 Keyboard handling } *)
 
-external enable_unicode : bool -> unit
-    = "ml_SDL_EnableUNICODE"
+val enable_unicode : bool -> unit
 (** Enable unicode translation of keysyms for keyboard events *)
-external query_unicode : unit -> bool
-    = "ml_SDL_QueryUNICODE"
+   
+val query_unicode : unit -> bool
+   
 
 
-external disable_key_repeat : unit -> unit
-    = "ml_SDL_DisableKeyRepeat"
+val disable_key_repeat : unit -> unit
 (** Disable keyboard repeat *)
-external enable_key_repeat : ?delay:int -> ?interval:int -> unit -> unit
-    = "ml_SDL_EnableKeyRepeat"
+   
+val enable_key_repeat : ?delay:int -> ?interval:int -> unit -> unit
 (** Enable keyboard repeat
    @param delay initial delay in ms between the time when a key is
    pressed, and keyboard repeat begins
@@ -278,8 +277,7 @@ external enable_key_repeat : ?delay:int -> ?interval:int -> unit -> unit
 
 
 open Bigarray
-external get_key_state : unit -> (int, int8_unsigned_elt, c_layout) Array1.t
-    = "ml_SDL_GetKeyState"
+val get_key_state : unit -> (int, int8_unsigned_elt, c_layout) Array1.t
 (** Get a snapshot of the current state of the keyboard.
    @return an array of keystates, indexed by the SDL keysyms 
    (cf {! Sdlkey.int_of_key}) *)
@@ -312,12 +310,10 @@ val kmod_shift  : mod_state
 val kmod_alt    : mod_state
 val kmod_meta   : mod_state
 
-external get_mod_state : unit -> mod_state
-    = "ml_SDL_GetModState"
+val get_mod_state : unit -> mod_state
 (** Get the current key modifier state *)
 
-external set_mod_state : mod_state -> unit
-    = "ml_SDL_SetModState"
+val set_mod_state : mod_state -> unit
 (** Set the current key modifier state
    This does not change the keyboard state, only the key modifier flags. *)
 

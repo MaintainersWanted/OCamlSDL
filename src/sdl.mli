@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdl.mli,v 1.11 2003/03/11 22:32:50 oliv__a Exp $ *)
+(* $Id: sdl.mli,v 1.12 2012/06/19 18:20:59 oliv__a Exp $ *)
 
 (** This module contains functions for initializing/quitting the library *)
 
@@ -46,17 +46,17 @@ val init :
  - `EVENTTHREAD : Automatically pump events in a separate threads
  - `EVERYTHING  : initialize all subsystems
 *)
-external init_subsystem : subsystem list -> unit = "sdl_init_subsystem"
+val init_subsystem : subsystem list -> unit
 
-external was_init : unit -> subsystem list = "sdl_was_init"
+val was_init : unit -> subsystem list
 
-external quit : unit -> unit = "sdl_quit"
+val quit : unit -> unit
 (** 
   [quit] shuts down all SDL subsystems and frees the resources allocated 
   to them. This should always be called before you exit. 
 *)
 
-external quit_subsystem : subsystem list -> unit = "sdl_quit_subsystem"
+val quit_subsystem : subsystem list -> unit
 
 
 (** {3 Versioning information} *)
@@ -67,7 +67,7 @@ type version = {
     patch : int ;
   } 
 
-external version : unit -> version = "sdl_version"
+val version : unit -> version
 (** version of the SDL library *)
 
 val string_of_version : version -> string
@@ -80,4 +80,4 @@ val putenv : string -> string -> unit
 (**/**)
 type rwops_in
 val rwops_from_mem : string -> rwops_in
-external rwops_in_close  : rwops_in -> unit = "mlsdl_rwops_close"
+val rwops_in_close  : rwops_in -> unit
