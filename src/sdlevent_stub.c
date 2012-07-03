@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* $Id: sdlevent_stub.c,v 1.26 2012/06/19 18:06:41 oliv__a Exp $ */
+/* $Id: sdlevent_stub.c,v 1.27 2012/07/03 19:11:45 oliv__a Exp $ */
 
 #include <SDL.h>
 
@@ -101,8 +101,8 @@ static value value_of_keyevent(SDL_KeyboardEvent keyevt)
   Field(r, 1) = keyevt.state == SDL_RELEASED ? Val_int(0) : Val_int(1);
   Field(r, 2) = find_mlsdl_keysym(keyevt.keysym.sym) ;
   Field(r, 3) = Val_int(keyevt.keysym.mod) ;
-  if (SDL_EnableUNICODE(-1) && keyevt.keysym.unicode <= 0xFF)
-    char_code = keyevt.keysym.unicode & 0xFF;
+  if (keyevt.keysym.unicode <= 0x7F)
+    char_code = keyevt.keysym.unicode;
   Field(r, 4) = Val_int(char_code);
   Field(r, 5) = Val_long(keyevt.keysym.unicode);
   tag = keyevt.state == SDL_PRESSED ? 1 : 2 ;
