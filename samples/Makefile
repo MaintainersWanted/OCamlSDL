@@ -17,7 +17,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-# $Id: Makefile,v 1.14 2010/04/19 19:43:40 oliv__a Exp $
+# $Id: Makefile,v 1.15 2012/11/12 18:56:52 oliv__a Exp $
 
 
 include ../makefile.platform
@@ -32,7 +32,7 @@ OMLFLAGS += -w s
 
 SAMPLES = test_cdrom ocamlplayer \
           testalpha testjoystick ocamlsdl_logo checkkeys \
-          showfont ocamlsdl_gfx
+          showfont ocamlsdl_gfx test_gfx test_ttf
 ifdef LABLGLDIR
 SAMPLES += sdlgears
 endif
@@ -43,7 +43,9 @@ opt: $(addsuffix .opt,$(SAMPLES))
 ocamlplayer.test ocamlplayer.opt : EXTRA = mixer
 ocamlsdl_logo.test ocamlsdl_logo.opt : EXTRA = loader
 ocamlsdl_gfx.test ocamlsdl_gfx.opt : EXTRA = loader gfx
+test_gfx.test test_gfx.opt : EXTRA = gfx
 showfont.test showfont.opt : EXTRA = ttf
+test_ttf.test test_ttf.opt : EXTRA = ttf
 sdlgears.test sdlgears.opt : MLINC+=-I $(LABLGLDIR)
 
 

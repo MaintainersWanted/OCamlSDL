@@ -1,5 +1,13 @@
 open Bigarray
 
+let string_of_button = function
+  | Sdlmouse.BUTTON_LEFT -> "LEFT"
+  | Sdlmouse.BUTTON_RIGHT -> "RIGHT"
+  | Sdlmouse.BUTTON_MIDDLE -> "MIDDLE"
+  | Sdlmouse.BUTTON_WHEELUP -> "WHEELUP"
+  | Sdlmouse.BUTTON_WHEELDOWN -> "WHEELDOWN"
+  | Sdlmouse.BUTTON_X i -> string_of_int i
+
 let debug = ref false
 let dbug_msg msg = 
   if !debug
@@ -229,6 +237,8 @@ let main () =
   (* Initialize SDL *)
   Sdl.init ~auto_clean:true [ `VIDEO ] ;
   
+  Sdlkey.enable_unicode true ;
+
   (* Alpha blending doesn't work well at 8-bit color *)
   let video_bpp = 
     let info_fmt = Sdlvideo.get_video_info_format () in
@@ -313,6 +323,8 @@ let main () =
 		Sdlevent.mme_state = button_list } 
 	    when button_list <> [] ->
 	      dbug_msg "## mouse motion -> attract_sprite" ;
+              dbug_msg (Printf.sprintf "#> mouse buttons : %s\n%!"
+                          (String.concat "+" (List.map string_of_button button_list))) ;
 	      attract_sprite x y
 
 	  | Sdlevent.MOUSEBUTTONDOWN
@@ -324,13 +336,19 @@ let main () =
 		  mouse_pressed := true
 
 	  | Sdlevent.MOUSEBUTTONDOWN 
-	      { Sdlevent.mbe_x = x ; Sdlevent.mbe_y = y } ->
+	      { Sdlevent.mbe_x = x ; Sdlevent.mbe_y = y ; mbe_button = b } ->
 		dbug_msg "## blitting a dark rect" ;
+		dbug_msg ("## button " ^ string_of_button b) ;
+                let x, y, st = Sdlmouse.get_state () in
+                dbug_msg (Printf.sprintf "#> mouse state : %d, %d, %s\n%!"
+                            x y (String.concat "+" (List.map string_of_button st))) ;
 		let rect = Sdlvideo.rect (x-16) (y-16) 32 32 in
 		Sdlvideo.fill_rect ~rect screen (Int32.zero) ;
 		Sdlvideo.update_rect ~rect screen 
 
-	  | Sdlevent.KEYDOWN _ 
+	  | Sdlevent.KEYDOWN ke ->
+              Printf.eprintf "# %c\n%!" (ke.Sdlevent.keycode)
+
 	      (* Any keypress quits the app... *)
 	  | Sdlevent.QUIT ->
 	      dbug_msg "## exiting ..." ;
