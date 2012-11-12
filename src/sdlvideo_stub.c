@@ -126,6 +126,14 @@ void SDLRect_of_value(SDL_Rect *r, value v)
 }
 #endif
 
+#ifndef HAVE_INLINE
+void SDLVect_of_value(Sint16 *x, Sint16 *y, value v)
+{
+  *x = Int_val(Field(v, 0));
+  *y = Int_val(Field(v, 1));
+}
+#endif
+
 static inline void update_value_from_SDLRect(value vr, SDL_Rect *r)
 {
   CAMLparam1(vr);

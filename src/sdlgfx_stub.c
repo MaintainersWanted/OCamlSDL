@@ -23,8 +23,9 @@ CAMLprim value ml_pixelColor(value dst,value x,value y, value col)
   SDL_Surface *sur= SDL_SURFACE(dst);
   int r;
   r=pixelColor(sur,Int_val(x),Int_val(y),Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.pixelColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 CAMLprim value ml_pixelRGBA(value dst,value x,value y, value col,value alpha)
@@ -35,8 +36,9 @@ CAMLprim value ml_pixelRGBA(value dst,value x,value y, value col,value alpha)
 
   SDLColor_of_value(&c,col);
   r=pixelRGBA(sur,Int_val(x),Int_val(y),c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.pixelRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 /* rectangle */
@@ -44,59 +46,139 @@ CAMLprim value ml_pixelRGBA(value dst,value x,value y, value col,value alpha)
 CAMLprim value ml_rectangleColor(value dst,value p1,value p2, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect1, rect2;
+  Sint16 x1, y1, x2, y2;
   int r;
 
-  SDLRect_of_value(&rect1,p1);
-  SDLRect_of_value(&rect2,p2);
-  r=rectangleColor(sur,rect1.x,rect1.y,rect2.x,rect2.y,Int32_val(col));
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  r=rectangleColor(sur,x1,y1,x2,y2,Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.rectangleColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_rectangleRGBA(value dst,value p1,value p2, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect1, rect2;
+  Sint16 x1, y1, x2, y2;
   SDL_Color c;
   int r;
 
-  SDLRect_of_value(&rect1,p1);
-  SDLRect_of_value(&rect2,p2);
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
   SDLColor_of_value(&c,col);
-  r=rectangleRGBA(sur,rect1.x,rect1.y,rect2.x,rect2.y,c.r,c.g,c.b, Int_val(alpha));
+  r=rectangleRGBA(sur,x1,y1,x2,y2,c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.rectangleRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 CAMLprim value ml_boxColor(value dst,value p1,value p2, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect1,rect2;
+  Sint16 x1, y1, x2, y2;
   int r;
 
-  SDLRect_of_value(&rect1,p1);
-  SDLRect_of_value(&rect2,p2);
-  r=boxColor(sur,rect1.x,rect1.y,rect2.x,rect2.y,Int32_val(col));
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  r=boxColor(sur,x1,y1,x2,y2,Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.boxColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_boxRGBA(value dst,value p1,value p2, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect1,rect2;
+  Sint16 x1, y1, x2, y2;
   SDL_Color c;
   int r;
 
-  SDLRect_of_value(&rect1,p1);
-  SDLRect_of_value(&rect2,p2);
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
   SDLColor_of_value(&c,col);
-  r=boxRGBA(sur,rect1.x,rect1.y,rect2.x,rect2.y,c.r,c.g,c.b, Int_val(alpha));
+  r=boxRGBA(sur,x1,y1,x2,y2,c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.boxRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
+}
+
+/* rounded-rectangle */
+
+CAMLprim value ml_roundedRectangleColor(value dst,value p1,value p2,value rad,value col)
+{
+  SDL_Surface *sur= SDL_SURFACE(dst);
+  Sint16 x1, y1, x2, y2;
+  int r;
+
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  r=roundedRectangleColor(sur,x1,y1,x2,y2,Int_val(rad),Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.roundedRectangleColor");
+
+  return Val_unit;
+}
+
+CAMLprim value ml_roundedRectangleRGBA(value dst,value p1,value p2,value rad,value col,value alpha)
+{
+  SDL_Surface *sur= SDL_SURFACE(dst);
+  Sint16 x1, y1, x2, y2;
+  SDL_Color c;
+  int r;
+
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  SDLColor_of_value(&c,col);
+  r=roundedRectangleRGBA(sur,x1,y1,x2,y2,Int_val(rad),c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.roundedRectangleRGBA");
+
+  return Val_unit;
+}
+
+CAMLprim value ml_roundedRectangleRGBA_bc(value *argv, int argc)
+{
+  return ml_roundedRectangleRGBA(
+      argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
+}
+
+/* rounded-box */
+
+CAMLprim value ml_roundedBoxColor(value dst,value p1,value p2,value rad,value col)
+{
+  SDL_Surface *sur= SDL_SURFACE(dst);
+  Sint16 x1, y1, x2, y2;
+  int r;
+
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  r=roundedBoxColor(sur,x1,y1,x2,y2,Int_val(rad),Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.roundedBoxColor");
+
+  return Val_unit;
+}
+
+CAMLprim value ml_roundedBoxRGBA(value dst,value p1,value p2,value rad,value col,value alpha)
+{
+  SDL_Surface *sur= SDL_SURFACE(dst);
+  Sint16 x1, y1, x2, y2;
+  SDL_Color c;
+  int r;
+
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  SDLColor_of_value(&c,col);
+  r=roundedBoxRGBA(sur,x1,y1,x2,y2,Int_val(rad),c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.roundedBoxRGBA");
+
+  return Val_unit;
+}
+
+CAMLprim value ml_roundedBoxRGBA_bc(value *argv, int argc)
+{
+  return ml_roundedBoxRGBA(
+      argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
 }
 
 /* line */
@@ -104,144 +186,235 @@ CAMLprim value ml_boxRGBA(value dst,value p1,value p2, value col,value alpha)
 CAMLprim value ml_lineColor(value dst,value p1,value p2, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect1,rect2;
+  Sint16 x1, y1, x2, y2;
   int r;
 
-  SDLRect_of_value(&rect1,p1);
-  SDLRect_of_value(&rect2,p2);
-  r=lineColor(sur,rect1.x,rect1.y,rect2.x,rect2.y,Int32_val(col));
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  r=lineColor(sur,x1,y1,x2,y2,Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.lineColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_lineRGBA(value dst,value p1,value p2, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect1,rect2;
+  Sint16 x1, y1, x2, y2;
   SDL_Color c;
   int r;
 
-  SDLRect_of_value(&rect1,p1);
-  SDLRect_of_value(&rect2,p2);
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
   SDLColor_of_value(&c,col);
-  r=lineRGBA(sur,rect1.x,rect1.y,rect2.x,rect2.y,c.r,c.g,c.b, Int_val(alpha));
+  r=lineRGBA(sur,x1,y1,x2,y2,c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.lineRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_aalineColor(value dst,value p1,value p2, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect1,rect2;
+  Sint16 x1, y1, x2, y2;
   int r;
 
-  SDLRect_of_value(&rect1,p1);
-  SDLRect_of_value(&rect2,p2);
-  r=aalineColor(sur,rect1.x,rect1.y,rect2.x,rect2.y,Int32_val(col));
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  r=aalineColor(sur,x1,y1,x2,y2,Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.aalineColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_aalineRGBA(value dst,value p1,value p2, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect1,rect2;
+  Sint16 x1, y1, x2, y2;
   SDL_Color c;
   int r;
 
-  SDLRect_of_value(&rect1,p1);
-  SDLRect_of_value(&rect2,p2);
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
   SDLColor_of_value(&c,col);
-  r=aalineRGBA(sur,rect1.x,rect1.y,rect2.x,rect2.y,c.r,c.g,c.b, Int_val(alpha));
+  r=aalineRGBA(sur,x1,y1,x2,y2,c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.aalineRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
+}
+
+/* thick line */
+
+CAMLprim value ml_thickLineColor(value dst,value p1,value p2,value width,value col)
+{
+  SDL_Surface *sur= SDL_SURFACE(dst);
+  Sint16 x1, y1, x2, y2;
+  int r;
+
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  r=thickLineColor(sur,x1,y1,x2,y2,Int_val(width),Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.thickLineColor");
+
+  return Val_unit;
+}
+
+CAMLprim value ml_thickLineRGBA(value dst,value p1,value p2,value width,value col,value alpha)
+{
+  SDL_Surface *sur= SDL_SURFACE(dst);
+  Sint16 x1, y1, x2, y2;
+  SDL_Color c;
+  int r;
+
+  SDLVect_of_value(&x1,&y1,p1);
+  SDLVect_of_value(&x2,&y2,p2);
+  SDLColor_of_value(&c,col);
+  r=thickLineRGBA(sur,x1,y1,x2,y2,Int_val(width),c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.thickLineRGBA");
+
+  return Val_unit;
+}
+
+CAMLprim value ml_thickLineRGBA_bc(value *argv, int argc)
+{
+  return ml_thickLineRGBA(
+      argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
 }
 
 /* circle */
 
-CAMLprim value ml_circleColor(value dst,value p,value ra, value col)
+CAMLprim value ml_circleColor(value dst,value pos,value ra, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect;
+  Sint16 x, y;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  r=circleColor(sur,prect.x,prect.y,Int_val(ra),Int32_val(col));
+  SDLVect_of_value(&x,&y,pos);
+  r=circleColor(sur,x,y,Int_val(ra),Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.circleColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
-CAMLprim value ml_circleRGBA(value dst,value p,value ra, value col,value alpha)
+CAMLprim value ml_circleRGBA(value dst,value pos,value ra, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect;
   SDL_Color c;
+  Sint16 x, y;
   int r;
 
-  SDLRect_of_value(&prect,p);
+  SDLVect_of_value(&x,&y,pos);
   SDLColor_of_value(&c,col);
-  r=circleRGBA(sur,prect.x,prect.y,Int_val(ra),c.r,c.g,c.b, Int_val(alpha));
+  r=circleRGBA(sur,x,y,Int_val(ra),c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.circleRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
-CAMLprim value ml_aacircleColor(value dst,value p,value ra, value col)
+CAMLprim value ml_aacircleColor(value dst,value pos,value ra, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect;
+  Sint16 x, y;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  r=aacircleColor(sur,prect.x,prect.y,Int_val(ra),Int32_val(col));
+  SDLVect_of_value(&x,&y,pos);
+  r=aacircleColor(sur,x,y,Int_val(ra),Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.aacircleColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
-CAMLprim value ml_aacircleRGBA(value dst,value p,value ra, value col,value alpha)
+CAMLprim value ml_aacircleRGBA(value dst,value pos,value ra, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect;
   SDL_Color c;
+  Sint16 x, y;
   int r;
 
-  SDLRect_of_value(&prect,p);
+  SDLVect_of_value(&x,&y,pos);
   SDLColor_of_value(&c,col);
-  r=aacircleRGBA(sur,prect.x,prect.y,Int_val(ra),c.r,c.g,c.b, Int_val(alpha));
+  r=aacircleRGBA(sur,x,y,Int_val(ra),c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.aacircleRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
-CAMLprim value ml_filledCircleColor(value dst,value p,value ra, value col)
+
+CAMLprim value ml_filledCircleColor(value dst,value pos,value ra, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect;
+  Sint16 x, y;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  r=filledCircleColor(sur,prect.x,prect.y,Int_val(ra),Int32_val(col));
+  SDLVect_of_value(&x,&y,pos);
+  r=filledCircleColor(sur,x,y,Int_val(ra),Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.filledCircleColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
-CAMLprim value ml_filledCircleRGBA(value dst,value p,value ra, value col,value alpha)
+CAMLprim value ml_filledCircleRGBA(value dst,value pos,value ra, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect;
   SDL_Color c;
+  Sint16 x, y;
   int r;
 
-  SDLRect_of_value(&prect,p);
+  SDLVect_of_value(&x,&y,pos);
   SDLColor_of_value(&c,col);
-  r=filledCircleRGBA(sur,prect.x,prect.y,Int_val(ra),c.r,c.g,c.b, Int_val(alpha));
+  r=filledCircleRGBA(sur,x,y,Int_val(ra),c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.filledCircleRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
+}
+
+/* arc */
+
+CAMLprim value ml_arcColor(value dst,value pos,value rad,value start,value end,value col)
+{
+  SDL_Surface *sur= SDL_SURFACE(dst);
+  Sint16 x, y;
+  int r;
+
+  SDLVect_of_value(&x,&y,pos);
+  r=arcColor(sur,x,y,Int_val(rad),Int_val(start),Int_val(end),Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.arcColor");
+
+  return Val_unit;
+}
+
+CAMLprim value ml_arcColor_bc(value *argv, int argc)
+{
+  return ml_arcColor(
+      argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
+}
+
+CAMLprim value ml_arcRGBA(value dst,value pos,value rad,value start,value end,value col,value alpha)
+{
+  SDL_Surface *sur= SDL_SURFACE(dst);
+  SDL_Color c;
+  Sint16 x, y;
+  int r;
+
+  SDLVect_of_value(&x,&y,pos);
+  SDLColor_of_value(&c,col);
+  r=arcRGBA(sur,x,y,Int_val(rad),Int_val(start),Int_val(end),c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.arcRGBA");
+
+  return Val_unit;
+}
+
+CAMLprim value ml_arcRGBA_bc(value *argv, int argc)
+{
+  return ml_arcRGBA(
+      argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]);
 }
 
 /* ellipse */
@@ -249,89 +422,95 @@ CAMLprim value ml_filledCircleRGBA(value dst,value p,value ra, value col,value a
 CAMLprim value ml_ellipseColor(value dst,value p,value rp, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect,rprect;
+  Sint16 x, y, rx, ry;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  SDLRect_of_value(&rprect,rp);
-  r=ellipseColor(sur,prect.x,prect.y,rprect.x,rprect.y,Int32_val(col));
+  SDLVect_of_value(&x,&y,p);
+  SDLVect_of_value(&rx,&ry,rp);
+  r=ellipseColor(sur,x,y,rx,ry,Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.ellipseColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_ellipseRGBA(value dst,value p,value rp, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect,rprect;
   SDL_Color c;
+  Sint16 x, y, rx, ry;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  SDLRect_of_value(&rprect,rp);
+  SDLVect_of_value(&x,&y,p);
+  SDLVect_of_value(&rx,&ry,rp);
   SDLColor_of_value(&c,col);
-  r=ellipseRGBA(sur,prect.x,prect.y,rprect.x,rprect.y,c.r,c.g,c.b, Int_val(alpha));
+  r=ellipseRGBA(sur,x,y,rx,ry,c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.ellipseRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 CAMLprim value ml_aaellipseColor(value dst,value p,value rp, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect,rprect;
+  Sint16 x, y, rx, ry;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  SDLRect_of_value(&rprect,rp);
-  r=aaellipseColor(sur,prect.x,prect.y,rprect.x,rprect.y,Int32_val(col));
+  SDLVect_of_value(&x,&y,p);
+  SDLVect_of_value(&rx,&ry,rp);
+  r=aaellipseColor(sur,x,y,rx,ry,Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.aaellipseColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_aaellipseRGBA(value dst,value p,value rp, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect,rprect;
+  Sint16 x, y, rx, ry;
   SDL_Color c;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  SDLRect_of_value(&rprect,rp);
+  SDLVect_of_value(&x,&y,p);
+  SDLVect_of_value(&rx,&ry,rp);
   SDLColor_of_value(&c,col);
-  r=aaellipseRGBA(sur,prect.x,prect.y,rprect.x,rprect.y,c.r,c.g,c.b, Int_val(alpha));
+  r=aaellipseRGBA(sur,x,y,rx,ry,c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.aaellipseRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_filledEllipseColor(value dst,value p,value rp, value col)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect,rprect;
+  Sint16 x, y, rx, ry;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  SDLRect_of_value(&rprect,rp);
-  r=filledEllipseColor(sur,prect.x,prect.y,rprect.x,rprect.y,Int32_val(col));
+  SDLVect_of_value(&x,&y,p);
+  SDLVect_of_value(&rx,&ry,rp);
+  r=filledEllipseColor(sur,x,y,rx,ry,Int32_val(col));
+  if (r) caml_failwith("Sdlgfx.filledEllipseColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_filledEllipseRGBA(value dst,value p,value rp, value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect prect,rprect;
+  Sint16 x, y, rx, ry;
   SDL_Color c;
   int r;
 
-  SDLRect_of_value(&prect,p);
-  SDLRect_of_value(&rprect,rp);
+  SDLVect_of_value(&x,&y,p);
+  SDLVect_of_value(&rx,&ry,rp);
   SDLColor_of_value(&c,col);
-  r=filledEllipseRGBA(sur,prect.x,prect.y,rprect.x,rprect.y,c.r,c.g,c.b, Int_val(alpha));
+  r=filledEllipseRGBA(sur,x,y,rx,ry,c.r,c.g,c.b, Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.filledEllipseRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 /* text */
@@ -339,54 +518,58 @@ CAMLprim value ml_filledEllipseRGBA(value dst,value p,value rp, value col,value 
 CAMLprim value ml_characterColor(value dst,value p,value c,value color)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect;
+  Sint16 x, y;
   int r;
 
-  SDLRect_of_value(&rect,p);
-  r=characterColor(sur,rect.x,rect.y,(char) c,Int32_val(color));
+  SDLVect_of_value(&x,&y,p);
+  r=characterColor(sur,x,y,(char) c,Int32_val(color));
+  if (r) caml_failwith("Sdlgfx.characterColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 CAMLprim value ml_characterRGBA(value dst,value p,value ch,value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect;
+  Sint16 x, y;
   SDL_Color c;
   int r;
 
-  SDLRect_of_value(&rect,p);
+  SDLVect_of_value(&x,&y,p);
   SDLColor_of_value(&c,col);
-  r=characterRGBA(sur,rect.x,rect.y,(char) ch,c.r,c.g,c.b,Int_val(alpha));
+  r=characterRGBA(sur,x,y,(char) ch,c.r,c.g,c.b,Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.characterRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 
 CAMLprim value ml_stringColor(value dst,value p,value c,value color)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect;
+  Sint16 x, y;
   int r;
 
-  SDLRect_of_value(&rect,p);
-  r=stringColor(sur,rect.x,rect.y,String_val(c),Int32_val(color));
+  SDLVect_of_value(&x,&y,p);
+  r=stringColor(sur,x,y,String_val(c),Int32_val(color));
+  if (r) caml_failwith("Sdlgfx.stringColor");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 CAMLprim value ml_stringRGBA(value dst,value p,value ch,value col,value alpha)
 {
   SDL_Surface *sur= SDL_SURFACE(dst);
-  SDL_Rect rect;
+  Sint16 x, y;
   SDL_Color c;
   int r;
 
-  SDLRect_of_value(&rect,p);
+  SDLVect_of_value(&x,&y,p);
   SDLColor_of_value(&c,col);
-  r=stringRGBA(sur,rect.x,rect.y,String_val(ch),c.r,c.g,c.b,Int_val(alpha));
+  r=stringRGBA(sur,x,y,String_val(ch),c.r,c.g,c.b,Int_val(alpha));
+  if (r) caml_failwith("Sdlgfx.stringRGBA");
 
-  return Val_bool(r);
+  return Val_unit;
 }
 
 CAMLprim value ml_gfxPrimitivesSetFont(value fd,value cw,value ch)
