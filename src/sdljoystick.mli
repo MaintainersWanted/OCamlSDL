@@ -17,9 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdljoystick.mli,v 1.4 2012/06/19 18:20:59 oliv__a Exp $ *)
+(* $Id: sdljoystick.mli,v 1.5 2012/11/12 18:37:25 oliv__a Exp $ *)
 
-(** Module for SDL joystick event handling *)
+(** SDL joystick event handling *)
 
 (** In order to use these functions, {! Sdl.init} must have been called
    with the `JOYSTICK flag.  This causes SDL to scan the system

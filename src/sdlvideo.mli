@@ -17,9 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(** Module for video manipulations *)
+(** Video manipulations *)
 
-(* $Id: sdlvideo.mli,v 1.34 2012/06/19 18:20:59 oliv__a Exp $ *)
+(* $Id: sdlvideo.mli,v 1.35 2012/11/12 18:37:25 oliv__a Exp $ *)
 
 open Bigarray
 

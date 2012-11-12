@@ -1,5 +1,5 @@
 
-(** LablGL interaction *)
+(** OpenGL interaction *)
 
 external swap_buffers : unit -> unit
     = "ml_SDL_GL_SwapBuffers"
@@ -27,3 +27,4 @@ external get_attr : unit -> attr list
 
 external to_raw : Sdlvideo.surface -> [`ubyte] Raw.t
     = "ml_SDL_GL_to_raw"
+(** LablGL interaction *)

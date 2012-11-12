@@ -17,9 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlttf.mli,v 1.17 2012/06/19 18:20:59 oliv__a Exp $ *)
+(* $Id: sdlttf.mli,v 1.18 2012/11/12 18:37:25 oliv__a Exp $ *)
 
-(** This module provides TTF (TrueType Font) support *)
+(** Provides TTF (TrueType Font) support *)
 
 (** Exception for reporting errors *)
 exception SDLttf_exception of string

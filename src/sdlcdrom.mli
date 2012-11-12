@@ -17,9 +17,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-(* $Id: sdlcdrom.mli,v 1.12 2012/06/19 18:20:59 oliv__a Exp $ *)
+(* $Id: sdlcdrom.mli,v 1.13 2012/11/12 18:37:25 oliv__a Exp $ *)
 
-(** This module provides CD-ROM handling *)
+(** Provides CD-ROM handling *)
 
 exception SDLcdrom_exception of string
 (** Exception used to report errors *)
