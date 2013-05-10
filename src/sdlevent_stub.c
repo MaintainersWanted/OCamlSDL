@@ -109,7 +109,7 @@ static value value_of_keyevent(SDL_KeyboardEvent keyevt)
   v = alloc_small(1, tag);
   Field(v, 0) = r;
   CAMLreturn(v);
-} 
+}
 
 static value value_of_mouse_button(Uint8 b)
 {
@@ -218,8 +218,9 @@ static value value_of_SDLEvent(SDL_Event evt)
   case SDL_USEREVENT :
     v = alloc_small(1, 12);
     Field(v, 0) = Val_int(evt.user.code);
+    Field(v, 1) = String_val(evt.user.data1);
     break;
-  default : 
+  default :
     /* unknown event ? -> raise an exception */
     raise_event_exn("unknown event");
   }
@@ -310,7 +311,7 @@ static SDL_Event SDLEvent_of_value(value e)
     case 12:
       evt.type = SDL_USEREVENT ;
       evt.user.code = Int_val(Field(e, 0));
-      evt.user.data1 = NULL;
+      evt.user.data1 = String_val(Field(e, 1));
       evt.user.data2 = NULL;
       break;
     default:
@@ -320,7 +321,7 @@ static SDL_Event SDLEvent_of_value(value e)
   return evt;
 
  invalid:
-  invalid_argument("SDLEvent_of_value"); 
+  invalid_argument("SDLEvent_of_value");
 
   return evt;  /* silence compiler */
 }
@@ -424,15 +425,15 @@ CAMLprim value mlsdlevent_wait_event(value unit)
 }
 
 static const Uint8 evt_type_of_val [] = {
-  SDL_ACTIVEEVENT, SDL_KEYDOWN, SDL_KEYUP, 
+  SDL_ACTIVEEVENT, SDL_KEYDOWN, SDL_KEYUP,
   SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_MOUSEBUTTONUP,
-  SDL_JOYAXISMOTION, SDL_JOYBALLMOTION, SDL_JOYHATMOTION, 
+  SDL_JOYAXISMOTION, SDL_JOYBALLMOTION, SDL_JOYHATMOTION,
   SDL_JOYBUTTONDOWN, SDL_JOYBUTTONUP, SDL_QUIT, SDL_SYSWMEVENT,
   SDL_VIDEORESIZE, SDL_VIDEOEXPOSE, SDL_USEREVENT, } ;
 
 CAMLprim value mlsdlevent_get_state(value evt_v)
 {
-  return Val_bool( SDL_EventState( evt_type_of_val[ Int_val(evt_v) ], 
+  return Val_bool( SDL_EventState( evt_type_of_val[ Int_val(evt_v) ],
 				   SDL_QUERY) );
 }
 

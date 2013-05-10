@@ -107,7 +107,7 @@ type event =
   | SYSWM
   | VIDEORESIZE     of int * int
   | VIDEOEXPOSE
-  | USER            of int
+  | USER            of int * string
 
 let string_of_event = function
   | ACTIVE _        -> "active"
@@ -125,7 +125,7 @@ let string_of_event = function
   | SYSWM           -> "syswm"
   | VIDEORESIZE _   -> "resize"
   | VIDEOEXPOSE     -> "expose"
-  | USER c          -> "user " ^ (string_of_int c)
+  | USER (c,s)      -> "user " ^ (string_of_int c)
 
 type event_kind =
   | ACTIVE_EVENT 
