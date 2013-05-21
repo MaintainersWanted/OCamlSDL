@@ -97,3 +97,4 @@ external gfxPrimitivesSetFont : string -> int -> int -> unit = "ml_gfxPrimitives
 external rotozoomSurface : surface -> float -> float -> bool -> surface = "ml_rotozoomSurface"
 external rotozoomSurfaceXY : surface -> float -> float -> float -> bool -> surface = "ml_rotozoomSurfaceXY"
 external zoomSurface : surface -> float -> float -> bool -> surface = "ml_zoomSurface"
+external shrinkSurface : surface -> float -> float -> surface = "ml_shrinkSurface"

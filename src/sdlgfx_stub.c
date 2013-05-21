@@ -603,3 +603,11 @@ CAMLprim value ml_zoomSurface(value src,value zoomx,value zoomy,value smooth)
   dsur=zoomSurface(ssur,Double_val(zoomx),Double_val(zoomy),Bool_val(smooth));
   return ML_SURFACE(dsur);
 }
+
+CAMLprim value ml_shrinkSurface(value src,value factorx,value factory)
+{
+  SDL_Surface *ssur= SDL_SURFACE(src);
+  SDL_Surface *dsur;
+  dsur=shrinkSurface(ssur,Double_val(factorx),Double_val(factory));
+  return ML_SURFACE(dsur);
+}
