@@ -75,7 +75,9 @@ type video_info = {
     blit_sw_alpha : bool;	(** Accelerated blits with alpha *)
     blit_fill : bool;		(** Accelerated color fill *)
     video_mem : int;		(** Total amount of video memory (Ko) *)
-  } 
+    current_w: int;         (** The current video mode width *)
+    current_h: int;         (** The current video mode height *)
+  }
 (** Information on either the 'best' available mode (if called before
    [set_video_mode]) or the current video mode. *)
 
