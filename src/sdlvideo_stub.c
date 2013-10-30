@@ -289,6 +289,8 @@ CAMLprim value ml_SDL_GetVideoInfo(value unit)
   Field(result, 7) = Val_bool(info->blit_sw_A);
   Field(result, 8) = Val_bool(info->blit_fill);
   Field(result, 9) = Val_int(info->video_mem);
+  Field(result, 10) = Val_int(info->current_w);
+  Field(result, 11) = Val_int(info->current_h);
   return result;
 }
 
