@@ -18,10 +18,20 @@
 #
 
 # $Id: Makefile,v 1.24 2010/04/19 21:01:14 oliv__a Exp $
+CLEANFILES=makefile.config.gcc makefile.platform META
 
 all doc clean install:
 	$(MAKE) -C src $@
-.PHONY: all doc clean install
+
+distclean-autoconf:
+	-rm -f aclocal.m4 src/config.h config.cache config.log config.status configure 
+	-rm -rf autom4te.cache
+
+distclean: distclean-autoconf
+	$(MAKE) -C src $@
+	-rm -f $(CLEANFILES)
+	
+.PHONY: all doc clean distclean install
 
 include makefile.platform
 include makefile.config.$(OCAML_C_BACKEND)
@@ -29,14 +39,14 @@ include makefile.config.$(OCAML_C_BACKEND)
 ifeq ($(OCAML_C_BACKEND),gcc)
 makefile.config.gcc : makefile.config.gcc.in configure
 	$(error "please run ./configure or edit makefile.platform")
-configure : configure.in
+configure : configure.ac
 	aclocal -I support
 	autoconf
 endif
 
-DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README README.macosx NEWS \
+DISTSRC := AUTHORS COPYING INSTALL INSTALL.win32 README.md README.macosx NEWS \
            Makefile META.in \
-           configure.in aclocal.m4 configure \
+           configure.ac aclocal.m4 configure \
            makefile.platform.in makefile.config.gcc.in makefile.config.msvc makefile.rules \
            support/install-sh support/ocaml.m4 support/config.sub support/config.guess \
 	   src/sdl*.ml src/sdl*.mli src/sdl*.c src/sdl*.h \

@@ -115,7 +115,7 @@ doc : ; $(error "you need ocamldoc to generate the documentation")
 endif
 
 clean:
-	rm -f *.cm* *.$(OBJEXT) *.$(A) *.so *.do
+	rm -f *.cm* *.$(OBJEXT) *.$(A) *.so *.do .depend .depend.c
 
 depend: .depend .depend.c
 
@@ -133,4 +133,8 @@ else
 include .depend_c
 endif
 
-.PHONY: all doc clean depend
+distclean: clean
+	rm -f .depend *~
+
+.PHONY: all doc clean distclean depend
+
