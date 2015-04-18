@@ -1,3 +1,7 @@
+Release 0.9.2:
+        * Apply patch from cakeplus@github #2 and release #4
+        * minor changes on Makefile
+
 Release 0.9.1:
         * fix the button index in Sdlevent.mousebutton_event 
         * bugfixes (Sdlmixer.group_channels, Sdlmixer.volume_music, 

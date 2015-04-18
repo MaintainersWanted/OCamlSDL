@@ -4,7 +4,7 @@ dnl ******
 dnl
 dnl $Id: configure.in,v 1.44 2012/07/03 19:14:20 oliv__a Exp $
 
-AC_INIT(ocamlsdl, 0.9.1)
+AC_INIT(ocamlsdl, 0.9.2)
 AC_CONFIG_AUX_DIR(./support)
 AC_CONFIG_HEADERS(src/config.h)
 

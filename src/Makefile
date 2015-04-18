@@ -133,8 +133,12 @@ else
 include .depend_c
 endif
 
+clean-doc:
+	-rm -f ../doc/ocamlsdl.info ../doc/ocamlsdl.texi
+	-rm -rf ../doc/html
+
 distclean: clean
 	rm -f .depend *~
 
-.PHONY: all doc clean distclean depend
+.PHONY: all doc clean clean-doc distclean depend
 

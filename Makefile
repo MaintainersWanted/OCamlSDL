@@ -20,7 +20,7 @@
 # $Id: Makefile,v 1.24 2010/04/19 21:01:14 oliv__a Exp $
 CLEANFILES=makefile.config.gcc makefile.platform META
 
-all doc clean install:
+all doc clean clean-doc install:
 	$(MAKE) -C src $@
 
 distclean-autoconf:
@@ -31,7 +31,7 @@ distclean: distclean-autoconf
 	$(MAKE) -C src $@
 	-rm -f $(CLEANFILES)
 	
-.PHONY: all doc clean distclean install
+.PHONY: all doc clean clean-doc distclean install
 
 include makefile.platform
 include makefile.config.$(OCAML_C_BACKEND)
