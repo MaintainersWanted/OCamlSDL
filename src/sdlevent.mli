@@ -128,7 +128,7 @@ type event =
   | SYSWM                                (** System specific event *)
   | VIDEORESIZE     of int * int         (** User resized video mode *)
   | VIDEOEXPOSE                          (** Screen needs to be redrawn *)
-  | USER            of int               (** for your use ! *)
+  | USER            of int * string      (** for your use ! *)
 
 val string_of_event : event -> string
 (** Returns a short string descriptive of the event type, for debugging *)
